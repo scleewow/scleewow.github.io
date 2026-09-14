@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>레지스탕스 아발론 (P2P)</title>
+  <!-- PeerJS CDN -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <!-- QRCode.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root {
       --bg-color: #0f172a;
@@ -44,6 +47,9 @@
     .player-item.leader { border-left: 4px solid var(--gold); }
     .secret-box { user-select: none; -webkit-user-select: none; background: #0f172a; border: 1px dashed var(--gold); padding: 16px; text-align: center; border-radius: 8px; margin: 12px 0; cursor: pointer; }
     .log-box { height: 120px; overflow-y: auto; background: #0f172a; border-radius: 6px; padding: 8px; font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px; }
+    /* QR 코드 스타일 추가 */
+    .qr-container { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 16px 0; padding: 12px; background: #fff; border-radius: 8px; width: fit-content; margin-left: auto; margin-right: auto; }
+    #qrcode img { display: block; }
   </style>
 </head>
 <body>
@@ -72,8 +78,13 @@
 
   <!-- 2. 대기실 화면 -->
   <div id="screen-room" class="card hidden">
-    <h3>방 코드: <span id="display-room-id" style="color:var(--gold)"></span></h3>
-    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 12px;">친구들에게 위 코드를 전달하여 접속하게 하세요.</p>
+    <h3 style="text-align: center;">방 코드: <span id="display-room-id" style="color:var(--gold)"></span></h3>
+    
+    <!-- QR 코드 표출 영역 -->
+    <div class="qr-container">
+      <div id="qrcode"></div>
+      <p style="color:#000; font-size:0.75rem; margin-top:6px; font-weight:bold;">스마트폰으로 스캔하여 접속</p>
+    </div>
 
     <h4>참가자 (<span id="player-count">0</span>/10)</h4>
     <ul id="waiting-player-list" class="player-list" style="margin: 8px 0 16px 0;"></ul>
@@ -149,6 +160,16 @@
     10: [3, 4, 4, 5, 5]
   };
 
+  // 페이지 로드 시 URL 파라미터 체크 (QR 코드 자동 연결 지원)
+  window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomParam = urlParams.get('room');
+    if (roomParam) {
+      document.getElementById('join-ui').classList.remove('hidden');
+      document.getElementById('room-id').value = roomParam;
+    }
+  };
+
   function showJoinUI() {
     document.getElementById('join-ui').classList.toggle('hidden');
   }
@@ -176,6 +197,21 @@
     });
   }
 
+  function generateQRCode(roomId) {
+    const qrDiv = document.getElementById('qrcode');
+    qrDiv.innerHTML = ''; 
+    const joinUrl = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
+    
+    new QRCode(qrDiv, {
+      text: joinUrl,
+      width: 128,
+      height: 128,
+      colorDark : "#000000",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+  }
+
   function createRoom() {
     myName = document.getElementById('player-name').value.trim();
     if (!myName) return alert('닉네임을 입력하세요.');
@@ -184,6 +220,7 @@
       isHost = true;
       gameState.players.push({ id: myId, name: myName });
       document.getElementById('display-room-id').innerText = id;
+      generateQRCode(id); // QR 코드 생성
       switchToRoomUI();
 
       peer.on('connection', (conn) => {
@@ -257,7 +294,7 @@
         }
       }
       broadcastState();
-    } else if (data.type === 'SUBMIT_TEAM') { // 팀 구성 완료 처리 수신
+    } else if (data.type === 'SUBMIT_TEAM') {
       if (gameState.phase !== 'TEAM_SELECTION') return;
       const leader = gameState.players[gameState.leaderIndex];
       if (leader.id !== peerId) return;
