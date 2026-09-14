@@ -32,9 +32,6 @@
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .roles-option { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
     .role-toggle { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; }
-    .status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
-    .badge-good { background: #1e3a8a; color: #60a5fa; }
-    .badge-evil { background: #7f1d1d; color: #f87171; }
     .hidden { display: none !important; }
     .board { display: flex; justify-content: space-between; margin: 12px 0; gap: 4px; }
     .quest-slot { flex: 1; background: #0f172a; border: 2px solid #334155; border-radius: 8px; height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.8rem; position: relative; }
@@ -42,7 +39,7 @@
     .quest-slot.fail { border-color: var(--red); background: #7f1d1d44; }
     .quest-slot.active { border-color: var(--gold); box-shadow: 0 0 8px var(--gold); }
     .player-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-    .player-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #0f172a; border-radius: 6px; }
+    .player-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #0f172a; border-radius: 6px; cursor: pointer; }
     .player-item.selected { border: 2px solid var(--gold); }
     .player-item.leader { border-left: 4px solid var(--gold); }
     .secret-box { user-select: none; -webkit-user-select: none; background: #0f172a; border: 1px dashed var(--gold); padding: 16px; text-align: center; border-radius: 8px; margin: 12px 0; cursor: pointer; }
@@ -98,7 +95,6 @@
 
   <!-- 3. 메인 게임 화면 -->
   <div id="screen-game" class="card hidden">
-    <!-- 원정 진행 현황 판 -->
     <div class="board" id="quest-board"></div>
 
     <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 12px;">
@@ -106,20 +102,16 @@
       <span>현재 원정대장: <strong id="current-leader" style="color:var(--gold);">-</strong></span>
     </div>
 
-    <!-- 역할 확인 (Secret) -->
     <div class="secret-box" id="secret-box" onmousedown="revealSecret()" onmouseup="hideSecret()" ontouchstart="revealSecret()" ontouchend="hideSecret()">
       <span id="secret-hint">👉 누르고 있는 동안 내 역할 확인</span>
       <div id="secret-content" class="hidden"></div>
     </div>
 
-    <!-- 단계별 액션 영역 -->
     <div id="action-area" style="margin: 12px 0;"></div>
 
-    <!-- 플레이어 리스트 및 선택 -->
     <h4>플레이어 목록</h4>
     <ul id="game-player-list" class="player-list" style="margin-top: 8px;"></ul>
 
-    <!-- 시스템 로그 -->
     <h4 style="margin-top: 16px;">게임 진행 로그</h4>
     <div id="log-box" class="log-box"></div>
   </div>
@@ -127,24 +119,23 @@
 
 <script>
   let peer = null;
-  let connections = {}; // host only: { peerId: conn }
-  let hostConn = null;  // client only
+  let connections = {}; 
+  let hostConn = null;  
   let myId = '';
   let myName = '';
   let isHost = false;
 
-  // 게임 상태 데이터
   let gameState = {
-    phase: 'LOBBY', // LOBBY, TEAM_SELECTION, TEAM_VOTE, MISSION_VOTE, ASSASSINATION, GAME_OVER
-    players: [], // { id, name, role, isLeader }
+    phase: 'LOBBY', 
+    players: [], 
     rolesConfig: {},
-    questResults: [], // true(성공), false(실패)
+    questResults: [], 
     currentQuest: 0,
     rejectCount: 0,
     leaderIndex: 0,
     selectedTeam: [],
-    teamVotes: {}, // { id: true/false }
-    missionVotes: [], // [true, false, ...]
+    teamVotes: {}, 
+    missionVotes: [], 
     winner: null,
     logs: []
   };
@@ -152,7 +143,7 @@
   const QUEST_CONFIG = {
     5: [2, 3, 2, 3, 3],
     6: [2, 3, 4, 3, 4],
-    7: [2, 3, 3, 4, 4], // 4번째 퀘스트 2개 실패 필요
+    7: [2, 3, 3, 4, 4],
     8: [3, 4, 4, 5, 5],
     9: [3, 4, 4, 5, 5],
     10: [3, 4, 4, 5, 5]
@@ -174,7 +165,6 @@
     box.scrollTop = box.scrollHeight;
   }
 
-  // --- PeerJS 통신 설정 ---
   function initPeer(callback) {
     peer = new Peer();
     peer.on('open', (id) => {
@@ -267,6 +257,15 @@
         }
       }
       broadcastState();
+    } else if (data.type === 'SUBMIT_TEAM') { // 팀 구성 완료 처리 수신
+      if (gameState.phase !== 'TEAM_SELECTION') return;
+      const leader = gameState.players[gameState.leaderIndex];
+      if (leader.id !== peerId) return;
+
+      gameState.phase = 'TEAM_VOTE';
+      gameState.teamVotes = {};
+      log(`원정대장(${leader.name})이 팀 구성을 완료했습니다. 찬반 투표를 시작합니다.`);
+      broadcastState();
     } else if (data.type === 'SUBMIT_VOTE') {
       gameState.teamVotes[peerId] = data.vote;
       if (Object.keys(gameState.teamVotes).length === gameState.players.length) {
@@ -309,7 +308,6 @@
     document.getElementById('player-count').innerText = gameState.players.length;
   }
 
-  // --- 게임 로직 및 역할 부여 ---
   function startGame() {
     const count = gameState.players.length;
     if (count < 5 || count > 10) return alert('5명 이상 10명 이하만 시작할 수 있습니다.');
@@ -321,14 +319,13 @@
       oberon: document.getElementById('role-oberon').checked,
     };
 
-    // 선/악 비율 설정
     let evilCount = 2;
     if (count >= 7) evilCount = 3;
     if (count >= 9) evilCount = 4;
 
     let roles = ['Merlin', 'Assassin'];
-    let goodCount = count - evilCount - 1; // Merlin 제외
-    let remainingEvil = evilCount - 1; // Assassin 제외
+    let goodCount = count - evilCount - 1;
+    let remainingEvil = evilCount - 1;
 
     if (gameState.rolesConfig.percival && goodCount > 0) { roles.push('Percival'); goodCount--; }
     if (gameState.rolesConfig.morgana && remainingEvil > 0) { roles.push('Morgana'); remainingEvil--; }
@@ -338,7 +335,6 @@
     while (goodCount > 0) { roles.push('Servant'); goodCount--; }
     while (remainingEvil > 0) { roles.push('Minion'); remainingEvil--; }
 
-    // 셔플
     roles.sort(() => Math.random() - 0.5);
     gameState.players.forEach((p, i) => p.role = roles[i]);
 
@@ -352,7 +348,6 @@
     broadcastState();
   }
 
-  // --- 화면 렌더링 ---
   function renderGameUI() {
     if (gameState.phase === 'LOBBY') return;
 
@@ -366,9 +361,7 @@
     document.getElementById('reject-count').innerText = gameState.rejectCount;
     document.getElementById('current-leader').innerText = gameState.players[gameState.leaderIndex]?.name || '-';
 
-    // 플레이어 목록 렌더링
     const pList = document.getElementById('game-player-list');
-    const isLeader = gameState.players[gameState.leaderIndex]?.id === myId;
     
     pList.innerHTML = gameState.players.map((p, idx) => {
       const isSelected = gameState.selectedTeam.includes(p.id);
@@ -413,6 +406,17 @@
           handleClientData(myId, { type: 'TOGGLE_TEAM', targetId });
         } else {
           hostConn.send({ type: 'TOGGLE_TEAM', targetId });
+        }
+      }
+    } else if (gameState.phase === 'ASSASSINATE') {
+      const myPlayer = gameState.players.find(p => p.id === myId);
+      if (myPlayer.role === 'Assassin') {
+        if (confirm(`${gameState.players.find(p=>p.id===targetId).name} 님을 머린으로 지목하시겠습니까?`)) {
+          if (isHost) {
+            handleClientData(myId, { type: 'ASSASSINATE', targetId });
+          } else {
+            hostConn.send({ type: 'ASSASSINATE', targetId });
+          }
         }
       }
     }
@@ -472,13 +476,11 @@
     }
   }
 
-  // --- 이벤트 액션 ---
   function submitTeamProposal() {
     if (isHost) {
-      gameState.phase = 'TEAM_VOTE';
-      gameState.teamVotes = {};
-      log(`리더가 팀 구성을 완료했습니다. 전원 찬반 투표를 시작합니다.`);
-      broadcastState();
+      handleClientData(myId, { type: 'SUBMIT_TEAM' });
+    } else {
+      hostConn.send({ type: 'SUBMIT_TEAM' });
     }
   }
 
@@ -516,7 +518,6 @@
   }
 
   function voteMission(vote) {
-    // 악만 실패를 낼 수 있음 (선 세력은 성공만 강제 규칙도 적용 가능)
     const myPlayer = gameState.players.find(p => p.id === myId);
     const isEvil = ['Assassin', 'Morgana', 'Mordred', 'Oberon', 'Minion'].includes(myPlayer.role);
     if (!vote && !isEvil) {
@@ -535,7 +536,6 @@
     const fails = gameState.missionVotes.filter(v => !v).length;
     const playerCount = gameState.players.length;
     
-    // 7인 이상 4번째 원정은 실패 2장 이상 필요
     let requiredFails = 1;
     if (playerCount >= 7 && gameState.currentQuest === 3) {
       requiredFails = 2;
@@ -564,7 +564,6 @@
     }
   }
 
-  // --- 비밀 시야 (역할 확인) ---
   function revealSecret() {
     const myPlayer = gameState.players.find(p => p.id === myId);
     if (!myPlayer || !myPlayer.role) return;
@@ -596,7 +595,6 @@
 
   function getRoleVision(myPlayer) {
     const role = myPlayer.role;
-    const evils = gameState.players.filter(p => ['Assassin', 'Morgana', 'Minion', 'Oberon'].includes(p.role));
     const evilsExceptMordred = gameState.players.filter(p => ['Assassin', 'Morgana', 'Minion', 'Oberon'].includes(p.role) && p.role !== 'Mordred');
     const merlinCandidates = gameState.players.filter(p => p.role === 'Merlin' || p.role === 'Morgana');
 
