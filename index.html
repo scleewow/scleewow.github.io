@@ -418,9 +418,9 @@
         const pwd = inputs.createPassword.value.trim();
 
         if (!myName) return alert('닉네임을 입력하세요.');
-        if (!pwd) return alert('방 생성 비밀번호를 입력하세요.');
+        if (!pwd) return alert('키를 입력하세요.');
         if (pwd !== didyou) {
-          alert('비밀번호가 일치하지 않습니다. 방을 만들 수 없습니다.');
+          alert('키가 일치하지 않습니다. 방을 만들 수 없습니다.');
           return;
         }
 
@@ -976,8 +976,8 @@
       <input type="text" id="player-name" placeholder="닉네임 입력">
     </div>
     <div class="input-group">
-      <label for="create-password">방 생성 비밀번호 (방 생성 전용)</label>
-      <input type="password" id="create-password" placeholder="비밀번호 입력">
+      <label for="create-password">키 (방 생성 전용)</label>
+      <input type="password" id="create-password" placeholder="키 입력">
     </div>
     <div style="display: flex; gap: 8px; margin-bottom: 12px;">
       <button class="btn btn-primary" onclick="createRoom()">방 만들기</button>
