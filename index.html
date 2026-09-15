@@ -395,7 +395,7 @@
     window.joinGame = async function() {
       try {
         myName = inputs.name.value.trim();
-        const roomId = inputs.roomId.value.trim().toUpperCase();
+        const roomId = inputs.roomId.value.trim();
         if (!myName || !roomId) return alert('닉네임과 방 코드를 입력하세요.');
 
         isHost = false;
