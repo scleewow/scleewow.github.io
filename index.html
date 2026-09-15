@@ -58,7 +58,7 @@
       10: [3, 4, 4, 5, 5]
     };
 
-    // ===== 요소 참조 (HTML 로드 후 설정) =====
+    // ===== 요소 참조 =====
     let screens, inputs, displays, lists;
 
     function initializeElements() {
@@ -95,7 +95,7 @@
         const roomParam = urlParams.get('room');
 
         if (roomParam) {
-          inputs.roomId.value = roomParam;
+          inputs.roomId.value = roomParam.toUpperCase();
           document.getElementById('join-ui').classList.remove('hidden');
         }
 
@@ -106,7 +106,7 @@
             myName = session.name;
             inputs.name.value = myName;
             isHost = session.isHost;
-            await startRoomListing(session.roomId);
+            await startRoomListing(session.roomId.toUpperCase());
             return;
           } catch(e) {
             console.error('세션 복구 오류:', e);
@@ -123,8 +123,9 @@
     async function startRoomListing(roomId) {
       try {
         if (!roomId) return;
-        gameState.roomId = roomId;
-        const roomRef = database.ref('rooms/' + roomId);
+        const formattedRoomId = roomId.toUpperCase();
+        gameState.roomId = formattedRoomId;
+        const roomRef = database.ref('rooms/' + formattedRoomId);
 
         const snapshot = await roomRef.once('value');
         if (!snapshot.exists()) {
@@ -144,10 +145,9 @@
             
             if (gameState.players && gameState.players[mySessionId]) {
               myName = gameState.players[mySessionId].name;
-              saveSessionToStorage(roomId, isHost);
+              saveSessionToStorage(formattedRoomId, isHost);
             }
 
-            // 페이즈에 따라 확실하게 대기실/게임 화면 분기
             if (gameState.phase === 'LOBBY') {
               showScreen('room');
               renderWaitingList();
@@ -165,7 +165,7 @@
       }
     }
 
-    // 호스트가 DB에 초기 방 구조 생성
+    // DB에 초기 방 구조 생성 (대문자 ROOM_ 적용)
     async function initializeRoomOnDB(roomId) {
       try {
         const roomRef = database.ref('rooms/' + roomId);
@@ -177,7 +177,6 @@
           },
           logs: ["방이 생성되었습니다. 참가자를 기다립니다."]
         });
-        console.log('방 생성 완료:', roomId);
       } catch(e) {
         console.error('방 생성 오류:', e);
         alert('방 생성 실패: ' + e.message);
@@ -185,11 +184,10 @@
       }
     }
 
-    // 로컬 스토리지에 세션 저장
     function saveSessionToStorage(roomId, hostFlag) {
       sessionStorage.setItem('avalon_active_session', JSON.stringify({
         name: myName,
-        roomId: roomId,
+        roomId: roomId.toUpperCase(),
         isHost: hostFlag
       }));
     }
@@ -200,8 +198,8 @@
         Object.values(screens).forEach(s => s.classList.add('hidden'));
         screens[screenName].classList.remove('hidden');
         if (screenName === 'room') {
-          displays.roomId.innerText = gameState.roomId;
-          generateQRCode(gameState.roomId);
+          displays.roomId.innerText = gameState.roomId.toUpperCase();
+          generateQRCode(gameState.roomId.toUpperCase());
           if (isHost) {
             document.getElementById('host-controls').classList.remove('hidden');
             document.getElementById('client-wait-msg').classList.add('hidden');
@@ -372,15 +370,16 @@
 
     // --- 액션 처리 함수들 ---
     
+    // 1. 방 생성 (대문자 ROOM_ 코드 생성)
     window.createRoom = async function() {
       try {
         myName = inputs.name.value.trim();
         if (!myName) return alert('닉네임을 입력하세요.');
 
-        const roomId = "ROOM_" + Math.random().toString(36).substring(2, 7).toUpperCase();
+        const randomCode = Math.random().toString(36).substring(2, 7).toUpperCase();
+        const roomId = "ROOM_" + randomCode;
         isHost = true;
         
-        // DB에 대기실(LOBBY) 생성 후 세션 저장 및 리스닝 시작
         await initializeRoomOnDB(roomId);
         inputs.name.disabled = true;
         saveSessionToStorage(roomId, isHost);
@@ -392,11 +391,16 @@
       }
     };
 
+    // 2. 방 참가 (입력값을 항상 대문자 ROOM_ 규격으로 변환)
     window.joinGame = async function() {
       try {
         myName = inputs.name.value.trim();
-        const roomId = inputs.roomId.value.trim().toUpperCase();
-        if (!myName || !roomId) return alert('닉네임과 방 코드를 입력하세요.');
+        let rawInput = inputs.roomId.value.trim();
+        if (!myName || !rawInput) return alert('닉네임과 방 코드를 입력하세요.');
+
+        // "room_"이나 "ROOM_" 접두사가 있으면 제거 후 pure 코드만 추출
+        rawInput = rawInput.replace(/^room_/i, '');
+        const roomId = "ROOM_" + rawInput.toUpperCase();
 
         isHost = false;
         await switchToRoomUI(roomId, isHost);
@@ -477,7 +481,6 @@
           playersUpdate[`players/${sId}/role`] = roles[i];
         });
 
-        // 게임 시작 시 Phase를 TEAM_SELECTION으로 업데이트하여 대기실에서 본 게임으로 전환
         await roomRef.update({
           ...playersUpdate,
           phase: 'TEAM_SELECTION',
@@ -787,7 +790,7 @@
       try {
         const qrDiv = document.getElementById('qrcode');
         qrDiv.innerHTML = ''; 
-        const joinUrl = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
+        const joinUrl = `${window.location.origin}${window.location.pathname}?room=${roomId.toUpperCase()}`;
         new QRCode(qrDiv, { text: joinUrl, width: 128, height: 128 });
       } catch(e) {
         console.error('generateQRCode 오류:', e);
