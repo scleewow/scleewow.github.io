@@ -28,7 +28,7 @@
     const database = firebase.database();
 
     // 지정된 방 생성 비밀번호
-    const ADMIN_PASSWORD = "wowri1180";
+    const ADMIN_PASSWORD = "hmgdataasset3464";
 
     // --- 게임 상태 및 세션 변수 ---
     let myName = "";
@@ -102,7 +102,7 @@
       };
     }
 
-    // --- 강력한 무작위 셔플 함수 (Crypto API 활용) ---
+    // --- 무작위 셔플 함수 (Crypto API) ---
     function secureShuffle(array) {
       const arr = [...array];
       for (let i = arr.length - 1; i > 0; i--) {
@@ -114,7 +114,7 @@
       return arr;
     }
 
-    // --- 초기화 및 세션 복구 로직 ---
+    // --- 초기화 및 세션 복구 ---
     window.onload = async function() {
       try {
         initializeElements();
@@ -148,7 +148,7 @@
       }
     };
 
-    // --- Firebase DB 구독 및 화면 동기화 ---
+    // --- DB 구독 및 동기화 ---
     async function startRoomListing(roomId) {
       try {
         if (!roomId) return;
@@ -164,7 +164,6 @@
           return;
         }
 
-        // DB 실시간 구독 시작
         roomRef.on('value', (snapshot) => {
           try {
             const data = snapshot.val();
@@ -194,7 +193,6 @@
       }
     }
 
-    // DB에 초기 방 구조 생성
     async function initializeRoomOnDB(roomId) {
       try {
         const roomRef = database.ref('rooms/' + roomId);
@@ -221,7 +219,7 @@
       }));
     }
 
-    // --- UI 렌더링 함수들 ---
+    // --- UI 렌더링 ---
     function showScreen(screenName) {
       try {
         Object.values(screens).forEach(s => s.classList.add('hidden'));
@@ -259,6 +257,14 @@
       try {
         renderBoard();
         renderLogs();
+
+        // 방장에게만 강제 다시시작 버튼 노출
+        const restartBtn = document.getElementById('btn-host-restart');
+        if (isHost) {
+          restartBtn.classList.remove('hidden');
+        } else {
+          restartBtn.classList.add('hidden');
+        }
 
         displays.rejectCount.innerText = gameState.rejectCount || 0;
         const leaderName = gameState.players[gameState.leaderSessionId]?.name || '-';
@@ -405,9 +411,9 @@
       }
     }
 
-    // --- 액션 처리 함수들 ---
+    // --- 액션 처리 함수 ---
     
-    // 방 생성 (비밀번호 확인 로직 포함)
+    // 방 생성
     window.createRoom = async function() {
       try {
         myName = inputs.name.value.trim();
@@ -471,7 +477,7 @@
       }
     }
 
-    // 게임 시작 (강력 무작위 셔플 적용)
+    // 게임 시작
     window.startGame = async function() {
       try {
         if (!isHost) return;
@@ -516,7 +522,6 @@
         while (goodCount > 0) { roles.push('Servant'); goodCount--; }
         while (remainingEvil > 0) { roles.push('Minion'); remainingEvil--; }
 
-        // 암호학적으로 무작위 셔플 적용
         const shuffledRoles = secureShuffle(roles);
         const shuffledPIds = secureShuffle(pIds);
 
@@ -545,9 +550,14 @@
       }
     }
 
-    // 방장 및 일반 참가자의 게임 다시하기/강제 초기화 기능
+    // 방장 전용 강제 초기화 기능
     window.restartGame = async function() {
       try {
+        if (!isHost) {
+          alert('방장만 강제 다시시작을 실행할 수 있습니다.');
+          return;
+        }
+
         if (!confirm('게임을 초기화하고 대기실 화면으로 이동하시겠습니까?')) return;
         
         const roomRef = database.ref('rooms/' + gameState.roomId);
@@ -572,7 +582,7 @@
           missionVotes: null,
           questResults: null,
           leaderSessionId: null,
-          logs: ["게임이 초기화되었습니다. 대기실에서 다시 게임을 설정하세요."]
+          logs: ["방장에 의해 게임이 초기화되었습니다. 대기실에서 다시 게임을 설정하세요."]
         });
       } catch(e) {
         console.error('restartGame 오류:', e);
@@ -858,7 +868,7 @@
       }
     }
 
-    // --- 도움말 모달 제어 ---
+    // --- 도움말 모달 ---
     window.toggleHelpModal = function(show) {
       const modal = document.getElementById('help-modal');
       if (show) {
@@ -1017,7 +1027,8 @@
       <h3 style="color:var(--gold); font-size:1.1rem;">게임 진행 중</h3>
       <div style="display: flex; gap: 6px;">
         <button class="btn btn-secondary" style="width:auto; padding:6px 10px; font-size:0.8rem;" onclick="toggleHelpModal(true)">📖 도움말</button>
-        <button class="btn btn-danger" style="width:auto; padding:6px 10px; font-size:0.8rem;" onclick="restartGame()">🔄 강제 다시시작</button>
+        <!-- 방장에게만 보이는 강제 다시시작 버튼 -->
+        <button id="btn-host-restart" class="btn btn-danger hidden" style="width:auto; padding:6px 10px; font-size:0.8rem;" onclick="restartGame()">🔄 강제 다시시작</button>
       </div>
     </div>
     
