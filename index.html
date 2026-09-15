@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>레지스탕스 아발론 (Firebase 세션유지)</title>
+  <title>레지스탕스 아발론 </title>
   
   <!-- Firebase SDK v9 Compat -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -26,9 +26,7 @@
 
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-
-    // 지정된 방 생성 비밀번호
-    const ADMIN_PASSWORD = "hmgdataasset3464";
+    const didyou = "hmgdataasset3464";
 
     // --- 게임 상태 및 세션 변수 ---
     let myName = "";
@@ -421,7 +419,7 @@
 
         if (!myName) return alert('닉네임을 입력하세요.');
         if (!pwd) return alert('방 생성 비밀번호를 입력하세요.');
-        if (pwd !== ADMIN_PASSWORD) {
+        if (pwd !== didyou) {
           alert('비밀번호가 일치하지 않습니다. 방을 만들 수 없습니다.');
           return;
         }
@@ -969,7 +967,7 @@
 <body>
 
 <div class="container">
-  <h1>아발론 세션유지 (Firebase)</h1>
+  <h1>레지스탕스 아발론</h1>
 
   <!-- 1. 메인 / 로비 화면 -->
   <div id="screen-lobby" class="card">
