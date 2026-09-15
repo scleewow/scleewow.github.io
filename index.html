@@ -27,6 +27,9 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
+    // 지정된 방 생성 비밀번호
+    const ADMIN_PASSWORD = "wowri1180";
+
     // --- 게임 상태 및 세션 변수 ---
     let myName = "";
     let isHost = false;
@@ -81,6 +84,7 @@
       };
       inputs = {
         name: document.getElementById('player-name'),
+        createPassword: document.getElementById('create-password'),
         roomId: document.getElementById('room-id')
       };
       displays = {
@@ -96,6 +100,18 @@
         game: document.getElementById('game-player-list'),
         log: document.getElementById('log-box')
       };
+    }
+
+    // --- 강력한 무작위 셔플 함수 (Crypto API 활용) ---
+    function secureShuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const randomBuffer = new Uint32Array(1);
+        window.crypto.getRandomValues(randomBuffer);
+        const j = randomBuffer[0] % (i + 1);
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
     }
 
     // --- 초기화 및 세션 복구 로직 ---
@@ -391,11 +407,18 @@
 
     // --- 액션 처리 함수들 ---
     
-    // 방 생성
+    // 방 생성 (비밀번호 확인 로직 포함)
     window.createRoom = async function() {
       try {
         myName = inputs.name.value.trim();
+        const pwd = inputs.createPassword.value.trim();
+
         if (!myName) return alert('닉네임을 입력하세요.');
+        if (!pwd) return alert('방 생성 비밀번호를 입력하세요.');
+        if (pwd !== ADMIN_PASSWORD) {
+          alert('비밀번호가 일치하지 않습니다. 방을 만들 수 없습니다.');
+          return;
+        }
 
         const randomCode = Math.random().toString(36).substring(2, 7).toUpperCase();
         const roomId = "ROOM_" + randomCode;
@@ -448,7 +471,7 @@
       }
     }
 
-    // 게임 시작
+    // 게임 시작 (강력 무작위 셔플 적용)
     window.startGame = async function() {
       try {
         if (!isHost) return;
@@ -493,13 +516,15 @@
         while (goodCount > 0) { roles.push('Servant'); goodCount--; }
         while (remainingEvil > 0) { roles.push('Minion'); remainingEvil--; }
 
-        roles.sort(() => Math.random() - 0.5);
+        // 암호학적으로 무작위 셔플 적용
+        const shuffledRoles = secureShuffle(roles);
+        const shuffledPIds = secureShuffle(pIds);
 
         const playersUpdate = {};
         const leaderIndex = Math.floor(Math.random() * count);
         
-        pIds.forEach((sId, i) => {
-          playersUpdate[`players/${sId}/role`] = roles[i];
+        shuffledPIds.forEach((sId, i) => {
+          playersUpdate[`players/${sId}/role`] = shuffledRoles[i];
         });
 
         await roomRef.update({
@@ -508,7 +533,7 @@
           currentQuest: 0,
           questResults: [],
           rejectCount: 0,
-          leaderSessionId: pIds[leaderIndex],
+          leaderSessionId: shuffledPIds[leaderIndex],
           logs: ["게임이 시작되었습니다! 역할 정보를 확인하고 리더는 팀을 구성하세요."],
           teamVotes: null,
           missionVotes: null,
@@ -520,10 +545,11 @@
       }
     }
 
-    // 방장의 게임 다시하기 (초기화) 기능
+    // 방장 및 일반 참가자의 게임 다시하기/강제 초기화 기능
     window.restartGame = async function() {
       try {
-        if (!isHost) return;
+        if (!confirm('게임을 초기화하고 대기실 화면으로 이동하시겠습니까?')) return;
+        
         const roomRef = database.ref('rooms/' + gameState.roomId);
         const snapshot = await roomRef.once('value');
         const latestData = snapshot.val();
@@ -546,11 +572,11 @@
           missionVotes: null,
           questResults: null,
           leaderSessionId: null,
-          logs: ["방장에 의해 게임이 재설정되었습니다. 다시 시작해 주세요."]
+          logs: ["게임이 초기화되었습니다. 대기실에서 다시 게임을 설정하세요."]
         });
       } catch(e) {
         console.error('restartGame 오류:', e);
-        alert('게임 재시작 오류: ' + e.message);
+        alert('게임 초기화 오류: ' + e.message);
       }
     }
 
@@ -894,7 +920,7 @@
     .card { background: var(--card-bg); border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid #334155; }
     .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
     label { font-size: 0.85rem; color: var(--text-muted); }
-    input[type="text"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 1rem; }
+    input[type="text"], input[type="password"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 1rem; }
     .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
     .btn:hover { filter: brightness(1.1); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -924,7 +950,7 @@
     .vote-status-badge.approved { background: var(--blue); color: #fff; }
     .vote-status-badge.rejected { background: var(--red); color: #fff; }
 
-    /* 모달 스타일 추가 */
+    /* 모달 스타일 */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
     .modal-content { background: var(--card-bg); border-radius: 12px; width: 100%; max-width: 440px; max-height: 80vh; display: flex; flex-direction: column; padding: 16px; gap: 12px; border: 1px solid #475569; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
     .modal-scroll-area { overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
@@ -940,6 +966,10 @@
     <div class="input-group">
       <label for="player-name">내 닉네임</label>
       <input type="text" id="player-name" placeholder="닉네임 입력">
+    </div>
+    <div class="input-group">
+      <label for="create-password">방 생성 비밀번호 (방 생성 전용)</label>
+      <input type="password" id="create-password" placeholder="비밀번호 입력">
     </div>
     <div style="display: flex; gap: 8px; margin-bottom: 12px;">
       <button class="btn btn-primary" onclick="createRoom()">방 만들기</button>
@@ -985,7 +1015,10 @@
   <div id="screen-game" class="card hidden">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
       <h3 style="color:var(--gold); font-size:1.1rem;">게임 진행 중</h3>
-      <button class="btn btn-secondary" style="width:auto; padding:6px 12px; font-size:0.8rem;" onclick="toggleHelpModal(true)">📖 캐릭터 도움말</button>
+      <div style="display: flex; gap: 6px;">
+        <button class="btn btn-secondary" style="width:auto; padding:6px 10px; font-size:0.8rem;" onclick="toggleHelpModal(true)">📖 도움말</button>
+        <button class="btn btn-danger" style="width:auto; padding:6px 10px; font-size:0.8rem;" onclick="restartGame()">🔄 강제 다시시작</button>
+      </div>
     </div>
     
     <div class="board" id="quest-board"></div>
