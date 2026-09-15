@@ -126,15 +126,10 @@
         gameState.roomId = roomId;
         const roomRef = database.ref('rooms/' + roomId);
 
-        // 데이터가 없으면 호스트가 생성
         const snapshot = await roomRef.once('value');
-        if (!snapshot.exists() && isHost) {
-          console.log('새 방 생성 중...');
-          await initializeRoomOnDB(roomId);
-        } else if (!snapshot.exists() && !isHost) {
+        if (!snapshot.exists()) {
           alert("존재하지 않는 방이거나 연결 대기 중입니다.");
-          screens.room.classList.add('hidden');
-          screens.lobby.classList.remove('hidden');
+          showScreen('lobby');
           sessionStorage.removeItem('avalon_active_session');
           return;
         }
@@ -149,10 +144,10 @@
             
             if (gameState.players && gameState.players[mySessionId]) {
               myName = gameState.players[mySessionId].name;
-              screens.lobby.classList.add('hidden');
               saveSessionToStorage(roomId, isHost);
             }
 
+            // 페이즈에 따라 확실하게 대기실/게임 화면 분기
             if (gameState.phase === 'LOBBY') {
               showScreen('room');
               renderWaitingList();
@@ -209,7 +204,9 @@
           generateQRCode(gameState.roomId);
           if (isHost) {
             document.getElementById('host-controls').classList.remove('hidden');
+            document.getElementById('client-wait-msg').classList.add('hidden');
           } else {
+            document.getElementById('host-controls').classList.add('hidden');
             document.getElementById('client-wait-msg').classList.remove('hidden');
           }
         }
@@ -380,16 +377,15 @@
         myName = inputs.name.value.trim();
         if (!myName) return alert('닉네임을 입력하세요.');
 
-        console.log('방 생성 시작, 닉네임:', myName);
-        
         const roomId = "room_" + Math.random().toString(36).substring(2, 7).toUpperCase();
-        console.log('생성된 roomId:', roomId);
-        
         isHost = true;
-        showJoinUI();
-        await switchToRoomUI(roomId, isHost);
         
-        console.log('방 생성 완료');
+        // DB에 대기실(LOBBY) 생성 후 세션 저장 및 리스닝 시작
+        await initializeRoomOnDB(roomId);
+        inputs.name.disabled = true;
+        saveSessionToStorage(roomId, isHost);
+        await startRoomListing(roomId);
+
       } catch(e) {
         console.error('createRoom 오류:', e);
         alert('방 생성 오류: ' + e.message);
@@ -413,13 +409,14 @@
     async function switchToRoomUI(roomId, hostFlag) {
       try {
         inputs.name.disabled = true;
-        saveSessionToStorage(roomId, hostFlag);
-        await startRoomListing(roomId);
-
+        
         if (!hostFlag) {
           const playerRef = database.ref(`rooms/${roomId}/players/${mySessionId}`);
           await playerRef.set({ name: myName, joinedAt: Date.now(), status: 'active' });
         }
+        
+        saveSessionToStorage(roomId, hostFlag);
+        await startRoomListing(roomId);
       } catch(e) {
         console.error('switchToRoomUI 오류:', e);
         inputs.name.disabled = false;
@@ -431,7 +428,6 @@
       try {
         if (!isHost) return;
         
-        // ✅ FIX: 게임 시작 전에 Firebase에서 최신 플레이어 데이터 직접 조회
         const roomRef = database.ref('rooms/' + gameState.roomId);
         const snapshot = await roomRef.once('value');
         const latestData = snapshot.val();
@@ -443,8 +439,6 @@
         
         const pIds = Object.keys(latestData.players);
         const count = pIds.length;
-        
-        console.log('게임 시작 시도 - 현재 플레이어 수:', count);
         
         if (count < 5 || count > 10) {
           alert(`5~10명이어야 합니다. (현재: ${count}명)`);
@@ -483,6 +477,7 @@
           playersUpdate[`players/${sId}/role`] = roles[i];
         });
 
+        // 게임 시작 시 Phase를 TEAM_SELECTION으로 업데이트하여 대기실에서 본 게임으로 전환
         await roomRef.update({
           ...playersUpdate,
           phase: 'TEAM_SELECTION',
