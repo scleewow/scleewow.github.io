@@ -3,11 +3,709 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>레지스탕스 아발론 (P2P)</title>
-  <!-- PeerJS CDN -->
-  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-  <!-- QRCode.js CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <title>레지스탕스 아발론 (Firebase 세션유지)</title>
+  
+  <!-- 1. Firebase SDK (Modular v10) CDN Import -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, update, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    // QRCode.js CDN (방 링크 생성용)
+    import "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+
+    // 2. 귀하의 Firebase 설정값
+    const firebaseConfig = {
+      apiKey: "AIzaSyDSI5tSAKvDeSXlT0ez3lv98vOcq-DlrmE",
+      authDomain: "myavalon-d1c3a.firebaseapp.com",
+      databaseURL: "https://myavalon-d1c3a-default-rtdb.firebaseio.com",
+      projectId: "myavalon-d1c3a",
+      storageBucket: "myavalon-d1c3a.firebasestorage.app",
+      messagingSenderId: "974314177774",
+      appId: "1:974314177774:web:625f22956117cdc9f29fff",
+      measurementId: "G-3503TJXX0W"
+    };
+
+    // Firebase 초기화
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    // --- 게임 상태 및 세션 변수 ---
+    let myName = "";
+    let isHost = false; // 내가 방장인지 여부 (sessionStorage 기반)
+    // 로컬 세션 ID (새로고침 시 나를 식별하는 고유 키)
+    let mySessionId = localStorage.getItem("avalon_session_id") || "user_" + Math.random().toString(36).substring(2, 9);
+    localStorage.setItem("avalon_session_id", mySessionId);
+
+    // 전역 게임 상태 객체
+    let gameState = {
+      roomId: null,
+      phase: 'LOBBY', // LOBBY, TEAM_SELECTION, TEAM_VOTE, MISSION_VOTE, ASSASSINATION, GAME_OVER
+      players: {}, // { sessionId: { name, role, isLeader, status } }
+      rolesConfig: {},
+      questResults: [], 
+      currentQuest: 0,
+      rejectCount: 0,
+      leaderSessionId: null,
+      selectedTeam: [], // [sessionId, ...]
+      teamVotes: {}, // { sessionId: true/false }
+      missionVotes: {}, // { sessionId: true/false }
+      winner: null,
+      logs: []
+    };
+
+    // 인원별 원정 구성 정보 (5~10인)
+    const QUEST_CONFIG = {
+      5: [2, 3, 2, 3, 3],
+      6: [2, 3, 4, 3, 4],
+      7: [2, 3, 3, 4, 4], // 7인 이상 4차 원정은 실패 2장 필요
+      8: [3, 4, 4, 5, 5],
+      9: [3, 4, 4, 5, 5],
+      10: [3, 4, 4, 5, 5]
+    };
+
+    // --- HTML 엘리먼트 참조 ---
+    const screens = {
+      lobby: document.getElementById('screen-lobby'),
+      room: document.getElementById('screen-room'),
+      game: document.getElementById('screen-game')
+    };
+    const inputs = {
+      name: document.getElementById('player-name'),
+      roomId: document.getElementById('room-id')
+    };
+    const displays = {
+      roomId: document.getElementById('display-room-id'),
+      playerCount: document.getElementById('player-count'),
+      rejectCount: document.getElementById('reject-count'),
+      currentLeader: document.getElementById('current-leader'),
+      secretContent: document.getElementById('secret-content'),
+      secretHint: document.getElementById('secret-hint')
+    };
+    const lists = {
+      waiting: document.getElementById('waiting-player-list'),
+      game: document.getElementById('game-player-list'),
+      log: document.getElementById('log-box')
+    };
+
+    // --- 초기화 및 세션 복구 로직 ---
+    window.onload = async function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const roomParam = urlParams.get('room');
+
+      // 1. URL 파라미터로 방 코드 전달받았을 때 입력창에 자동 채움
+      if (roomParam) {
+        inputs.roomId.value = roomParam;
+        document.getElementById('join-ui').classList.remove('hidden');
+      }
+
+      // 2. 세션 복구 확인 (기존에 참여 중이던 방이 있는지)
+      const savedSession = sessionStorage.getItem('avalon_active_session');
+      if (savedSession) {
+        try {
+          const session = JSON.parse(savedSession);
+          myName = session.name;
+          inputs.name.value = myName;
+          isHost = session.isHost; // 내가 방장이었는지 복구
+          await startRoomListing(session.roomId); // DB 구독 시작 및 화면 전환
+          return;
+        } catch(e) {
+          sessionStorage.removeItem('avalon_active_session');
+        }
+      }
+    };
+
+    // --- Firebase DB 구독 및 화면 동기화 (핵심) ---
+    async function startRoomListing(roomId) {
+      if (!roomId) return;
+      gameState.roomId = roomId;
+      const roomRef = ref(database, 'rooms/' + roomId);
+
+      // 데이터가 아예 없는 경우 (새 방이거나 호스트가 생성 안 함) 대기
+      const snapshot = await get(roomRef);
+      if (!snapshot.exists() && isHost) {
+        // 호스트라면 초기 데이터 생성
+        await initializeRoomOnDB(roomId);
+      } else if (!snapshot.exists() && !isHost) {
+        alert("존재하지 않는 방이거나 연결 대기 중입니다.");
+        screens.room.classList.add('hidden');
+        screens.lobby.classList.remove('hidden');
+        sessionStorage.removeItem('avalon_active_session');
+        return;
+      }
+
+      // DB 실시간 구독 시작
+      onValue(roomRef, (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+
+        // 전역 상태 동기화
+        gameState = data;
+        
+        // 내 세션 상태 복구 (새로고침 시)
+        if (gameState.players && gameState.players[mySessionId]) {
+          myName = gameState.players[mySessionId].name;
+          screens.lobby.classList.add('hidden');
+          saveSessionToStorage(roomId, isHost); // 세션 스토리지 갱신
+        }
+
+        // 상태(Phase)에 따른 화면 전환 및 렌더링
+        if (gameState.phase === 'LOBBY') {
+          showScreen('room');
+          renderWaitingList();
+        } else {
+          showScreen('game');
+          renderGameUI();
+        }
+      });
+    }
+
+    // 호스트가 DB에 초기 방 구조 생성
+    async function initializeRoomOnDB(roomId) {
+      const roomRef = ref(database, 'rooms/' + roomId);
+      await set(roomRef, {
+        roomId: roomId,
+        phase: 'LOBBY',
+        players: {
+          [mySessionId]: { name: myName, joinedAt: Date.now(), status: 'active' }
+        },
+        logs: ["방이 생성되었습니다. 참가자를 기다립니다."]
+      });
+    }
+
+    // 로컬 스토리지에 세션 저장 (새로고침 대응용 최소 데이터)
+    function saveSessionToStorage(roomId, hostFlag) {
+      sessionStorage.setItem('avalon_active_session', JSON.stringify({
+        name: myName,
+        roomId: roomId,
+        isHost: hostFlag
+      }));
+    }
+
+    // --- UI 렌더링 함수들 ---
+    function showScreen(screenName) {
+      Object.values(screens).forEach(s => s.classList.add('hidden'));
+      screens[screenName].classList.remove('hidden');
+      if (screenName === 'room') {
+        displays.roomId.innerText = gameState.roomId;
+        generateQRCode(gameState.roomId);
+        // 방장 전용 컨트롤 표시
+        if (isHost) {
+          document.getElementById('host-controls').classList.remove('hidden');
+        } else {
+          document.getElementById('client-wait-msg').classList.remove('hidden');
+        }
+      }
+    }
+
+    // LOBBY/대기실 플레이어 목록 및 카운트
+    function renderWaitingList() {
+      const players = gameState.players ? Object.values(gameState.players) : [];
+      lists.waiting.innerHTML = players
+        .sort((a, b) => a.joinedAt - b.joinedAt) // 입장 순 정렬
+        .map(p => `<li class="player-item"><span>${p.name}</span></li>`)
+        .join('');
+      displays.playerCount.innerText = players.length;
+    }
+
+    // GAME 화면 전체 렌더링
+    function renderGameUI() {
+      renderBoard(); // 원정판
+      renderLogs(); // 로그
+
+      displays.rejectCount.innerText = gameState.rejectCount;
+      // 현재 리더 이름 표시
+      const leaderName = gameState.players[gameState.leaderSessionId]?.name || '-';
+      displays.currentLeader.innerText = leaderName;
+
+      // 플레이어 목록 (게임 진행 상태 포함)
+      const pEntries = gameState.players ? Object.entries(gameState.players) : [];
+      lists.game.innerHTML = pEntries.map(([sId, p]) => {
+        const isSelected = gameState.selectedTeam?.includes(sId);
+        const isPlayerLeader = sId === gameState.leaderSessionId;
+        const isMe = sId === mySessionId;
+        
+        let voteStatus = '';
+        if (gameState.phase === 'TEAM_VOTE' && gameState.teamVotes?.[sId] !== undefined) {
+          voteStatus = ' (투표완료)';
+        }
+        if (gameState.phase === 'MISSION_VOTE' && isSelected) {
+          if (gameState.missionVotes?.[sId] !== undefined) voteStatus = ' (미션완료)';
+        }
+
+        return `
+          <li class="player-item ${isSelected ? 'selected' : ''} ${isPlayerLeader ? 'leader' : ''}" 
+              onclick="handlePlayerClick('${sId}')">
+            <span>${p.name} ${isPlayerLeader ? '👑' : ''}${isMe ? ' (나)' : ''}${voteStatus}</span>
+            ${isSelected ? '<span style="color:var(--gold); font-size:0.8rem;">[선발됨]</span>' : ''}
+          </li>
+        `;
+      }).join('');
+
+      renderActionArea(); // 단계별 액션 버튼
+    }
+
+    // 원정 진행 현황판
+    function renderBoard() {
+      const playerCount = Object.keys(gameState.players).length;
+      const reqs = QUEST_CONFIG[playerCount] || [2,3,2,3,3];
+      const board = document.getElementById('quest-board');
+
+      board.innerHTML = reqs.map((req, i) => {
+        let statusClass = '';
+        if (gameState.questResults?.[i] === true) statusClass = 'success';
+        if (gameState.questResults?.[i] === false) statusClass = 'fail';
+        if (i === gameState.currentQuest && gameState.phase !== 'GAME_OVER') statusClass += ' active';
+
+        return `<div class="quest-slot ${statusClass}">${i+1}차<br>(${req}명)</div>`;
+      }).join('');
+    }
+
+    // 로그 영역
+    function renderLogs() {
+      if (!gameState.logs) return;
+      lists.log.innerHTML = gameState.logs.slice(-20).map(m => `<div>• ${m}</div>`).join('');
+      lists.log.scrollTop = lists.log.scrollHeight;
+    }
+
+    // 단계별 하단 액션 영역 (버튼)
+    function renderActionArea() {
+      const area = document.getElementById('action-area');
+      const isLeader = gameState.leaderSessionId === mySessionId;
+      const playerCount = Object.keys(gameState.players).length;
+      const reqCount = QUEST_CONFIG[playerCount]?.[gameState.currentQuest];
+      const myPlayer = gameState.players[mySessionId];
+
+      // 역할 미부여 상태 대응
+      if (!myPlayer || !myPlayer.role) {
+        area.innerHTML = '<p style="text-align:center; color:var(--text-muted);">게임 데이터 로딩 중...</p>';
+        return;
+      }
+
+      if (gameState.phase === 'TEAM_SELECTION') {
+        if (isLeader) {
+          const canSubmit = gameState.selectedTeam?.length === reqCount;
+          area.innerHTML = `
+            <p style="margin-bottom:8px;">원정대원 ${reqCount}명을 선택하세요.</p>
+            <button class="btn btn-primary" ${canSubmit ? '' : 'disabled'} onclick="submitTeamProposal()">팀 구성 완료 및 투표 요청</button>
+          `;
+        } else {
+          area.innerHTML = `<p style="text-align:center; color:var(--text-muted);">원정대장(${gameState.players[gameState.leaderSessionId].name})이 팀 구성 중입니다...</p>`;
+        }
+      } else if (gameState.phase === 'TEAM_VOTE') {
+        const hasVoted = gameState.teamVotes?.[mySessionId] !== undefined;
+        let statusMsg = '';
+        if (hasVoted) {
+          const myVote = gameState.teamVotes[mySessionId];
+          statusMsg = myVote 
+            ? `<div class="vote-status-badge approved">✔ [찬성] 선택함 (결과 대기 중)</div>`
+            : `<div class="vote-status-badge rejected">✖ [반대] 선택함 (결과 대기 중)</div>`;
+        }
+        area.innerHTML = `
+          <p style="margin-bottom:8px;">지목된 팀 찬반 투표</p>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-blue" ${hasVoted ? 'disabled' : ''} onclick="voteTeam(true)">찬성</button>
+            <button class="btn btn-danger" ${hasVoted ? 'disabled' : ''} onclick="voteTeam(false)">반대</button>
+          </div>
+          <div style="text-align:center; margin-top:8px;">${statusMsg}</div>
+        `;
+      } else if (gameState.phase === 'MISSION_VOTE') {
+        const isTeamMember = gameState.selectedTeam?.includes(mySessionId);
+        const hasVoted = gameState.missionVotes?.[mySessionId] !== undefined;
+
+        if (isTeamMember) {
+          area.innerHTML = `
+            <p style="margin-bottom:8px; color:var(--gold);">[원정대원 전용] 임무 성공/실패 선택</p>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-blue" ${hasVoted ? 'disabled' : ''} onclick="voteMission(true)">임무 성공</button>
+              <button class="btn btn-danger" ${hasVoted ? 'disabled' : ''} onclick="voteMission(false)">임무 실패</button>
+            </div>
+            ${hasVoted ? '<p style="text-align:center; margin-top:8px; color:var(--gold);">투표 완료. 다른 대원을 기다립니다...</p>' : ''}
+          `;
+        } else {
+          area.innerHTML = `<p style="text-align:center; color:var(--text-muted);">원정대가 임무 수행 중입니다...</p>`;
+        }
+      } else if (gameState.phase === 'ASSASSINATE') {
+        if (myPlayer.role === 'Assassin') {
+          area.innerHTML = `<p style="color:var(--red);">머린으로 의심되는 플레이어를 목록에서 클릭하여 암살하세요!</p>`;
+        } else {
+          area.innerHTML = `<p style="text-align:center; color:var(--red);">선 세력 3승! 암살자가 머린을 찾는 중입니다...</p>`;
+        }
+      } else if (gameState.phase === 'GAME_OVER') {
+        const isGoodWin = gameState.winner === 'GOOD';
+        area.innerHTML = `
+          <h2 style="text-align:center; color:${isGoodWin ? 'var(--blue)' : 'var(--red)'}">
+            ${isGoodWin ? '정의의 세력 승리!' : '악의 세력 승리!'}
+          </h2>
+        `;
+      }
+    }
+
+    // --- 액션 처리 함수들 (DB Update) ---
+    
+    // 로비: 방 만들기
+    window.createRoom = async function() {
+      myName = inputs.name.value.trim();
+      if (!myName) return alert('닉네임을 입력하세요.');
+
+      const roomId = "room_" + Math.random().toString(36).substring(2, 7).toUpperCase();
+      isHost = true;
+      showJoinUI(); // 혹시 열려있으면 닫음
+      switchToRoomUI(roomId, isHost);
+    };
+
+    // 로비: 방 참가하기
+    window.joinGame = async function() {
+      myName = inputs.name.value.trim();
+      const roomId = inputs.roomId.value.trim().toUpperCase();
+      if (!myName || !roomId) return alert('닉네임과 방 코드를 입력하세요.');
+
+      isHost = false;
+      switchToRoomUI(roomId, isHost);
+    };
+
+    // 방 ID/Host여부 스토리지 저장 및 DB 구독 시작
+    async function switchToRoomUI(roomId, hostFlag) {
+      inputs.name.disabled = true;
+      saveSessionToStorage(roomId, hostFlag);
+      await startRoomListing(roomId);
+
+      if (!hostFlag) {
+        // 클라이언트라면 DB에 나를 등록
+        const playerRef = ref(database, `rooms/${roomId}/players/${mySessionId}`);
+        await set(playerRef, { name: myName, joinedAt: Date.now(), status: 'active' });
+      }
+    }
+
+    // 대기실: 게임 시작 (방장 전용)
+    window.startGame = async function() {
+      if (!isHost) return;
+      const pIds = Object.keys(gameState.players);
+      const count = pIds.length;
+      if (count < 5 || count > 10) return alert('5~10명이어야 합니다.');
+
+      // 역할 세팅
+      const rolesConfig = {
+        percival: document.getElementById('role-percival').checked,
+        morgana: document.getElementById('role-morgana').checked,
+        mordred: document.getElementById('role-mordred').checked,
+        oberon: document.getElementById('role-oberon').checked,
+      };
+
+      let evilCount = 2;
+      if (count >= 7) evilCount = 3;
+      if (count >= 9) evilCount = 4;
+
+      let roles = ['Merlin', 'Assassin'];
+      let goodCount = count - evilCount - 1;
+      let remainingEvil = evilCount - 1;
+
+      if (rolesConfig.percival && goodCount > 0) { roles.push('Percival'); goodCount--; }
+      if (rolesConfig.morgana && remainingEvil > 0) { roles.push('Morgana'); remainingEvil--; }
+      if (rolesConfig.mordred && remainingEvil > 0) { roles.push('Mordred'); remainingEvil--; }
+      if (rolesConfig.oberon && remainingEvil > 0) { roles.push('Oberon'); remainingEvil--; }
+
+      while (goodCount > 0) { roles.push('Servant'); goodCount--; }
+      while (remainingEvil > 0) { roles.push('Minion'); remainingEvil--; }
+
+      roles.sort(() => Math.random() - 0.5);
+
+      // 플레이어별 역할 부여 및 리더 선정
+      const playersUpdate = {};
+      const leaderIndex = Math.floor(Math.random() * count);
+      
+      pIds.forEach((sId, i) => {
+        playersUpdate[`players/${sId}/role`] = roles[i];
+      });
+
+      const roomRef = ref(database, 'rooms/' + gameState.roomId);
+      await update(roomRef, {
+        ...playersUpdate,
+        phase: 'TEAM_SELECTION',
+        currentQuest: 0,
+        questResults: [],
+        rejectCount: 0,
+        leaderSessionId: pIds[leaderIndex],
+        logs: ["게임이 시작되었습니다! 역할 정보를 확인하고 리더는 팀을 구성하세요."],
+        teamVotes: null, // 이전 데이터 초기화
+        missionVotes: null,
+        selectedTeam: null
+      });
+    }
+
+    // 게임: 플레이어 클릭 (팀 선발 / 암살)
+    window.handlePlayerClick = async function(targetSessionId) {
+      if (gameState.phase === 'TEAM_SELECTION') {
+        if (gameState.leaderSessionId === mySessionId) {
+          const roomRef = ref(database, 'rooms/' + gameState.roomId);
+          let currentTeam = gameState.selectedTeam ? [...gameState.selectedTeam] : [];
+          const idx = currentTeam.indexOf(targetSessionId);
+          const reqCount = QUEST_CONFIG[Object.keys(gameState.players).length][gameState.currentQuest];
+          
+          if (idx > -1) {
+            currentTeam.splice(idx, 1); // 해제
+          } else {
+            if (currentTeam.length < reqCount) {
+              currentTeam.push(targetSessionId); // 선발
+            }
+          }
+          await update(roomRef, { selectedTeam: currentTeam });
+        }
+      } else if (gameState.phase === 'ASSASSINATE') {
+        const myPlayer = gameState.players[mySessionId];
+        if (myPlayer.role === 'Assassin') {
+          const targetName = gameState.players[targetSessionId].name;
+          if (confirm(`${targetName} 님을 머린으로 지목하고 암살하시겠습니까?`)) {
+            submitAssassination(targetSessionId);
+          }
+        }
+      }
+    }
+
+    // 게임: 팀 구성 완료 (리더)
+    window.submitTeamProposal = async function() {
+      if (gameState.leaderSessionId !== mySessionId) return;
+      const roomRef = ref(database, 'rooms/' + gameState.roomId);
+      await update(roomRef, { 
+        phase: 'TEAM_VOTE', 
+        teamVotes: null,
+        logs: [...(gameState.logs||[]), "리더가 원정대 구성을 완료했습니다. 찬반 투표를 시작합니다."]
+      });
+    }
+
+    // 게임: 팀 찬반 투표
+    window.voteTeam = async function(vote) {
+      if (gameState.phase !== 'TEAM_VOTE') return;
+      if (gameState.teamVotes?.[mySessionId] !== undefined) return; // 중복 방지
+
+      const roomRef = ref(database, 'rooms/' + gameState.roomId);
+      // 내 투표 기록
+      await update(roomRef, { [`teamVotes/${mySessionId}`]: vote });
+
+      // 모든 인원이 투표했는지 확인 (get()으로 최신 데이터 가져옴)
+      const snapshot = await get(roomRef);
+      const latestData = snapshot.val();
+      const pIds = Object.keys(latestData.players);
+      const votesIds = latestData.teamVotes ? Object.keys(latestData.teamVotes) : [];
+
+      if (votesIds.length === pIds.length) {
+        processTeamVoteResult(latestData);
+      }
+    }
+
+    // 팀 투표 결과 처리 (DB Update)
+    async function processTeamVoteResult(data) {
+      const approves = Object.values(data.teamVotes).filter(v => v).length;
+      const rejects = Object.values(data.teamVotes).length - approves;
+      const roomRef = ref(database, 'rooms/' + data.roomId);
+      const currentLogs = data.logs || [];
+
+      if (approves > rejects) {
+        // 표결 가결 -> 미션 투표로 진행
+        await update(roomRef, {
+          phase: 'MISSION_VOTE',
+          missionVotes: null,
+          rejectCount: 0,
+          logs: [...currentLogs, `[표결 가결] 찬성 ${approves}표 / 반대 ${rejects}표. 원정을 출발합니다!`]
+        });
+      } else {
+        // 표결 부결 -> 리더 넘김
+        const nextRejectCount = data.rejectCount + 1;
+        if (nextRejectCount >= 5) {
+          // 5회 부결로 악 승리
+          await update(roomRef, {
+            phase: 'GAME_OVER',
+            winner: 'EVIL',
+            logs: [...currentLogs, `[표결 부결] 찬성 ${approves}표 / 반대 ${rejects}표. (연속 부결 5회)` , "5회 연속 부결로 인해 악의 세력이 승리했습니다!"]
+          });
+        } else {
+          // 다음 리더 선정
+          const pIds = Object.keys(data.players);
+          const currentLeaderIdx = pIds.indexOf(data.leaderSessionId);
+          const nextLeaderIdx = (currentLeaderIdx + 1) % pIds.length;
+
+          await update(roomRef, {
+            phase: 'TEAM_SELECTION',
+            leaderSessionId: pIds[nextLeaderIdx],
+            rejectCount: nextRejectCount,
+            selectedTeam: null,
+            logs: [...currentLogs, `[표결 부결] 찬성 ${approves}표 / 반대 ${rejects}표. (연속 부결 ${nextRejectCount}회)`, `다음 원정대장(${data.players[pIds[nextLeaderIdx]].name})에게 기회가 넘어갑니다.`]
+          });
+        }
+      }
+    }
+
+    // 게임: 임무 성공/실패 투표 (원정대원)
+    window.voteMission = async function(vote) {
+      if (gameState.phase !== 'MISSION_VOTE') return;
+      if (!gameState.selectedTeam?.includes(mySessionId)) return; // 대원 아님
+      if (gameState.missionVotes?.[mySessionId] !== undefined) return; // 중복
+
+      // 정의의 세력은 실패 투표 불가 강제
+      const myPlayer = gameState.players[mySessionId];
+      const isEvil = ['Assassin', 'Morgana', 'Mordred', 'Oberon', 'Minion'].includes(myPlayer.role);
+      if (!vote && !isEvil) {
+        alert("정의의 세력은 실패를 제출할 수 없습니다!");
+        return;
+      }
+
+      const roomRef = ref(database, 'rooms/' + gameState.roomId);
+      // 내 임무 투표 기록
+      await update(roomRef, { [`missionVotes/${mySessionId}`]: vote });
+
+      // 모든 원정대원이 투표했는지 확인
+      const snapshot = await get(roomRef);
+      const latestData = snapshot.val();
+      const votesIds = latestData.missionVotes ? Object.keys(latestData.missionVotes) : [];
+      const teamCount = latestData.selectedTeam?.length || 0;
+
+      if (votesIds.length === teamCount) {
+        processMissionResult(latestData);
+      }
+    }
+
+    // 임무 투표 결과 처리 (DB Update)
+    async function processMissionResult(data) {
+      const fails = Object.values(data.missionVotes).filter(v => !v).length;
+      const playerCount = Object.keys(data.players).length;
+      
+      // 7인 이상 4차 원정 특수 룰 적용 (실패 2장 필요)
+      let requiredFails = 1;
+      if (playerCount >= 7 && data.currentQuest === 3) {
+        requiredFails = 2;
+      }
+
+      const isSuccess = fails < requiredFails;
+      const currentQuestResults = data.questResults ? [...data.questResults] : [];
+      currentQuestResults.push(isSuccess);
+
+      const roomRef = ref(database, 'rooms/' + data.roomId);
+      const currentLogs = data.logs || [];
+      const pIds = Object.keys(data.players);
+
+      // 결과 로그 추가
+      const resultLog = isSuccess ? "성공했습니다." : "실패했습니다.";
+      currentLogs.push(`${data.currentQuest + 1}차 원정 결과: ${resultLog} (실패 표: ${fails}장)`);
+
+      const wins = currentQuestResults.filter(r => r).length;
+      const losses = currentQuestResults.filter(r => !r).length;
+
+      if (wins >= 3) {
+        // 선 세력 3승 -> 암살 단계로 전환
+        await update(roomRef, {
+          questResults: currentQuestResults,
+          phase: 'ASSASSINATE',
+          missionVotes: null,
+          logs: [...currentLogs, "정의의 세력이 3번 성공했습니다! 암살자 단계를 진행합니다."]
+        });
+      } else if (losses >= 3) {
+        // 악 세력 3승 -> 악 승리로 종료
+        await update(roomRef, {
+          questResults: currentQuestResults,
+          phase: 'GAME_OVER',
+          winner: 'EVIL',
+          logs: [...currentLogs, "악의 세력이 3번 실패를 이끌어내어 승리했습니다!"]
+        });
+      } else {
+        // 다음 원정으로 진행 (리더 넘김)
+        const currentLeaderIdx = pIds.indexOf(data.leaderSessionId);
+        const nextLeaderIdx = (currentLeaderIdx + 1) % pIds.length;
+        
+        await update(roomRef, {
+          questResults: currentQuestResults,
+          phase: 'TEAM_SELECTION',
+          leaderSessionId: pIds[nextLeaderIdx],
+          currentQuest: data.currentQuest + 1,
+          selectedTeam: null,
+          missionVotes: null,
+          logs: [...currentLogs, `다음 원정대장(${data.players[pIds[nextLeaderIdx]].name})에게 기회가 넘어갑니다.`]
+        });
+      }
+    }
+
+    // 게임: 암살 대상 지목 (암살자)
+    async function submitAssassination(targetSessionId) {
+      if (gameState.phase !== 'ASSASSINATE') return;
+      
+      const target = gameState.players[targetSessionId];
+      const roomRef = ref(database, 'rooms/' + gameState.roomId);
+      const currentLogs = gameState.logs || [];
+
+      if (target.role === 'Merlin') {
+        // 머린 암살 성공 -> 악 역전승
+        await update(roomRef, {
+          phase: 'GAME_OVER',
+          winner: 'EVIL',
+          logs: [...currentLogs, `[암살 성공] 암살자가 머린(${target.name})을 맞추었습니다!` , "악의 세력이 최종 승리했습니다!"]
+        });
+      } else {
+        // 머린 암살 실패 -> 선 최종 승리
+        await update(roomRef, {
+          phase: 'GAME_OVER',
+          winner: 'GOOD',
+          logs: [...currentLogs, `[암살 실패] 지목한 사람(${target.name})은 머린이 아닙니다.`, "정의의 세력이 최종 승리했습니다!"]
+        });
+      }
+    }
+
+    // --- 비밀 시야 (역할 및 정보 확인) ---
+    window.revealSecret = function() {
+      const myPlayer = gameState.players[mySessionId];
+      if (!myPlayer || !myPlayer.role || gameState.phase === 'LOBBY') return;
+      
+      displays.secretHint.classList.add('hidden');
+      displays.secretContent.classList.remove('hidden');
+
+      let text = `역할: <strong>${getRoleKorean(myPlayer.role)}</strong><br>`;
+      text += `<small style="color:var(--text-muted);">${getRoleVision(myPlayer)}</small>`;
+      displays.secretContent.innerHTML = text;
+    }
+
+    window.hideSecret = function() {
+      displays.secretHint.classList.remove('hidden');
+      displays.secretContent.classList.add('hidden');
+    }
+
+    function getRoleKorean(role) {
+      const map = {
+        Merlin: '머린 (선)', Assassin: '암살자 (악)', Percival: '퍼시벌 (선)',
+        Morgana: '모거나 (악)', Mordred: '모드레드 (악)', Oberon: '오베론 (악)',
+        Servant: '시종 (선)', Minion: '악의 무리 (악)'
+      };
+      return map[role] || role;
+    }
+
+    function getRoleVision(myPlayer) {
+      const role = myPlayer.role;
+      const allPlayers = Object.values(gameState.players);
+      // 모드레드를 제외한 악의 세력 (머린용)
+      const evilsExceptMordred = allPlayers.filter(p => ['Assassin', 'Morgana', 'Minion', 'Oberon'].includes(p.role) && p.role !== 'Mordred');
+      // 오베론을 제외한 악의 세력 (악 동료용)
+      const evilsExceptOberon = allPlayers.filter(p => ['Assassin', 'Morgana', 'Minion', 'Mordred'].includes(p.role));
+      // 머린 및 모거나 후보 (퍼시벌용)
+      const merlinCandidates = allPlayers.filter(p => p.role === 'Merlin' || p.role === 'Morgana');
+
+      if (role === 'Merlin') {
+        return `악의 무리 확인(오베론 포함/모드레드 제외): ` + evilsExceptMordred.map(p => p.name).join(', ');
+      } else if (['Assassin', 'Morgana', 'Minion', 'Mordred'].includes(role)) {
+        // 오베론은 다른 악을 모르고, 다른 악도 오베론을 모름
+        const teammates = evilsExceptOberon.filter(p => p.name !== myPlayer.name);
+        return `동료 악 세력(모드레드 포함/오베론 제외): ` + (teammates.map(p => p.name).join(', ') || '없음');
+      } else if (role === 'Percival') {
+        return `머린 후보 (머린/모거나): ` + merlinCandidates.map(p => p.name).join(', ');
+      }
+      return `정보가 없습니다. 발언에 집중하세요.`;
+    }
+
+    // --- 기타 유틸리티 ---
+    function showJoinUI() { document.getElementById('join-ui').classList.toggle('hidden'); }
+    function generateQRCode(roomId) {
+      const qrDiv = document.getElementById('qrcode');
+      qrDiv.innerHTML = ''; 
+      const joinUrl = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
+      new QRCode(qrDiv, { text: joinUrl, width: 128, height: 128 });
+    }
+
+  </script>
+
   <style>
     :root {
       --bg-color: #0f172a;
@@ -19,37 +717,41 @@
       --text: #f8fafc;
       --text-muted: #94a3b8;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-color); color: var(--text); display: flex; justify-content: center; min-height: 100vh; padding: 12px; }
     .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 16px; }
-    h1 { text-align: center; color: var(--gold); font-size: 1.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); border-bottom: 2px solid var(--gold-dark); padding-bottom: 8px; }
+    h1 { text-align: center; color: var(--gold); font-size: 1.6rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); border-bottom: 2px solid var(--gold-dark); padding-bottom: 8px; }
+    h4 { color: var(--text-muted); font-size: 0.95rem; margin-top: 8px;}
     .card { background: var(--card-bg); border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid #334155; }
     .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-    label { font-size: 0.9rem; color: var(--text-muted); }
+    label { font-size: 0.85rem; color: var(--text-muted); }
     input[type="text"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 1rem; }
     .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+    .btn:hover { filter: brightness(1.1); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-primary { background: var(--gold); color: #000; }
     .btn-secondary { background: #475569; color: #fff; }
-    .btn-danger { background: var(--red); color: #fff; }
     .btn-blue { background: var(--blue); color: #fff; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-danger { background: var(--red); color: #fff; }
     .roles-option { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
-    .role-toggle { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; }
+    .role-toggle { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--text); }
     .hidden { display: none !important; }
     .board { display: flex; justify-content: space-between; margin: 12px 0; gap: 4px; }
-    .quest-slot { flex: 1; background: #0f172a; border: 2px solid #334155; border-radius: 8px; height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.8rem; position: relative; }
-    .quest-slot.success { border-color: var(--blue); background: #1e3a8a44; }
-    .quest-slot.fail { border-color: var(--red); background: #7f1d1d44; }
-    .quest-slot.active { border-color: var(--gold); box-shadow: 0 0 8px var(--gold); }
+    .quest-slot { flex: 1; background: #0f172a; border: 2px solid #334155; border-radius: 8px; height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.75rem; text-align: center; }
+    .quest-slot.success { border-color: var(--blue); background: #1e3a8a66; color: var(--blue); }
+    .quest-slot.fail { border-color: var(--red); background: #7f1d1d66; color: var(--red); }
+    .quest-slot.active { border-color: var(--gold); box-shadow: 0 0 8px var(--gold); color: var(--gold); font-weight: bold; }
     .player-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-    .player-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #0f172a; border-radius: 6px; cursor: pointer; }
-    .player-item.selected { border: 2px solid var(--gold); }
+    .player-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #0f172a; border-radius: 6px; cursor: pointer; border: 1px solid transparent; font-size: 0.9rem; }
+    .player-item:hover { border-color: #475569; }
+    .player-item.selected { border-color: var(--gold); background: #f59e0b11; }
     .player-item.leader { border-left: 4px solid var(--gold); }
-    .secret-box { user-select: none; -webkit-user-select: none; background: #0f172a; border: 1px dashed var(--gold); padding: 16px; text-align: center; border-radius: 8px; margin: 12px 0; cursor: pointer; }
-    .log-box { height: 120px; overflow-y: auto; background: #0f172a; border-radius: 6px; padding: 8px; font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px; }
+    .secret-box { background: #0f172a; border: 1px dashed var(--gold); padding: 16px; text-align: center; border-radius: 8px; margin: 12px 0; cursor: pointer; color: var(--gold); user-select: none; -webkit-user-select: none; }
+    .secret-box small { font-size: 0.8rem; line-height: 1.3; }
+    .log-box { height: 120px; overflow-y: auto; background: #0f172a; border-radius: 6px; padding: 8px; font-size: 0.8rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px; border: 1px solid #334155; }
     .qr-container { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 16px 0; padding: 12px; background: #fff; border-radius: 8px; width: fit-content; margin-left: auto; margin-right: auto; }
-    #qrcode img { display: block; }
-    .vote-status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; margin-top: 6px; }
+    #qrcode img { display: block; margin-bottom: 6px;}
+    .vote-status-badge { display: inline-block; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
     .vote-status-badge.approved { background: var(--blue); color: #fff; }
     .vote-status-badge.rejected { background: var(--red); color: #fff; }
   </style>
@@ -57,7 +759,7 @@
 <body>
 
 <div class="container">
-  <h1>아발론 (Avalon P2P)</h1>
+  <h1>아발론 세션유지 (Firebase)</h1>
 
   <!-- 1. 메인 / 로비 화면 -->
   <div id="screen-lobby" class="card">
@@ -65,33 +767,33 @@
       <label for="player-name">내 닉네임</label>
       <input type="text" id="player-name" placeholder="닉네임 입력">
     </div>
-
     <div style="display: flex; gap: 8px; margin-bottom: 12px;">
       <button class="btn btn-primary" onclick="createRoom()">방 만들기</button>
-      <button class="btn btn-secondary" onclick="showJoinUI()">방 참가하기</button>
+      <button class="btn btn-secondary" onclick="showJoinUI()">참가하기</button>
     </div>
-
-    <div id="join-ui" class="hidden input-group">
-      <label for="room-id">방 코드 (호스트 ID)</label>
-      <input type="text" id="room-id" placeholder="방 코드 입력">
-      <button class="btn btn-blue" style="margin-top: 8px;" onclick="joinRoom()">입장하기</button>
+    <div id="join-ui" class="hidden card" style="background: rgba(0,0,0,0.3); border: none; padding: 12px;">
+      <div class="input-group">
+        <label for="room-id">방 코드 (예: ROOM_ABCD)</label>
+        <input type="text" id="room-id" placeholder="방 코드 입력">
+      </div>
+      <button class="btn btn-blue" onclick="joinGame()">입장하기</button>
     </div>
+    <p style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-top:16px;">
+      새로고침하거나 브라우저를 껐다 켜도 진행 중인 방으로 재접속됩니다.
+    </p>
   </div>
 
   <!-- 2. 대기실 화면 -->
   <div id="screen-room" class="card hidden">
-    <h3 style="text-align: center;">방 코드: <span id="display-room-id" style="color:var(--gold); word-break: break-all; font-size:0.9rem;"></span></h3>
-    
+    <h3 style="text-align: center;">방 코드: <span id="display-room-id" style="color:var(--gold); word-break: break-all;"></span></h3>
     <div class="qr-container">
       <div id="qrcode"></div>
-      <p style="color:#000; font-size:0.75rem; margin-top:6px; font-weight:bold;">스마트폰으로 스캔하여 접속</p>
+      <p style="color:#000; font-size:0.7rem; font-weight:bold;">스캔하여 모바일 접속</p>
     </div>
-
     <h4>참가자 (<span id="player-count">0</span>/10)</h4>
-    <ul id="waiting-player-list" class="player-list" style="margin: 8px 0 16px 0;"></ul>
-
-    <div id="host-controls" class="hidden">
-      <h4>특수 역할 포함 설정</h4>
+    <ul id="waiting-player-list" class="player-list"></ul>
+    <div id="host-controls" class="hidden card" style="background: rgba(0,0,0,0.3); border: none; padding: 12px; margin-top:12px;">
+      <label>특수 역할 설정</label>
       <div class="roles-option">
         <label class="role-toggle"><input type="checkbox" id="role-percival" checked> 퍼시벌</label>
         <label class="role-toggle"><input type="checkbox" id="role-morgana" checked> 모거나</label>
@@ -100,685 +802,29 @@
       </div>
       <button class="btn btn-primary" id="btn-start-game" onclick="startGame()">게임 시작 (5~10인)</button>
     </div>
-    <div id="client-wait-msg" class="hidden" style="text-align: center; color: var(--gold); padding: 12px;">
-      방장이 게임을 시작하기를 기다리는 중...
+    <div id="client-wait-msg" class="hidden card" style="text-align: center; color: var(--gold); background: rgba(0,0,0,0.3); border: none; padding: 12px; margin-top:12px;">
+      방장이 게임 설정을 완료하기를 기다리는 중...
     </div>
   </div>
 
   <!-- 3. 메인 게임 화면 -->
   <div id="screen-game" class="card hidden">
     <div class="board" id="quest-board"></div>
-
-    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 12px;">
+    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
       <span>부결 횟수: <strong id="reject-count" style="color:var(--red);">0</strong> / 5</span>
-      <span>현재 원정대장: <strong id="current-leader" style="color:var(--gold);">-</strong></span>
+      <span>리더: <strong id="current-leader" style="color:var(--gold);">-</strong></span>
     </div>
-
     <div class="secret-box" id="secret-box" onmousedown="revealSecret()" onmouseup="hideSecret()" ontouchstart="revealSecret()" ontouchend="hideSecret()">
-      <span id="secret-hint">👉 누르고 있는 동안 내 역할 확인</span>
+      <span id="secret-hint">👉 누르고 있으면 역할/정보 확인</span>
       <div id="secret-content" class="hidden"></div>
     </div>
-
-    <div id="action-area" style="margin: 12px 0;"></div>
-
+    <div id="action-area" class="card" style="background: rgba(0,0,0,0.3); border: none; padding: 12px; margin: 12px 0;"></div>
     <h4>플레이어 목록</h4>
-    <ul id="game-player-list" class="player-list" style="margin-top: 8px;"></ul>
-
-    <h4 style="margin-top: 16px;">게임 진행 로그</h4>
+    <ul id="game-player-list" class="player-list"></ul>
+    <h4>게임 로그</h4>
     <div id="log-box" class="log-box"></div>
   </div>
 </div>
 
-<script>
-  let peer = null;
-  let connections = {}; 
-  let hostConn = null;  
-  let myId = '';
-  let myName = '';
-  let isHost = false;
-
-  let gameState = {
-    phase: 'LOBBY', 
-    players: [], 
-    rolesConfig: {},
-    questResults: [], 
-    currentQuest: 0,
-    rejectCount: 0,
-    leaderIndex: 0,
-    selectedTeam: [],
-    teamVotes: {}, 
-    missionVotes: [], 
-    winner: null,
-    logs: []
-  };
-
-  const QUEST_CONFIG = {
-    5: [2, 3, 2, 3, 3],
-    6: [2, 3, 4, 3, 4],
-    7: [2, 3, 3, 4, 4],
-    8: [3, 4, 4, 5, 5],
-    9: [3, 4, 4, 5, 5],
-    10: [3, 4, 4, 5, 5]
-  };
-
-  window.onload = function() {
-    // 세션 복구 확인
-    const savedSession = sessionStorage.getItem('avalon_session');
-    if (savedSession) {
-      try {
-        const session = JSON.parse(savedSession);
-        myName = session.name;
-        document.getElementById('player-name').value = myName;
-        
-        if (session.isHost) {
-          reconnectAsHost(session.roomId);
-          return;
-        } else if (session.roomId) {
-          reconnectAsClient(session.roomId);
-          return;
-        }
-      } catch(e) {
-        sessionStorage.removeItem('avalon_session');
-      }
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const roomParam = urlParams.get('room');
-    if (roomParam) {
-      document.getElementById('join-ui').classList.remove('hidden');
-      document.getElementById('room-id').value = roomParam;
-    }
-  };
-
-  function saveSession(roomId, hostFlag) {
-    sessionStorage.setItem('avalon_session', JSON.stringify({
-      name: myName,
-      roomId: roomId,
-      isHost: hostFlag
-    }));
-  }
-
-  function showJoinUI() {
-    document.getElementById('join-ui').classList.toggle('hidden');
-  }
-
-  function log(msg) {
-    gameState.logs.push(msg);
-    renderLogs();
-  }
-
-  function renderLogs() {
-    const box = document.getElementById('log-box');
-    if (!box) return;
-    box.innerHTML = gameState.logs.slice(-20).map(m => `<div>• ${m}</div>`).join('');
-    box.scrollTop = box.scrollHeight;
-  }
-
-  function initPeer(customId, callback) {
-    if (typeof customId === 'function') {
-      callback = customId;
-      customId = null;
-    }
-    const peerOptions = {
-      config: {
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' },
-          { urls: 'stun:stun1.l.google.com:19302' }
-        ]
-      }
-    };
-    peer = customId ? new Peer(customId, peerOptions) : new Peer(peerOptions);
-
-    peer.on('open', (id) => {
-      myId = id;
-      callback(id);
-    });
-
-    peer.on('error', (err) => {
-      console.error(err);
-      if (err.type === 'unavailable-id') {
-        initPeer(callback); // ID 중복 시 새 ID 할당
-      } else {
-        alert('네트워크 연결 오류: ' + err.type);
-      }
-    });
-  }
-
-  function generateQRCode(roomId) {
-    const qrDiv = document.getElementById('qrcode');
-    qrDiv.innerHTML = ''; 
-    const joinUrl = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
-    
-    new QRCode(qrDiv, {
-      text: joinUrl,
-      width: 128,
-      height: 128,
-      colorDark : "#000000",
-      colorLight : "#ffffff",
-      correctLevel : QRCode.CorrectLevel.H
-    });
-  }
-
-  function createRoom() {
-    myName = document.getElementById('player-name').value.trim();
-    if (!myName) return alert('닉네임을 입력하세요.');
-
-    initPeer((id) => {
-      isHost = true;
-      saveSession(id, true);
-      gameState.players = [{ id: myId, name: myName }];
-      document.getElementById('display-room-id').innerText = id;
-      generateQRCode(id);
-      switchToRoomUI();
-      setupHostConnectionHandler();
-    });
-  }
-
-  function reconnectAsHost(roomId) {
-    initPeer(roomId, (id) => {
-      isHost = true;
-      document.getElementById('display-room-id').innerText = id;
-      generateQRCode(id);
-      switchToRoomUI();
-      setupHostConnectionHandler();
-      // 저장된 세션 상태 복구 시도
-      const cachedState = sessionStorage.getItem('avalon_state');
-      if (cachedState) {
-        try {
-          gameState = JSON.parse(cachedState);
-          broadcastState();
-        } catch(e) {}
-      }
-    });
-  }
-
-  function setupHostConnectionHandler() {
-    peer.on('connection', (conn) => {
-      conn.on('open', () => {
-        connections[conn.peer] = conn;
-      });
-
-      conn.on('data', (data) => handleClientData(conn.peer, data));
-
-      conn.on('close', () => {
-        delete connections[conn.peer];
-        // 대기 상태일 경우 플레이어 목록에서 제외 후 갱신
-        if (gameState.phase === 'LOBBY') {
-          gameState.players = gameState.players.filter(p => p.id !== conn.peer);
-          broadcastState();
-        }
-      });
-    });
-  }
-
-  function joinRoom() {
-    myName = document.getElementById('player-name').value.trim();
-    const roomId = document.getElementById('room-id').value.trim();
-    if (!myName || !roomId) return alert('닉네임과 방 코드를 모두 입력하세요.');
-
-    connectToHost(roomId);
-  }
-
-  function reconnectAsClient(roomId) {
-    connectToHost(roomId);
-  }
-
-  function connectToHost(roomId) {
-    initPeer((id) => {
-      isHost = false;
-      hostConn = peer.connect(roomId, { reliable: true });
-      
-      hostConn.on('open', () => {
-        saveSession(roomId, false);
-        hostConn.send({ type: 'JOIN', name: myName, id: myId });
-        switchToRoomUI();
-      });
-
-      hostConn.on('data', (data) => {
-        if (data.type === 'STATE_UPDATE') {
-          gameState = data.state;
-          sessionStorage.setItem('avalon_state', JSON.stringify(gameState));
-          if (gameState.phase === 'LOBBY') {
-            renderWaitingList();
-          } else {
-            renderGameUI();
-          }
-        }
-      });
-
-      hostConn.on('close', () => {
-        alert('방장과의 연결이 끊어졌습니다.');
-      });
-    });
-  }
-
-  function switchToRoomUI() {
-    document.getElementById('screen-lobby').classList.add('hidden');
-    document.getElementById('screen-room').classList.remove('hidden');
-    if (isHost) {
-      document.getElementById('host-controls').classList.remove('hidden');
-    } else {
-      document.getElementById('client-wait-msg').classList.remove('hidden');
-    }
-    renderWaitingList();
-  }
-
-  function handleClientData(peerId, data) {
-    if (!isHost) return;
-
-    if (data.type === 'JOIN') {
-      const existingPlayer = gameState.players.find(p => p.id === (data.id || peerId));
-      if (!existingPlayer) {
-        if (gameState.players.length >= 10) return;
-        gameState.players.push({ id: data.id || peerId, name: data.name });
-      } else {
-        existingPlayer.name = data.name; // 재접속 시 닉네임 갱신
-      }
-      broadcastState();
-    } else if (data.type === 'TOGGLE_TEAM') {
-      if (gameState.phase !== 'TEAM_SELECTION') return;
-      const leader = gameState.players[gameState.leaderIndex];
-      if (leader.id !== peerId) return;
-
-      const idx = gameState.selectedTeam.indexOf(data.targetId);
-      const reqCount = QUEST_CONFIG[gameState.players.length][gameState.currentQuest];
-      
-      if (idx > -1) {
-        gameState.selectedTeam.splice(idx, 1);
-      } else {
-        if (gameState.selectedTeam.length < reqCount) {
-          gameState.selectedTeam.push(data.targetId);
-        }
-      }
-      broadcastState();
-    } else if (data.type === 'SUBMIT_TEAM') {
-      if (gameState.phase !== 'TEAM_SELECTION') return;
-      const leader = gameState.players[gameState.leaderIndex];
-      if (leader.id !== peerId) return;
-
-      gameState.phase = 'TEAM_VOTE';
-      gameState.teamVotes = {};
-      log(`원정대장(${leader.name})이 팀 구성을 완료했습니다. 찬반 투표를 시작합니다.`);
-      broadcastState();
-    } else if (data.type === 'SUBMIT_VOTE') {
-      gameState.teamVotes[peerId] = data.vote;
-      if (Object.keys(gameState.teamVotes).length === gameState.players.length) {
-        processTeamVoteResult();
-      }
-      broadcastState();
-    } else if (data.type === 'SUBMIT_MISSION') {
-      // 투표 중복 방지
-      const alreadyVoted = gameState.missionVotes.some(v => v.id === peerId);
-      if (!alreadyVoted) {
-        gameState.missionVotes.push({ id: peerId, vote: data.vote });
-      }
-      
-      const reqCount = QUEST_CONFIG[gameState.players.length][gameState.currentQuest];
-      // 원정 인원에 무관하게 지정된 원정대 전원이 투표를 완료했을 때만 결과판단
-      if (gameState.missionVotes.length === reqCount) {
-        processMissionResult();
-      }
-      broadcastState();
-    } else if (data.type === 'ASSASSINATE') {
-      const target = gameState.players.find(p => p.id === data.targetId);
-      if (target.role === 'Merlin') {
-        gameState.winner = 'EVIL';
-        log(`[암살 성공] 암살자가 머린(${target.name})을 맞추었습니다! 악의 세력 승리!`);
-      } else {
-        gameState.winner = 'GOOD';
-        log(`[암살 실패] 지목한 사람(${target.name})은 머린이 아닙니다! 정의의 세력 승리!`);
-      }
-      gameState.phase = 'GAME_OVER';
-      broadcastState();
-    }
-  }
-
-  function broadcastState() {
-    if (!isHost) return;
-    sessionStorage.setItem('avalon_state', JSON.stringify(gameState));
-    
-    if (gameState.phase === 'LOBBY') {
-      renderWaitingList();
-    } else {
-      renderGameUI();
-    }
-    Object.values(connections).forEach(conn => {
-      if (conn && conn.open) {
-        conn.send({ type: 'STATE_UPDATE', state: gameState });
-      }
-    });
-  }
-
-  function renderWaitingList() {
-    const list = document.getElementById('waiting-player-list');
-    const countSpan = document.getElementById('player-count');
-    if (list) {
-      list.innerHTML = gameState.players.map(p => `<li class="player-item"><span>${p.name}</span></li>`).join('');
-    }
-    if (countSpan) {
-      countSpan.innerText = gameState.players.length;
-    }
-  }
-
-  function startGame() {
-    const count = gameState.players.length;
-    if (count < 5 || count > 10) return alert('5명 이상 10명 이하만 시작할 수 있습니다.');
-
-    gameState.rolesConfig = {
-      percival: document.getElementById('role-percival').checked,
-      morgana: document.getElementById('role-morgana').checked,
-      mordred: document.getElementById('role-mordred').checked,
-      oberon: document.getElementById('role-oberon').checked,
-    };
-
-    let evilCount = 2;
-    if (count >= 7) evilCount = 3;
-    if (count >= 9) evilCount = 4;
-
-    let roles = ['Merlin', 'Assassin'];
-    let goodCount = count - evilCount - 1;
-    let remainingEvil = evilCount - 1;
-
-    if (gameState.rolesConfig.percival && goodCount > 0) { roles.push('Percival'); goodCount--; }
-    if (gameState.rolesConfig.morgana && remainingEvil > 0) { roles.push('Morgana'); remainingEvil--; }
-    if (gameState.rolesConfig.mordred && remainingEvil > 0) { roles.push('Mordred'); remainingEvil--; }
-    if (gameState.rolesConfig.oberon && remainingEvil > 0) { roles.push('Oberon'); remainingEvil--; }
-
-    while (goodCount > 0) { roles.push('Servant'); goodCount--; }
-    while (remainingEvil > 0) { roles.push('Minion'); remainingEvil--; }
-
-    roles.sort(() => Math.random() - 0.5);
-    gameState.players.forEach((p, i) => p.role = roles[i]);
-
-    gameState.leaderIndex = Math.floor(Math.random() * count);
-    gameState.phase = 'TEAM_SELECTION';
-    gameState.currentQuest = 0;
-    gameState.questResults = [];
-    gameState.rejectCount = 0;
-    
-    log("게임이 시작되었습니다! 리더가 원정대를 구성 중입니다.");
-    broadcastState();
-  }
-
-  function renderGameUI() {
-    if (gameState.phase === 'LOBBY') return;
-
-    document.getElementById('screen-room').classList.add('hidden');
-    document.getElementById('screen-game').classList.remove('hidden');
-
-    renderBoard();
-    renderWaitingList();
-    renderLogs();
-
-    document.getElementById('reject-count').innerText = gameState.rejectCount;
-    document.getElementById('current-leader').innerText = gameState.players[gameState.leaderIndex]?.name || '-';
-
-    const pList = document.getElementById('game-player-list');
-    
-    pList.innerHTML = gameState.players.map((p, idx) => {
-      const isSelected = gameState.selectedTeam.includes(p.id);
-      const isPlayerLeader = idx === gameState.leaderIndex;
-      let voteStatus = '';
-
-      if (gameState.phase === 'TEAM_VOTE' && gameState.teamVotes[p.id] !== undefined) {
-        voteStatus = ' (투표 완료)';
-      }
-      if (gameState.phase === 'MISSION_VOTE' && isSelected) {
-        const hasVoted = gameState.missionVotes.some(v => v.id === p.id);
-        if (hasVoted) voteStatus = ' (미션 투표 완료)';
-      }
-
-      return `
-        <li class="player-item ${isSelected ? 'selected' : ''} ${isPlayerLeader ? 'leader' : ''}" 
-            onclick="handlePlayerClick('${p.id}')">
-          <span>${p.name} ${isPlayerLeader ? '👑' : ''}${voteStatus}</span>
-          ${isSelected ? '<span style="color:var(--gold); font-size:0.8rem;">[선발됨]</span>' : ''}
-        </li>
-      `;
-    }).join('');
-
-    renderActionArea();
-  }
-
-  function renderBoard() {
-    const board = document.getElementById('quest-board');
-    const reqs = QUEST_CONFIG[gameState.players.length] || [2,3,2,3,3];
-
-    board.innerHTML = reqs.map((req, i) => {
-      let statusClass = '';
-      let text = `${i+1}차<br>(${req}명)`;
-      if (gameState.questResults[i] === true) statusClass = 'success';
-      if (gameState.questResults[i] === false) statusClass = 'fail';
-      if (i === gameState.currentQuest && gameState.phase !== 'GAME_OVER') statusClass += ' active';
-
-      return `<div class="quest-slot ${statusClass}">${text}</div>`;
-    }).join('');
-  }
-
-  function handlePlayerClick(targetId) {
-    if (gameState.phase === 'TEAM_SELECTION') {
-      if (gameState.players[gameState.leaderIndex].id === myId) {
-        if (isHost) {
-          handleClientData(myId, { type: 'TOGGLE_TEAM', targetId });
-        } else {
-          hostConn.send({ type: 'TOGGLE_TEAM', targetId });
-        }
-      }
-    } else if (gameState.phase === 'ASSASSINATE') {
-      const myPlayer = gameState.players.find(p => p.id === myId);
-      if (myPlayer.role === 'Assassin') {
-        if (confirm(`${gameState.players.find(p=>p.id===targetId).name} 님을 머린으로 지목하시겠습니까?`)) {
-          if (isHost) {
-            handleClientData(myId, { type: 'ASSASSINATE', targetId });
-          } else {
-            hostConn.send({ type: 'ASSASSINATE', targetId });
-          }
-        }
-      }
-    }
-  }
-
-  function renderActionArea() {
-    const area = document.getElementById('action-area');
-    const myPlayer = gameState.players.find(p => p.id === myId);
-    const isLeader = gameState.players[gameState.leaderIndex]?.id === myId;
-    const reqCount = QUEST_CONFIG[gameState.players.length]?.[gameState.currentQuest];
-
-    if (gameState.phase === 'TEAM_SELECTION') {
-      if (isLeader) {
-        const canSubmit = gameState.selectedTeam.length === reqCount;
-        area.innerHTML = `
-          <p style="margin-bottom:8px;">원정대원 ${reqCount}명을 선택하세요.</p>
-          <button class="btn btn-primary" ${canSubmit ? '' : 'disabled'} onclick="submitTeamProposal()">팀 구성 완료 및 투표 요청</button>
-        `;
-      } else {
-        area.innerHTML = `<p style="text-align:center; color:var(--text-muted);">원정대장(${gameState.players[gameState.leaderIndex].name})이 팀을 구성 중입니다...</p>`;
-      }
-    } else if (gameState.phase === 'TEAM_VOTE') {
-      const myVote = gameState.teamVotes[myId];
-      const hasVoted = myVote !== undefined;
-
-      let statusMsg = '';
-      if (hasVoted) {
-        statusMsg = myVote 
-          ? `<div class="vote-status-badge approved">✔ [찬성]에 투표함 (결과 대기 중...)</div>`
-          : `<div class="vote-status-badge rejected">✖ [반대]에 투표함 (결과 대기 중...)</div>`;
-      }
-
-      area.innerHTML = `
-        <p style="margin-bottom:8px;">지목된 팀 찬반 투표를 진행합니다.</p>
-        <div style="display:flex; gap:8px;">
-          <button class="btn btn-blue" ${hasVoted ? 'disabled' : ''} onclick="voteTeam(true)">찬성</button>
-          <button class="btn btn-danger" ${hasVoted ? 'disabled' : ''} onclick="voteTeam(false)">반대</button>
-        </div>
-        <div style="text-align:center; margin-top:8px;">${statusMsg}</div>
-      `;
-    } else if (gameState.phase === 'MISSION_VOTE') {
-      const isTeamMember = gameState.selectedTeam.includes(myId);
-      const hasVoted = gameState.missionVotes.some(v => v.id === myId);
-
-      if (isTeamMember) {
-        area.innerHTML = `
-          <p style="margin-bottom:8px; color:var(--gold);">[원정대원 전용] 임무 성공/실패 선택</p>
-          <div style="display:flex; gap:8px;">
-            <button class="btn btn-blue" ${hasVoted ? 'disabled' : ''} onclick="voteMission(true)">임무 성공</button>
-            <button class="btn btn-danger" ${hasVoted ? 'disabled' : ''} onclick="voteMission(false)">임무 실패</button>
-          </div>
-          ${hasVoted ? '<p style="text-align:center; margin-top:8px; color:var(--gold);">투표가 완료되었습니다. 다른 대원의 투표를 기다립니다...</p>' : ''}
-        `;
-      } else {
-        area.innerHTML = `<p style="text-align:center; color:var(--text-muted);">원정대가 임무를 수행 중입니다...</p>`;
-      }
-    } else if (gameState.phase === 'ASSASSINATE') {
-      if (myPlayer.role === 'Assassin') {
-        area.innerHTML = `<p style="color:var(--red);">머린이라고 생각되는 플레이어를 클릭하고 암살을 진행하세요!</p>`;
-      } else {
-        area.innerHTML = `<p style="text-align:center; color:var(--red);">선 세력이 3승을 거두었습니다! 암살자가 머린을 찾는 중입니다...</p>`;
-      }
-    } else if (gameState.phase === 'GAME_OVER') {
-      const isGoodWin = gameState.winner === 'GOOD';
-      area.innerHTML = `
-        <h2 style="text-align:center; color:${isGoodWin ? 'var(--blue)' : 'var(--red)'}">
-          ${isGoodWin ? '정의의 세력 승리!' : '악의 세력 승리!'}
-        </h2>
-      `;
-    }
-  }
-
-  function submitTeamProposal() {
-    if (isHost) {
-      handleClientData(myId, { type: 'SUBMIT_TEAM' });
-    } else {
-      hostConn.send({ type: 'SUBMIT_TEAM' });
-    }
-  }
-
-  function voteTeam(vote) {
-    if (isHost) {
-      handleClientData(myId, { type: 'SUBMIT_VOTE', vote });
-    } else {
-      hostConn.send({ type: 'SUBMIT_VOTE', vote });
-    }
-  }
-
-  function processTeamVoteResult() {
-    const approves = Object.values(gameState.teamVotes).filter(v => v).length;
-    const rejects = Object.values(gameState.teamVotes).length - approves;
-
-    if (approves > rejects) {
-      log(`[표결 가결] 찬성 ${approves}표 / 반대 ${rejects}표. 원정을 출발합니다!`);
-      gameState.phase = 'MISSION_VOTE';
-      gameState.missionVotes = [];
-      gameState.rejectCount = 0;
-    } else {
-      gameState.rejectCount++;
-      log(`[표결 부결] 찬성 ${approves}표 / 반대 ${rejects}표. (연속 부결: ${gameState.rejectCount}회)`);
-      
-      if (gameState.rejectCount >= 5) {
-        gameState.winner = 'EVIL';
-        gameState.phase = 'GAME_OVER';
-        log(`5회 연속 부결로 인해 악의 세력이 승리했습니다!`);
-      } else {
-        gameState.leaderIndex = (gameState.leaderIndex + 1) % gameState.players.length;
-        gameState.selectedTeam = [];
-        gameState.phase = 'TEAM_SELECTION';
-      }
-    }
-  }
-
-  function voteMission(vote) {
-    const myPlayer = gameState.players.find(p => p.id === myId);
-    const isEvil = ['Assassin', 'Morgana', 'Mordred', 'Oberon', 'Minion'].includes(myPlayer.role);
-    if (!vote && !isEvil) {
-      alert("정의의 세력은 실패를 제출할 수 없습니다!");
-      return;
-    }
-
-    if (isHost) {
-      handleClientData(myId, { type: 'SUBMIT_MISSION', vote });
-    } else {
-      hostConn.send({ type: 'SUBMIT_MISSION', vote });
-    }
-  }
-
-  function processMissionResult() {
-    const fails = gameState.missionVotes.filter(v => !v.vote).length;
-    const playerCount = gameState.players.length;
-    
-    let requiredFails = 1;
-    if (playerCount >= 7 && gameState.currentQuest === 3) {
-      requiredFails = 2; // 7인 이상 4번째 원정은 실패 2개 필요
-    }
-
-    const isSuccess = fails < requiredFails;
-    gameState.questResults.push(isSuccess);
-
-    // 멘트 변경: 성공했습니다. / 실패했습니다.
-    const resultMsg = isSuccess ? '성공했습니다.' : '실패했습니다.';
-    log(`${gameState.currentQuest + 1}차 원정 결과: ${resultMsg} (실패 표: ${fails}장)`);
-
-    const wins = gameState.questResults.filter(r => r).length;
-    const losses = gameState.questResults.filter(r => !r).length;
-
-    if (wins >= 3) {
-      gameState.phase = 'ASSASSINATE';
-      log(`정의의 세력이 3번 성공했습니다! 암살자 단계를 진행합니다.`);
-    } else if (losses >= 3) {
-      gameState.winner = 'EVIL';
-      gameState.phase = 'GAME_OVER';
-      log(`악의 세력이 3번 실패를 이끌어내어 승리했습니다!`);
-    } else {
-      gameState.currentQuest++;
-      gameState.leaderIndex = (gameState.leaderIndex + 1) % gameState.players.length;
-      gameState.selectedTeam = [];
-      gameState.phase = 'TEAM_SELECTION';
-    }
-  }
-
-  function revealSecret() {
-    const myPlayer = gameState.players.find(p => p.id === myId);
-    if (!myPlayer || !myPlayer.role) return;
-
-    const content = document.getElementById('secret-content');
-    const hint = document.getElementById('secret-hint');
-    
-    hint.classList.add('hidden');
-    content.classList.remove('hidden');
-
-    let text = `역할: <strong>${getRoleKorean(myPlayer.role)}</strong><br>`;
-    text += `<small style="color:var(--text-muted);">${getRoleVision(myPlayer)}</small>`;
-    content.innerHTML = text;
-  }
-
-  function hideSecret() {
-    document.getElementById('secret-hint').classList.remove('hidden');
-    document.getElementById('secret-content').classList.add('hidden');
-  }
-
-  function getRoleKorean(role) {
-    const map = {
-      Merlin: '머린 (선)', Assassin: '암살자 (악)', Percival: '퍼시벌 (선)',
-      Morgana: '모거나 (악)', Mordred: '모드레드 (악)', Oberon: '오베론 (악)',
-      Servant: '시종 (선)', Minion: '악의 무리 (악)'
-    };
-    return map[role] || role;
-  }
-
-  function getRoleVision(myPlayer) {
-    const role = myPlayer.role;
-    const evilsExceptMordred = gameState.players.filter(p => ['Assassin', 'Morgana', 'Minion', 'Oberon'].includes(p.role) && p.role !== 'Mordred');
-    const merlinCandidates = gameState.players.filter(p => p.role === 'Merlin' || p.role === 'Morgana');
-
-    if (role === 'Merlin') {
-      return `악의 무리: ` + evilsExceptMordred.map(p => p.name).join(', ');
-    } else if (['Assassin', 'Morgana', 'Minion', 'Mordred'].includes(role)) {
-      const teammates = gameState.players.filter(p => ['Assassin', 'Morgana', 'Minion', 'Mordred'].includes(p.role) && p.id !== myId);
-      return `동료 악 세력: ` + (teammates.map(p => p.name).join(', ') || '없음');
-    } else if (role === 'Percival') {
-      return `머린 후보 (머린/모거나): ` + merlinCandidates.map(p => p.name).join(', ');
-    }
-    return `특수 시야 정보가 없습니다.`;
-  }
-</script>
 </body>
 </html>
