@@ -377,7 +377,7 @@
         myName = inputs.name.value.trim();
         if (!myName) return alert('닉네임을 입력하세요.');
 
-        const roomId = "room_" + Math.random().toString(36).substring(2, 7).toUpperCase();
+        const roomId = "ROOM_" + Math.random().toString(36).substring(2, 7).toUpperCase();
         isHost = true;
         
         // DB에 대기실(LOBBY) 생성 후 세션 저장 및 리스닝 시작
@@ -395,7 +395,7 @@
     window.joinGame = async function() {
       try {
         myName = inputs.name.value.trim();
-        const roomId = inputs.roomId.value.trim();
+        const roomId = inputs.roomId.value.trim().toUpperCase();
         if (!myName || !roomId) return alert('닉네임과 방 코드를 입력하세요.');
 
         isHost = false;
