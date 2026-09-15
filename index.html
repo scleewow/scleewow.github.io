@@ -9,7 +9,7 @@
   <!-- Firebase Compat SDK (스크립트 태그 전용) -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <script type="module">
+  <script >
 
     // 2. 귀하의 Firebase 설정값
     const firebaseConfig = {
@@ -24,8 +24,8 @@
     };
 
     // Firebase 초기화
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
+    firebase.initializeApp(firebaseConfig);
+    firebase.database();
 
     // --- 게임 상태 및 세션 변수 ---
     let myName = "";
