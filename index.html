@@ -6,11 +6,10 @@
   <title>레지스탕스 아발론 (Firebase 세션유지)</title>
   
   <!-- 1. Firebase SDK (Modular v10) CDN Import -->
+  <!-- Firebase Compat SDK (스크립트 태그 전용) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, update, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    // QRCode.js CDN (방 링크 생성용)
-    import "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
 
     // 2. 귀하의 Firebase 설정값
     const firebaseConfig = {
