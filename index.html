@@ -47,9 +47,11 @@
     .player-item.leader { border-left: 4px solid var(--gold); }
     .secret-box { user-select: none; -webkit-user-select: none; background: #0f172a; border: 1px dashed var(--gold); padding: 16px; text-align: center; border-radius: 8px; margin: 12px 0; cursor: pointer; }
     .log-box { height: 120px; overflow-y: auto; background: #0f172a; border-radius: 6px; padding: 8px; font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px; }
-    /* QR 코드 스타일 추가 */
     .qr-container { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 16px 0; padding: 12px; background: #fff; border-radius: 8px; width: fit-content; margin-left: auto; margin-right: auto; }
     #qrcode img { display: block; }
+    .vote-status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; margin-top: 6px; }
+    .vote-status-badge.approved { background: var(--blue); color: #fff; }
+    .vote-status-badge.rejected { background: var(--red); color: #fff; }
   </style>
 </head>
 <body>
@@ -78,9 +80,8 @@
 
   <!-- 2. 대기실 화면 -->
   <div id="screen-room" class="card hidden">
-    <h3 style="text-align: center;">방 코드: <span id="display-room-id" style="color:var(--gold)"></span></h3>
+    <h3 style="text-align: center;">방 코드: <span id="display-room-id" style="color:var(--gold); word-break: break-all; font-size:0.9rem;"></span></h3>
     
-    <!-- QR 코드 표출 영역 -->
     <div class="qr-container">
       <div id="qrcode"></div>
       <p style="color:#000; font-size:0.75rem; margin-top:6px; font-weight:bold;">스마트폰으로 스캔하여 접속</p>
@@ -160,8 +161,27 @@
     10: [3, 4, 4, 5, 5]
   };
 
-  // 페이지 로드 시 URL 파라미터 체크 (QR 코드 자동 연결 지원)
   window.onload = function() {
+    // 세션 복구 확인
+    const savedSession = sessionStorage.getItem('avalon_session');
+    if (savedSession) {
+      try {
+        const session = JSON.parse(savedSession);
+        myName = session.name;
+        document.getElementById('player-name').value = myName;
+        
+        if (session.isHost) {
+          reconnectAsHost(session.roomId);
+          return;
+        } else if (session.roomId) {
+          reconnectAsClient(session.roomId);
+          return;
+        }
+      } catch(e) {
+        sessionStorage.removeItem('avalon_session');
+      }
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const roomParam = urlParams.get('room');
     if (roomParam) {
@@ -169,6 +189,14 @@
       document.getElementById('room-id').value = roomParam;
     }
   };
+
+  function saveSession(roomId, hostFlag) {
+    sessionStorage.setItem('avalon_session', JSON.stringify({
+      name: myName,
+      roomId: roomId,
+      isHost: hostFlag
+    }));
+  }
 
   function showJoinUI() {
     document.getElementById('join-ui').classList.toggle('hidden');
@@ -186,14 +214,33 @@
     box.scrollTop = box.scrollHeight;
   }
 
-  function initPeer(callback) {
-    peer = new Peer();
+  function initPeer(customId, callback) {
+    if (typeof customId === 'function') {
+      callback = customId;
+      customId = null;
+    }
+    const peerOptions = {
+      config: {
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' }
+        ]
+      }
+    };
+    peer = customId ? new Peer(customId, peerOptions) : new Peer(peerOptions);
+
     peer.on('open', (id) => {
       myId = id;
       callback(id);
     });
+
     peer.on('error', (err) => {
-      alert('네트워크 연결 오류: ' + err.type);
+      console.error(err);
+      if (err.type === 'unavailable-id') {
+        initPeer(callback); // ID 중복 시 새 ID 할당
+      } else {
+        alert('네트워크 연결 오류: ' + err.type);
+      }
     });
   }
 
@@ -218,21 +265,48 @@
 
     initPeer((id) => {
       isHost = true;
-      gameState.players.push({ id: myId, name: myName });
+      saveSession(id, true);
+      gameState.players = [{ id: myId, name: myName }];
       document.getElementById('display-room-id').innerText = id;
-      generateQRCode(id); // QR 코드 생성
+      generateQRCode(id);
       switchToRoomUI();
+      setupHostConnectionHandler();
+    });
+  }
 
-      peer.on('connection', (conn) => {
-        conn.on('open', () => {
-          connections[conn.peer] = conn;
-        });
-        conn.on('data', (data) => handleClientData(conn.peer, data));
-        conn.on('close', () => {
-          delete connections[conn.peer];
+  function reconnectAsHost(roomId) {
+    initPeer(roomId, (id) => {
+      isHost = true;
+      document.getElementById('display-room-id').innerText = id;
+      generateQRCode(id);
+      switchToRoomUI();
+      setupHostConnectionHandler();
+      // 저장된 세션 상태 복구 시도
+      const cachedState = sessionStorage.getItem('avalon_state');
+      if (cachedState) {
+        try {
+          gameState = JSON.parse(cachedState);
+          broadcastState();
+        } catch(e) {}
+      }
+    });
+  }
+
+  function setupHostConnectionHandler() {
+    peer.on('connection', (conn) => {
+      conn.on('open', () => {
+        connections[conn.peer] = conn;
+      });
+
+      conn.on('data', (data) => handleClientData(conn.peer, data));
+
+      conn.on('close', () => {
+        delete connections[conn.peer];
+        // 대기 상태일 경우 플레이어 목록에서 제외 후 갱신
+        if (gameState.phase === 'LOBBY') {
           gameState.players = gameState.players.filter(p => p.id !== conn.peer);
           broadcastState();
-        });
+        }
       });
     });
   }
@@ -242,20 +316,38 @@
     const roomId = document.getElementById('room-id').value.trim();
     if (!myName || !roomId) return alert('닉네임과 방 코드를 모두 입력하세요.');
 
+    connectToHost(roomId);
+  }
+
+  function reconnectAsClient(roomId) {
+    connectToHost(roomId);
+  }
+
+  function connectToHost(roomId) {
     initPeer((id) => {
       isHost = false;
-      hostConn = peer.connect(roomId);
+      hostConn = peer.connect(roomId, { reliable: true });
       
       hostConn.on('open', () => {
-        hostConn.send({ type: 'JOIN', name: myName });
+        saveSession(roomId, false);
+        hostConn.send({ type: 'JOIN', name: myName, id: myId });
         switchToRoomUI();
       });
 
       hostConn.on('data', (data) => {
         if (data.type === 'STATE_UPDATE') {
           gameState = data.state;
-          renderGameUI();
+          sessionStorage.setItem('avalon_state', JSON.stringify(gameState));
+          if (gameState.phase === 'LOBBY') {
+            renderWaitingList();
+          } else {
+            renderGameUI();
+          }
         }
+      });
+
+      hostConn.on('close', () => {
+        alert('방장과의 연결이 끊어졌습니다.');
       });
     });
   }
@@ -275,8 +367,13 @@
     if (!isHost) return;
 
     if (data.type === 'JOIN') {
-      if (gameState.players.length >= 10) return;
-      gameState.players.push({ id: peerId, name: data.name });
+      const existingPlayer = gameState.players.find(p => p.id === (data.id || peerId));
+      if (!existingPlayer) {
+        if (gameState.players.length >= 10) return;
+        gameState.players.push({ id: data.id || peerId, name: data.name });
+      } else {
+        existingPlayer.name = data.name; // 재접속 시 닉네임 갱신
+      }
       broadcastState();
     } else if (data.type === 'TOGGLE_TEAM') {
       if (gameState.phase !== 'TEAM_SELECTION') return;
@@ -310,8 +407,14 @@
       }
       broadcastState();
     } else if (data.type === 'SUBMIT_MISSION') {
-      gameState.missionVotes.push(data.vote);
+      // 투표 중복 방지
+      const alreadyVoted = gameState.missionVotes.some(v => v.id === peerId);
+      if (!alreadyVoted) {
+        gameState.missionVotes.push({ id: peerId, vote: data.vote });
+      }
+      
       const reqCount = QUEST_CONFIG[gameState.players.length][gameState.currentQuest];
+      // 원정 인원에 무관하게 지정된 원정대 전원이 투표를 완료했을 때만 결과판단
       if (gameState.missionVotes.length === reqCount) {
         processMissionResult();
       }
@@ -332,17 +435,29 @@
 
   function broadcastState() {
     if (!isHost) return;
-    renderGameUI();
+    sessionStorage.setItem('avalon_state', JSON.stringify(gameState));
+    
+    if (gameState.phase === 'LOBBY') {
+      renderWaitingList();
+    } else {
+      renderGameUI();
+    }
     Object.values(connections).forEach(conn => {
-      conn.send({ type: 'STATE_UPDATE', state: gameState });
+      if (conn && conn.open) {
+        conn.send({ type: 'STATE_UPDATE', state: gameState });
+      }
     });
   }
 
   function renderWaitingList() {
     const list = document.getElementById('waiting-player-list');
-    if (!list) return;
-    list.innerHTML = gameState.players.map(p => `<li class="player-item"><span>${p.name}</span></li>`).join('');
-    document.getElementById('player-count').innerText = gameState.players.length;
+    const countSpan = document.getElementById('player-count');
+    if (list) {
+      list.innerHTML = gameState.players.map(p => `<li class="player-item"><span>${p.name}</span></li>`).join('');
+    }
+    if (countSpan) {
+      countSpan.innerText = gameState.players.length;
+    }
   }
 
   function startGame() {
@@ -407,6 +522,10 @@
 
       if (gameState.phase === 'TEAM_VOTE' && gameState.teamVotes[p.id] !== undefined) {
         voteStatus = ' (투표 완료)';
+      }
+      if (gameState.phase === 'MISSION_VOTE' && isSelected) {
+        const hasVoted = gameState.missionVotes.some(v => v.id === p.id);
+        if (hasVoted) voteStatus = ' (미션 투표 완료)';
       }
 
       return `
@@ -476,23 +595,36 @@
         area.innerHTML = `<p style="text-align:center; color:var(--text-muted);">원정대장(${gameState.players[gameState.leaderIndex].name})이 팀을 구성 중입니다...</p>`;
       }
     } else if (gameState.phase === 'TEAM_VOTE') {
-      const hasVoted = gameState.teamVotes[myId] !== undefined;
+      const myVote = gameState.teamVotes[myId];
+      const hasVoted = myVote !== undefined;
+
+      let statusMsg = '';
+      if (hasVoted) {
+        statusMsg = myVote 
+          ? `<div class="vote-status-badge approved">✔ [찬성]에 투표함 (결과 대기 중...)</div>`
+          : `<div class="vote-status-badge rejected">✖ [반대]에 투표함 (결과 대기 중...)</div>`;
+      }
+
       area.innerHTML = `
         <p style="margin-bottom:8px;">지목된 팀 찬반 투표를 진행합니다.</p>
         <div style="display:flex; gap:8px;">
           <button class="btn btn-blue" ${hasVoted ? 'disabled' : ''} onclick="voteTeam(true)">찬성</button>
           <button class="btn btn-danger" ${hasVoted ? 'disabled' : ''} onclick="voteTeam(false)">반대</button>
         </div>
+        <div style="text-align:center; margin-top:8px;">${statusMsg}</div>
       `;
     } else if (gameState.phase === 'MISSION_VOTE') {
       const isTeamMember = gameState.selectedTeam.includes(myId);
+      const hasVoted = gameState.missionVotes.some(v => v.id === myId);
+
       if (isTeamMember) {
         area.innerHTML = `
           <p style="margin-bottom:8px; color:var(--gold);">[원정대원 전용] 임무 성공/실패 선택</p>
           <div style="display:flex; gap:8px;">
-            <button class="btn btn-blue" onclick="voteMission(true)">임무 성공</button>
-            <button class="btn btn-danger" onclick="voteMission(false)">임무 실패</button>
+            <button class="btn btn-blue" ${hasVoted ? 'disabled' : ''} onclick="voteMission(true)">임무 성공</button>
+            <button class="btn btn-danger" ${hasVoted ? 'disabled' : ''} onclick="voteMission(false)">임무 실패</button>
           </div>
+          ${hasVoted ? '<p style="text-align:center; margin-top:8px; color:var(--gold);">투표가 완료되었습니다. 다른 대원의 투표를 기다립니다...</p>' : ''}
         `;
       } else {
         area.innerHTML = `<p style="text-align:center; color:var(--text-muted);">원정대가 임무를 수행 중입니다...</p>`;
@@ -570,18 +702,20 @@
   }
 
   function processMissionResult() {
-    const fails = gameState.missionVotes.filter(v => !v).length;
+    const fails = gameState.missionVotes.filter(v => !v.vote).length;
     const playerCount = gameState.players.length;
     
     let requiredFails = 1;
     if (playerCount >= 7 && gameState.currentQuest === 3) {
-      requiredFails = 2;
+      requiredFails = 2; // 7인 이상 4번째 원정은 실패 2개 필요
     }
 
     const isSuccess = fails < requiredFails;
     gameState.questResults.push(isSuccess);
 
-    log(`${gameState.currentQuest + 1}차 원정 결과: ${isSuccess ? '성공!' : '실패...'} (실패 표: ${fails}장)`);
+    // 멘트 변경: 성공했습니다. / 실패했습니다.
+    const resultMsg = isSuccess ? '성공했습니다.' : '실패했습니다.';
+    log(`${gameState.currentQuest + 1}차 원정 결과: ${resultMsg} (실패 표: ${fails}장)`);
 
     const wins = gameState.questResults.filter(r => r).length;
     const losses = gameState.questResults.filter(r => !r).length;
