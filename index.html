@@ -3,43 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>아발론 보드게임 포털</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: sans-serif; background-color: #121212; color: #fff; }
-    
-    header {
-      padding: 1rem;
-      text-align: center;
-      background-color: #1e1e1e;
-      border-bottom: 1px solid #333;
-    }
-    
-    .game-container {
-      width: 100%;
-      height: calc(100vh - 60px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-  </style>
+  <title>레지스탕스 아발론</title>
+  
+  <script>
+    // 페이지가 로드되자마자 실행되는 주소 파라미터 전달 로직
+    (function() {
+      // 1. 현재 접속한 URL의 쿼리 스트링(?room=ROOM_ABC 등)을 가져옵니다.
+      const searchParams = window.location.search;
+      
+      // 2. 만약 주소에 ?room=... 과 같은 파라미터가 포함되어 있다면
+      if (searchParams) {
+        // avalon.html 뒤에 해당 파라미터를 그대로 붙여서 이동시킵니다.
+        // 예: index.html?room=ROOM123 -> avalon.html?room=ROOM123
+        window.location.href = 'avalon.html' + searchParams;
+      }
+    })();
+  </script>
 </head>
 <body>
 
-  <header>
-    <h1>레지스탕스 아발론 Online</h1>
-  </header>
+  <div style="text-align: center; padding-top: 50px;">
+    <h1>⚔️ 레지스탕스 아발론</h1>
+    <p>아래 버튼을 누르면 게임 화면으로 이동합니다.</p>
+    
+    <!-- 기본 버튼 링크에도 클릭 시 파라미터를 유지하도록 처리할 수 있습니다 -->
+    <a id="enter-btn" href="avalon.html" style="display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 6px; margin-top: 20px;">
+      게임 입장하기
+    </a>
+  </div>
 
-  <main class="game-container">
-    <!-- avalon.html을 iframe으로 불러옵니다 -->
-    <iframe src="avalon.html" title="Avalon Game"></iframe>
-  </main>
-
+  <script>
+    // 버튼 클릭으로 이동할 때도 주소창의 파라미터를 유지해주는 보조 코드
+    const searchParams = window.location.search;
+    if (searchParams) {
+      document.getElementById('enter-btn').href = 'avalon.html' + searchParams;
+    }
+  </script>
 </body>
 </html>
