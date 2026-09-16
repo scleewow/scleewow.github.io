@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>레지스탕스 아발론 </title>
+  <title>레지스탕스 아발론</title>
 
   <!-- Firebase SDK v9 Compat -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -12,7 +12,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <script>
-    // ===== Firebase 초기화 (HTML 로드 전 실행) =====
+    // ===== Firebase 초기화 =====
     const firebaseConfig = {
       apiKey: "AIzaSyBrvXAVaA46-qVmNek_MnUlRRLRmeYpvu8",
       authDomain: "myavalon-d1c3a.firebaseapp.com",
@@ -34,6 +34,9 @@
     let mySessionId = localStorage.getItem("avalon_session_id") || "user_" + Math.random().toString(36).substring(2, 9);
     localStorage.setItem("avalon_session_id", mySessionId);
 
+    let selectionTimerInterval = null;
+    let lastProcessedLogCount = 0;
+
     let gameState = {
       roomId: null,
       phase: 'LOBBY',
@@ -47,7 +50,10 @@
       teamVotes: {},
       missionVotes: {},
       winner: null,
-      logs: []
+      logs: [],
+      teamSelectionStartTime: null,
+      lastTeamVoteDetails: null,
+      roleHistory: {}
     };
 
     const QUEST_CONFIG = {
@@ -59,7 +65,6 @@
       10: [3, 4, 4, 5, 5]
     };
 
-    // 캐릭터 특성 정보 데이터
     const CHARACTER_INFO = [
       { name: "머린 (선)", desc: "모든 악의 무리(모드레드 제외)를 파악할 수 있습니다. 단, 정체가 발각되어 암살당하면 패배합니다." },
       { name: "퍼시벌 (선)", desc: "머린과 모거나 2명을 머린 후보로 봅니다. 진짜 머린을 찾아 보호하고 조력해야 합니다." },
@@ -71,7 +76,6 @@
       { name: "악의 무리 (악)", desc: "특별한 기능은 없지만 동료 악의 무리와 협력하여 원정을 방해해야 합니다." }
     ];
 
-    // ===== 요소 참조 =====
     let screens, inputs, displays, lists;
 
     function initializeElements() {
@@ -100,7 +104,6 @@
       };
     }
 
-    // --- 무작위 셔플 함수 (Crypto API) ---
     function secureShuffle(array) {
       const arr = [...array];
       for (let i = arr.length - 1; i > 0; i--) {
@@ -112,7 +115,6 @@
       return arr;
     }
 
-    // --- 초기화 및 세션 복구 ---
     window.onload = async function() {
       try {
         initializeElements();
@@ -142,11 +144,9 @@
         }
       } catch(e) {
         console.error('onload 오류:', e);
-        alert('초기화 중 오류 발생: ' + e.message);
       }
     };
 
-    // --- DB 구독 및 동기화 ---
     async function startRoomListing(roomId) {
       try {
         if (!roomId) return;
@@ -166,6 +166,27 @@
           try {
             const data = snapshot.val();
             if (!data) return;
+
+            // 강퇴 여부 검사
+            if (data.players && !data.players[mySessionId]) {
+              alert("방장에 의해 강제 퇴장되었습니다.");
+              roomRef.off();
+              sessionStorage.removeItem('avalon_active_session');
+              inputs.name.disabled = false;
+              showScreen('lobby');
+              return;
+            }
+
+            // 이벤트 알림 처리
+            if (data.logs && data.logs.length > lastProcessedLogCount) {
+              const newLogs = data.logs.slice(lastProcessedLogCount);
+              newLogs.forEach(log => {
+                if (log.includes("[표결") || log.includes("원정 결과") || log.includes("[암살") || log.includes("승리했습니다")) {
+                  showNotificationPopup(log);
+                }
+              });
+              lastProcessedLogCount = data.logs.length;
+            }
 
             gameState = data;
 
@@ -217,7 +238,13 @@
       }));
     }
 
-    // --- UI 렌더링 ---
+    function showNotificationPopup(message) {
+      const banner = document.getElementById('event-banner');
+      banner.innerText = message;
+      banner.classList.remove('hidden');
+      setTimeout(() => { banner.classList.add('hidden'); }, 4000);
+    }
+
     function showScreen(screenName) {
       try {
         Object.values(screens).forEach(s => s.classList.add('hidden'));
@@ -240,10 +267,15 @@
 
     function renderWaitingList() {
       try {
-        const players = gameState.players ? Object.values(gameState.players) : [];
+        const players = gameState.players ? Object.entries(gameState.players) : [];
         lists.waiting.innerHTML = players
-          .sort((a, b) => a.joinedAt - b.joinedAt)
-          .map(p => `<li class="player-item"><span>${p.name}</span></li>`)
+          .sort((a, b) => a[1].joinedAt - b[1].joinedAt)
+          .map(([sId, p]) => {
+            const kickBtn = (isHost && sId !== mySessionId) 
+              ? `<button class="btn btn-danger" style="width:auto; padding:2px 8px; font-size:0.75rem;" onclick="kickPlayer('${sId}')">강퇴</button>` 
+              : '';
+            return `<li class="player-item"><span>${p.name} ${sId === mySessionId ? '(나)' : ''}</span>${kickBtn}</li>`;
+          })
           .join('');
         displays.playerCount.innerText = players.length;
       } catch(e) {
@@ -251,12 +283,23 @@
       }
     }
 
+    window.kickPlayer = async function(targetSessionId) {
+      if (!isHost) return;
+      const targetName = gameState.players[targetSessionId]?.name || "해당 플레이어";
+      if (!confirm(`${targetName} 님을 강제 퇴장시키시겠습니까?`)) return;
+
+      try {
+        await database.ref(`rooms/${gameState.roomId}/players/${targetSessionId}`).remove();
+      } catch(e) {
+        alert("강퇴 실패: " + e.message);
+      }
+    };
+
     function renderGameUI() {
       try {
         renderBoard();
         renderLogs();
 
-        // 방장에게만 강제 다시시작 버튼 노출
         const restartBtn = document.getElementById('btn-host-restart');
         if (isHost) {
           restartBtn.classList.remove('hidden');
@@ -292,8 +335,33 @@
         }).join('');
 
         renderActionArea();
+        handleSelectionTimer();
       } catch(e) {
         console.error('renderGameUI 오류:', e);
+      }
+    }
+
+    function handleSelectionTimer() {
+      const timerDisplay = document.getElementById('selection-timer');
+      if (gameState.phase === 'TEAM_SELECTION' && gameState.teamSelectionStartTime) {
+        timerDisplay.classList.remove('hidden');
+        if (selectionTimerInterval) clearInterval(selectionTimerInterval);
+
+        selectionTimerInterval = setInterval(() => {
+          const elapsed = Math.floor((Date.now() - gameState.teamSelectionStartTime) / 1000);
+          const remaining = Math.max(0, 300 - elapsed);
+          const min = Math.floor(remaining / 60);
+          const sec = remaining % 60;
+          timerDisplay.innerText = `⏱️ 팀 구성 남은시간: ${min}:${sec < 10 ? '0' : ''}${sec}`;
+
+          if (remaining === 0) {
+            clearInterval(selectionTimerInterval);
+            timerDisplay.innerText = `⏱️ 팀 구성 시간 종료 (5분 경과)`;
+          }
+        }, 1000);
+      } else {
+        if (selectionTimerInterval) clearInterval(selectionTimerInterval);
+        timerDisplay.classList.add('hidden');
       }
     }
 
@@ -339,15 +407,24 @@
           return;
         }
 
+        let voteDetailsHTML = '';
+        if (gameState.lastTeamVoteDetails) {
+          const detailList = Object.entries(gameState.lastTeamVoteDetails).map(([sId, vote]) => {
+            const pName = gameState.players[sId]?.name || '알수없음';
+            return `<span style="margin-right:8px; color:${vote ? 'var(--blue)' : 'var(--red)'};">${pName}: ${vote ? '찬성' : '반대'}</span>`;
+          }).join(' | ');
+          voteDetailsHTML = `<div style="margin-bottom:10px; padding:6px; background:#0f172a; border-radius:4px; font-size:0.8rem;"><strong>직전 찬반 결과:</strong><br>${detailList}</div>`;
+        }
+
         if (gameState.phase === 'TEAM_SELECTION') {
           if (isLeader) {
             const canSubmit = gameState.selectedTeam?.length === reqCount;
-            area.innerHTML = `
+            area.innerHTML = `${voteDetailsHTML}
               <p style="margin-bottom:8px;">원정대원 ${reqCount}명을 선택하세요.</p>
               <button class="btn btn-primary" ${canSubmit ? '' : 'disabled'} onclick="submitTeamProposal()">팀 구성 완료 및 투표 요청</button>
             `;
           } else {
-            area.innerHTML = `<p style="text-align:center; color:var(--text-muted);">원정대장(${gameState.players[gameState.leaderSessionId]?.name || '?'})이 팀 구성 중입니다...</p>`;
+            area.innerHTML = `${voteDetailsHTML}<p style="text-align:center; color:var(--text-muted);">원정대장(${gameState.players[gameState.leaderSessionId]?.name || '?'})이 팀 구성 중입니다...</p>`;
           }
         } else if (gameState.phase === 'TEAM_VOTE') {
           const hasVoted = gameState.teamVotes?.[mySessionId] !== undefined;
@@ -358,7 +435,7 @@
               ? `<div class="vote-status-badge approved">✔ [찬성] 선택함 (결과 대기 중)</div>`
               : `<div class="vote-status-badge rejected">✖ [반대] 선택함 (결과 대기 중)</div>`;
           }
-          area.innerHTML = `
+          area.innerHTML = `${voteDetailsHTML}
             <p style="margin-bottom:8px;">지목된 팀 찬반 투표</p>
             <div style="display:flex; gap:8px;">
               <button class="btn btn-blue" ${hasVoted ? 'disabled' : ''} onclick="voteTeam(true)">찬성</button>
@@ -371,7 +448,7 @@
           const hasVoted = gameState.missionVotes?.[mySessionId] !== undefined;
 
           if (isTeamMember) {
-            area.innerHTML = `
+            area.innerHTML = `${voteDetailsHTML}
               <p style="margin-bottom:8px; color:var(--gold);">[원정대원 전용] 임무 성공/실패 선택</p>
               <div style="display:flex; gap:8px;">
                 <button class="btn btn-blue" ${hasVoted ? 'disabled' : ''} onclick="voteMission(true)">임무 성공</button>
@@ -380,27 +457,35 @@
               ${hasVoted ? '<p style="text-align:center; margin-top:8px; color:var(--gold);">투표 완료. 다른 대원을 기다립니다...</p>' : ''}
             `;
           } else {
-            area.innerHTML = `<p style="text-align:center; color:var(--text-muted);">원정대가 임무 수행 중입니다...</p>`;
+            area.innerHTML = `${voteDetailsHTML}<p style="text-align:center; color:var(--text-muted);">원정대가 임무 수행 중입니다...</p>`;
           }
         } else if (gameState.phase === 'ASSASSINATE') {
           if (myPlayer.role === 'Assassin') {
-            area.innerHTML = `<p style="color:var(--red);">머린으로 의심되는 플레이어를 목록에서 클릭하여 암살하세요!</p>`;
+            area.innerHTML = `${voteDetailsHTML}<p style="color:var(--red);">머린으로 의심되는 플레이어를 목록에서 클릭하여 암살하세요!</p>`;
           } else {
-            area.innerHTML = `<p style="text-align:center; color:var(--red);">선 세력 3승! 암살자가 머린을 찾는 중입니다...</p>`;
+            area.innerHTML = `${voteDetailsHTML}<p style="text-align:center; color:var(--red);">선 세력 3승! 암살자가 머린을 찾는 중입니다...</p>`;
           }
         } else if (gameState.phase === 'GAME_OVER') {
           const isGoodWin = gameState.winner === 'GOOD';
-          let restartBtnHTML = '';
-          if (isHost) {
-            restartBtnHTML = `<button class="btn btn-primary" style="margin-top:12px;" onclick="restartGame()">게임 다시하기 (대기실 이동)</button>`;
-          } else {
-            restartBtnHTML = `<p style="text-align:center; font-size:0.85rem; color:var(--text-muted); margin-top:12px;">방장이 다시하기를 누르기를 기다리고 있습니다...</p>`;
-          }
+          let restartBtnHTML = isHost 
+            ? `<button class="btn btn-primary" style="margin-top:12px;" onclick="restartGame()">게임 다시하기 (대기실 이동)</button>`
+            : `<p style="text-align:center; font-size:0.85rem; color:var(--text-muted); margin-top:12px;">방장이 다시하기를 누르기를 기다리고 있습니다...</p>`;
+
+          const allRolesSummary = Object.entries(gameState.players).map(([sId, p]) => {
+            return `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #334155; padding:4px 0;">
+              <span>${p.name}</span>
+              <strong style="color:var(--gold);">${getRoleKorean(p.role)}</strong>
+            </div>`;
+          }).join('');
 
           area.innerHTML = `
             <h2 style="text-align:center; color:${isGoodWin ? 'var(--blue)' : 'var(--red)'}">
               ${isGoodWin ? '정의의 세력 승리!' : '악의 세력 승리!'}
             </h2>
+            <div style="margin-top:12px; background:#0f172a; padding:10px; border-radius:6px; font-size:0.85rem;">
+              <h4 style="margin-bottom:6px; color:var(--gold);">👑 최종 캐릭터 공개</h4>
+              ${allRolesSummary}
+            </div>
             ${restartBtnHTML}
           `;
         }
@@ -409,19 +494,16 @@
       }
     }
 
-    // --- 액션 처리 함수 ---
+    // --- 게임 액션 ---
 
-    // 방 생성
     window.createRoom = async function() {
       try {
         myName = inputs.name.value.trim();
         const pwd = inputs.createPassword.value.trim();
 
         if (!myName) return alert('닉네임을 입력하세요.');
-        if (!pwd) return alert('방 생성 비밀번호를 입력하세요.');
         if (!pwd) return alert('키를 입력하세요.');
         if (pwd !== didyou) {
-          alert('비밀번호가 일치하지 않습니다. 방을 만들 수 없습니다.');
           alert('키가 일치하지 않습니다. 방을 만들 수 없습니다.');
           return;
         }
@@ -441,7 +523,6 @@
       }
     };
 
-    // 방 참가
     window.joinGame = async function() {
       try {
         myName = inputs.name.value.trim();
@@ -477,7 +558,7 @@
       }
     }
 
-    // 게임 시작
+    // 3회 연속 동일 캐릭터 방지 알고리즘 적용
     window.startGame = async function() {
       try {
         if (!isHost) return;
@@ -486,10 +567,7 @@
         const snapshot = await roomRef.once('value');
         const latestData = snapshot.val();
 
-        if (!latestData || !latestData.players) {
-          alert('방 데이터를 찾을 수 없습니다.');
-          return;
-        }
+        if (!latestData || !latestData.players) return;
 
         const pIds = Object.keys(latestData.players);
         const count = pIds.length;
@@ -510,39 +588,81 @@
         if (count >= 7) evilCount = 3;
         if (count >= 9) evilCount = 4;
 
-        let roles = ['Merlin', 'Assassin'];
+        let rolesTemplate = ['Merlin', 'Assassin'];
         let goodCount = count - evilCount - 1;
         let remainingEvil = evilCount - 1;
 
-        if (rolesConfig.percival && goodCount > 0) { roles.push('Percival'); goodCount--; }
-        if (rolesConfig.morgana && remainingEvil > 0) { roles.push('Morgana'); remainingEvil--; }
-        if (rolesConfig.mordred && remainingEvil > 0) { roles.push('Mordred'); remainingEvil--; }
-        if (rolesConfig.oberon && remainingEvil > 0) { roles.push('Oberon'); remainingEvil--; }
+        if (rolesConfig.percival && goodCount > 0) { rolesTemplate.push('Percival'); goodCount--; }
+        if (rolesConfig.morgana && remainingEvil > 0) { rolesTemplate.push('Morgana'); remainingEvil--; }
+        if (rolesConfig.mordred && remainingEvil > 0) { rolesTemplate.push('Mordred'); remainingEvil--; }
+        if (rolesConfig.oberon && remainingEvil > 0) { rolesTemplate.push('Oberon'); remainingEvil--; }
 
-        while (goodCount > 0) { roles.push('Servant'); goodCount--; }
-        while (remainingEvil > 0) { roles.push('Minion'); remainingEvil--; }
+        while (goodCount > 0) { rolesTemplate.push('Servant'); goodCount--; }
+        while (remainingEvil > 0) { rolesTemplate.push('Minion'); remainingEvil--; }
 
-        const shuffledRoles = secureShuffle(roles);
+        let currentRoleHistory = latestData.roleHistory || {};
+        let finalShuffledRoles = null;
+        let validAssignmentFound = false;
+
+        for (let attempt = 0; attempt < 100; attempt++) {
+          let candidateRoles = secureShuffle(rolesTemplate);
+          let isValid = true;
+
+          for (let i = 0; i < pIds.length; i++) {
+            const sId = pIds[i];
+            const assignedRole = candidateRoles[i];
+            const history = currentRoleHistory[sId] || [];
+
+            if (history.length >= 2) {
+              const lastOne = history[history.length - 1];
+              const lastTwo = history[history.length - 2];
+              if (lastOne === assignedRole && lastTwo === assignedRole) {
+                isValid = false; // 3회 연속 중복 발생 시 재시도
+                break;
+              }
+            }
+          }
+
+          if (isValid) {
+            finalShuffledRoles = candidateRoles;
+            validAssignmentFound = true;
+            break;
+          }
+        }
+
+        if (!validAssignmentFound) {
+          finalShuffledRoles = secureShuffle(rolesTemplate);
+        }
+
         const shuffledPIds = secureShuffle(pIds);
-
         const playersUpdate = {};
-        const leaderIndex = Math.floor(Math.random() * count);
+        const updatedRoleHistory = { ...currentRoleHistory };
 
         shuffledPIds.forEach((sId, i) => {
-          playersUpdate[`players/${sId}/role`] = shuffledRoles[i];
+          const newRole = finalShuffledRoles[i];
+          playersUpdate[`players/${sId}/role`] = newRole;
+
+          if (!updatedRoleHistory[sId]) updatedRoleHistory[sId] = [];
+          updatedRoleHistory[sId].push(newRole);
+          if (updatedRoleHistory[sId].length > 5) updatedRoleHistory[sId].shift();
         });
+
+        const leaderIndex = Math.floor(Math.random() * count);
 
         await roomRef.update({
           ...playersUpdate,
+          roleHistory: updatedRoleHistory,
           phase: 'TEAM_SELECTION',
           currentQuest: 0,
           questResults: [],
           rejectCount: 0,
           leaderSessionId: shuffledPIds[leaderIndex],
+          teamSelectionStartTime: Date.now(),
           logs: ["게임이 시작되었습니다! 역할 정보를 확인하고 리더는 팀을 구성하세요."],
           teamVotes: null,
           missionVotes: null,
-          selectedTeam: null
+          selectedTeam: null,
+          lastTeamVoteDetails: null
         });
       } catch(e) {
         console.error('startGame 오류:', e);
@@ -550,14 +670,9 @@
       }
     }
 
-    // 방장 전용 강제 초기화 기능
     window.restartGame = async function() {
       try {
-        if (!isHost) {
-          alert('방장만 강제 다시시작을 실행할 수 있습니다.');
-          return;
-        }
-
+        if (!isHost) return alert('방장만 강제 다시시작을 실행할 수 있습니다.');
         if (!confirm('게임을 초기화하고 대기실 화면으로 이동하시겠습니까?')) return;
 
         const roomRef = database.ref('rooms/' + gameState.roomId);
@@ -582,11 +697,11 @@
           missionVotes: null,
           questResults: null,
           leaderSessionId: null,
+          lastTeamVoteDetails: null,
           logs: ["방장에 의해 게임이 초기화되었습니다. 대기실에서 다시 게임을 설정하세요."]
         });
       } catch(e) {
         console.error('restartGame 오류:', e);
-        alert('게임 초기화 오류: ' + e.message);
       }
     }
 
@@ -669,6 +784,7 @@
             phase: 'MISSION_VOTE',
             missionVotes: null,
             rejectCount: 0,
+            lastTeamVoteDetails: data.teamVotes,
             logs: [...currentLogs, `[표결 가결] 찬성 ${approves}표 / 반대 ${rejects}표. 원정을 출발합니다!`]
           });
         } else {
@@ -677,6 +793,7 @@
             await roomRef.update({
               phase: 'GAME_OVER',
               winner: 'EVIL',
+              lastTeamVoteDetails: data.teamVotes,
               logs: [...currentLogs, `[표결 부결] 찬성 ${approves}표 / 반대 ${rejects}표. (연속 부결 5회)`, "5회 연속 부결로 인해 악의 세력이 승리했습니다!"]
             });
           } else {
@@ -689,6 +806,8 @@
               leaderSessionId: pIds[nextLeaderIdx],
               rejectCount: nextRejectCount,
               selectedTeam: null,
+              teamSelectionStartTime: Date.now(),
+              lastTeamVoteDetails: data.teamVotes,
               logs: [...currentLogs, `[표결 부결] 찬성 ${approves}표 / 반대 ${rejects}표. (연속 부결 ${nextRejectCount}회)`, `다음 원정대장(${data.players[pIds[nextLeaderIdx]].name})에게 기회가 넘어갑니다.`]
             });
           }
@@ -776,6 +895,7 @@
             currentQuest: data.currentQuest + 1,
             selectedTeam: null,
             missionVotes: null,
+            teamSelectionStartTime: Date.now(),
             logs: [...currentLogs, `다음 원정대장(${data.players[pIds[nextLeaderIdx]].name})에게 기회가 넘어갑니다.`]
           });
         }
@@ -810,7 +930,7 @@
       }
     }
 
-    // --- 비밀 시야 ---
+    // --- 시야 정보 ---
     window.revealSecret = function() {
       try {
         const myPlayer = gameState.players[mySessionId];
@@ -863,18 +983,33 @@
         }
         return `정보가 없습니다. 발언에 집중하세요.`;
       } catch(e) {
-        console.error('getRoleVision 오류:', e);
         return '정보 조회 오류';
       }
     }
 
-    // --- 도움말 모달 ---
+    // --- 도움말 탭 기능 ---
     window.toggleHelpModal = function(show) {
       const modal = document.getElementById('help-modal');
-      if (show) {
-        modal.classList.remove('hidden');
+      if (show) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
+    }
+
+    window.switchHelpTab = function(tabName) {
+      const tabChar = document.getElementById('tab-char');
+      const tabRules = document.getElementById('tab-rules');
+      const btnChar = document.getElementById('btn-tab-char');
+      const btnRules = document.getElementById('btn-tab-rules');
+
+      if (tabName === 'char') {
+        tabChar.classList.remove('hidden');
+        tabRules.classList.add('hidden');
+        btnChar.classList.add('active');
+        btnRules.classList.remove('active');
       } else {
-        modal.classList.add('hidden');
+        tabChar.classList.add('hidden');
+        tabRules.classList.remove('hidden');
+        btnChar.classList.remove('active');
+        btnRules.classList.add('active');
       }
     }
 
@@ -889,13 +1024,8 @@
       `).join('');
     }
 
-    // --- 유틸리티 ---
     function showJoinUI() { 
-      try {
-        document.getElementById('join-ui').classList.toggle('hidden'); 
-      } catch(e) {
-        console.error('showJoinUI 오류:', e);
-      }
+      document.getElementById('join-ui').classList.toggle('hidden'); 
     }
 
     function generateQRCode(roomId) { 
@@ -924,7 +1054,7 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-color); color: var(--text); display: flex; justify-content: center; min-height: 100vh; padding: 12px; }
-    .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 16px; }
+    .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 16px; position: relative; }
     h1 { text-align: center; color: var(--gold); font-size: 1.6rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); border-bottom: 2px solid var(--gold-dark); padding-bottom: 8px; }
     h4 { color: var(--text-muted); font-size: 0.95rem; margin-top: 8px;}
     .card { background: var(--card-bg); border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid #334155; }
@@ -960,13 +1090,22 @@
     .vote-status-badge.approved { background: var(--blue); color: #fff; }
     .vote-status-badge.rejected { background: var(--red); color: #fff; }
 
-    /* 모달 스타일 */
+    /* 이벤트 팝업 알림 */
+    .event-banner { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--gold); color: #000; padding: 12px 20px; border-radius: 8px; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 2000; font-size: 0.9rem; text-align: center; max-width: 90%; }
+
+    /* 모달 & 탭 스타일 */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
     .modal-content { background: var(--card-bg); border-radius: 12px; width: 100%; max-width: 440px; max-height: 80vh; display: flex; flex-direction: column; padding: 16px; gap: 12px; border: 1px solid #475569; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
-    .modal-scroll-area { overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+    .modal-scroll-area { overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; font-size: 0.85rem; line-height: 1.4; }
+    .tab-btn-group { display: flex; gap: 4px; border-bottom: 1px solid #334155; padding-bottom: 8px; }
+    .tab-btn { flex: 1; padding: 8px; border: none; background: #0f172a; color: var(--text-muted); border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .tab-btn.active { background: var(--gold); color: #000; }
   </style>
 </head>
 <body>
+
+<!-- 이벤트 상단 알림 팝업 -->
+<div id="event-banner" class="event-banner hidden"></div>
 
 <div class="container">
   <h1>레지스탕스 아발론</h1>
@@ -1026,11 +1165,13 @@
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
       <h3 style="color:var(--gold); font-size:1.1rem;">게임 진행 중</h3>
       <div style="display: flex; gap: 6px;">
-        <button class="btn btn-secondary" style="width:auto; padding:6px 10px; font-size:0.8rem;" onclick="toggleHelpModal(true)">📖 도움말</button>
-        <!-- 방장에게만 보이는 강제 다시시작 버튼 -->
+        <button class="btn btn-secondary" style="width:auto; padding:6px 10px; font-size:0.8rem;" onclick="toggleHelpModal(true)">📖 게임설명</button>
         <button id="btn-host-restart" class="btn btn-danger hidden" style="width:auto; padding:6px 10px; font-size:0.8rem;" onclick="restartGame()">🔄 강제 다시시작</button>
       </div>
     </div>
+
+    <!-- 타이머 표시 구역 -->
+    <div id="selection-timer" class="hidden" style="text-align:center; color:var(--gold); font-weight:bold; font-size:0.85rem; margin-bottom:8px;"></div>
 
     <div class="board" id="quest-board"></div>
     <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
@@ -1049,11 +1190,31 @@
   </div>
 </div>
 
-<!-- 도움말 모달 레이어 -->
+<!-- 도움말 탭 모달 레이어 -->
 <div id="help-modal" class="modal-overlay hidden">
   <div class="modal-content">
-    <h3 style="color:var(--gold); border-bottom:1px solid #334155; padding-bottom:8px;">🎭 캐릭터 역할 & 능력</h3>
-    <div id="help-character-list" class="modal-scroll-area"></div>
+    <div class="tab-btn-group">
+      <button id="btn-tab-char" class="tab-btn active" onclick="switchHelpTab('char')">🎭 캐릭터 정보</button>
+      <button id="btn-tab-rules" class="tab-btn" onclick="switchHelpTab('rules')">📜 게임 진행 설명</button>
+    </div>
+
+    <!-- 탭 1: 캐릭터 설명 -->
+    <div id="tab-char" class="modal-scroll-area">
+      <div id="help-character-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+
+    <!-- 탭 2: 게임 진행 설명 -->
+    <div id="tab-rules" class="modal-scroll-area hidden">
+      <strong style="color:var(--gold);">⚔️ 승리 조건</strong>
+      <p>• 정의의 세력: 원정(퀘스트) 3회 성공 + 암살자로부터 머린 보호</p>
+      <p>• 악의 세력: 원정 3회 실패 OR 표결 5회 연속 부결 OR 머린 암살 성공</p>
+      <hr style="border-color:#334155; margin:6px 0;">
+      <strong style="color:var(--gold);">🔄 라운드 진행</strong>
+      <p>1. <strong>팀 구성:</strong> 원정대장이 인원수에 맞는 대원 선택 (5분 타이머)</p>
+      <p>2. <strong>찬반 표결:</strong> 전원 공개 투표 (과반수 찬성 시 출발, 동수/반대 시 부결)</p>
+      <p>3. <strong>원정 수행:</strong> 뽑힌 원정대원만 성공/실패 비공개 제출</p>
+    </div>
+
     <button class="btn btn-secondary" onclick="toggleHelpModal(false)" style="margin-top:4px;">닫기</button>
   </div>
 </div>
