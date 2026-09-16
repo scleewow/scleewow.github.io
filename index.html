@@ -26,7 +26,6 @@
 
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-    const didyou = "hmgdataasset3464";
 
     // --- 게임 상태 및 세션 변수 ---
     let myName = "";
@@ -497,11 +496,22 @@
     window.createRoom = async function() {
       try {
         myName = inputs.name.value.trim();
-        const pwd = inputs.createPassword.value.trim();
+        const inputPwd = inputs.createPassword.value.trim();
 
         if (!myName) return alert('닉네임을 입력하세요.');
-        if (!pwd) return alert('키를 입력하세요.');
-        if (pwd !== didyou) {
+        if (!inputPwd) return alert('키를 입력하세요.');
+
+        // Firebase Realtime DB에서 admin/createKey 값 조회
+        const keyRef = database.ref('admin/createKey');
+        const snapshot = await keyRef.once('value');
+        const dbKey = snapshot.val();
+
+        if (!dbKey) {
+          alert('서버에 방 생성 키가 설정되어 있지 않습니다.');
+          return;
+        }
+
+        if (inputPwd !== dbKey) {
           alert('키가 일치하지 않습니다. 방을 만들 수 없습니다.');
           return;
         }
