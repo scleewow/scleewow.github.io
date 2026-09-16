@@ -5,30 +5,87 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>레지스탕스 아발론</title>
 
-  <!-- Firebase SDK v9 Compat -->
+  <style>
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .container { width: 100%; max-width: 500px; }
+    .card {
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    h1, h2 { text-align: center; margin-bottom: 15px; }
+    .hidden { display: none !important; }
+    .input-group { margin-bottom: 12px; }
+    .input-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; }
+    .input-group input {
+      width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #444;
+      background: #2a2a2a; color: #fff; font-size: 1rem; box-sizing: border-box;
+    }
+    .btn {
+      width: 100%; padding: 12px; border: none; border-radius: 5px;
+      font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 8px;
+    }
+    .btn-primary { background: #ffd700; color: #000; }
+    .btn-blue { background: #007bff; color: #fff; }
+  </style>
+
+  <!-- 1. Firebase SDK v9 Compat -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <!-- QR Code Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-<!-- 2. config.js 및 game.js에 type="module" 추가 및 파일명 경로 확인 -->
-<script type="module" src="config.js"></script>
-<script type="module" src="avalon_game.js"></script>
+  <!-- 2. 순서대로 스크립트 로드 (일반 스크립트로 로드하여 스코프 공유) -->
+  <script src="config.js"></script>
+  <script src="avalon_game.js"></script>
 </head>
 <body>
+  <div class="container">
 
-  <!-- UI 요소 레이아웃 (필요한 HTML 요소 작성) -->
-  <div id="screen-lobby">
-    <!-- 로비 화면 요소 -->
+    <!-- 로비 화면 -->
+    <div id="screen-lobby" class="card">
+      <h1>⚔️ 아발론 로비</h1>
+      <div class="input-group">
+        <label for="player-name">닉네임</label>
+        <input type="text" id="player-name" placeholder="닉네임 입력">
+      </div>
+      
+      <hr style="margin: 15px 0; border-color: #444;">
+
+      <div class="input-group">
+        <label for="create-password">방 생성 키 (방장 전용)</label>
+        <input type="password" id="create-password" placeholder="비밀키 입력">
+      </div>
+      <button class="btn btn-primary" onclick="createRoom()">새 방 만들기</button>
+
+      <div style="margin-top: 20px;">
+        <div class="input-group">
+          <label for="room-id">방 코드</label>
+          <input type="text" id="room-id" placeholder="ROOM_XXXXX">
+        </div>
+        <button class="btn btn-blue" onclick="joinGame()">방 참가하기</button>
+      </div>
+    </div>
+
+    <!-- 방 대기 화면 -->
+    <div id="screen-room" class="card hidden">
+      <h2>대기실</h2>
+      <p style="text-align:center;">참가자 목록을 불러오는 중...</p>
+    </div>
+
+    <!-- 게임 플레이 화면 -->
+    <div id="screen-game" class="card hidden">
+      <h2>게임 진행 중</h2>
+    </div>
+
   </div>
-
-  <div id="screen-room" class="hidden">
-    <!-- 방 대기 화면 요소 -->
-  </div>
-
-  <div id="screen-game" class="hidden">
-    <!-- 게임 플레이 화면 요소 -->
-  </div>
-
 </body>
 </html>
