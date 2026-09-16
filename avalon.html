@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>레지스탕스 아발론</title>
+
+  <!-- Firebase SDK v9 Compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <!-- QR Code Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- 외부 분리 JS 로드 (순서 준수 필수) -->
+  <script src="config.js"></script>
+  <script src="avlon_game.js"></script>
+</head>
+<body>
+
+  <!-- UI 요소 레이아웃 (필요한 HTML 요소 작성) -->
+  <div id="screen-lobby">
+    <!-- 로비 화면 요소 -->
+  </div>
+
+  <div id="screen-room" class="hidden">
+    <!-- 방 대기 화면 요소 -->
+  </div>
+
+  <div id="screen-game" class="hidden">
+    <!-- 게임 플레이 화면 요소 -->
+  </div>
+
+</body>
+</html>
