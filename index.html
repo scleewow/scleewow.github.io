@@ -167,7 +167,6 @@
             const data = snapshot.val();
             if (!data) return;
 
-            // 강퇴 여부 검사
             if (data.players && !data.players[mySessionId]) {
               alert("방장에 의해 강제 퇴장되었습니다.");
               roomRef.off();
@@ -177,7 +176,6 @@
               return;
             }
 
-            // 이벤트 알림 처리
             if (data.logs && data.logs.length > lastProcessedLogCount) {
               const newLogs = data.logs.slice(lastProcessedLogCount);
               newLogs.forEach(log => {
@@ -558,7 +556,6 @@
       }
     }
 
-    // 3회 연속 동일 캐릭터 방지 알고리즘 적용
     window.startGame = async function() {
       try {
         if (!isHost) return;
@@ -617,7 +614,7 @@
               const lastOne = history[history.length - 1];
               const lastTwo = history[history.length - 2];
               if (lastOne === assignedRole && lastTwo === assignedRole) {
-                isValid = false; // 3회 연속 중복 발생 시 재시도
+                isValid = false;
                 break;
               }
             }
@@ -1100,6 +1097,12 @@
     .tab-btn-group { display: flex; gap: 4px; border-bottom: 1px solid #334155; padding-bottom: 8px; }
     .tab-btn { flex: 1; padding: 8px; border: none; background: #0f172a; color: var(--text-muted); border-radius: 6px; font-weight: bold; cursor: pointer; }
     .tab-btn.active { background: var(--gold); color: #000; }
+
+    /* 안내용 테이블 스타일 */
+    .rule-table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 0.78rem; text-align: center; }
+    .rule-table th, .rule-table td { border: 1px solid #334155; padding: 5px 4px; }
+    .rule-table th { background: #0f172a; color: var(--gold); }
+    .rule-table td { background: #1e293b; }
   </style>
 </head>
 <body>
@@ -1205,14 +1208,69 @@
 
     <!-- 탭 2: 게임 진행 설명 -->
     <div id="tab-rules" class="modal-scroll-area hidden">
+      <strong style="color:var(--gold);">👥 인원별 세력 구성 (선 vs 악)</strong>
+      <table class="rule-table">
+        <thead>
+          <tr>
+            <th>인원수</th>
+            <th>5명</th>
+            <th>6명</th>
+            <th>7명</th>
+            <th>8명</th>
+            <th>9명</th>
+            <th>10명</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>선 세력</strong></td>
+            <td>3명</td>
+            <td>4명</td>
+            <td>4명</td>
+            <td>5명</td>
+            <td>5명</td>
+            <td>6명</td>
+          </tr>
+          <tr>
+            <td><strong>악 세력</strong></td>
+            <td>2명</td>
+            <td>2명</td>
+            <td>3명</td>
+            <td>3명</td>
+            <td>4명</td>
+            <td>4명</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <strong style="color:var(--gold); margin-top:8px;">🛡️ 차수별 원정 인원 수</strong>
+      <table class="rule-table">
+        <thead>
+          <tr>
+            <th>인원수</th>
+            <th>1차</th>
+            <th>2차</th>
+            <th>3차</th>
+            <th>4차</th>
+            <th>5차</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>5명</td><td>2명</td><td>3명</td><td>2명</td><td>3명</td><td>3명</td></tr>
+          <tr><td>6명</td><td>2명</td><td>3명</td><td>4명</td><td>3명</td><td>4명</td></tr>
+          <tr><td>7명</td><td>2명</td><td>3명</td><td>3명</td><td>4명*</td><td>4명</td></tr>
+          <tr><td>8~10명</td><td>3명</td><td>4명</td><td>4명</td><td>5명*</td><td>5명</td></tr>
+        </tbody>
+      </table>
+
+      <strong style="color:var(--gold); margin-top:8px;">❌ 원정 실패 조건 (반대표 수)</strong>
+      <p>• <strong>기본 규칙:</strong> 원정표 중 <span style="color:var(--red); font-weight:bold;">실패(반대) 1장 이상</span> 제출 시 해당 원정은 실패합니다.</p>
+      <p>• <strong>* 7인 이상 4차 원정 예외 규칙:</strong> 7명 이상 게임의 4차 원정은 <span style="color:var(--red); font-weight:bold;">실패(반대) 2장 이상</span>이어야 실패 처리되며, 실패표가 1장이면 원정이 성공합니다.</p>
+
+      <hr style="border-color:#334155; margin:8px 0;">
       <strong style="color:var(--gold);">⚔️ 승리 조건</strong>
-      <p>• 정의의 세력: 원정(퀘스트) 3회 성공 + 암살자로부터 머린 보호</p>
+      <p>• 정의의 세력: 원정 3회 성공 + 암살자로부터 머린 보호</p>
       <p>• 악의 세력: 원정 3회 실패 OR 표결 5회 연속 부결 OR 머린 암살 성공</p>
-      <hr style="border-color:#334155; margin:6px 0;">
-      <strong style="color:var(--gold);">🔄 라운드 진행</strong>
-      <p>1. <strong>팀 구성:</strong> 원정대장이 인원수에 맞는 대원 선택 (5분 타이머)</p>
-      <p>2. <strong>찬반 표결:</strong> 전원 공개 투표 (과반수 찬성 시 출발, 동수/반대 시 부결)</p>
-      <p>3. <strong>원정 수행:</strong> 뽑힌 원정대원만 성공/실패 비공개 제출</p>
     </div>
 
     <button class="btn btn-secondary" onclick="toggleHelpModal(false)" style="margin-top:4px;">닫기</button>
