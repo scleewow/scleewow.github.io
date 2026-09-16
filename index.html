@@ -4,40 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>레지스탕스 아발론</title>
-  
-  <script>
-    // 페이지가 로드되자마자 실행되는 주소 파라미터 전달 로직
-    (function() {
-      // 1. 현재 접속한 URL의 쿼리 스트링(?room=ROOM_ABC 등)을 가져옵니다.
-      const searchParams = window.location.search;
-      
-      // 2. 만약 주소에 ?room=... 과 같은 파라미터가 포함되어 있다면
-      if (searchParams) {
-        // avalon.html 뒤에 해당 파라미터를 그대로 붙여서 이동시킵니다.
-        // 예: index.html?room=ROOM123 -> avalon.html?room=ROOM123
-        window.location.href = 'avalon.html' + searchParams;
-      }
-    })();
-  </script>
+
+  <!-- Firebase SDK v9 Compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <!-- QR Code Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- 외부 분리 JS 로드 (순서 준수 필수) -->
+  <script src="config.js"></script>
+  <script src="avlon_game.js"></script>
 </head>
 <body>
 
-  <div style="text-align: center; padding-top: 50px;">
-    <h1>⚔️ 레지스탕스 아발론</h1>
-    <p>아래 버튼을 누르면 게임 화면으로 이동합니다.</p>
-    
-    <!-- 기본 버튼 링크에도 클릭 시 파라미터를 유지하도록 처리할 수 있습니다 -->
-    <a id="enter-btn" href="avalon.html" style="display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 6px; margin-top: 20px;">
-      게임 입장하기
-    </a>
+  <!-- UI 요소 레이아웃 (필요한 HTML 요소 작성) -->
+  <div id="screen-lobby">
+    <!-- 로비 화면 요소 -->
   </div>
 
-  <script>
-    // 버튼 클릭으로 이동할 때도 주소창의 파라미터를 유지해주는 보조 코드
-    const searchParams = window.location.search;
-    if (searchParams) {
-      document.getElementById('enter-btn').href = 'avalon.html' + searchParams;
-    }
-  </script>
+  <div id="screen-room" class="hidden">
+    <!-- 방 대기 화면 요소 -->
+  </div>
+
+  <div id="screen-game" class="hidden">
+    <!-- 게임 플레이 화면 요소 -->
+  </div>
+
 </body>
 </html>
