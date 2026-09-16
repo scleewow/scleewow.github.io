@@ -50,41 +50,92 @@
 <body>
   <div class="container">
 
-    <!-- 로비 화면 -->
-    <div id="screen-lobby" class="card">
+  <!-- 1. 메인 / 로비 화면 -->
+  <div id="screen-lobby" class="card">
       <h1>⚔️ 아발론 로비</h1>
+    <div class="input-group">
+      <label for="player-name">내 닉네임</label>
+      <input type="text" id="player-name" placeholder="닉네임 입력">
+    </div>
+    <div class="input-group">
+      <label for="create-password">방 생성 비밀번호 (방 생성 전용)</label>
+      <input type="password" id="create-password" placeholder="비밀번호 입력">
+    </div>
+    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+      <button class="btn btn-primary" onclick="createRoom()">방 만들기</button>
+      <button class="btn btn-secondary" onclick="showJoinUI()">참가하기</button>
+    </div>
+    <div id="join-ui" class="hidden card" style="background: rgba(0,0,0,0.3); border: none; padding: 12px;">
       <div class="input-group">
-        <label for="player-name">닉네임</label>
-        <input type="text" id="player-name" placeholder="닉네임 입력">
+        <label for="room-id">방 코드 (예: ROOM_ABCD)</label>
+        <input type="text" id="room-id" placeholder="방 코드 입력">
       </div>
-      
-      <hr style="margin: 15px 0; border-color: #444;">
+      <button class="btn btn-blue" onclick="joinGame()">입장하기</button>
+    </div>
+    <p style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-top:16px;">
+      새로고침하거나 브라우저를 껐다 켜도 진행 중인 방으로 재접속됩니다.
+    </p>
+  </div>
 
-      <div class="input-group">
-        <label for="create-password">방 생성 키 (방장 전용)</label>
-        <input type="password" id="create-password" placeholder="비밀키 입력">
+  <!-- 2. 대기실 화면 -->
+  <div id="screen-room" class="card hidden">
+    <h3 style="text-align: center;">방 코드: <span id="display-room-id" style="color:var(--gold); word-break: break-all;"></span></h3>
+    <div class="qr-container">
+      <div id="qrcode"></div>
+      <p style="color:#000; font-size:0.7rem; font-weight:bold;">스캔하여 모바일 접속</p>
+    </div>
+    <h4>참가자 (<span id="player-count">0</span>/10)</h4>
+    <ul id="waiting-player-list" class="player-list"></ul>
+    <div id="host-controls" class="hidden card" style="background: rgba(0,0,0,0.3); border: none; padding: 12px; margin-top:12px;">
+      <label>특수 역할 설정</label>
+      <div class="roles-option">
+        <label class="role-toggle"><input type="checkbox" id="role-percival" checked> 퍼시벌</label>
+        <label class="role-toggle"><input type="checkbox" id="role-morgana" checked> 모거나</label>
+        <label class="role-toggle"><input type="checkbox" id="role-mordred"> 모드레드</label>
+        <label class="role-toggle"><input type="checkbox" id="role-oberon"> 오베론</label>
       </div>
-      <button class="btn btn-primary" onclick="createRoom()">새 방 만들기</button>
+      <button class="btn btn-primary" id="btn-start-game" onclick="startGame()">게임 시작 (5~10인)</button>
+    </div>
+    <div id="client-wait-msg" class="hidden card" style="text-align: center; color: var(--gold); background: rgba(0,0,0,0.3); border: none; padding: 12px; margin-top:12px;">
+      방장이 게임 설정을 완료하기를 기다리는 중...
+    </div>
+  </div>
 
-      <div style="margin-top: 20px;">
-        <div class="input-group">
-          <label for="room-id">방 코드</label>
-          <input type="text" id="room-id" placeholder="ROOM_XXXXX">
-        </div>
-        <button class="btn btn-blue" onclick="joinGame()">방 참가하기</button>
+  <!-- 3. 메인 게임 화면 -->
+  <div id="screen-game" class="card hidden">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+      <h3 style="color:var(--gold); font-size:1.1rem;">게임 진행 중</h3>
+      <div style="display: flex; gap: 6px;">
+        <button class="btn btn-secondary" style="width:auto; padding:6px 10px; font-size:0.8rem;" onclick="toggleHelpModal(true)">📖 도움말</button>
+        <button class="btn btn-danger" style="width:auto; padding:6px 10px; font-size:0.8rem;" onclick="restartGame()">🔄 강제 다시시작</button>
       </div>
     </div>
-
-    <!-- 방 대기 화면 -->
-    <div id="screen-room" class="card hidden">
-      <h2>대기실</h2>
-      <p style="text-align:center;">참가자 목록을 불러오는 중...</p>
+    
+    <div class="board" id="quest-board"></div>
+    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
+      <span>부결 횟수: <strong id="reject-count" style="color:var(--red);">0</strong> / 5</span>
+      <span>리더: <strong id="current-leader" style="color:var(--gold);">-</strong></span>
     </div>
-
-    <!-- 게임 플레이 화면 -->
-    <div id="screen-game" class="card hidden">
-      <h2>게임 진행 중</h2>
+    <div class="secret-box" id="secret-box" onmousedown="revealSecret()" onmouseup="hideSecret()" ontouchstart="revealSecret()" ontouchend="hideSecret()">
+      <span id="secret-hint">👉 누르고 있으면 역할/정보 확인</span>
+      <div id="secret-content" class="hidden"></div>
     </div>
+    <div id="action-area" class="card" style="background: rgba(0,0,0,0.3); border: none; padding: 12px; margin: 12px 0;"></div>
+    <h4>플레이어 목록</h4>
+    <ul id="game-player-list" class="player-list"></ul>
+    <h4>게임 로그</h4>
+    <div id="log-box" class="log-box"></div>
+  </div>
+</div>
+
+<!-- 도움말 모달 레이어 -->
+<div id="help-modal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <h3 style="color:var(--gold); border-bottom:1px solid #334155; padding-bottom:8px;">🎭 캐릭터 역할 & 능력</h3>
+    <div id="help-character-list" class="modal-scroll-area"></div>
+    <button class="btn btn-secondary" onclick="toggleHelpModal(false)" style="margin-top:4px;">닫기</button>
+  </div>
+</div>
 
   </div>
 </body>
