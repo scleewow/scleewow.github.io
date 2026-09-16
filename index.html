@@ -103,6 +103,14 @@
       };
     }
 
+    // SHA-256 해시 함수
+    async function hashPassword(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
     function secureShuffle(array) {
       const arr = [...array];
       for (let i = arr.length - 1; i > 0; i--) {
@@ -491,8 +499,7 @@
       }
     }
 
-    // --- 게임 액션 ---
-
+    // --- 방 생성 (해시값 비교 방식 적용) ---
     window.createRoom = async function() {
       try {
         myName = inputs.name.value.trim();
@@ -501,17 +508,21 @@
         if (!myName) return alert('닉네임을 입력하세요.');
         if (!inputPwd) return alert('키를 입력하세요.');
 
-        // Firebase Realtime DB에서 admin/createKey 값 조회
+        // 1. 입력받은 패스워드를 SHA-256 해시로 변환
+        const hashedInput = await hashPassword(inputPwd);
+
+        // 2. Firebase Realtime DB에서 저장된 해시값 가져오기
         const keyRef = database.ref('admin/createKey');
         const snapshot = await keyRef.once('value');
-        const dbKey = snapshot.val();
+        const dbHashedKey = snapshot.val();
 
-        if (!dbKey) {
+        if (!dbHashedKey) {
           alert('서버에 방 생성 키가 설정되어 있지 않습니다.');
           return;
         }
 
-        if (inputPwd !== dbKey) {
+        // 3. 해시값 비교
+        if (hashedInput !== dbHashedKey) {
           alert('키가 일치하지 않습니다. 방을 만들 수 없습니다.');
           return;
         }
