@@ -297,7 +297,7 @@
 
             const inputHash = await hashPassword(inputKey);
 
-            db.ref('admin_config/create_key_hash').once('value', snapshot => {
+            db.ref('admin/createkey').once('value', snapshot => {
                 const storedHash = snapshot.val();
 
                 if (!storedHash) {
