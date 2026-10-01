@@ -11,7 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -39,6 +39,7 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             border: 1px solid #334155;
             transition: background-color 0.5s ease, border-color 0.5s ease;
+            position: relative;
         }
 
         body.night-mode .container {
@@ -59,13 +60,16 @@
         h1 { font-size: 1.3rem; color: #f43f5e; transition: color 0.5s; }
         body.night-mode h1 { color: #a855f7; }
 
-        .lobby-btn {
-            color: #94a3b8;
-            text-decoration: none;
-            border: 1px solid #475569;
+        .guide-btn {
+            color: #38bdf8;
+            background: transparent;
+            border: 1px solid #0284c7;
             padding: 0.35rem 0.7rem;
             border-radius: 6px;
             font-size: 0.85rem;
+            cursor: pointer;
+            width: auto;
+            margin: 0;
         }
 
         .card {
@@ -108,12 +112,23 @@
 
         button.secondary { background: #475569; }
         button.secondary:hover { background: #334155; }
+        button.danger { background: #b91c1c; }
+        button.danger:hover { background: #991b1b; }
+        
         button.kick-btn {
             width: auto;
             padding: 0.25rem 0.5rem;
             font-size: 0.75rem;
             background: #dc2626;
             margin: 0;
+        }
+
+        .hold-btn {
+            background: #0284c7;
+            touch-action: manipulation;
+        }
+        .hold-btn:active {
+            background: #0369a1;
         }
 
         #qrcode {
@@ -144,9 +159,20 @@
             border: 1px solid #334155;
         }
 
+        .player-item.dead {
+            background: #0f172a;
+            border-color: #475569;
+            opacity: 0.75;
+        }
+
         body.night-mode .player-item {
             background: #131722;
             border-color: #2e1065;
+        }
+
+        body.night-mode .player-item.dead {
+            background: #080a10;
+            border-color: #1e1b4b;
         }
 
         .role-badge {
@@ -160,24 +186,74 @@
             background: #070a12;
             padding: 0.75rem;
             border-radius: 8px;
-            height: 110px;
+            height: 120px;
             overflow-y: auto;
             font-size: 0.85rem;
-            color: #94a3b8;
+            color: #cbd5e1;
             text-align: left;
             margin-bottom: 1rem;
             border: 1px solid #1e293b;
+            line-height: 1.4;
         }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #1e293b;
+            width: 90%;
+            max-width: 440px;
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid #475569;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 0.5rem;
+            font-size: 0.85rem;
+            background: #0f172a;
+            border: 1px solid #334155;
+            margin: 0;
+        }
+        .tab-btn.active {
+            background: #e11d48;
+            border-color: #e11d48;
+        }
+        .tab-body {
+            overflow-y: auto;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #cbd5e1;
+            text-align: left;
+            padding-right: 0.3rem;
+        }
+        .tab-body h4 { color: #f43f5e; margin: 0.8rem 0 0.3rem 0; }
+        .tab-body h4:first-child { margin-top: 0; }
+        .role-desc-item { margin-bottom: 0.4rem; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1 id="game-title">🧟 언데드 마피아</h1>
-            <a href="../" class="lobby-btn">🏠 로비로</a>
+            <button class="guide-btn" onclick="openGuideModal()">📖 게임 설명</button>
         </header>
 
-        <!-- 1. 로그인 & 방 선택 화면 -->
+        <!-- 1. 메인 화면 -->
         <div id="screen-main">
             <div class="card">
                 <h3>플레이어 설정</h3>
@@ -209,15 +285,15 @@
             <button id="host-start-btn" class="hidden" onclick="startGame()">역할 배분 및 게임 시작</button>
         </div>
 
-        <!-- 3. 메인 게임 진행 화면 -->
+        <!-- 3. 게임 화면 -->
         <div id="screen-game" class="hidden">
             <div class="card">
-                <p style="font-size:0.8rem; color:#94a3b8;">나의 역할</p>
+                <p style="font-size:0.8rem; color:#94a3b8;">나의 역할 (누르고 있을 때만 표시)</p>
                 <div id="role-display-box" class="hidden">
                     <div id="my-role-title" class="role-badge"></div>
                     <p id="my-role-desc" style="font-size:0.85rem; color:#cbd5e1;"></p>
                 </div>
-                <button id="role-toggle-btn" class="secondary" onclick="toggleRoleSecret()">👁️ 역할 확인 (클릭)</button>
+                <button id="role-hold-btn" class="hold-btn">👁️ 눌러서 역할 확인하기</button>
             </div>
 
             <div class="card">
@@ -232,7 +308,40 @@
                 <div id="game-player-list" class="player-list"></div>
             </div>
 
-            <button id="phase-toggle-btn" class="hidden" onclick="nextPhase()">낮 / 밤 페이즈 전환 (방장 전용)</button>
+            <div id="host-controls" class="hidden">
+                <button id="phase-toggle-btn" onclick="nextPhase()">낮 종료 및 처형 집행 (방장)</button>
+                <button class="danger" style="margin-top:0.5rem;" onclick="forceRestart()">🔄 게임 강제 재시작 (대기실 이동)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 게임 설명 모달 팝업 -->
+    <div id="guide-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="tab-buttons">
+                <button class="tab-btn active" id="tab-btn-rules" onclick="switchTab('tab-rules')">🎮 게임 진행</button>
+                <button class="tab-btn" id="tab-btn-roles" onclick="switchTab('tab-roles')">🎭 캐릭터 안내</button>
+            </div>
+            <div id="tab-rules" class="tab-body">
+                <h4>1. 개요</h4>
+                <p>언데드 마피아는 사망한 플레이어(언데드)도 계속해서 토론과 투표에 참여하는 특수 마피아 게임입니다.</p>
+                
+                <h4>2. 낮 페이즈</h4>
+                <p>• 모든 플레이어가 자유롭게 토론하고 [투표]합니다.<br>
+                • 방장이 [낮 종료 및 처형 집행]을 누르면 최다 득표자가 처형(언데드)되고 밤이 됩니다.</p>
+
+                <h4>3. 밤 페이즈</h4>
+                <p>• 특수 능력을 가진 플레이어는 대상을 선택하고 [능력 사용]을 누릅니다.<br>
+                • 방장은 밤 사이 참여자들의 제출 완료 상태를 확인한 후 아침을 밝힙니다.</p>
+            </div>
+            <div id="tab-roles" class="tab-body hidden">
+                <h4 style="color:#f43f5e;">🔴 마피아팀 캐릭터 (6종)</h4>
+                <div id="mafia-roles-guide"></div>
+
+                <h4 style="color:#38bdf8; margin-top:1rem;">🔵 시민팀 캐릭터 (15종)</h4>
+                <div id="citizen-roles-guide"></div>
+            </div>
+            <button class="secondary" style="margin-top:1rem;" onclick="closeGuideModal()">닫기</button>
         </div>
     </div>
 
@@ -254,7 +363,6 @@
         }
         const db = firebase.database();
 
-        // SHA-256 해시 함수
         async function hashPassword(message) {
             const msgBuffer = new TextEncoder().encode(message);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -262,12 +370,31 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        const ROLES = [
-            { id: 'GODFATHER', name: '대부 (마피아)', team: 'mafia', desc: '밤마다 1명을 처단합니다.' },
-            { id: 'DRUG_DEALER', name: '마약상 (마피아)', team: 'mafia', desc: '밤마다 1명에게 환각을 부여합니다.' },
-            { id: 'INVESTIGATOR', name: '수사관 (시민)', team: 'human', desc: '밤마다 1명을 조사하여 마피아 여부를 확인합니다.' },
-            { id: 'BREWER', name: '양조사 (시민)', team: 'human', desc: '밤마다 1명에게 환각을 부여하여 마약상과 상쇄합니다.' },
-            { id: 'CITIZEN', name: '시민 (시민)', team: 'human', desc: '특수 능력이 없습니다. 추리로 마피아를 찾으세요.' }
+        const ROLES_MAFIA = [
+            { id: 'GODFATHER', name: '대부', team: 'mafia', desc: '마피아의 수장. 밤마다 1명을 지정하여 처단합니다.' },
+            { id: 'DRUG_DEALER', name: '마약상', team: 'mafia', desc: '밤마다 1명에게 환각을 부여해 능력을 봉인합니다.' },
+            { id: 'LAWYER', name: '변호사', team: 'mafia', desc: '지정한 마피아 팀원을 투표 처형으로부터 보호합니다.' },
+            { id: 'HITMAN', name: '청부업자', team: 'mafia', desc: '특정 직업을 저격하여 성공 시 즉시 제거합니다.' },
+            { id: 'THUG', name: '폭력배', team: 'mafia', desc: '밤에 지정한 대상을 협박하여 다음 날 투표권을 박탈합니다.' },
+            { id: 'DEPUTY', name: '대리인', team: 'mafia', desc: '대부 사망 시 대부의 능력을 승계받아 실행합니다.' }
+        ];
+
+        const ROLES_CITIZEN = [
+            { id: 'PSYCHOLOGIST', name: '심리학자', team: 'human', desc: '밤마다 대상의 감정/상태 변화를 파악합니다.' },
+            { id: 'INVESTIGATOR', name: '수사관', team: 'human', desc: '밤마다 1명을 조사하여 마피아 여부를 확인합니다.' },
+            { id: 'BREWER', name: '양조사', team: 'human', desc: '밤마다 1명에게 특제 음료를 주어 환각 효과를 상쇄합니다.' },
+            { id: 'NURSE', name: '간호사', team: 'human', desc: '의사/경호원의 치료 활동을 보조하거나 대상을 보호합니다.' },
+            { id: 'BODYGUARD', name: '경호원', team: 'human', desc: '밤마다 1명을 지정해 습격으로부터 목숨 바쳐 지킵니다.' },
+            { id: 'SNIPER', name: '저격수', team: 'human', desc: '단 1회, 마피아로 의심되는 대상을 직접 저격할 수 있습니다.' },
+            { id: 'WITNESS', name: '목격자', team: 'human', desc: '밤에 일어난 특정 능력 사용 현장을 목격할 수 있습니다.' },
+            { id: 'DETECTIVE', name: '탐정', team: 'human', desc: '밤 동안 특정 대상이 누군가에게 능력을 썼는지 추적합니다.' },
+            { id: 'CLERGY', name: '성직자', team: 'human', desc: '사망한 언데드 중 1명을 원혼으로부터 성화시킵니다.' },
+            { id: 'MAGICIAN', name: '마술사', team: 'human', desc: '밤에 2명의 위치나 능력을 트릭으로 서로 뒤바꿉니다.' },
+            { id: 'MEDIUM', name: '영매', team: 'human', desc: '사망한 플레이어들의 진짜 직업을 확인할 수 있습니다.' },
+            { id: 'SOLDIER', name: '군인', team: 'human', desc: '마피아의 첫 번째 공격을 방어해내는 강인함을 가집니다.' },
+            { id: 'PRESIDENT', name: '대통령', team: 'human', desc: '투표 시 자신의 1표가 2표의 가치를 가집니다.' },
+            { id: 'RULER_BULLY', name: '불량배', team: 'human', desc: '낮에 특정 플레이어의 발언을 제약하거나 위협합니다.' },
+            { id: 'COWARD', name: '겁쟁이', team: 'human', desc: '위기 발생 시 밤 동안 은신하여 공격을 피합니다.' }
         ];
 
         let roomCode = '';
@@ -285,9 +412,47 @@
 
             myPlayerId = sessionStorage.getItem('undead_playerId') || 'p_' + Math.random().toString(36).substring(2, 9);
             sessionStorage.setItem('undead_playerId', myPlayerId);
+
+            setupHoldRoleButton();
+            renderGuideRoles();
         };
 
-        // 방 생성 및 인증키 검증
+        function renderGuideRoles() {
+            const mafiaContainer = document.getElementById('mafia-roles-guide');
+            const citizenContainer = document.getElementById('citizen-roles-guide');
+
+            mafiaContainer.innerHTML = ROLES_MAFIA.map(r => `
+                <div class="role-desc-item"><b>• ${r.name}:</b> ${r.desc}</div>
+            `).join('');
+
+            citizenContainer.innerHTML = ROLES_CITIZEN.map(r => `
+                <div class="role-desc-item"><b>• ${r.name}:</b> ${r.desc}</div>
+            `).join('');
+        }
+
+        function setupHoldRoleButton() {
+            const btn = document.getElementById('role-hold-btn');
+            const box = document.getElementById('role-display-box');
+
+            const showRole = (e) => {
+                e.preventDefault();
+                box.classList.remove('hidden');
+                btn.innerText = '🔓 역할 표시 중...';
+            };
+
+            const hideRole = (e) => {
+                e.preventDefault();
+                box.classList.add('hidden');
+                btn.innerText = '👁️ 눌러서 역할 확인하기';
+            };
+
+            btn.addEventListener('mousedown', showRole);
+            btn.addEventListener('mouseup', hideRole);
+            btn.addEventListener('mouseleave', hideRole);
+            btn.addEventListener('touchstart', showRole);
+            btn.addEventListener('touchend', hideRole);
+        }
+
         async function createRoom() {
             myNickname = document.getElementById('nickname-input').value.trim();
             const inputKey = document.getElementById('create-key-input').value.trim();
@@ -300,13 +465,8 @@
             db.ref('admin/createKey').once('value', snapshot => {
                 const storedHash = snapshot.val();
 
-                if (!storedHash) {
-                    return alert('Firebase에 인증키 설정이 존재하지 않습니다.');
-                }
-
-                if (inputHash !== storedHash) {
-                    return alert('올바르지 않은 방 생성 키입니다.');
-                }
+                if (!storedHash) return alert('Firebase에 인증키 설정이 존재하지 않습니다.');
+                if (inputHash !== storedHash) return alert('올바르지 않은 방 생성 키입니다.');
 
                 roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
                 isHost = true;
@@ -332,9 +492,7 @@
             roomRef = db.ref('undead_rooms/' + roomCode);
 
             roomRef.once('value', snapshot => {
-                if (!snapshot.exists()) {
-                    return alert('존재하지 않는 방입니다.');
-                }
+                if (!snapshot.exists()) return alert('존재하지 않는 방입니다.');
                 joinRoomData();
             });
         }
@@ -345,7 +503,8 @@
             playerRef.set({
                 name: myNickname,
                 isHost: isHost,
-                isDead: false
+                isDead: false,
+                votes: 0
             });
 
             playerRef.onDisconnect().remove();
@@ -365,13 +524,13 @@
             roomRef.on('value', snapshot => {
                 const data = snapshot.val();
                 if (!data) {
-                    alert('방이 삭제되었거나 쫓겨났습니다.');
+                    alert('방이 삭제되었거나 접속이 해제되었습니다.');
                     location.href = './index.html';
                     return;
                 }
 
                 if (!data.players || !data.players[myPlayerId]) {
-                    alert('방장에 의해 강퇴당했거나 접속이 해제되었습니다.');
+                    alert('강퇴당했거나 접속이 해제되었습니다.');
                     location.href = './index.html';
                     return;
                 }
@@ -379,6 +538,8 @@
                 isHost = (data.hostId === myPlayerId);
 
                 if (data.state === 'LOBBY') {
+                    document.getElementById('screen-game').classList.add('hidden');
+                    document.getElementById('screen-lobby').classList.remove('hidden');
                     renderLobby(data);
                 } else {
                     document.getElementById('screen-lobby').classList.add('hidden');
@@ -430,23 +591,32 @@
             roomRef.child('players').once('value', snapshot => {
                 const players = snapshot.val();
                 const keys = Object.keys(players);
+                const count = keys.length;
 
-                if (keys.length < 4) {
+                if (count < 4) {
                     return alert('최소 4명 이상의 플레이어가 필요합니다.');
                 }
 
-                let pool = [...ROLES];
-                while (pool.length < keys.length) pool.push(ROLES[4]);
-                pool.sort(() => Math.random() - 0.5);
+                let mafiaCount = Math.max(1, Math.floor(count / 3.5));
+                let citizenCount = count - mafiaCount;
+
+                let mafiaPool = [...ROLES_MAFIA].sort(() => Math.random() - 0.5).slice(0, mafiaCount);
+                let citizenPool = [...ROLES_CITIZEN].sort(() => Math.random() - 0.5).slice(0, citizenCount);
+
+                let finalPool = [...mafiaPool, ...citizenPool].sort(() => Math.random() - 0.5);
 
                 let updates = {};
                 keys.forEach((pId, idx) => {
-                    updates[`players/${pId}/role`] = pool[idx];
+                    updates[`players/${pId}/role`] = finalPool[idx];
+                    updates[`players/${pId}/isDead`] = false;
+                    updates[`players/${pId}/votes`] = 0;
+                    updates[`players/${pId}/votedFor`] = null;
                 });
 
                 updates['state'] = 'DAY';
                 updates['dayCount'] = 1;
-                updates['logs'] = ['☀️ 제 1일 낮이 밝았습니다. 토론을 시작하세요.'];
+                updates['nightActions'] = null;
+                updates['logs'] = ['☀️ 제 1일 낮이 밝았습니다. 토론을 진행하고 표를 행사하세요.'];
 
                 roomRef.update(updates);
             });
@@ -455,7 +625,8 @@
         function renderGame(data) {
             const me = data.players[myPlayerId];
             if (me && me.role) {
-                document.getElementById('my-role-title').innerText = me.role.name;
+                const teamTag = me.role.team === 'mafia' ? '🔴 [마피아팀]' : '🔵 [시민팀]';
+                document.getElementById('my-role-title').innerText = `${teamTag} ${me.role.name}`;
                 document.getElementById('my-role-desc').innerText = me.role.desc;
             }
 
@@ -463,12 +634,14 @@
                 document.body.classList.add('night-mode');
                 document.getElementById('game-title').innerText = '🧟 언데드 마피아 (밤)';
                 document.getElementById('phase-title').innerText = `🌙 제 ${data.dayCount}일 밤`;
-                document.getElementById('phase-desc').innerText = '언데드 및 특수 직업군이 능력을 행사합니다.';
+                document.getElementById('phase-desc').innerText = '특수 능력을 가진 분은 대상을 지정하여 사용하세요.';
+                document.getElementById('phase-toggle-btn').innerText = '☀️ 밤 종료 및 아침 밝히기 (방장)';
             } else {
                 document.body.classList.remove('night-mode');
                 document.getElementById('game-title').innerText = '🧟 언데드 마피아';
-                document.getElementById('phase-title').innerText = `☀️️ 제 ${data.dayCount}일 낮`;
-                document.getElementById('phase-desc').innerText = '사망자(언데드)를 포함한 토론과 처형 투표를 진행합니다.';
+                document.getElementById('phase-title').innerText = `☀️ 제 ${data.dayCount}일 낮`;
+                document.getElementById('phase-desc').innerText = '토론 후 지목 투표를 진행하세요. (사망자도 투표 참여 가능)';
+                document.getElementById('phase-toggle-btn').innerText = '🌙 낮 종료 및 처형 집행 (방장)';
             }
 
             const logBox = document.getElementById('game-log');
@@ -480,72 +653,218 @@
             Object.keys(data.players).forEach(pId => {
                 const p = data.players[pId];
                 const item = document.createElement('div');
-                item.className = 'player-item';
+                item.className = 'player-item' + (p.isDead ? ' dead' : '');
 
                 let actionBtn = '';
                 if (data.state === 'DAY') {
-                    actionBtn = `<button style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem;" onclick="votePlayer('${p.name}')">지목</button>`;
+                    const votesCount = p.votes || 0;
+                    actionBtn = `<button style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem;" onclick="votePlayer('${pId}')">투표 (${votesCount}표)</button>`;
                 } else {
-                    actionBtn = `<button style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem; background:#7c3aed;" onclick="useAbility('${p.name}')">능력 사용</button>`;
+                    actionBtn = `<button style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem; background:#7c3aed;" onclick="useAbility('${pId}')">능력 사용</button>`;
                 }
 
-                item.innerHTML = `<span>${p.name} ${p.isDead ? '(사망/언데드)' : ''}</span>${actionBtn}`;
+                // 사망자 / 생존자 표기 강화
+                const statusTag = p.isDead ? '💀 [사망/언데드]' : '🟢 [생존자]';
+                item.innerHTML = `<span><b>${p.name}</b> <small style="font-size:0.75rem; color:${p.isDead ? '#ef4444' : '#22c55e'};">${statusTag}</small></span>${actionBtn}`;
                 listEl.appendChild(item);
             });
 
             if (isHost) {
-                document.getElementById('phase-toggle-btn').classList.remove('hidden');
+                document.getElementById('host-controls').classList.remove('hidden');
             } else {
-                document.getElementById('phase-toggle-btn').classList.add('hidden');
+                document.getElementById('host-controls').classList.add('hidden');
             }
         }
 
-        function toggleRoleSecret() {
-            const box = document.getElementById('role-display-box');
-            const btn = document.getElementById('role-toggle-btn');
+        function votePlayer(targetId) {
+            roomRef.once('value', snapshot => {
+                const data = snapshot.val();
+                if (data.state !== 'DAY') return;
 
-            if (box.classList.contains('hidden')) {
-                box.classList.remove('hidden');
-                btn.innerText = '🔒 역할 숨기기';
-            } else {
-                box.classList.add('hidden');
-                btn.innerText = '👁️ 역할 확인 (클릭)';
-            }
+                const players = data.players;
+                const prevVotedId = players[myPlayerId].votedFor;
+
+                let updates = {};
+                if (prevVotedId && players[prevVotedId]) {
+                    updates[`players/${prevVotedId}/votes`] = Math.max(0, (players[prevVotedId].votes || 0) - 1);
+                }
+
+                updates[`players/${targetId}/votes`] = (players[targetId].votes || 0) + 1;
+                updates[`players/${myPlayerId}/votedFor`] = targetId;
+
+                let logs = data.logs || [];
+                logs.push(`🗳️ ${myNickname}님이 ${players[targetId].name}님에게 투표했습니다.`);
+                updates['logs'] = logs;
+
+                roomRef.update(updates);
+            });
+        }
+
+        function useAbility(targetId) {
+            roomRef.once('value', snapshot => {
+                const data = snapshot.val();
+                if (data.state !== 'NIGHT') return;
+
+                const me = data.players[myPlayerId];
+                const target = data.players[targetId];
+
+                if (!me.role) return alert('능력을 사용할 수 없는 역할입니다.');
+
+                let updates = {};
+                updates[`nightActions/${myPlayerId}`] = {
+                    actorName: me.name,
+                    actorRole: me.role.name,
+                    actorTeam: me.role.team,
+                    targetId: targetId,
+                    targetName: target.name
+                };
+
+                roomRef.update(updates).then(() => {
+                    alert(`${target.name}님에게 [${me.role.name}] 능력을 사용했습니다.`);
+                    
+                    if (me.role.name === '수사관') {
+                        const isTargetMafia = target.role && target.role.team === 'mafia';
+                        alert(`🔍 [수사 결과] ${target.name}님은 ${isTargetMafia ? '🔴 마피아' : '🔵 시민'}입니다.`);
+                    }
+                });
+            });
         }
 
         function nextPhase() {
             roomRef.once('value', snapshot => {
                 const data = snapshot.val();
-                let nextState = data.state === 'DAY' ? 'NIGHT' : 'DAY';
-                let nextDay = data.dayCount + (nextState === 'DAY' ? 1 : 0);
-                
                 let logs = data.logs || [];
-                if (nextState === 'NIGHT') {
-                    logs.push(`🌙 제 ${data.dayCount}일 밤이 되었습니다.`);
-                } else {
-                    logs.push(`☀️ 제 ${nextDay}일 밝았습니다.`);
-                }
+                const players = data.players;
 
-                roomRef.update({
-                    state: nextState,
-                    dayCount: nextDay,
-                    logs: logs
-                });
+                if (data.state === 'DAY') {
+                    let maxVotes = 0;
+                    let executedPlayerId = null;
+                    let isTie = false;
+
+                    Object.keys(players).forEach(pId => {
+                        const v = players[pId].votes || 0;
+                        if (v > maxVotes) {
+                            maxVotes = v;
+                            executedPlayerId = pId;
+                            isTie = false;
+                        } else if (v > 0 && v === maxVotes) {
+                            isTie = true;
+                        }
+                    });
+
+                    let updates = {};
+                    if (executedPlayerId && !isTie && maxVotes > 0) {
+                        const victimName = players[executedPlayerId].name;
+                        updates[`players/${executedPlayerId}/isDead`] = true;
+                        logs.push(`☠️ [처형] ${victimName}님이 최다 득표(${maxVotes}표)로 처형당해 사망(언데드) 처리되었습니다.`);
+                    } else {
+                        logs.push(`⚖️ [처형 무효] 투표 결과 동점이거나 표가 없어 아무도 처형되지 않았습니다.`);
+                    }
+
+                    Object.keys(players).forEach(pId => {
+                        updates[`players/${pId}/votes`] = 0;
+                        updates[`players/${pId}/votedFor`] = null;
+                    });
+
+                    updates['state'] = 'NIGHT';
+                    updates['nightActions'] = null;
+                    logs.push(`🌙 제 ${data.dayCount}일 밤이 되었습니다.`);
+                    updates['logs'] = logs;
+
+                    roomRef.update(updates);
+
+                } else {
+                    const actions = data.nightActions || {};
+                    let attackedTargetId = null;
+                    let protectedTargetId = null;
+
+                    Object.keys(actions).forEach(actKey => {
+                        const act = actions[actKey];
+                        if (act.actorRole === '대부' || act.actorRole === '청부업자') {
+                            attackedTargetId = act.targetId;
+                        }
+                        if (act.actorRole === '경호원' || act.actorRole === '간호사') {
+                            protectedTargetId = act.targetId;
+                        }
+                    });
+
+                    let updates = {};
+                    if (attackedTargetId) {
+                        if (attackedTargetId === protectedTargetId) {
+                            logs.push(`🛡️ 밤 사이 마피아의 습격이 있었으나, 경호원의 철저한 보호로 무사히 방어했습니다!`);
+                        } else {
+                            const victim = players[attackedTargetId];
+                            if (victim) {
+                                updates[`players/${attackedTargetId}/isDead`] = true;
+                                logs.push(`💀 밤 사이 ${victim.name}님이 마피아의 습격을 받아 사망(언데드)했습니다.`);
+                            }
+                        }
+                    } else {
+                        logs.push(`🕊️ 밤 사이 조용하게 아무 일도 일어나지 않았습니다.`);
+                    }
+
+                    let nextDay = data.dayCount + 1;
+                    logs.push(`☀️ 제 ${nextDay}일 낮이 밝았습니다.`);
+
+                    updates['state'] = 'DAY';
+                    updates['dayCount'] = nextDay;
+                    updates['logs'] = logs;
+                    updates['nightActions'] = null;
+
+                    roomRef.update(updates);
+                }
             });
         }
 
-        function votePlayer(targetName) {
-            if (confirm(`${targetName}님을 처형 지목하시겠습니까?`)) {
-                roomRef.child('logs').once('value', s => {
-                    let logs = s.val() || [];
-                    logs.push(`⚖️ [지목] ${myNickname}님이 ${targetName}님을 지목했습니다.`);
-                    roomRef.child('logs').set(logs);
+        function forceRestart() {
+            if (!confirm('게임의 모든 진행 상태를 초기화하고 대기실로 이동하시겠습니까?')) return;
+
+            roomRef.once('value', snapshot => {
+                const data = snapshot.val();
+                const players = data.players || {};
+
+                let updates = {};
+                Object.keys(players).forEach(pId => {
+                    updates[`players/${pId}/role`] = null;
+                    updates[`players/${pId}/isDead`] = false;
+                    updates[`players/${pId}/votes`] = 0;
+                    updates[`players/${pId}/votedFor`] = null;
                 });
-            }
+
+                updates['state'] = 'LOBBY';
+                updates['dayCount'] = 1;
+                updates['nightActions'] = null;
+                updates['logs'] = [`🔄 방장에 의해 게임이 재시작되었습니다.`];
+
+                roomRef.update(updates);
+            });
         }
 
-        function useAbility(targetName) {
-            alert(`${targetName}님에게 비밀 능력을 선택했습니다.`);
+        function openGuideModal() {
+            document.getElementById('guide-modal').classList.remove('hidden');
+        }
+
+        function closeGuideModal() {
+            document.getElementById('guide-modal').classList.add('hidden');
+        }
+
+        function switchTab(tabId) {
+            const btnRules = document.getElementById('tab-btn-rules');
+            const btnRoles = document.getElementById('tab-btn-roles');
+            const bodyRules = document.getElementById('tab-rules');
+            const bodyRoles = document.getElementById('tab-roles');
+
+            if (tabId === 'tab-rules') {
+                btnRules.classList.add('active');
+                btnRoles.classList.remove('active');
+                bodyRules.classList.remove('hidden');
+                bodyRoles.classList.add('hidden');
+            } else {
+                btnRoles.classList.add('active');
+                btnRules.classList.remove('active');
+                bodyRoles.classList.remove('hidden');
+                bodyRoles.classList.add('hidden');
+            }
         }
     </script>
 </body>
