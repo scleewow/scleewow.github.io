@@ -15,37 +15,37 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
+            background-color: #f1f5f9;
+            color: #0f172a;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 1rem;
-            transition: background-color 0.5s ease;
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
 
         body.night-mode {
-            background-color: #05050a;
-            color: #e2e8f0;
+            background-color: #030712;
+            color: #f9fafb;
         }
 
         .container {
             width: 100%;
             max-width: 480px;
-            background-color: #1e293b;
+            background-color: #ffffff;
             border-radius: 16px;
             padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            border: 1px solid #334155;
-            transition: background-color 0.5s ease, border-color 0.5s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 2px solid #cbd5e1;
+            transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
             position: relative;
         }
 
         body.night-mode .container {
-            background-color: #0f121d;
-            border-color: #2e1065;
-            box-shadow: 0 10px 25px rgba(88, 28, 135, 0.2);
+            background-color: #0f172a;
+            border-color: #6b21a8;
+            box-shadow: 0 0 25px rgba(147, 51, 234, 0.3);
         }
 
         header {
@@ -54,15 +54,16 @@
             align-items: center;
             margin-bottom: 1.25rem;
             padding-bottom: 0.75rem;
-            border-bottom: 1px solid #334155;
+            border-bottom: 2px solid #e2e8f0;
         }
+        body.night-mode header { border-bottom-color: #3b0764; }
 
-        h1 { font-size: 1.3rem; color: #f43f5e; transition: color 0.5s; }
-        body.night-mode h1 { color: #a855f7; }
+        h1 { font-size: 1.3rem; color: #d97706; transition: color 0.5s; }
+        body.night-mode h1 { color: #c084fc; }
 
         .guide-btn {
-            color: #38bdf8;
-            background: transparent;
+            color: #0284c7;
+            background: #f0f9ff;
             border: 1px solid #0284c7;
             padding: 0.35rem 0.7rem;
             border-radius: 6px;
@@ -70,11 +71,17 @@
             cursor: pointer;
             width: auto;
             margin: 0;
+            font-weight: bold;
+        }
+        body.night-mode .guide-btn {
+            background: #1e1b4b;
+            color: #38bdf8;
+            border-color: #38bdf8;
         }
 
         .card {
-            background: #0f172a;
-            border: 1px solid #334155;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
             border-radius: 10px;
             padding: 1rem;
             margin-bottom: 1rem;
@@ -83,8 +90,8 @@
         }
 
         body.night-mode .card {
-            background: #07090e;
-            border-color: #3b0764;
+            background: #020617;
+            border-color: #3730a3;
         }
 
         input, button {
@@ -92,40 +99,48 @@
             padding: 0.8rem;
             margin-top: 0.5rem;
             border-radius: 8px;
-            border: 1px solid #475569;
-            background: #0f172a;
-            color: white;
+            border: 1px solid #94a3b8;
+            background: #ffffff;
+            color: #0f172a;
             font-size: 1rem;
         }
 
+        body.night-mode input {
+            background: #0f172a;
+            color: white;
+            border-color: #475569;
+        }
+
         button {
-            background: #e11d48;
+            background: #ea580c;
+            color: white;
             font-weight: bold;
             border: none;
             cursor: pointer;
             transition: background 0.2s;
         }
 
-        button:hover { background: #be123c; }
-        body.night-mode button { background: #7c3aed; }
-        body.night-mode button:hover { background: #6d28d9; }
+        button:hover { background: #c2410c; }
+        body.night-mode button { background: #9333ea; }
+        body.night-mode button:hover { background: #7e22ce; }
 
-        button.secondary { background: #475569; }
-        button.secondary:hover { background: #334155; }
-        button.danger { background: #b91c1c; }
-        button.danger:hover { background: #991b1b; }
+        button.secondary { background: #64748b; }
+        button.secondary:hover { background: #475569; }
+        button.danger { background: #dc2626; }
+        button.danger:hover { background: #b91c1c; }
         
         button.kick-btn {
             width: auto;
             padding: 0.25rem 0.5rem;
             font-size: 0.75rem;
-            background: #dc2626;
+            background: #ef4444;
             margin: 0;
         }
 
         .hold-btn {
             background: #0284c7;
-            touch-action: manipulation;
+            color: white;
+            touch-action: none;
         }
         .hold-btn:active {
             background: #0369a1;
@@ -153,69 +168,83 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #1e293b;
+            background: #ffffff;
             padding: 0.65rem 0.8rem;
             border-radius: 6px;
-            border: 1px solid #334155;
+            border: 1px solid #cbd5e1;
         }
 
         .player-item.dead {
-            background: #0f172a;
-            border-color: #475569;
-            opacity: 0.8;
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            opacity: 0.7;
         }
 
         body.night-mode .player-item {
-            background: #131722;
-            border-color: #2e1065;
+            background: #0f172a;
+            border-color: #334155;
         }
 
         body.night-mode .player-item.dead {
-            background: #080a10;
-            border-color: #1e1b4b;
+            background: #030712;
+            border-color: #1e293b;
         }
 
         .role-badge {
             font-size: 1.2rem;
             font-weight: bold;
-            color: #38bdf8;
+            color: #0284c7;
             margin: 0.5rem 0;
         }
+        body.night-mode .role-badge { color: #38bdf8; }
 
         .log-box {
-            background: #070a12;
+            background: #ffffff;
             padding: 0.75rem;
             border-radius: 8px;
-            height: 120px;
+            height: 140px;
             overflow-y: auto;
             font-size: 0.85rem;
-            color: #cbd5e1;
+            color: #334155;
             text-align: left;
             margin-bottom: 1rem;
-            border: 1px solid #1e293b;
+            border: 1px solid #cbd5e1;
             line-height: 1.4;
+        }
+
+        body.night-mode .log-box {
+            background: #020617;
+            color: #cbd5e1;
+            border-color: #1e293b;
         }
 
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.75);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
         .modal-content {
-            background: #1e293b;
+            background: #ffffff;
+            color: #0f172a;
             width: 90%;
             max-width: 440px;
             border-radius: 12px;
             padding: 1.25rem;
-            border: 1px solid #475569;
+            border: 1px solid #94a3b8;
             max-height: 80vh;
             display: flex;
             flex-direction: column;
         }
+        body.night-mode .modal-content {
+            background: #0f172a;
+            color: #f8fafc;
+            border-color: #475569;
+        }
+
         .tab-buttons {
             display: flex;
             gap: 0.5rem;
@@ -225,24 +254,36 @@
             flex: 1;
             padding: 0.5rem;
             font-size: 0.85rem;
-            background: #0f172a;
-            border: 1px solid #334155;
+            background: #e2e8f0;
+            color: #334155;
+            border: 1px solid #cbd5e1;
             margin: 0;
             cursor: pointer;
         }
-        .tab-btn.active {
-            background: #e11d48;
-            border-color: #e11d48;
+        body.night-mode .tab-btn {
+            background: #020617;
+            color: #cbd5e1;
+            border-color: #334155;
         }
+        .tab-btn.active {
+            background: #ea580c;
+            color: white;
+            border-color: #ea580c;
+        }
+        body.night-mode .tab-btn.active {
+            background: #9333ea;
+            border-color: #9333ea;
+        }
+
         .tab-body {
             overflow-y: auto;
             font-size: 0.85rem;
             line-height: 1.5;
-            color: #cbd5e1;
             text-align: left;
             padding-right: 0.3rem;
         }
-        .tab-body h4 { color: #f43f5e; margin: 0.8rem 0 0.3rem 0; }
+        .tab-body h4 { color: #ea580c; margin: 0.8rem 0 0.3rem 0; }
+        body.night-mode .tab-body h4 { color: #c084fc; }
         .tab-body h4:first-child { margin-top: 0; }
         .role-desc-item { margin-bottom: 0.4rem; }
 
@@ -253,13 +294,35 @@
             margin-left: 0.3rem;
         }
         .vote-status-tag.voted { background: #0284c7; color: white; }
-        .vote-status-tag.not-voted { background: #475569; color: #cbd5e1; }
+        .vote-status-tag.not-voted { background: #94a3b8; color: white; }
+
+        .death-banner-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .death-banner-content {
+            text-align: center;
+            color: #ef4444;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .death-banner-content .skull { font-size: 4rem; margin-bottom: 0.5rem; }
+        .death-banner-content h2 { font-size: 1.8rem; margin-bottom: 0.5rem; text-shadow: 0 0 10px #ef4444; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1 id="game-title">🧟 언데드 마피아</h1>
+            <h1 id="game-title">☀️ 언데드 마피아 (낮)</h1>
             <button class="guide-btn" onclick="openGuideModal()">📖 게임 설명</button>
         </header>
 
@@ -284,7 +347,7 @@
             <div class="card">
                 <h3>방 코드: <span id="room-code-display" style="color:#f43f5e;"></span></h3>
                 <div id="qrcode"></div>
-                <p style="font-size:0.75rem; color:#94a3b8;">QR 코드를 스캔하여 접속 가능합니다.</p>
+                <p style="font-size:0.75rem; color:#64748b;">QR 코드를 스캔하여 접속 가능합니다.</p>
             </div>
 
             <div class="card">
@@ -298,17 +361,17 @@
         <!-- 3. 게임 화면 -->
         <div id="screen-game" class="hidden">
             <div class="card">
-                <p style="font-size:0.8rem; color:#94a3b8;">나의 역할 (누르고 있을 때만 표시)</p>
+                <p style="font-size:0.8rem; color:#64748b;">나의 역할 (누르고 있을 때만 표시)</p>
                 <div id="role-display-box" class="hidden">
                     <div id="my-role-title" class="role-badge"></div>
-                    <p id="my-role-desc" style="font-size:0.85rem; color:#cbd5e1;"></p>
+                    <p id="my-role-desc" style="font-size:0.85rem; color:#475569;"></p>
                 </div>
                 <button id="role-hold-btn" class="hold-btn">👁️ 눌러서 역할 확인하기</button>
             </div>
 
             <div class="card">
-                <h3 id="phase-title">☀ 낮 페이즈</h3>
-                <p id="phase-desc" style="font-size:0.85rem; color:#94a3b8; margin-top:0.25rem;"></p>
+                <h3 id="phase-title">☀️ 제 1일 낮 페이즈</h3>
+                <p id="phase-desc" style="font-size:0.85rem; color:#64748b; margin-top:0.25rem;"></p>
             </div>
 
             <div class="log-box" id="game-log"></div>
@@ -325,26 +388,35 @@
         </div>
     </div>
 
+    <!-- 사망 연출 팝업 -->
+    <div id="death-banner" class="death-banner-overlay hidden">
+        <div class="death-banner-content">
+            <div class="skull">💀</div>
+            <h2 id="death-player-name">OOO 사망!</h2>
+            <p id="death-cause-text">언데드로 전환되었습니다.</p>
+        </div>
+    </div>
+
     <!-- 게임 설명 모달 팝업 -->
     <div id="guide-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <div class="tab-buttons">
-                <button class="tab-btn active" id="tab-btn-rules" onclick="switchTab('rules')">🎮 게임 진행</button>
+                <button class="tab-btn active" id="tab-btn-rules" onclick="switchTab('rules')">🎮 게임 진행 & 승리조건</button>
                 <button class="tab-btn" id="tab-btn-roles" onclick="switchTab('roles')">🎭 캐릭터 안내</button>
             </div>
             <div id="tab-rules" class="tab-body">
-                <h4>1. 개요</h4>
-                <p>언데드 마피아는 사망한 플레이어(언데드)도 계속해서 토론과 투표에 참여하는 특수 마피아 게임입니다.</p>
+                <h4>🏆 승리 조건</h4>
+                <p><b>• 시민팀 승리:</b> 모든 마피아 팀원을 처형하거나 제거했을 때 즉시 승리합니다.<br>
+                <b>• 마피아팀 승리:</b> 생존한 마피아 수 >= 생존한 시민 수 (예: 대부 1명 vs 시민 1명 남아 표 조작이 보장될 때 즉시 승리).</p>
                 
-                <h4>2. 낮 페이즈</h4>
-                <p>• 모든 플레이어가 자유롭게 토론하고 [투표]합니다. (1인 1표)<br>
-                • <b>사망자(언데드)도 낮 투표권 행사 가능.</b><br>
-                • <b>이미 사망한 플레이어는 처형 투표 대상이 될 수 없습니다.</b><br>
-                • 방장이 [낮 종료 및 처형 집행]을 누르면 최다 득표자가 처형(언데드)되고 밤이 됩니다.</p>
+                <h4>☀ 낮 페이즈</h4>
+                <p>• 생존자와 사망자(언데드) 모두 자유롭게 토론하고 [투표]합니다. (1인 1표)<br>
+                • 사망한 플레이어는 처형 대상에서 제외됩니다.<br>
+                • 방장이 [낮 종료 및 처형 집행]을 누르면 최다 득표자가 처형당해 사망(언데드) 처리됩니다.</p>
 
-                <h4>3. 밤 페이즈</h4>
-                <p>• 특수 능력을 가진 생존 플레이어는 대상을 선택하고 [능력 사용]을 누릅니다.<br>
-                • <b>사망자(언데드)는 밤에 능력을 사용할 수 없습니다.</b></p>
+                <h4>🌙 밤 페이즈</h4>
+                <p>• 특수 능력을 가진 생존 플레이어만 대상을 선택하고 [능력 사용]을 누릅니다.<br>
+                • 사망자(언데드)는 밤 능력을 사용할 수 없습니다.</p>
             </div>
             <div id="tab-roles" class="tab-body hidden">
                 <h4 style="color:#f43f5e;">🔴 마피아팀 캐릭터 (6종)</h4>
@@ -415,36 +487,31 @@
         let myNickname = '';
         let isHost = false;
         let roomRef = null;
+        let previousDeadCount = 0;
 
         window.onload = function() {
+            myPlayerId = localStorage.getItem('undead_playerId') || 'p_' + Math.random().toString(36).substring(2, 9);
+            localStorage.setItem('undead_playerId', myPlayerId);
+
+            const savedRoomCode = localStorage.getItem('undead_roomCode');
             const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('room');
+            const code = urlParams.get('room') || savedRoomCode;
+
             if (code) {
                 document.getElementById('room-code-input').value = code.toUpperCase();
+                roomCode = code.toUpperCase();
+                db.ref('undead_rooms/' + roomCode).once('value', snapshot => {
+                    if (snapshot.exists() && snapshot.val().players && snapshot.val().players[myPlayerId]) {
+                        roomRef = db.ref('undead_rooms/' + roomCode);
+                        myNickname = snapshot.val().players[myPlayerId].name;
+                        joinRoomData();
+                    }
+                });
             }
-
-            myPlayerId = sessionStorage.getItem('undead_playerId') || 'p_' + Math.random().toString(36).substring(2, 9);
-            sessionStorage.setItem('undead_playerId', myPlayerId);
 
             setupHoldRoleButton();
             renderGuideRoles();
         };
-
-        function renderGuideRoles() {
-            const mafiaContainer = document.getElementById('mafia-roles-guide');
-            const citizenContainer = document.getElementById('citizen-roles-guide');
-
-            const allMafia = [ROLE_GODFATHER, ...OTHER_MAFIA_ROLES];
-            const allCitizen = [ROLE_INVESTIGATOR, ...OTHER_CITIZEN_ROLES];
-
-            mafiaContainer.innerHTML = allMafia.map(r => `
-                <div class="role-desc-item"><b>• ${r.name}:</b> ${r.desc}</div>
-            `).join('');
-
-            citizenContainer.innerHTML = allCitizen.map(r => `
-                <div class="role-desc-item"><b>• ${r.name}:</b> ${r.desc}</div>
-            `).join('');
-        }
 
         function setupHoldRoleButton() {
             const btn = document.getElementById('role-hold-btn');
@@ -462,11 +529,21 @@
                 btn.innerText = '👁️ 눌러서 역할 확인하기';
             };
 
-            btn.addEventListener('mousedown', showRole);
-            btn.addEventListener('mouseup', hideRole);
+            btn.addEventListener('pointerdown', showRole);
+            btn.addEventListener('pointerup', hideRole);
+            btn.addEventListener('pointercancel', hideRole);
             btn.addEventListener('mouseleave', hideRole);
-            btn.addEventListener('touchstart', showRole);
-            btn.addEventListener('touchend', hideRole);
+        }
+
+        function renderGuideRoles() {
+            const mafiaContainer = document.getElementById('mafia-roles-guide');
+            const citizenContainer = document.getElementById('citizen-roles-guide');
+
+            const allMafia = [ROLE_GODFATHER, ...OTHER_MAFIA_ROLES];
+            const allCitizen = [ROLE_INVESTIGATOR, ...OTHER_CITIZEN_ROLES];
+
+            mafiaContainer.innerHTML = allMafia.map(r => `<div class="role-desc-item"><b>• ${r.name}:</b> ${r.desc}</div>`).join('');
+            citizenContainer.innerHTML = allCitizen.map(r => `<div class="role-desc-item"><b>• ${r.name}:</b> ${r.desc}</div>`).join('');
         }
 
         async function createRoom() {
@@ -486,6 +563,7 @@
 
                 roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
                 isHost = true;
+                localStorage.setItem('undead_roomCode', roomCode);
                 roomRef = db.ref('undead_rooms/' + roomCode);
 
                 roomRef.set({
@@ -509,6 +587,7 @@
 
             roomRef.once('value', snapshot => {
                 if (!snapshot.exists()) return alert('존재하지 않는 방입니다.');
+                localStorage.setItem('undead_roomCode', roomCode);
                 joinRoomData();
             });
         }
@@ -516,15 +595,10 @@
         function joinRoomData() {
             const playerRef = roomRef.child('players/' + myPlayerId);
             
-            playerRef.set({
+            playerRef.update({
                 name: myNickname,
-                isHost: isHost,
-                isDead: false,
-                votes: 0,
-                usedOnceAbility: false
+                isHost: isHost
             });
-
-            playerRef.onDisconnect().remove();
 
             document.getElementById('screen-main').classList.add('hidden');
             document.getElementById('screen-lobby').classList.remove('hidden');
@@ -541,18 +615,22 @@
             roomRef.on('value', snapshot => {
                 const data = snapshot.val();
                 if (!data) {
-                    alert('방이 삭제되었거나 접속이 해제되었습니다.');
+                    alert('방이 삭제되었습니다.');
+                    localStorage.removeItem('undead_roomCode');
                     location.href = './index.html';
                     return;
                 }
 
                 if (!data.players || !data.players[myPlayerId]) {
-                    alert('강퇴당했거나 접속이 해제되었습니다.');
+                    alert('퇴장 되었거나 접속이 끊겼습니다.');
+                    localStorage.removeItem('undead_roomCode');
                     location.href = './index.html';
                     return;
                 }
 
                 isHost = (data.hostId === myPlayerId);
+
+                checkDeathEvent(data.players);
 
                 if (data.state === 'LOBBY') {
                     document.getElementById('screen-game').classList.add('hidden');
@@ -564,6 +642,24 @@
                     renderGame(data);
                 }
             });
+        }
+
+        function checkDeathEvent(players) {
+            let currentDeadList = Object.values(players).filter(p => p.isDead);
+            if (currentDeadList.length > previousDeadCount && previousDeadCount !== 0) {
+                const latestDead = currentDeadList[currentDeadList.length - 1];
+                showDeathBanner(latestDead.name);
+            }
+            previousDeadCount = currentDeadList.length;
+        }
+
+        function showDeathBanner(playerName) {
+            const banner = document.getElementById('death-banner');
+            document.getElementById('death-player-name').innerText = `${playerName} 사망!`;
+            banner.classList.remove('hidden');
+            setTimeout(() => {
+                banner.classList.add('hidden');
+            }, 3200);
         }
 
         function renderLobby(data) {
@@ -653,14 +749,14 @@
 
             if (data.state === 'NIGHT') {
                 document.body.classList.add('night-mode');
-                document.getElementById('game-title').innerText = '🧟 언데드 마피아 (밤)';
+                document.getElementById('game-title').innerText = '🌙 언데드 마피아 (밤)';
                 document.getElementById('phase-title').innerText = `🌙 제 ${data.dayCount}일 밤`;
-                document.getElementById('phase-desc').innerText = '특수 능력을 가진 분은 대상을 지정하여 사용하세요.';
+                document.getElementById('phase-desc').innerText = '특수 능력을 가진 생존자는 대상을 지정하여 능력을 사용하세요.';
                 document.getElementById('phase-toggle-btn').innerText = '☀️ 밤 종료 및 아침 밝히기 (방장)';
             } else {
                 document.body.classList.remove('night-mode');
-                document.getElementById('game-title').innerText = '🧟 언데드 마피아';
-                document.getElementById('phase-title').innerText = `☀️️ 제 ${data.dayCount}일 낮`;
+                document.getElementById('game-title').innerText = '☀️ 언데드 마피아 (낮)';
+                document.getElementById('phase-title').innerText = `☀️ 제 ${data.dayCount}일 낮`;
                 document.getElementById('phase-desc').innerText = '토론 후 지목 투표를 진행하세요. (사망자도 투표 참여 가능)';
                 document.getElementById('phase-toggle-btn').innerText = '🌙 낮 종료 및 처형 집행 (방장)';
             }
@@ -679,9 +775,8 @@
                 let actionBtn = '';
                 if (data.state === 'DAY') {
                     const votesCount = p.votes || 0;
-                    // 이미 사망한 플레이어는 지목/투표 불가 처리
                     if (p.isDead) {
-                        actionBtn = `<button style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem; background:#475569;" disabled>처형 불가 (${votesCount}표)</button>`;
+                        actionBtn = `<button style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem; background:#94a3b8;" disabled>처형 불가 (${votesCount}표)</button>`;
                     } else {
                         actionBtn = `<button style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem;" onclick="votePlayer('${pId}')">투표 (${votesCount}표)</button>`;
                     }
@@ -698,11 +793,11 @@
                     voteStatusHtml = `<span class="vote-status-tag ${hasVoted ? 'voted' : 'not-voted'}">${hasVoted ? '투표 완료' : '미투표'}</span>`;
                 }
 
-                const statusTag = p.isDead ? '💀 [사망]' : '🟢 [생존]';
+                const statusTag = p.isDead ? '💀 [사망/언데드]' : '🟢 [생존]';
                 item.innerHTML = `
                     <span>
                         <b>${p.name}</b> 
-                        <small style="font-size:0.75rem; color:${p.isDead ? '#ef4444' : '#22c55e'};">${statusTag}</small>
+                        <small style="font-size:0.75rem; color:${p.isDead ? '#ef4444' : '#16a34a'};">${statusTag}</small>
                         ${voteStatusHtml}
                     </span>
                     ${actionBtn}
@@ -717,7 +812,6 @@
             }
         }
 
-        // 낮 지목/투표 (사망자 지목 불가 방어)
         function votePlayer(targetId) {
             roomRef.once('value', snapshot => {
                 const data = snapshot.val();
@@ -726,9 +820,8 @@
                 const players = data.players;
                 const target = players[targetId];
 
-                // 사망자 투표 제한
                 if (target.isDead) {
-                    return alert('사망한(언데드) 플레이어는 투표 대상이 될 수 없습니다.');
+                    return alert('사망한(언데드) 플레이어는 처형 투표 대상이 될 수 없습니다.');
                 }
 
                 const me = players[myPlayerId];
@@ -752,7 +845,6 @@
             });
         }
 
-        // 밤 능력 사용 (사망 본인 사용 금지 & 사망 대상 지정 제한)
         function useAbility(targetId) {
             roomRef.once('value', snapshot => {
                 const data = snapshot.val();
@@ -761,7 +853,6 @@
                 const me = data.players[myPlayerId];
                 const target = data.players[targetId];
 
-                // 1. 본인이 사망자인 경우 능력 사용 불가
                 if (me.isDead) {
                     return alert('사망한(언데드) 플레이어는 능력을 사용할 수 없습니다.');
                 }
@@ -769,10 +860,9 @@
                 if (!me.role) return alert('능력을 사용할 수 없는 역할입니다.');
 
                 if (me.role.limitType === 'passive') {
-                    return alert(`${me.role.name}은(는) 자동 발동 패시브 직업입니다.`);
+                    return alert(`${me.role.name}은(는) 패시브 직업입니다.`);
                 }
 
-                // 성직자(원혼 성화)를 제외한 나머지 직업은 이미 사망한 사람에게 능력 사용 제한
                 if (target.isDead && me.role.id !== 'CLERGY') {
                     return alert('사망한 플레이어에게는 능력을 사용할 수 없습니다.');
                 }
@@ -805,6 +895,33 @@
             });
         }
 
+        function checkWinCondition(players) {
+            let aliveMafia = 0;
+            let aliveCitizen = 0;
+
+            Object.values(players).forEach(p => {
+                if (!p.isDead && p.role) {
+                    if (p.role.team === 'mafia') aliveMafia++;
+                    else aliveCitizen++;
+                }
+            });
+
+            if (aliveMafia === 0) return 'CITIZEN';
+            if (aliveMafia >= aliveCitizen) return 'MAFIA';
+            return null;
+        }
+
+        // 전체 플레이어 역합 브리핑 생성
+        function generateRoleSummary(players) {
+            let summaryText = "\n\n📋 [최종 플레이어 역할 공개]\n";
+            Object.values(players).forEach(p => {
+                const teamIcon = (p.role && p.role.team === 'mafia') ? '🔴' : '🔵';
+                const roleName = p.role ? p.role.name : '미배정';
+                summaryText += `${teamIcon} ${p.name}: ${roleName}\n`;
+            });
+            return summaryText;
+        }
+
         function nextPhase() {
             roomRef.once('value', snapshot => {
                 const data = snapshot.val();
@@ -817,7 +934,6 @@
                     let isTie = false;
 
                     Object.keys(players).forEach(pId => {
-                        // 이미 사망한 사람의 표는 집계에서 제외
                         if (!players[pId].isDead) {
                             const v = players[pId].votes || 0;
                             if (v > maxVotes) {
@@ -834,9 +950,26 @@
                     if (executedPlayerId && !isTie && maxVotes > 0) {
                         const victimName = players[executedPlayerId].name;
                         updates[`players/${executedPlayerId}/isDead`] = true;
+                        players[executedPlayerId].isDead = true;
                         logs.push(`☠️ [처형] ${victimName}님이 최다 득표(${maxVotes}표)로 처형당해 사망(언데드) 처리되었습니다.`);
                     } else {
                         logs.push(`⚖️ [처형 무효] 투표 결과 동점이거나 표가 없어 아무도 처형되지 않았습니다.`);
+                    }
+
+                    const winner = checkWinCondition(players);
+                    if (winner) {
+                        const winMsg = winner === 'MAFIA' ? '🔴 마피아팀 승리!' : '🔵 시민팀 승리!';
+                        const roleSummary = generateRoleSummary(players);
+                        
+                        logs.push(`🎉 [게임 종료] ${winMsg}`);
+                        logs.push(roleSummary.trim());
+
+                        updates['state'] = 'LOBBY';
+                        updates['logs'] = logs;
+                        roomRef.update(updates).then(() => {
+                            alert(`🎉 게임 종료! ${winMsg}${roleSummary}`);
+                        });
+                        return;
                     }
 
                     Object.keys(players).forEach(pId => {
@@ -874,11 +1007,28 @@
                             const victim = players[attackedTargetId];
                             if (victim) {
                                 updates[`players/${attackedTargetId}/isDead`] = true;
+                                players[attackedTargetId].isDead = true;
                                 logs.push(`💀 밤 사이 ${victim.name}님이 습격을 받아 사망(언데드)했습니다.`);
                             }
                         }
                     } else {
                         logs.push(`🕊️ 밤 사이 조용하게 아무 일도 일어나지 않았습니다.`);
+                    }
+
+                    const winner = checkWinCondition(players);
+                    if (winner) {
+                        const winMsg = winner === 'MAFIA' ? '🔴 마피아팀 승리!' : '🔵 시민팀 승리!';
+                        const roleSummary = generateRoleSummary(players);
+
+                        logs.push(`🎉 [게임 종료] ${winMsg}`);
+                        logs.push(roleSummary.trim());
+
+                        updates['state'] = 'LOBBY';
+                        updates['logs'] = logs;
+                        roomRef.update(updates).then(() => {
+                            alert(`🎉 게임 종료! ${winMsg}${roleSummary}`);
+                        });
+                        return;
                     }
 
                     let nextDay = data.dayCount + 1;
