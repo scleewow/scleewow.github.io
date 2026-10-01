@@ -13,7 +13,6 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        /* 낮(Day) 기본 테마 */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: #0f172a;
@@ -26,7 +25,6 @@
             transition: background-color 0.5s ease;
         }
 
-        /* 밤(Night) 테마 */
         body.night-mode {
             background-color: #05050a;
             color: #e2e8f0;
@@ -184,6 +182,7 @@
             <div class="card">
                 <h3>플레이어 설정</h3>
                 <input type="text" id="nickname-input" placeholder="닉네임을 입력하세요">
+                <input type="password" id="create-key-input" placeholder="방 생성 인증키 입력">
                 <button onclick="createRoom()">새 방 만들기 (방장)</button>
             </div>
             
@@ -212,7 +211,6 @@
 
         <!-- 3. 메인 게임 진행 화면 -->
         <div id="screen-game" class="hidden">
-            <!-- 비밀 역할 카드는 클릭 시에만 노출 -->
             <div class="card">
                 <p style="font-size:0.8rem; color:#94a3b8;">나의 역할</p>
                 <div id="role-display-box" class="hidden">
@@ -222,9 +220,8 @@
                 <button id="role-toggle-btn" class="secondary" onclick="toggleRoleSecret()">👁️ 역할 확인 (클릭)</button>
             </div>
 
-            <!-- 페이즈 정보 -->
             <div class="card">
-                <h3 id="phase-title">☀️️ 낮 페이즈</h3>
+                <h3 id="phase-title">☀ 낮 페이즈</h3>
                 <p id="phase-desc" style="font-size:0.85rem; color:#94a3b8; margin-top:0.25rem;"></p>
             </div>
 
@@ -240,15 +237,16 @@
     </div>
 
     <script>
-        // --- 1. Firebase 설정 (아발론과 동일하게 세팅하세요) ---
+        // ===== Firebase 설정 =====
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.net",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyBrvXAVaA46-qVmNek_MnUlRRLRmeYpvu8",
+            authDomain: "myavalon-d1c3a.firebaseapp.com",
+            databaseURL: "https://myavalon-d1c3a-default-rtdb.firebaseio.com",
+            projectId: "myavalon-d1c3a",
+            storageBucket: "myavalon-d1c3a.firebasestorage.app",
+            messagingSenderId: "974314177774",
+            appId: "1:974314177774:web:625f22956117cdc9f29fff",
+            measurementId: "G-3503TJXX0W"
         };
 
         if (!firebase.apps.length) {
@@ -256,7 +254,14 @@
         }
         const db = firebase.database();
 
-        // 직업 목록
+        // SHA-256 해시 함수
+        async function hashPassword(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
         const ROLES = [
             { id: 'GODFATHER', name: '대부 (마피아)', team: 'mafia', desc: '밤마다 1명을 처단합니다.' },
             { id: 'DRUG_DEALER', name: '마약상 (마피아)', team: 'mafia', desc: '밤마다 1명에게 환각을 부여합니다.' },
@@ -265,14 +270,12 @@
             { id: 'CITIZEN', name: '시민 (시민)', team: 'human', desc: '특수 능력이 없습니다. 추리로 마피아를 찾으세요.' }
         ];
 
-        // 상태 변수
         let roomCode = '';
         let myPlayerId = '';
         let myNickname = '';
         let isHost = false;
         let roomRef = null;
 
-        // URL 쿼리 파라미터에서 방 코드 읽기 (QR 스캔 시 바로 입장)
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const code = urlParams.get('room');
@@ -280,33 +283,46 @@
                 document.getElementById('room-code-input').value = code.toUpperCase();
             }
 
-            // 세션 복구 확인
             myPlayerId = sessionStorage.getItem('undead_playerId') || 'p_' + Math.random().toString(36).substring(2, 9);
             sessionStorage.setItem('undead_playerId', myPlayerId);
         };
 
-        // 방 생성 (방장)
-        function createRoom() {
+        // 방 생성 및 인증키 검증
+        async function createRoom() {
             myNickname = document.getElementById('nickname-input').value.trim();
+            const inputKey = document.getElementById('create-key-input').value.trim();
+
             if (!myNickname) return alert('닉네임을 입력하세요.');
+            if (!inputKey) return alert('방 생성 인증키를 입력하세요.');
 
-            roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
-            isHost = true;
+            const inputHash = await hashPassword(inputKey);
 
-            roomRef = db.ref('undead_rooms/' + roomCode);
+            db.ref('admin_config/create_key_hash').once('value', snapshot => {
+                const storedHash = snapshot.val();
 
-            // 방 초기 데이터 생성
-            roomRef.set({
-                hostId: myPlayerId,
-                state: 'LOBBY', // LOBBY, DAY, NIGHT
-                dayCount: 1,
-                logs: [`방이 생성되었습니다. (방 코드: ${roomCode})`]
-            }).then(() => {
-                joinRoomData();
+                if (!storedHash) {
+                    return alert('Firebase에 인증키 설정이 존재하지 않습니다.');
+                }
+
+                if (inputHash !== storedHash) {
+                    return alert('올바르지 않은 방 생성 키입니다.');
+                }
+
+                roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+                isHost = true;
+                roomRef = db.ref('undead_rooms/' + roomCode);
+
+                roomRef.set({
+                    hostId: myPlayerId,
+                    state: 'LOBBY',
+                    dayCount: 1,
+                    logs: [`방이 생성되었습니다. (방 코드: ${roomCode})`]
+                }).then(() => {
+                    joinRoomData();
+                });
             });
         }
 
-        // 방 참가
         function joinRoom() {
             myNickname = document.getElementById('nickname-input').value.trim();
             roomCode = document.getElementById('room-code-input').value.trim().toUpperCase();
@@ -323,7 +339,6 @@
             });
         }
 
-        // 데이터베이스에 플레이어 추가 및 리스너 연결
         function joinRoomData() {
             const playerRef = roomRef.child('players/' + myPlayerId);
             
@@ -333,23 +348,19 @@
                 isDead: false
             });
 
-            // 연결 끊김 시 자동 제거 설정 (오프라인 처리)
             playerRef.onDisconnect().remove();
 
             document.getElementById('screen-main').classList.add('hidden');
             document.getElementById('screen-lobby').classList.remove('hidden');
             document.getElementById('room-code-display').innerText = roomCode;
 
-            // QR 코드 생성
             const joinUrl = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
             document.getElementById('qrcode').innerHTML = '';
             new QRCode(document.getElementById('qrcode'), { text: joinUrl, width: 120, height: 120 });
 
-            // 실시간 리스너 작동
             listenRoom();
         }
 
-        // Firebase 실시간 이벤트를 수신하는 메인 함수
         function listenRoom() {
             roomRef.on('value', snapshot => {
                 const data = snapshot.val();
@@ -359,7 +370,6 @@
                     return;
                 }
 
-                // 내가 쫓겨났는지 확인 (players 객체에 내 ID가 없는 경우)
                 if (!data.players || !data.players[myPlayerId]) {
                     alert('방장에 의해 강퇴당했거나 접속이 해제되었습니다.');
                     location.href = './index.html';
@@ -368,7 +378,6 @@
 
                 isHost = (data.hostId === myPlayerId);
 
-                // UI 상태 전환
                 if (data.state === 'LOBBY') {
                     renderLobby(data);
                 } else {
@@ -379,7 +388,6 @@
             });
         }
 
-        // 대기실 랜더링 및 강퇴 기능
         function renderLobby(data) {
             const players = data.players || {};
             const playerKeys = Object.keys(players);
@@ -412,14 +420,12 @@
             }
         }
 
-        // 강퇴 처리 (방장 전용)
         function kickPlayer(targetId) {
             if (confirm('해당 플레이어를 강퇴하시겠습니까?')) {
                 roomRef.child('players/' + targetId).remove();
             }
         }
 
-        // 게임 시작 및 역할 무작위 배분
         function startGame() {
             roomRef.child('players').once('value', snapshot => {
                 const players = snapshot.val();
@@ -430,7 +436,7 @@
                 }
 
                 let pool = [...ROLES];
-                while (pool.length < keys.length) pool.push(ROLES[4]); // 나머지는 시민
+                while (pool.length < keys.length) pool.push(ROLES[4]);
                 pool.sort(() => Math.random() - 0.5);
 
                 let updates = {};
@@ -446,7 +452,6 @@
             });
         }
 
-        // 게임 화면 및 배경색(낮/밤) 처리
         function renderGame(data) {
             const me = data.players[myPlayerId];
             if (me && me.role) {
@@ -454,7 +459,6 @@
                 document.getElementById('my-role-desc').innerText = me.role.desc;
             }
 
-            // 페이즈 및 낮/밤 배경 전환
             if (data.state === 'NIGHT') {
                 document.body.classList.add('night-mode');
                 document.getElementById('game-title').innerText = '🧟 언데드 마피아 (밤)';
@@ -463,16 +467,14 @@
             } else {
                 document.body.classList.remove('night-mode');
                 document.getElementById('game-title').innerText = '🧟 언데드 마피아';
-                document.getElementById('phase-title').innerText = `☀️ 제 ${data.dayCount}일 낮`;
+                document.getElementById('phase-title').innerText = `☀️️ 제 ${data.dayCount}일 낮`;
                 document.getElementById('phase-desc').innerText = '사망자(언데드)를 포함한 토론과 처형 투표를 진행합니다.';
             }
 
-            // 로그 출력
             const logBox = document.getElementById('game-log');
             logBox.innerHTML = (data.logs || []).map(l => `<div>${l}</div>`).join('');
             logBox.scrollTop = logBox.scrollHeight;
 
-            // 플레이어 리스트
             const listEl = document.getElementById('game-player-list');
             listEl.innerHTML = '';
             Object.keys(data.players).forEach(pId => {
@@ -491,7 +493,6 @@
                 listEl.appendChild(item);
             });
 
-            // 방장 전용 페이즈 전환 버튼
             if (isHost) {
                 document.getElementById('phase-toggle-btn').classList.remove('hidden');
             } else {
@@ -499,7 +500,6 @@
             }
         }
 
-        // 비밀 역할 숨기기/보기 토글
         function toggleRoleSecret() {
             const box = document.getElementById('role-display-box');
             const btn = document.getElementById('role-toggle-btn');
@@ -513,7 +513,6 @@
             }
         }
 
-        // 페이즈 전환 (방장 전용)
         function nextPhase() {
             roomRef.once('value', snapshot => {
                 const data = snapshot.val();
@@ -524,7 +523,7 @@
                 if (nextState === 'NIGHT') {
                     logs.push(`🌙 제 ${data.dayCount}일 밤이 되었습니다.`);
                 } else {
-                    logs.push(`☀️ 제 ${nextDay}일 낮이 밝았습니다.`);
+                    logs.push(`☀️ 제 ${nextDay}일 밝았습니다.`);
                 }
 
                 roomRef.update({
