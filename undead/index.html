@@ -1220,6 +1220,7 @@
                     return alert('사망한 플레이어에게는 능력을 사용할 수 없습니다.');
                 }
 
+                // 4. 1회성 능력 사용 여부 검사 (저격수 포함)
                 if (me.role.limitType === 'once_game' && me.usedOnceAbility) {
                     return alert('이 능력은 게임 중 이미 1회 사용하셨습니다.');
                 }
@@ -1352,7 +1353,7 @@
                         const victim = players[executedPlayerId];
                         updates[`players/${executedPlayerId}/isDead`] = true;
                         players[executedPlayerId].isDead = true;
-                        logs.push(`☠️️ [처형] ${victim.name}님이 최다 득표(${maxVotes}표)로 처형당해 사망(언데드) 처리되었습니다.`);
+                        logs.push(`☠ [처형] ${victim.name}님이 최다 득표(${maxVotes}표)로 처형당해 사망(언데드) 처리되었습니다.`);
 
                         if (victim.role && victim.role.id === 'PRESIDENT') {
                             logs.push(`🚨 [대통령 처형!] 대통령이 낮 투표로 처형되어 시민팀이 패배했습니다.`);
@@ -1425,7 +1426,37 @@
                         }
                     });
 
-                    // 4단계: 수사관 / 심리학자 / 변호사 / 영매 조사 (당사자 개인 privateResult에만 저장)
+                    // 4단계: 저격수(SNIPER) 암살/오발 로직
+                    Object.keys(actions).forEach(pId => {
+                        const act = actions[pId];
+                        if (act.actorRoleId === 'SNIPER') {
+                            const sniperActor = players[pId];
+                            const target = players[act.targetId];
+                            const isHallucinated = hallucinatedActorSet.has(pId);
+
+                            if (target && target.role) {
+                                let isTargetMafia = (target.role.team === 'mafia');
+                                if (isHallucinated) isTargetMafia = !isTargetMafia; // 환각 시 판정 반전
+
+                                if (isTargetMafia) {
+                                    // 저격 성공: 마피아 사망
+                                    updates[`players/${act.targetId}/isDead`] = true;
+                                    players[act.targetId].isDead = true;
+                                    logs.push(`🎯 [저격 성공] 저격수가 마피아인 ${target.name}님을 저격하여 처단했습니다!`);
+                                    updates[`players/${pId}/privateResult`] = `🎯 [저격 성공] ${target.name}님(마피아)을 성공적으로 저격했습니다.`;
+                                } else {
+                                    // 저격 실패: 시민을 쏘아 저격수 본인이 자책/자멸 사망
+                                    updates[`players/${pId}/isDead`] = true;
+                                    players[pId].isDead = true;
+                                    logs.push(`🎯 [저격 실패] 저격수가 시민을 잘못 지목하여 본인이 사망했습니다!`);
+                                    updates[`players/${pId}/privateResult`] = `💥 [저격 실패] 지목한 ${target.name}님은 시민이었습니다. 저격 실패로 본인이 사망했습니다.`;
+                                }
+                            }
+                            updates[`players/${pId}/usedOnceAbility`] = true;
+                        }
+                    });
+
+                    // 5단계: 수사관 / 심리학자 / 변호사 / 영매 조사 (개인 브리핑 저장)
                     Object.keys(actions).forEach(pId => {
                         const act = actions[pId];
                         const isHallucinated = hallucinatedActorSet.has(pId);
@@ -1463,7 +1494,7 @@
                             if (target && target.role) {
                                 let shownRole = target.role.name;
                                 if (isHallucinated) shownRole = '엉뚱한 직업';
-                                updates[`players/${pId}/privateResult`] = `⚖️ [변호 조사] ${target.name}님의 직업은 [${shownRole}]입니다.`;
+                                updates[`players/${pId}/privateResult`] = `⚖️️ [변호 조사] ${target.name}님의 직업은 [${shownRole}]입니다.`;
                             }
                         } else if (act.actorRoleId === 'MEDIUM') {
                             const target = players[act.targetId];
@@ -1475,7 +1506,7 @@
                         }
                     });
 
-                    // 5단계: 대부 습격
+                    // 6단계: 대부 습격
                     Object.keys(actions).forEach(pId => {
                         const act = actions[pId];
                         if (act.actorRoleId === 'GODFATHER' && !hallucinatedActorSet.has(pId)) {
@@ -1485,9 +1516,9 @@
 
                     if (attackedTargetId) {
                         const victim = players[attackedTargetId];
-                        if (victim) {
+                        if (victim && !victim.isDead) {
                             if (protectedTargetSet.has(attackedTargetId)) {
-                                logs.push(`🛡️️ 밤 사이 대부의 습격이 있었으나, 경호원의 철저한 보호로 무사히 방어했습니다!`);
+                                logs.push(`🛡 밤 사이 대부의 습격이 있었으나, 경호원의 철저한 보호로 무사히 방어했습니다!`);
                             } else if (victim.role && victim.role.id === 'SOLDIER' && !hallucinatedActorSet.has(attackedTargetId)) {
                                 logs.push(`🛡️ [군인 방어] 군인은 대부로부터 죽지 않고 생존했습니다!`);
                             } else {
