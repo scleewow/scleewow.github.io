@@ -399,13 +399,13 @@
             <div id="host-role-setting-card" class="card hidden">
                 <h4 style="text-align:left;">🎭 역할 배정 설정</h4>
                 <select id="role-mode-select" onchange="toggleRoleSelectMode()">
-                    <option value="DEFAULT">기본 추천 구성 (대부/수사관 필수 + 자동 밸런스)</option>
+                    <option value="DEFAULT">기본 추천 구성 (대부 필수 + 자동 밸런스)</option>
                     <option value="CUSTOM">방장 직접 지정 (추가 희망 직업 선택)</option>
                     <option value="RANDOM">완전 랜덤 구성 (팀 비율만 맞춤)</option>
                 </select>
 
                 <div id="custom-role-options" class="checkbox-group hidden">
-                    <p style="grid-column: 1/-1; font-weight:bold; color:#0284c7;">🔴 추가할 마피아 직업</p>
+                    <p style="grid-column: 1/-1; font-weight:bold; color:#f43f5e;">🔴 추가할 마피아 직업</p>
                     <div id="custom-mafia-list" style="grid-column: 1/-1;" class="checkbox-group"></div>
                     <p style="grid-column: 1/-1; font-weight:bold; color:#0284c7; margin-top:0.3rem;">🔵 추가할 시민 직업</p>
                     <div id="custom-citizen-list" style="grid-column: 1/-1;" class="checkbox-group"></div>
@@ -480,23 +480,23 @@
                 <button class="tab-btn" id="tab-btn-roles" onclick="switchTab('roles')">🎭 캐릭터 설명</button>
             </div>
             <div id="tab-rules" class="tab-body">
+                <h4>🏆 팀별 승리 조건</h4>
+                <p><b>• 시민팀 승리:</b> 대부를 죽이면 승리합니다.<br>
+                <b>• 마피아팀 승리:</b> 대부가 최후 2인까지 살아남거나, 대통령을 투표로 죽일 경우 또는 시민을 모두 죽이면 승리합니다.</p>
+
                 <h4>🔄 게임 진행 순서</h4>
                 <p><b>1. 대기실:</b> 방장이 역할 배정 방식을 설정하고 게임을 시작합니다.<br>
-                <b>2. 낮 페이즈:</b> 토론 후 최다 득표자를 처형합니다.<br>
-                <b>3. 밤 페이즈:</b> 각자의 특수 능력을 비밀리에 선택하며, 아침에 동시 처리됩니다.</p>
-
-                <h4>🏆 팀별 승리 공식</h4>
-                <p><b>• 시민팀 승리:</b> 대부(마피아 보스)가 처형당하거나, 모든 마피아가 사망했을 때 즉시 승리합니다.<br>
-                <b>• 마피아팀 승리:</b> 생존 마피아 수가 생존 시민 수와 <b>같아지는 순간(동수)</b> 즉시 승리합니다.</p>
+                <b>2. 낮 페이즈:</b> 토론 후 지목 투표로 최다 득표자를 처형합니다.<br>
+                <b>3. 밤 페이즈:</b> 각자의 특수 능력을 비밀리에 지정하며, 아침에 동시 연산됩니다.</p>
                 
                 <h4>☀️ 낮 규칙 & 언데드</h4>
-                <p>• 생존자와 사망자(언데드) 모두 자유롭게 토론하고 [투표]에 참여합니다 (비밀 투표, 대통령 2표).<br>
+                <p>• 생존자와 사망자(언데드) 모두 자유롭게 토론하고 [투표]에 참여합니다.<br>
                 • 실시간 표수는 공개되지 않으며, [투표 완료] 여부만 표시됩니다.<br>
                 • 사망자(언데드)는 낮 투표권은 유지되지만 추가 처형 대상 및 밤 능력 사용에서 제외됩니다.</p>
 
                 <h4>🌙 밤 규칙 & 동시 연산</h4>
-                <p>• 밤에 사용된 모든 능력은 즉시 표시되지 않고, 아침이 밝아올 때 <b>우선순위(보호 → 봉인 → 공격)</b>에 따라 동시 연산되어 결과만 통보됩니다.<br>
-                • 마피아 팀은 동료 마피아 닉네임과 이번 판에 <b>제외된 시민 직업 3가지</b>를 공유받아 거짓 사칭(블러핑)에 활용합니다.</p>
+                <p>• 밤에 지정한 능력은 아침이 밝아올 때 우선순위에 따라 동시 처리됩니다.<br>
+                • 마피아 팀은 동료 마피아 닉네임과 이번 판에 <b>제외된 시민 직업 3가지</b>를 공유받아 사칭(블러핑)에 활용합니다.</p>
             </div>
             <div id="tab-roles" class="tab-body hidden">
                 <h4 style="color:#f43f5e;">🔴 마피아팀 캐릭터 (6종)</h4>
@@ -534,32 +534,37 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        const ROLE_GODFATHER = { id: 'GODFATHER', name: '대부', team: 'mafia', limitType: 'nightly', desc: '마피아의 수장. 밤마다 1명을 지정하여 처단합니다. [사용 횟수: 매일 밤]' };
-        const ROLE_INVESTIGATOR = { id: 'INVESTIGATOR', name: '수사관', team: 'human', limitType: 'nightly', desc: '밤마다 2명을 선택하여 둘 중 마피아가 1명 이상 포함되어 있는지 조사합니다. [사용 횟수: 매일 밤]' };
+        // ===== 21종 완전 캐릭터 설정 정의 =====
+        const ROLE_GODFATHER = { 
+            id: 'GODFATHER', name: '대부', team: 'mafia', limitType: 'nightly', 
+            desc: '밤마다 1명을 지목하여 죽일 수 있다. (환각 상태에서는 능력이 무효가 된다)' 
+        };
 
         const OTHER_MAFIA_ROLES = [
-            { id: 'DRUG_DEALER', name: '마약상', team: 'mafia', limitType: 'nightly', desc: '밤마다 1명에게 환각을 부여해 밤 능력을 봉인합니다. [사용 횟수: 매일 밤]' },
-            { id: 'LAWYER', name: '변호사', team: 'mafia', limitType: 'nightly', desc: '지정한 마피아 팀원을 밤 동안 처형 및 공격으로부터 보호합니다. [사용 횟수: 매일 밤]' },
-            { id: 'HITMAN', name: '청부업자', team: 'mafia', limitType: 'nightly', desc: '특정 대상을 저격하여 처단합니다. [사용 횟수: 매일 밤]' },
-            { id: 'THUG', name: '폭력배', team: 'mafia', limitType: 'nightly', desc: '밤에 지정한 대상을 협박하여 다음 날 투표권을 박탈합니다. [사용 횟수: 매일 밤]' },
-            { id: 'DEPUTY', name: '대리인', team: 'mafia', limitType: 'nightly', desc: '대부 사망 시 대부의 처단 능력을 승계받아 실행합니다. [상태: 대부 사망 시 발동]' }
+            { id: 'DRUG_DEALER', name: '마약상', team: 'mafia', limitType: 'nightly', desc: '밤마다 1명을 지목하여 환각 상태로 만든다. (마약상은 환각에 빠져도 영향을 받지 않는다.)' },
+            { id: 'LAWYER', name: '변호사', team: 'mafia', limitType: 'nightly', desc: '밤마다 1명을 지목하여 직업을 알 수 있다. (환각 상태에서는 엉뚱한 직업으로 확인된다)' },
+            { id: 'HITMAN', name: '청부업자', team: 'mafia', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상을 암살한다. (환각 상태에서는 능력이 무효가 된다)' },
+            { id: 'THUG', name: '폭력배', team: 'mafia', limitType: 'once_game', desc: '게임 중 1번, 1명을 지목하여 대상의 능력을 없앤다. (환각 상태에서는 능력이 무효가 된다)' },
+            { id: 'DEPUTY', name: '대리인', team: 'mafia', limitType: 'passive', desc: '능력의 대상이 된 경우에 시민으로 간주된다. (대리인은 환각에 빠져도 영향을 받지 않는다)' }
         ];
 
-        const OTHER_CITIZEN_ROLES = [
-            { id: 'BODYGUARD', name: '경호원', team: 'human', limitType: 'nightly', desc: '밤마다 1명을 지정해 마피아 습격으로부터 목숨 바쳐 지킵니다. [사용 횟수: 매일 밤]' },
-            { id: 'CLERGY', name: '성직자', team: 'human', limitType: 'once_game', desc: '게임 중 단 1회, 사망한 플레이어(언데드) 중 1명을 지정해 완벽히 부활시킵니다. [사용 횟수: 게임 중 1회]' },
-            { id: 'SNIPER', name: '저격수', team: 'human', limitType: 'once_game', desc: '게임 중 단 1회, 의심되는 대상을 직접 저격합니다. (마피아면 처단, 시민이면 저격수 본인 즉시 사망) [사용 횟수: 게임 중 1회]' },
-            { id: 'PSYCHOLOGIST', name: '심리학자', team: 'human', limitType: 'nightly', desc: '밤마다 대상 플레이어의 감정/상태 변화를 파악합니다. [사용 횟수: 매일 밤]' },
-            { id: 'BREWER', name: '양조사', team: 'human', limitType: 'nightly', desc: '밤마다 1명에게 특제 음료를 주어 마약상의 봉인 효과를 상쇄합니다. [사용 횟수: 매일 밤]' },
-            { id: 'NURSE', name: '간호사', team: 'human', limitType: 'nightly', desc: '의사/경호원의 치료 활동을 보조하거나 대상을 보호합니다. [사용 횟수: 매일 밤]' },
-            { id: 'WITNESS', name: '목격자', team: 'human', limitType: 'nightly', desc: '밤에 일어난 특정 능력 사용 현장을 목격할 수 있습니다. [사용 횟수: 매일 밤]' },
-            { id: 'DETECTIVE', name: '탐정', team: 'human', limitType: 'nightly', desc: '밤 동안 특정 대상이 누군가에게 능력을 썼는지 추적합니다. [사용 횟수: 매일 밤]' },
-            { id: 'MAGICIAN', name: '마술사', team: 'human', limitType: 'nightly', desc: '밤에 2명의 위치나 능력을 트릭으로 서로 뒤바꿉니다. [사용 횟수: 매일 밤]' },
-            { id: 'MEDIUM', name: '영매', team: 'human', limitType: 'nightly', desc: '사망한 플레이어들의 진짜 직업을 확인할 수 있습니다. [사용 횟수: 매일 밤]' },
-            { id: 'SOLDIER', name: '군인', team: 'human', limitType: 'passive', desc: '마피아의 첫 번째 공격을 자동으로 방어해냅니다. [사용 횟수: 패시브 / 1회 자동 방어]' },
-            { id: 'PRESIDENT', name: '대통령', team: 'human', limitType: 'passive', desc: '낮 투표 시 자신의 1표가 2표의 가치를 가집니다. [사용 횟수: 패시브 지속]' },
-            { id: 'RULER_BULLY', name: '불량배', team: 'human', limitType: 'nightly', desc: '낮에 특정 플레이어의 발언을 제약하거나 위협합니다. [사용 횟수: 매일 밤]' },
-            { id: 'COWARD', name: '겁쟁이', team: 'human', limitType: 'nightly', desc: '위기 발생 시 밤 동안 은신하여 공격을 피합니다. [사용 횟수: 매일 밤]' }
+        const ALL_CITIZEN_ROLES = [
+            { id: 'PSYCHOLOGIST', name: '심리학자', team: 'human', limitType: 'nightly', desc: '밤마다 2명을 지목해서 서로 같은 팀인지 확인한다. (환각 상태에서는 결과가 반대로 나온다)' },
+            { id: 'INVESTIGATOR', name: '수사관', team: 'human', limitType: 'nightly', desc: '밤마다 2명을 지목해서 마피아가 있는지 확인한다. (환각 상태에서는 결과가 반대로 나온다)' },
+            { id: 'BREWER', name: '양조사', team: 'human', limitType: 'nightly', desc: '밤마다 1명을 지목하여 환각 상태로 만든다. (환각 상태에서는 능력이 무효가 된다)' },
+            { id: 'NURSE', name: '간호사', team: 'human', limitType: 'nightly', desc: '밤마다 지목한 대상이 환각 능력에 지목되었는지 알 수 있다. (환각 상태에서는 결과가 반대로 나온다)' },
+            { id: 'BODYGUARD', name: '경호원', team: 'human', limitType: 'nightly', desc: '밤마다 지목한 대상을 대부로부터 보호한다. (환각 상태에서는 능력이 무효가 된다)' },
+            { id: 'SNIPER', name: '저격수', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상을 죽인다. 단, 대상이 시민일 경우 본인이 죽는다. (환각 상태에서는 결과가 반대로 나온다)' },
+            { id: 'WITNESS', name: '목격자', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상에게 그 밤에 능력을 쓴 사람을 알 수 있다. (단, 능력을 쓴 사람이 없는 경우 결과가 랜덤으로 나온다. 환각 상태에서는 결과가 랜덤한 대상으로 바뀐다)' },
+            { id: 'DETECTIVE', name: '탐정', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상이 그 밤에 능력을 쓴 대상을 알 수 있다. (환각 상태에서는 결과가 랜덤하게 바뀐다)' },
+            { id: 'CLERGY', name: '성직자', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상을 살려낸다. (환각 상태에서는 능력이 무효가 된다)' },
+            { id: 'MAGICIAN', name: '마술사', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 지목한 대상의 직업을 빼앗는다. 단, 대상이 마피아팀이면 마술사는 죽는다. (환각 상태에서 능력 사용 시 죽는다.)' },
+            { id: 'MEDIUM', name: '영매', team: 'human', limitType: 'nightly', desc: '낮에 투표로 죽은 사람이 시민팀인지 마피아팀인지 알 수 있다. (환각 상태에서는 결과가 반대로 나온다)' },
+            { id: 'SOLDIER', name: '군인', team: 'human', limitType: 'passive', desc: '대부로부터 죽지 않는다. (환각 상태에서는 능력이 무효가 된다)' },
+            { id: 'PRESIDENT', name: '대통령', team: 'human', limitType: 'passive', desc: '낮에 투표로 죽으면 시민팀이 패배한다 (대통령은 환각 상태에 빠지지 않는다)' },
+            { id: 'RULER_BULLY', name: '불량배', team: 'human', limitType: 'passive', desc: '마피아로 간주된다 (불량배는 환각 상태에 빠지지 않는다)' },
+            { id: 'COWARD', name: '겁쟁이', team: 'human', limitType: 'passive', desc: '밤에 능력의 대상이 되었을 경우 바로 사망한다. (단, 능력을 건 사람이 환각에 걸렸을 경우에는 능력이 발동되지 않는다.)' },
+            { id: 'FOOL', name: '광대', team: 'human', limitType: 'passive', desc: '본인이 양조사라고 알고 있지만, 아무 능력이 없습니다. (광대는 환각 상태에 빠지지 않는다.)' }
         ];
 
         let roomCode = '';
@@ -634,7 +639,7 @@
                 `<label><input type="checkbox" value="${r.id}" class="custom-mafia-cb"> ${r.name}</label>`
             ).join('');
 
-            cList.innerHTML = OTHER_CITIZEN_ROLES.map(r => 
+            cList.innerHTML = ALL_CITIZEN_ROLES.map(r => 
                 `<label><input type="checkbox" value="${r.id}" class="custom-citizen-cb"> ${r.name}</label>`
             ).join('');
         }
@@ -654,18 +659,17 @@
             const citizenContainer = document.getElementById('citizen-roles-guide');
 
             const allMafia = [ROLE_GODFATHER, ...OTHER_MAFIA_ROLES];
-            const allCitizen = [ROLE_INVESTIGATOR, ...OTHER_CITIZEN_ROLES];
 
             mafiaContainer.innerHTML = allMafia.map(r => 
                 `<div class="role-desc-item">
-                    <b>• ${r.name}</b> <span style="font-size:0.75rem; color:#ef4444;">(${r.limitType === 'nightly' ? '매일 밤' : r.limitType === 'once_game' ? '게임 중 1회' : '패시브'})</span>
+                    <b>• ${r.name}</b>
                     <br>${r.desc}
                 </div>`
             ).join('');
 
-            citizenContainer.innerHTML = allCitizen.map(r => 
+            citizenContainer.innerHTML = ALL_CITIZEN_ROLES.map(r => 
                 `<div class="role-desc-item">
-                    <b>• ${r.name}</b> <span style="font-size:0.75rem; color:#0284c7;">(${r.limitType === 'nightly' ? '매일 밤' : r.limitType === 'once_game' ? '게임 중 1회' : '패시브'})</span>
+                    <b>• ${r.name}</b>
                     <br>${r.desc}
                 </div>`
             ).join('');
@@ -859,19 +863,19 @@
 
                 if (mode === 'RANDOM') {
                     let allM = [...OTHER_MAFIA_ROLES, ROLE_GODFATHER].sort(() => Math.random() - 0.5);
-                    let allC = [...OTHER_CITIZEN_ROLES, ROLE_INVESTIGATOR].sort(() => Math.random() - 0.5);
+                    let allC = [...ALL_CITIZEN_ROLES].sort(() => Math.random() - 0.5);
                     mafiaPool = allM.slice(0, mafiaCount);
                     citizenPool = allC.slice(0, citizenCount);
                 } else if (mode === 'CUSTOM') {
                     mafiaPool = [ROLE_GODFATHER];
-                    citizenPool = [ROLE_INVESTIGATOR];
+                    citizenPool = [];
 
                     const selectedMafiaIds = Array.from(document.querySelectorAll('.custom-mafia-cb:checked')).map(cb => cb.value);
                     const selectedMafia = OTHER_MAFIA_ROLES.filter(r => selectedMafiaIds.includes(r.id));
                     mafiaPool.push(...selectedMafia);
 
                     const selectedCitizenIds = Array.from(document.querySelectorAll('.custom-citizen-cb:checked')).map(cb => cb.value);
-                    const selectedCitizen = OTHER_CITIZEN_ROLES.filter(r => selectedCitizenIds.includes(r.id));
+                    const selectedCitizen = ALL_CITIZEN_ROLES.filter(r => selectedCitizenIds.includes(r.id));
                     citizenPool.push(...selectedCitizen);
 
                     if (mafiaPool.length < mafiaCount) {
@@ -882,7 +886,7 @@
                     }
 
                     if (citizenPool.length < citizenCount) {
-                        let remainingC = OTHER_CITIZEN_ROLES.filter(r => !citizenPool.some(cp => cp.id === r.id)).sort(() => Math.random() - 0.5);
+                        let remainingC = ALL_CITIZEN_ROLES.filter(r => !citizenPool.some(cp => cp.id === r.id)).sort(() => Math.random() - 0.5);
                         citizenPool.push(...remainingC.slice(0, citizenCount - citizenPool.length));
                     } else if (citizenPool.length > citizenCount) {
                         citizenPool = citizenPool.slice(0, citizenCount);
@@ -891,11 +895,11 @@
                     let extraM = [...OTHER_MAFIA_ROLES].sort(() => Math.random() - 0.5).slice(0, mafiaCount - 1);
                     mafiaPool = [ROLE_GODFATHER, ...extraM];
 
-                    let extraC = [...OTHER_CITIZEN_ROLES].sort(() => Math.random() - 0.5).slice(0, citizenCount - 1);
-                    citizenPool = [ROLE_INVESTIGATOR, ...extraC];
+                    let extraC = [...ALL_CITIZEN_ROLES].sort(() => Math.random() - 0.5).slice(0, citizenCount);
+                    citizenPool = extraC;
                 }
 
-                const unusedCitizens = OTHER_CITIZEN_ROLES
+                const unusedCitizens = ALL_CITIZEN_ROLES
                     .filter(r => !citizenPool.some(cp => cp.id === r.id))
                     .sort(() => Math.random() - 0.5)
                     .slice(0, 3)
@@ -910,7 +914,6 @@
                     updates[`players/${pId}/votes`] = 0;
                     updates[`players/${pId}/votedFor`] = null;
                     updates[`players/${pId}/usedOnceAbility`] = false;
-                    updates[`players/${pId}/hasSoldierDefended`] = false;
                 });
 
                 updates['activeRoles'] = finalPool;
@@ -919,7 +922,7 @@
                 updates['state'] = 'DAY';
                 updates['dayCount'] = 1;
                 updates['nightActions'] = null;
-                updates['logs'] = ['☀️ 제 1일 낮이 밝았습니다. 토론을 진행하고 표를 행사하세요.'];
+                updates['logs'] = ['☀️️ 제 1일 낮이 밝았습니다. 토론을 진행하고 표를 행사하세요.'];
 
                 roomRef.update(updates);
             });
@@ -928,10 +931,12 @@
         function renderGame(data) {
             const me = data.players[myPlayerId];
             if (me && me.role) {
+                // 광대는 본인 화면에 '양조사'로 보임
+                const displayRoleName = me.role.id === 'FOOL' ? '양조사' : me.role.name;
                 const isMafia = me.role.team === 'mafia';
                 const teamTag = isMafia ? '🔴 [마피아팀]' : '🔵 [시민팀]';
                 
-                let descHtml = `<b>${me.role.desc}</b>`;
+                let descHtml = `<b>${me.role.id === 'FOOL' ? '밤마다 1명을 지목하여 환각 상태로 만든다.' : me.role.desc}</b>`;
 
                 if (isMafia) {
                     const mafiaTeammates = Object.values(data.players)
@@ -944,7 +949,7 @@
                     descHtml += `<br>🎭 <b>제외된 시민 직업 (블러핑 추천):</b> ${unused.join(', ')}`;
                 }
 
-                document.getElementById('my-role-title').innerText = `${teamTag} ${me.role.name}`;
+                document.getElementById('my-role-title').innerText = `${teamTag} ${displayRoleName}`;
                 document.getElementById('my-role-desc').innerHTML = descHtml;
             }
 
@@ -956,7 +961,9 @@
                 const activeTagsEl = document.getElementById('active-roles-tags');
                 activeTagsEl.innerHTML = activeRoles.map(r => {
                     const isMafia = r.team === 'mafia';
-                    return `<span class="role-tag ${isMafia ? 'mafia' : 'citizen'}">${isMafia ? '🔴' : '🔵'} ${r.name}</span>`;
+                    // 상단 목록에서도 광대는 양조사로 표기
+                    const tagName = r.id === 'FOOL' ? '양조사' : r.name;
+                    return `<span class="role-tag ${isMafia ? 'mafia' : 'citizen'}">${isMafia ? '🔴' : '🔵'} ${tagName}</span>`;
                 }).join('');
             } else {
                 activeRolesCard.classList.add('hidden');
@@ -966,10 +973,8 @@
                 document.body.classList.add('night-mode');
                 document.getElementById('game-title').innerText = '🌙 언데드 마피아 (밤)';
                 document.getElementById('phase-title').innerText = `🌙 제 ${data.dayCount}일 밤`;
-                document.getElementById('phase-desc').innerText = me && me.role && me.role.id === 'INVESTIGATOR' ? 
-                    '수사관 능력: 2명의 플레이어를 선택하세요 (아침 전환 시 연산됨).' : 
-                    '특수 능력을 가진 생존자는 대상을 비밀리에 지정하세요 (아침 전환 시 동시 발동됩니다).';
-                document.getElementById('phase-toggle-btn').innerText = '☀️️ 밤 종료 및 아침 밝히기 (방장)';
+                document.getElementById('phase-desc').innerText = '특수 능력을 가진 생존자는 대상을 비밀리에 지정하세요 (아침 전환 시 동시 연산됩니다).';
+                document.getElementById('phase-toggle-btn').innerText = '☀ 밤 종료 및 아침 밝히기 (방장)';
             } else {
                 document.body.classList.remove('night-mode');
                 document.getElementById('game-title').innerText = '☀️ 언데드 마피아 (낮)';
@@ -1046,18 +1051,17 @@
 
                 const me = players[myPlayerId];
                 const prevVotedId = me.votedFor;
-                const voteWeight = (me.role && me.role.id === 'PRESIDENT') ? 2 : 1;
 
                 let updates = {};
 
                 if (prevVotedId === targetId) {
-                    updates[`players/${targetId}/votes`] = Math.max(0, (players[targetId].votes || 0) - voteWeight);
+                    updates[`players/${targetId}/votes`] = Math.max(0, (players[targetId].votes || 0) - 1);
                     updates[`players/${myPlayerId}/votedFor`] = null;
                 } else {
                     if (prevVotedId && players[prevVotedId]) {
-                        updates[`players/${prevVotedId}/votes`] = Math.max(0, (players[prevVotedId].votes || 0) - voteWeight);
+                        updates[`players/${prevVotedId}/votes`] = Math.max(0, (players[prevVotedId].votes || 0) - 1);
                     }
-                    updates[`players/${targetId}/votes`] = (players[targetId].votes || 0) + voteWeight;
+                    updates[`players/${targetId}/votes`] = (players[targetId].votes || 0) + 1;
                     updates[`players/${myPlayerId}/votedFor`] = targetId;
                 }
 
@@ -1065,7 +1069,6 @@
             });
         }
 
-        // 밤에 즉시 발동하지 않고 비밀리에 예약 지정하는 로직
         function useAbility(targetId) {
             roomRef.once('value', snapshot => {
                 const data = snapshot.val();
@@ -1085,7 +1088,7 @@
                 }
 
                 if (me.role.id === 'CLERGY') {
-                    if (!target.isDead) return alert('성직자는 사망한 플레이어(언데드)만 선택하여 부활시킬 수 있습니다.');
+                    if (!target.isDead) return alert('성직자는 사망한 플레이어(언데드)만 선택하여 살려낼 수 있습니다.');
                 } else if (target.isDead) {
                     return alert('사망한 플레이어에게는 능력을 사용할 수 없습니다.');
                 }
@@ -1094,8 +1097,8 @@
                     return alert('이 능력은 게임 중 이미 1회 사용하셨습니다.');
                 }
 
-                // 수사관 2명 지정 로직
-                if (me.role.id === 'INVESTIGATOR') {
+                // 수사관 및 심리학자 (2명 선택)
+                if (me.role.id === 'INVESTIGATOR' || me.role.id === 'PSYCHOLOGIST') {
                     if (selectedInvestigatorTargets.includes(targetId)) {
                         selectedInvestigatorTargets = selectedInvestigatorTargets.filter(id => id !== targetId);
                     } else {
@@ -1106,16 +1109,16 @@
                     let updates = {};
                     updates[`nightActions/${myPlayerId}`] = {
                         actorName: me.name,
-                        actorRole: me.role.name,
+                        actorRole: me.role.id,
                         targetIds: selectedInvestigatorTargets
                     };
 
                     roomRef.update(updates).then(() => {
                         const count = selectedInvestigatorTargets.length;
                         if (count < 2) {
-                            alert(`수사 대상 1번째 선택됨. 1명을 더 지정해주세요.`);
+                            alert(`지목 대상 1번째 선택됨. 1명을 더 지정해주세요.`);
                         } else {
-                            alert(`수사 대상 2명 지정 완료. 결과는 아침 브리핑 시 동시 계산됩니다.`);
+                            alert(`지목 대상 2명 완료. 결과는 아침 브리핑 시 동시 계산됩니다.`);
                         }
                     });
                     return;
@@ -1124,7 +1127,8 @@
                 let updates = {};
                 updates[`nightActions/${myPlayerId}`] = {
                     actorName: me.name,
-                    actorRole: me.role.name,
+                    actorRoleId: me.role.id,
+                    actorRoleName: me.role.name,
                     actorTeam: me.role.team,
                     targetId: targetId,
                     targetName: target.name
@@ -1136,19 +1140,26 @@
             });
         }
 
-        function checkWinCondition(players) {
-            let aliveMafia = 0;
-            let aliveCitizen = 0;
+        function checkWinCondition(players, logs) {
+            let aliveGodfather = false;
+            let aliveCitizens = 0;
+            let totalAlive = 0;
 
             Object.values(players).forEach(p => {
                 if (!p.isDead && p.role) {
-                    if (p.role.team === 'mafia') aliveMafia++;
-                    else aliveCitizen++;
+                    totalAlive++;
+                    if (p.role.id === 'GODFATHER') aliveGodfather = true;
+                    if (p.role.team === 'human') aliveCitizens++;
                 }
             });
 
-            if (aliveMafia === 0) return 'CITIZEN';
-            if (aliveMafia >= aliveCitizen) return 'MAFIA';
+            // 시민팀 승리: 대부를 죽이면 승리
+            if (!aliveGodfather) return 'CITIZEN';
+
+            // 마피아팀 승리: 대부가 최후 2인까지 살아남거나, 시민이 모두 죽으면 승리
+            if (aliveGodfather && totalAlive <= 2) return 'MAFIA';
+            if (aliveCitizens === 0) return 'MAFIA';
+
             return null;
         }
 
@@ -1156,13 +1167,12 @@
             let summaryText = "\n\n📋 [최종 플레이어 역할 공개]\n";
             Object.values(players).forEach(p => {
                 const teamIcon = (p.role && p.role.team === 'mafia') ? '🔴' : '🔵';
-                const roleName = p.role ? p.role.name : '미배정';
+                const roleName = p.role ? (p.role.id === 'FOOL' ? '광대 (양조사로 위장)' : p.role.name) : '미배정';
                 summaryText += `${teamIcon} ${p.name}: ${roleName}\n`;
             });
             return summaryText;
         }
 
-        // 밤 종료 및 아침 밝히기 (모든 밤 능력의 우선순위와 상관관계 동시 종합 처리)
         function nextPhase() {
             roomRef.once('value', snapshot => {
                 const data = snapshot.val();
@@ -1175,20 +1185,17 @@
                     let isTie = false;
 
                     Object.keys(players).forEach(pId => {
-                        if (!players[pId].isDead) {
-                            const v = players[pId].votes || 0;
-                            if (v > maxVotes) {
-                                maxVotes = v;
-                                executedPlayerId = pId;
-                                isTie = false;
-                            } else if (v > 0 && v === maxVotes) {
-                                isTie = true;
-                            }
+                        const v = players[pId].votes || 0;
+                        if (v > maxVotes) {
+                            maxVotes = v;
+                            executedPlayerId = pId;
+                            isTie = false;
+                        } else if (v > 0 && v === maxVotes) {
+                            isTie = true;
                         }
                     });
 
                     let updates = {};
-                    let isGodfatherExecuted = false;
 
                     if (executedPlayerId && !isTie && maxVotes > 0) {
                         const victim = players[executedPlayerId];
@@ -1196,31 +1203,28 @@
                         players[executedPlayerId].isDead = true;
                         logs.push(`☠️ [처형] ${victim.name}님이 최다 득표(${maxVotes}표)로 처형당해 사망(언데드) 처리되었습니다.`);
 
-                        if (victim.role && victim.role.id === 'GODFATHER') {
-                            isGodfatherExecuted = true;
+                        // 마피아 승리조건: 대통령을 투표로 죽일 경우
+                        if (victim.role && victim.role.id === 'PRESIDENT') {
+                            logs.push(`🚨 [대통령 처형!] 대통령이 낮 투표로 처형되어 시민팀이 패배했습니다.`);
+                            const winMsg = '🔴 마피아팀 승리! (대통령 처형)';
+                            const roleSummary = generateRoleSummary(players);
+                            logs.push(`🎉 [게임 종료] ${winMsg}`);
+                            logs.push(roleSummary.trim());
+
+                            updates['state'] = 'LOBBY';
+                            updates['logs'] = logs;
+                            roomRef.update(updates).then(() => {
+                                alert(`🎉 게임 종료! ${winMsg}${roleSummary}`);
+                            });
+                            return;
                         }
                     } else {
-                        logs.push(`⚖️ [처형 무효] 투표 결과 동점이거나 표가 없어 아무도 처형되지 않았습니다.`);
+                        logs.push(`⚖️️ [처형 무효] 투표 결과 동점이거나 표가 없어 아무도 처형되지 않았습니다.`);
                     }
 
-                    if (isGodfatherExecuted) {
-                        const winMsg = '🔵 시민팀 승리! (마피아 보스 [대부] 처형 성공!)';
-                        const roleSummary = generateRoleSummary(players);
-                        
-                        logs.push(`🎉 [게임 종료] ${winMsg}`);
-                        logs.push(roleSummary.trim());
-
-                        updates['state'] = 'LOBBY';
-                        updates['logs'] = logs;
-                        roomRef.update(updates).then(() => {
-                            alert(`🎉 게임 종료! ${winMsg}${roleSummary}`);
-                        });
-                        return;
-                    }
-
-                    const winner = checkWinCondition(players);
+                    const winner = checkWinCondition(players, logs);
                     if (winner) {
-                        const winMsg = winner === 'MAFIA' ? '🔴 마피아팀 승리!' : '🔵 시민팀 승리!';
+                        const winMsg = winner === 'MAFIA' ? '🔴 마피아팀 승리!' : '🔵 시민팀 승리! (대부 처형 성공)';
                         const roleSummary = generateRoleSummary(players);
                         
                         logs.push(`🎉 [게임 종료] ${winMsg}`);
@@ -1247,94 +1251,89 @@
                     roomRef.update(updates);
 
                 } else {
-                    // 아침 개승: 밤 능력 종합 계산 (우선순위 연산)
+                    // 아침 전환: 밤 능력 계산
                     const actions = data.nightActions || {};
                     let updates = {};
 
                     let protectedTargetSet = new Set();
-                    let blockedActorSet = new Set();
+                    let hallucinatedActorSet = new Set(); // 환각 상태에 빠진 인물
                     let attackedTargetId = null;
-                    let sniperAction = null;
-                    let clergyTargetId = null;
 
-                    // 1단계: 보호 및 치료 (경호원, 변호사, 간호사)
+                    // 1단계: 마약상 & 양조사 환각 부여 (마약상/대리인/대통령/불량배/광대 면제)
                     Object.keys(actions).forEach(pId => {
                         const act = actions[pId];
-                        if (act.actorRole === '경호원' || act.actorRole === '변호사' || act.actorRole === '간호사') {
-                            if (act.targetId) protectedTargetSet.add(act.targetId);
-                        }
-                    });
-
-                    // 2단계: 봉인 (마약상)
-                    Object.keys(actions).forEach(pId => {
-                        const act = actions[pId];
-                        if (act.actorRole === '마약상') {
-                            if (act.targetId) blockedActorSet.add(act.targetId);
-                        }
-                    });
-
-                    // 3단계: 성직자 부활 (봉인되지 않은 경우)
-                    Object.keys(actions).forEach(pId => {
-                        const act = actions[pId];
-                        if (act.actorRole === '성직자' && !blockedActorSet.has(pId)) {
-                            clergyTargetId = act.targetId;
-                            updates[`players/${pId}/usedOnceAbility`] = true;
-                        }
-                    });
-
-                    if (clergyTargetId && players[clergyTargetId]) {
-                        updates[`players/${clergyTargetId}/isDead`] = false;
-                        players[clergyTargetId].isDead = false;
-                        logs.push(`✨ [성직자의 기적] 사망했던 ${players[clergyTargetId].name}님이 부활하였습니다!`);
-                    }
-
-                    // 4단계: 수사관 수사 연산 및 브리핑
-                    Object.keys(actions).forEach(pId => {
-                        const act = actions[pId];
-                        if (act.actorRole === '수사관' && !blockedActorSet.has(pId)) {
-                            if (Array.isArray(act.targetIds) && act.targetIds.length === 2) {
-                                const t1 = players[act.targetIds[0]];
-                                const t2 = players[act.targetIds[1]];
-                                if (t1 && t2) {
-                                    const hasMafia = (t1.role && t1.role.team === 'mafia') || (t2.role && t2.role.team === 'mafia');
-                                    logs.push(`🔍 [수사 결과] (${act.actorName} 전용) ${t1.name}님과 ${t2.name}님 중 마피아는 ${hasMafia ? '🔴 [존재함]' : '🔵 [없음]'}입니다.`);
+                        const actor = players[pId];
+                        if (actor && (act.actorRoleId === 'DRUG_DEALER' || act.actorRoleId === 'BREWER')) {
+                            const target = players[act.targetId];
+                            if (target && target.role) {
+                                const immuneRoles = ['DRUG_DEALER', 'DEPUTY', 'PRESIDENT', 'RULER_BULLY', 'FOOL'];
+                                if (!immuneRoles.includes(target.role.id)) {
+                                    hallucinatedActorSet.add(act.targetId);
                                 }
                             }
                         }
                     });
 
-                    // 5단계: 저격수 연산
+                    // 2단계: 경호원 보호
                     Object.keys(actions).forEach(pId => {
                         const act = actions[pId];
-                        if (act.actorRole === '저격수' && !blockedActorSet.has(pId)) {
-                            sniperAction = act;
+                        if (act.actorRoleId === 'BODYGUARD' && !hallucinatedActorSet.has(pId)) {
+                            if (act.targetId) protectedTargetSet.add(act.targetId);
+                        }
+                    });
+
+                    // 3단계: 성직자 부활
+                    Object.keys(actions).forEach(pId => {
+                        const act = actions[pId];
+                        if (act.actorRoleId === 'CLERGY' && !hallucinatedActorSet.has(pId)) {
+                            if (act.targetId && players[act.targetId]) {
+                                updates[`players/${act.targetId}/isDead`] = false;
+                                players[act.targetId].isDead = false;
+                                logs.push(`✨ [성직자의 기적] 사망했던 ${players[act.targetId].name}님이 부활하였습니다!`);
+                            }
                             updates[`players/${pId}/usedOnceAbility`] = true;
                         }
                     });
 
-                    if (sniperAction) {
-                        const target = players[sniperAction.targetId];
-                        const sniperUser = Object.values(players).find(p => p.role && p.role.id === 'SNIPER');
-
-                        if (target) {
-                            if (protectedTargetSet.has(sniperAction.targetId)) {
-                                logs.push(`🛡️ 저격수의 사격이 있었으나 대상이 철저히 보호받았습니다.`);
-                            } else if (target.role && target.role.team === 'mafia') {
-                                updates[`players/${sniperAction.targetId}/isDead`] = true;
-                                players[sniperAction.targetId].isDead = true;
-                                logs.push(`🎯 [저격 성공] 저격수가 마피아 팀원 ${target.name}님을 사살했습니다!`);
-                            } else if (sniperUser) {
-                                updates[`players/${sniperUser.id}/isDead`] = true;
-                                players[sniperUser.id].isDead = true;
-                                logs.push(`💥 [저격 실패] 저격수가 무고한 시민을 겨냥해 책임을 지고 자살(사망)하였습니다.`);
-                            }
-                        }
-                    }
-
-                    // 6단계: 마피아 공격 연산 (경호원 보호 시 동시 발동하여 방어 성공)
+                    // 4단계: 수사관 / 심리학자 / 변호사 결과 처리
                     Object.keys(actions).forEach(pId => {
                         const act = actions[pId];
-                        if ((act.actorRole === '대부' || act.actorRole === '청부업자') && !blockedActorSet.has(pId)) {
+                        const isHallucinated = hallucinatedActorSet.has(pId);
+
+                        if (act.actorRoleId === 'INVESTIGATOR') {
+                            if (Array.isArray(act.targetIds) && act.targetIds.length === 2) {
+                                const t1 = players[act.targetIds[0]];
+                                const t2 = players[act.targetIds[1]];
+                                if (t1 && t2) {
+                                    let hasMafia = (t1.role && t1.role.team === 'mafia') || (t2.role && t2.role.team === 'mafia');
+                                    if (isHallucinated) hasMafia = !hasMafia;
+                                    logs.push(`🔍 [수사 결과] (${act.actorName} 전용) ${t1.name}님과 ${t2.name}님 중 마피아는 ${hasMafia ? '🔴 [존재함]' : '🔵 [없음]'}입니다.`);
+                                }
+                            }
+                        } else if (act.actorRoleId === 'PSYCHOLOGIST') {
+                            if (Array.isArray(act.targetIds) && act.targetIds.length === 2) {
+                                const t1 = players[act.targetIds[0]];
+                                const t2 = players[act.targetIds[1]];
+                                if (t1 && t2) {
+                                    let sameTeam = (t1.role && t2.role) && (t1.role.team === t2.role.team);
+                                    if (isHallucinated) sameTeam = !sameTeam;
+                                    logs.push(`🧠 [심리 조사] (${act.actorName} 전용) ${t1.name}님과 ${t2.name}님은 ${sameTeam ? '🟢 [같은 팀]' : '🔴 [다른 팀]'}입니다.`);
+                                }
+                            }
+                        } else if (act.actorRoleId === 'LAWYER') {
+                            const target = players[act.targetId];
+                            if (target && target.role) {
+                                let shownRole = target.role.name;
+                                if (isHallucinated) shownRole = '엉뚱한 직업';
+                                logs.push(`⚖️ [변호 조사] (${act.actorName} 전용) ${target.name}님의 직업은 [${shownRole}]입니다.`);
+                            }
+                        }
+                    });
+
+                    // 5단계: 대부 공격 (경호원 보호 / 군인 방어)
+                    Object.keys(actions).forEach(pId => {
+                        const act = actions[pId];
+                        if (act.actorRoleId === 'GODFATHER' && !hallucinatedActorSet.has(pId)) {
                             attackedTargetId = act.targetId;
                         }
                     });
@@ -1343,21 +1342,20 @@
                         const victim = players[attackedTargetId];
                         if (victim) {
                             if (protectedTargetSet.has(attackedTargetId)) {
-                                logs.push(`🛡️ 밤 사이 마피아의 습격이 있었으나, 경호원의 철저한 보호로 무사히 방어했습니다!`);
-                            } else if (victim.role && victim.role.id === 'SOLDIER' && !victim.hasSoldierDefended) {
-                                updates[`players/${attackedTargetId}/hasSoldierDefended`] = true;
-                                logs.push(`🛡️ [군인 방어] 군인이 강인한 체력으로 마피아의 첫 습격을 견뎌내었습니다!`);
+                                logs.push(`🛡️ 밤 사이 대부의 습격이 있었으나, 경호원의 철저한 보호로 무사히 방어했습니다!`);
+                            } else if (victim.role && victim.role.id === 'SOLDIER' && !hallucinatedActorSet.has(attackedTargetId)) {
+                                logs.push(`🛡️ [군인 방어] 군인은 대부로부터 죽지 않고 생존했습니다!`);
                             } else {
                                 updates[`players/${attackedTargetId}/isDead`] = true;
                                 players[attackedTargetId].isDead = true;
                                 logs.push(`💀 밤 사이 ${victim.name}님이 습격을 받아 사망(언데드)했습니다.`);
                             }
                         }
-                    } else if (!sniperAction && !clergyTargetId) {
+                    } else {
                         logs.push(`🕊️ 밤 사이 조용하게 아무 일도 일어나지 않았습니다.`);
                     }
 
-                    const winner = checkWinCondition(players);
+                    const winner = checkWinCondition(players, logs);
                     if (winner) {
                         const winMsg = winner === 'MAFIA' ? '🔴 마피아팀 승리!' : '🔵 시민팀 승리!';
                         const roleSummary = generateRoleSummary(players);
@@ -1400,7 +1398,6 @@
                     updates[`players/${pId}/votes`] = 0;
                     updates[`players/${pId}/votedFor`] = null;
                     updates[`players/${pId}/usedOnceAbility`] = false;
-                    updates[`players/${pId}/hasSoldierDefended`] = false;
                 });
 
                 updates['state'] = 'LOBBY';
@@ -1420,7 +1417,6 @@
             document.getElementById('guide-modal').classList.add('hidden');
         }
 
-        // 설명서 탭 전환 함수 (동작 보완)
         function switchTab(tabType) {
             const btnRules = document.getElementById('tab-btn-rules');
             const btnRoles = document.getElementById('tab-btn-roles');
