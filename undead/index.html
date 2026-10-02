@@ -475,6 +475,15 @@
         </div>
     </div>
 
+    <!-- 개인 전용 브리핑 모달 팝업 -->
+    <div id="private-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 style="text-align:center; color:#0284c7; margin-bottom:0.8rem;">🔒 비밀 조사 브리핑</h3>
+            <p id="private-modal-text" style="font-size:0.95rem; line-height:1.5; color:#0f172a; text-align:center; margin-bottom:1.2rem;"></p>
+            <button style="background:#0284c7;" onclick="closePrivateModal()">확인</button>
+        </div>
+    </div>
+
     <!-- 게임 결과 modal 팝업 -->
     <div id="result-modal" class="modal-overlay hidden">
         <div class="modal-content">
@@ -815,6 +824,18 @@
             }, 3200);
         }
 
+        function showPrivateModal(text) {
+            document.getElementById('private-modal-text').innerText = text;
+            document.getElementById('private-modal').classList.remove('hidden');
+        }
+
+        function closePrivateModal() {
+            document.getElementById('private-modal').classList.add('hidden');
+            if (roomRef && myPlayerId) {
+                roomRef.child(`players/${myPlayerId}/privateResult`).remove();
+            }
+        }
+
         function showResultModal(data) {
             const resultModal = document.getElementById('result-modal');
             const winnerTitle = document.getElementById('result-winner-title');
@@ -874,6 +895,7 @@
                     updates[`players/${pId}/votes`] = 0;
                     updates[`players/${pId}/votedFor`] = null;
                     updates[`players/${pId}/usedOnceAbility`] = false;
+                    updates[`players/${pId}/privateResult`] = null;
                 });
 
                 updates['state'] = 'LOBBY';
@@ -1009,6 +1031,7 @@
                     updates[`players/${pId}/votes`] = 0;
                     updates[`players/${pId}/votedFor`] = null;
                     updates[`players/${pId}/usedOnceAbility`] = false;
+                    updates[`players/${pId}/privateResult`] = null;
                 });
 
                 updates['activeRoles'] = finalPool;
@@ -1027,6 +1050,12 @@
 
         function renderGame(data) {
             const me = data.players[myPlayerId];
+            
+            // 🔒 본인 전용 비밀 브리핑 팝업 출력
+            if (me && me.privateResult) {
+                showPrivateModal(me.privateResult);
+            }
+
             if (me && me.role) {
                 const displayRoleName = me.role.id === 'FOOL' ? '양조사' : me.role.name;
                 const isMafia = me.role.team === 'mafia';
@@ -1179,7 +1208,7 @@
 
                 if (!me.role) return alert('능력을 사용할 수 없는 역할입니다.');
 
-                // 2. 패시브 직업 검사 (광대는 양조사 위장을 위해 패시브 알림을 우회함)
+                // 2. 패시브 직업 검사 (광대는 양조사 위장을 위해 우회)
                 if (me.role.limitType === 'passive' && me.role.id !== 'FOOL') {
                     return alert(`${me.role.name}은(는) 패시브 직업입니다.`);
                 }
@@ -1323,7 +1352,7 @@
                         const victim = players[executedPlayerId];
                         updates[`players/${executedPlayerId}/isDead`] = true;
                         players[executedPlayerId].isDead = true;
-                        logs.push(`☠️ [처형] ${victim.name}님이 최다 득표(${maxVotes}표)로 처형당해 사망(언데드) 처리되었습니다.`);
+                        logs.push(`☠️️ [처형] ${victim.name}님이 최다 득표(${maxVotes}표)로 처형당해 사망(언데드) 처리되었습니다.`);
 
                         if (victim.role && victim.role.id === 'PRESIDENT') {
                             logs.push(`🚨 [대통령 처형!] 대통령이 낮 투표로 처형되어 시민팀이 패배했습니다.`);
@@ -1396,7 +1425,7 @@
                         }
                     });
 
-                    // 4단계: 수사관 / 심리학자 / 변호사 / 영매 조사
+                    // 4단계: 수사관 / 심리학자 / 변호사 / 영매 조사 (당사자 개인 privateResult에만 저장)
                     Object.keys(actions).forEach(pId => {
                         const act = actions[pId];
                         const isHallucinated = hallucinatedActorSet.has(pId);
@@ -1413,7 +1442,7 @@
                                                    (t2Team === 'mafia' || (t2.role && t2.role.id === 'RULER_BULLY'));
                                     
                                     if (isHallucinated) hasMafia = !hasMafia;
-                                    logs.push(`🔍 [수사 결과] (${act.actorName} 전용) ${t1.name}님과 ${t2.name}님 중 마피아는 ${hasMafia ? '🔴 [존재함]' : '🔵 [없음]'}입니다.`);
+                                    updates[`players/${pId}/privateResult`] = `🔍 [수사 결과] ${t1.name}님과 ${t2.name}님 중 마피아는 ${hasMafia ? '🔴 [존재함]' : '🔵 [없음]'}입니다.`;
                                 }
                             }
                         } else if (act.actorRoleId === 'PSYCHOLOGIST') {
@@ -1426,7 +1455,7 @@
                                     
                                     let sameTeam = (t1Team === t2Team);
                                     if (isHallucinated) sameTeam = !sameTeam;
-                                    logs.push(`🧠 [심리 조사] (${act.actorName} 전용) ${t1.name}님과 ${t2.name}님은 ${sameTeam ? '🟢 [같은 팀]' : '🔴 [다른 팀]'}입니다.`);
+                                    updates[`players/${pId}/privateResult`] = `🧠 [심리 조사] ${t1.name}님과 ${t2.name}님은 ${sameTeam ? '🟢 [같은 팀]' : '🔴 [다른 팀]'}입니다.`;
                                 }
                             }
                         } else if (act.actorRoleId === 'LAWYER') {
@@ -1434,14 +1463,14 @@
                             if (target && target.role) {
                                 let shownRole = target.role.name;
                                 if (isHallucinated) shownRole = '엉뚱한 직업';
-                                logs.push(`⚖️ [변호 조사] (${act.actorName} 전용) ${target.name}님의 직업은 [${shownRole}]입니다.`);
+                                updates[`players/${pId}/privateResult`] = `⚖️ [변호 조사] ${target.name}님의 직업은 [${shownRole}]입니다.`;
                             }
                         } else if (act.actorRoleId === 'MEDIUM') {
                             const target = players[act.targetId];
                             if (target && target.isDead && target.role) {
                                 let isMafia = (target.role.team === 'mafia');
                                 if (isHallucinated) isMafia = !isMafia;
-                                logs.push(`🔮 [영매 조사] (${act.actorName} 전용) 사망자 ${target.name}님은 ${isMafia ? '🔴 [마피아팀]' : '🔵 [시민팀]'} 출신입니다.`);
+                                updates[`players/${pId}/privateResult`] = `🔮 [영매 조사] 사망자 ${target.name}님은 ${isMafia ? '🔴 [마피아팀]' : '🔵 [시민팀]'} 출신입니다.`;
                             }
                         }
                     });
@@ -1458,7 +1487,7 @@
                         const victim = players[attackedTargetId];
                         if (victim) {
                             if (protectedTargetSet.has(attackedTargetId)) {
-                                logs.push(`🛡️ 밤 사이 대부의 습격이 있었으나, 경호원의 철저한 보호로 무사히 방어했습니다!`);
+                                logs.push(`🛡️️ 밤 사이 대부의 습격이 있었으나, 경호원의 철저한 보호로 무사히 방어했습니다!`);
                             } else if (victim.role && victim.role.id === 'SOLDIER' && !hallucinatedActorSet.has(attackedTargetId)) {
                                 logs.push(`🛡️ [군인 방어] 군인은 대부로부터 죽지 않고 생존했습니다!`);
                             } else {
@@ -1519,7 +1548,7 @@
                 btnRoles.classList.add('active');
                 btnRules.classList.remove('active');
                 bodyRoles.classList.remove('hidden');
-                bodyRules.classList.add('hidden');
+                bodyRoles.classList.add('hidden');
             }
         }
     </script>
