@@ -503,10 +503,17 @@
     <div id="guide-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <div class="tab-buttons">
-                <button class="tab-btn active" id="tab-btn-rules" onclick="switchTab('rules')">🎮 게임 진행</button>
                 <button class="tab-btn" id="tab-btn-roles" onclick="switchTab('roles')">🎭 캐릭터 설명</button>
+                <button class="tab-btn" id="tab-btn-rules" onclick="switchTab('rules')">🎮 게임 진행</button>
             </div>
-            <div id="tab-rules" class="tab-body">
+            <div id="tab-roles" class="tab-body">
+                <h4 style="color:#f43f5e;">🔴 마피아팀 캐릭터 (6종)</h4>
+                <div id="mafia-roles-guide"></div>
+
+                <h4 style="color:#38bdf8; margin-top:1rem;">🔵 시민팀 캐릭터 (15종)</h4>
+                <div id="citizen-roles-guide"></div>
+            </div>
+            <div id="tab-rules" class="tab-body hidden">
                 <h4>🏆 팀별 승리 조건</h4>
                 <p><b>• 시민팀 승리:</b> 대부를 죽이면 승리합니다.<br>
                 <b>• 마피아팀 승리:</b> 대부가 최후 2인까지 살아남거나, 대통령을 투표로 죽일 경우 또는 시민을 모두 죽이면 승리합니다.</p>
@@ -524,13 +531,6 @@
                 <h4>🌙 밤 규칙 & 동시 연산</h4>
                 <p>• 밤에 지정한 능력은 아침이 밝아올 때 우선순위에 따라 동시 처리됩니다.<br>
                 • 마피아 팀은 동료 마피아 닉네임과 이번 판에 <b>제외된 시민 직업 3가지</b>를 공유받아 사칭(블러핑)에 활용합니다.</p>
-            </div>
-            <div id="tab-roles" class="tab-body hidden">
-                <h4 style="color:#f43f5e;">🔴 마피아팀 캐릭터 (6종)</h4>
-                <div id="mafia-roles-guide"></div>
-
-                <h4 style="color:#38bdf8; margin-top:1rem;">🔵 시민팀 캐릭터 (15종)</h4>
-                <div id="citizen-roles-guide"></div>
             </div>
             <button class="secondary" style="margin-top:1rem;" onclick="closeGuideModal()">닫기</button>
         </div>
@@ -1494,7 +1494,7 @@
                             if (target && target.role) {
                                 let shownRole = target.role.name;
                                 if (isHallucinated) shownRole = '엉뚱한 직업';
-                                updates[`players/${pId}/privateResult`] = `⚖️️ [변호 조사] ${target.name}님의 직업은 [${shownRole}]입니다.`;
+                                updates[`players/${pId}/privateResult`] = `⚖ [변호 조사] ${target.name}님의 직업은 [${shownRole}]입니다.`;
                             }
                         } else if (act.actorRoleId === 'MEDIUM') {
                             const target = players[act.targetId];
@@ -1556,7 +1556,7 @@
         }
 
         function openGuideModal() {
-            switchTab('rules');
+            switchTab('roles');
             document.getElementById('guide-modal').classList.remove('hidden');
         }
 
@@ -1579,7 +1579,7 @@
                 btnRoles.classList.add('active');
                 btnRules.classList.remove('active');
                 bodyRoles.classList.remove('hidden');
-                bodyRoles.classList.add('hidden');
+                bodyRules.classList.add('hidden');
             }
         }
     </script>
