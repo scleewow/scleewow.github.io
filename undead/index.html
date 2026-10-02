@@ -401,7 +401,7 @@
                 <select id="role-mode-select" onchange="toggleRoleSelectMode()">
                     <option value="DEFAULT">기본 추천 구성 (대부 필수 + 자동 밸런스)</option>
                     <option value="CUSTOM">방장 직접 지정 (추가 희망 직업 선택)</option>
-                    <option value="RANDOM">완전 랜덤 구성 (팀 비율만 맞춤)</option>
+                    <option value="RANDOM">완전 랜덤 구성 (대부 필수 + 팀 비율)</option>
                 </select>
 
                 <div id="custom-role-options" class="checkbox-group hidden">
@@ -469,6 +469,21 @@
             <div class="skull">💀</div>
             <h2 id="death-player-name">OOO 사망!</h2>
             <p id="death-cause-text">언데드로 전환되었습니다.</p>
+        </div>
+    </div>
+
+    <!-- 게임 결과 modal 팝업 -->
+    <div id="result-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2 id="result-winner-title" style="text-align:center; margin-bottom:0.5rem; font-size:1.5rem;">🏆 게임 종료</h2>
+            <div id="result-reason-text" style="font-size:0.9rem; color:#64748b; text-align:center; margin-bottom:1rem;"></div>
+            
+            <div class="tab-body" style="max-height: 250px;">
+                <h4 style="margin-bottom:0.5rem;">📋 전체 직업 공개</h4>
+                <div id="result-roles-list" class="player-list"></div>
+            </div>
+            
+            <button style="margin-top:1.2rem; background:#0284c7;" onclick="confirmGameEnd()">확인 (대기실 이동)</button>
         </div>
     </div>
 
@@ -761,13 +776,17 @@
 
                 checkDeathEvent(data.players);
 
-                if (data.state === 'LOBBY') {
+                if (data.state === 'ENDED') {
+                    showResultModal(data);
+                } else if (data.state === 'LOBBY') {
+                    document.getElementById('result-modal').classList.add('hidden');
                     document.body.classList.remove('night-mode');
                     document.getElementById('game-title').innerText = '🧟‍♂️ 언데드 마피아 (Undead Mafia)';
                     document.getElementById('screen-game').classList.add('hidden');
                     document.getElementById('screen-lobby').classList.remove('hidden');
                     renderLobby(data);
                 } else {
+                    document.getElementById('result-modal').classList.add('hidden');
                     document.getElementById('screen-lobby').classList.add('hidden');
                     document.getElementById('screen-game').classList.remove('hidden');
                     renderGame(data);
@@ -791,6 +810,68 @@
             setTimeout(() => {
                 banner.classList.add('hidden');
             }, 3200);
+        }
+
+        function showResultModal(data) {
+            const resultModal = document.getElementById('result-modal');
+            const winnerTitle = document.getElementById('result-winner-title');
+            const reasonText = document.getElementById('result-reason-text');
+            const rolesList = document.getElementById('result-roles-list');
+
+            const isMafiaWin = data.winnerTeam === 'MAFIA';
+            winnerTitle.innerText = isMafiaWin ? '🔴 마피아팀 승리!' : '🔵 시민팀 승리!';
+            winnerTitle.style.color = isMafiaWin ? '#f43f5e' : '#0284c7';
+            reasonText.innerText = data.winReason || '게임이 종료되었습니다.';
+
+            rolesList.innerHTML = '';
+            const players = data.players || {};
+            Object.values(players).forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'player-item';
+                const isMafia = p.role && p.role.team === 'mafia';
+                const roleName = p.role ? (p.role.id === 'FOOL' ? '광대 (양조사 위장)' : p.role.name) : '미배정';
+                
+                item.innerHTML = `
+                    <span><b>${p.name}</b></span>
+                    <span class="role-tag ${isMafia ? 'mafia' : 'citizen'}">${isMafia ? '🔴' : '🔵'} ${roleName}</span>
+                `;
+                rolesList.appendChild(item);
+            });
+
+            resultModal.classList.remove('hidden');
+        }
+
+        function confirmGameEnd() {
+            document.getElementById('result-modal').classList.add('hidden');
+            if (isHost) {
+                forceRestartSilent();
+            }
+        }
+
+        function forceRestartSilent() {
+            roomRef.once('value', snapshot => {
+                const data = snapshot.val();
+                if (!data) return;
+                const players = data.players || {};
+
+                let updates = {};
+                Object.keys(players).forEach(pId => {
+                    updates[`players/${pId}/role`] = null;
+                    updates[`players/${pId}/isDead`] = false;
+                    updates[`players/${pId}/votes`] = 0;
+                    updates[`players/${pId}/votedFor`] = null;
+                    updates[`players/${pId}/usedOnceAbility`] = false;
+                });
+
+                updates['state'] = 'LOBBY';
+                updates['dayCount'] = 1;
+                updates['nightActions'] = null;
+                updates['winnerTeam'] = null;
+                updates['winReason'] = null;
+                updates['logs'] = [`🔄 대기실로 이동하였습니다. 새로 게임을 시작할 수 있습니다.`];
+
+                roomRef.update(updates);
+            });
         }
 
         function renderLobby(data) {
@@ -862,9 +943,11 @@
                 let citizenPool = [];
 
                 if (mode === 'RANDOM') {
-                    let allM = [...OTHER_MAFIA_ROLES, ROLE_GODFATHER].sort(() => Math.random() - 0.5);
+                    // 완전 랜덤 시에도 대부는 필수 보장!
+                    let restM = [...OTHER_MAFIA_ROLES].sort(() => Math.random() - 0.5);
+                    mafiaPool = [ROLE_GODFATHER, ...restM.slice(0, mafiaCount - 1)];
+
                     let allC = [...ALL_CITIZEN_ROLES].sort(() => Math.random() - 0.5);
-                    mafiaPool = allM.slice(0, mafiaCount);
                     citizenPool = allC.slice(0, citizenCount);
                 } else if (mode === 'CUSTOM') {
                     mafiaPool = [ROLE_GODFATHER];
@@ -922,7 +1005,9 @@
                 updates['state'] = 'DAY';
                 updates['dayCount'] = 1;
                 updates['nightActions'] = null;
-                updates['logs'] = ['☀️️ 제 1일 낮이 밝았습니다. 토론을 진행하고 표를 행사하세요.'];
+                updates['winnerTeam'] = null;
+                updates['winReason'] = null;
+                updates['logs'] = ['☀ 제 1일 낮이 밝았습니다. 토론을 진행하고 표를 행사하세요.'];
 
                 roomRef.update(updates);
             });
@@ -931,7 +1016,6 @@
         function renderGame(data) {
             const me = data.players[myPlayerId];
             if (me && me.role) {
-                // 광대는 본인 화면에 '양조사'로 보임
                 const displayRoleName = me.role.id === 'FOOL' ? '양조사' : me.role.name;
                 const isMafia = me.role.team === 'mafia';
                 const teamTag = isMafia ? '🔴 [마피아팀]' : '🔵 [시민팀]';
@@ -961,7 +1045,6 @@
                 const activeTagsEl = document.getElementById('active-roles-tags');
                 activeTagsEl.innerHTML = activeRoles.map(r => {
                     const isMafia = r.team === 'mafia';
-                    // 상단 목록에서도 광대는 양조사로 표기
                     const tagName = r.id === 'FOOL' ? '양조사' : r.name;
                     return `<span class="role-tag ${isMafia ? 'mafia' : 'citizen'}">${isMafia ? '🔴' : '🔵'} ${tagName}</span>`;
                 }).join('');
@@ -1097,7 +1180,6 @@
                     return alert('이 능력은 게임 중 이미 1회 사용하셨습니다.');
                 }
 
-                // 수사관 및 심리학자 (2명 선택)
                 if (me.role.id === 'INVESTIGATOR' || me.role.id === 'PSYCHOLOGIST') {
                     if (selectedInvestigatorTargets.includes(targetId)) {
                         selectedInvestigatorTargets = selectedInvestigatorTargets.filter(id => id !== targetId);
@@ -1109,7 +1191,7 @@
                     let updates = {};
                     updates[`nightActions/${myPlayerId}`] = {
                         actorName: me.name,
-                        actorRole: me.role.id,
+                        actorRoleId: me.role.id,
                         targetIds: selectedInvestigatorTargets
                     };
 
@@ -1140,7 +1222,14 @@
             });
         }
 
-        function checkWinCondition(players, logs) {
+        // 조사용 정진영 판정 로직 (대리인은 시민으로 간주)
+        function getInvestigativeTeam(player) {
+            if (!player || !player.role) return 'human';
+            if (player.role.id === 'DEPUTY') return 'human'; // 대리인 예외: 시민으로 간주
+            return player.role.team;
+        }
+
+        function checkWinCondition(players) {
             let aliveGodfather = false;
             let aliveCitizens = 0;
             let totalAlive = 0;
@@ -1154,23 +1243,28 @@
             });
 
             // 시민팀 승리: 대부를 죽이면 승리
-            if (!aliveGodfather) return 'CITIZEN';
+            if (!aliveGodfather) {
+                return { winner: 'CITIZEN', reason: '시민팀이 대부를 처형하여 승리했습니다!' };
+            }
 
             // 마피아팀 승리: 대부가 최후 2인까지 살아남거나, 시민이 모두 죽으면 승리
-            if (aliveGodfather && totalAlive <= 2) return 'MAFIA';
-            if (aliveCitizens === 0) return 'MAFIA';
+            if (aliveGodfather && totalAlive <= 2) {
+                return { winner: 'MAFIA', reason: '대부가 최후 2인까지 생존하여 마피아팀이 승리했습니다!' };
+            }
+            if (aliveCitizens === 0) {
+                return { winner: 'MAFIA', reason: '모든 시민이 전멸하여 마피아팀이 승리했습니다!' };
+            }
 
             return null;
         }
 
-        function generateRoleSummary(players) {
-            let summaryText = "\n\n📋 [최종 플레이어 역할 공개]\n";
-            Object.values(players).forEach(p => {
-                const teamIcon = (p.role && p.role.team === 'mafia') ? '🔴' : '🔵';
-                const roleName = p.role ? (p.role.id === 'FOOL' ? '광대 (양조사로 위장)' : p.role.name) : '미배정';
-                summaryText += `${teamIcon} ${p.name}: ${roleName}\n`;
-            });
-            return summaryText;
+        function triggerGameEnd(winnerInfo, updates, logs) {
+            updates['state'] = 'ENDED';
+            updates['winnerTeam'] = winnerInfo.winner;
+            updates['winReason'] = winnerInfo.reason;
+            logs.push(`🎉 [게임 종료] ${winnerInfo.winner === 'MAFIA' ? '🔴 마피아팀 승리!' : '🔵 시민팀 승리!'} (${winnerInfo.reason})`);
+            updates['logs'] = logs;
+            roomRef.update(updates);
         }
 
         function nextPhase() {
@@ -1206,35 +1300,16 @@
                         // 마피아 승리조건: 대통령을 투표로 죽일 경우
                         if (victim.role && victim.role.id === 'PRESIDENT') {
                             logs.push(`🚨 [대통령 처형!] 대통령이 낮 투표로 처형되어 시민팀이 패배했습니다.`);
-                            const winMsg = '🔴 마피아팀 승리! (대통령 처형)';
-                            const roleSummary = generateRoleSummary(players);
-                            logs.push(`🎉 [게임 종료] ${winMsg}`);
-                            logs.push(roleSummary.trim());
-
-                            updates['state'] = 'LOBBY';
-                            updates['logs'] = logs;
-                            roomRef.update(updates).then(() => {
-                                alert(`🎉 게임 종료! ${winMsg}${roleSummary}`);
-                            });
+                            triggerGameEnd({ winner: 'MAFIA', reason: '대통령이 낮 투표로 처형되었습니다!' }, updates, logs);
                             return;
                         }
                     } else {
-                        logs.push(`⚖️️ [처형 무효] 투표 결과 동점이거나 표가 없어 아무도 처형되지 않았습니다.`);
+                        logs.push(`⚖ [처형 무효] 투표 결과 동점이거나 표가 없어 아무도 처형되지 않았습니다.`);
                     }
 
-                    const winner = checkWinCondition(players, logs);
-                    if (winner) {
-                        const winMsg = winner === 'MAFIA' ? '🔴 마피아팀 승리!' : '🔵 시민팀 승리! (대부 처형 성공)';
-                        const roleSummary = generateRoleSummary(players);
-                        
-                        logs.push(`🎉 [게임 종료] ${winMsg}`);
-                        logs.push(roleSummary.trim());
-
-                        updates['state'] = 'LOBBY';
-                        updates['logs'] = logs;
-                        roomRef.update(updates).then(() => {
-                            alert(`🎉 게임 종료! ${winMsg}${roleSummary}`);
-                        });
+                    const winResult = checkWinCondition(players);
+                    if (winResult) {
+                        triggerGameEnd(winResult, updates, logs);
                         return;
                     }
 
@@ -1256,10 +1331,10 @@
                     let updates = {};
 
                     let protectedTargetSet = new Set();
-                    let hallucinatedActorSet = new Set(); // 환각 상태에 빠진 인물
+                    let hallucinatedActorSet = new Set();
                     let attackedTargetId = null;
 
-                    // 1단계: 마약상 & 양조사 환각 부여 (마약상/대리인/대통령/불량배/광대 면제)
+                    // 1단계: 환각 부여
                     Object.keys(actions).forEach(pId => {
                         const act = actions[pId];
                         const actor = players[pId];
@@ -1295,7 +1370,7 @@
                         }
                     });
 
-                    // 4단계: 수사관 / 심리학자 / 변호사 결과 처리
+                    // 4단계: 수사관 / 심리학자 / 변호사 조사 (대리인은 시민으로 간주 반영)
                     Object.keys(actions).forEach(pId => {
                         const act = actions[pId];
                         const isHallucinated = hallucinatedActorSet.has(pId);
@@ -1305,7 +1380,13 @@
                                 const t1 = players[act.targetIds[0]];
                                 const t2 = players[act.targetIds[1]];
                                 if (t1 && t2) {
-                                    let hasMafia = (t1.role && t1.role.team === 'mafia') || (t2.role && t2.role.team === 'mafia');
+                                    const t1Team = getInvestigativeTeam(t1);
+                                    const t2Team = getInvestigativeTeam(t2);
+                                    
+                                    // 불량배 패시브는 마피아로 판정
+                                    let hasMafia = (t1Team === 'mafia' || (t1.role && t1.role.id === 'RULER_BULLY')) || 
+                                                   (t2Team === 'mafia' || (t2.role && t2.role.id === 'RULER_BULLY'));
+                                    
                                     if (isHallucinated) hasMafia = !hasMafia;
                                     logs.push(`🔍 [수사 결과] (${act.actorName} 전용) ${t1.name}님과 ${t2.name}님 중 마피아는 ${hasMafia ? '🔴 [존재함]' : '🔵 [없음]'}입니다.`);
                                 }
@@ -1315,7 +1396,10 @@
                                 const t1 = players[act.targetIds[0]];
                                 const t2 = players[act.targetIds[1]];
                                 if (t1 && t2) {
-                                    let sameTeam = (t1.role && t2.role) && (t1.role.team === t2.role.team);
+                                    const t1Team = getInvestigativeTeam(t1);
+                                    const t2Team = getInvestigativeTeam(t2);
+                                    
+                                    let sameTeam = (t1Team === t2Team);
                                     if (isHallucinated) sameTeam = !sameTeam;
                                     logs.push(`🧠 [심리 조사] (${act.actorName} 전용) ${t1.name}님과 ${t2.name}님은 ${sameTeam ? '🟢 [같은 팀]' : '🔴 [다른 팀]'}입니다.`);
                                 }
@@ -1330,7 +1414,7 @@
                         }
                     });
 
-                    // 5단계: 대부 공격 (경호원 보호 / 군인 방어)
+                    // 5단계: 대부 습격
                     Object.keys(actions).forEach(pId => {
                         const act = actions[pId];
                         if (act.actorRoleId === 'GODFATHER' && !hallucinatedActorSet.has(pId)) {
@@ -1355,19 +1439,9 @@
                         logs.push(`🕊️ 밤 사이 조용하게 아무 일도 일어나지 않았습니다.`);
                     }
 
-                    const winner = checkWinCondition(players, logs);
-                    if (winner) {
-                        const winMsg = winner === 'MAFIA' ? '🔴 마피아팀 승리!' : '🔵 시민팀 승리!';
-                        const roleSummary = generateRoleSummary(players);
-
-                        logs.push(`🎉 [게임 종료] ${winMsg}`);
-                        logs.push(roleSummary.trim());
-
-                        updates['state'] = 'LOBBY';
-                        updates['logs'] = logs;
-                        roomRef.update(updates).then(() => {
-                            alert(`🎉 게임 종료! ${winMsg}${roleSummary}`);
-                        });
+                    const winResult = checkWinCondition(players);
+                    if (winResult) {
+                        triggerGameEnd(winResult, updates, logs);
                         return;
                     }
 
@@ -1386,27 +1460,7 @@
 
         function forceRestart() {
             if (!confirm('게임의 모든 진행 상태를 초기화하고 대기실로 이동하시겠습니까?')) return;
-
-            roomRef.once('value', snapshot => {
-                const data = snapshot.val();
-                const players = data.players || {};
-
-                let updates = {};
-                Object.keys(players).forEach(pId => {
-                    updates[`players/${pId}/role`] = null;
-                    updates[`players/${pId}/isDead`] = false;
-                    updates[`players/${pId}/votes`] = 0;
-                    updates[`players/${pId}/votedFor`] = null;
-                    updates[`players/${pId}/usedOnceAbility`] = false;
-                });
-
-                updates['state'] = 'LOBBY';
-                updates['dayCount'] = 1;
-                updates['nightActions'] = null;
-                updates['logs'] = [`🔄 방장에 의해 게임이 재시작되었습니다.`];
-
-                roomRef.update(updates);
-            });
+            forceRestartSilent();
         }
 
         function openGuideModal() {
@@ -1432,7 +1486,7 @@
                 btnRoles.classList.add('active');
                 btnRules.classList.remove('active');
                 bodyRoles.classList.remove('hidden');
-                bodyRules.classList.add('hidden');
+                bodyRoles.classList.add('hidden');
             }
         }
     </script>
