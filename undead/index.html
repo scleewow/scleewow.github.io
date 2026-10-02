@@ -199,6 +199,25 @@
         }
         body.night-mode .role-badge { color: #38bdf8; }
 
+        .role-tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+        .role-tag {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+        .role-tag.mafia { background: #ffe4e6; color: #e11d48; border: 1px solid #f43f5e; }
+        .role-tag.citizen { background: #e0f2fe; color: #0284c7; border: 1px solid #38bdf8; }
+
+        body.night-mode .role-tag.mafia { background: #4c0519; color: #fda4af; border-color: #e11d48; }
+        body.night-mode .role-tag.citizen { background: #082f49; color: #7dd3fc; border-color: #0284c7; }
+
         .log-box {
             background: #ffffff;
             padding: 0.75rem;
@@ -323,21 +342,23 @@
 <body>
     <div class="container">
         <header>
-            <h1 id="game-title">☀️ 언데드 마피아 (낮)</h1>
+            <h1 id="game-title">🧟‍♂️ 언데드 마피아 (Undead Mafia)</h1>
             <button class="guide-btn" onclick="openGuideModal()">📖 게임 설명</button>
         </header>
 
         <!-- 1. 메인 화면 -->
         <div id="screen-main">
-            <div class="card">
-                <h3>플레이어 설정</h3>
-                <input type="text" id="nickname-input" placeholder="닉네임을 입력하세요">
+            <!-- 방 생성 카드 (QR 접속 시 숨김 처리) -->
+            <div class="card" id="card-create-room">
+                <h3>방 만들기 (방장)</h3>
                 <input type="password" id="create-key-input" placeholder="방 생성 인증키 입력">
-                <button onclick="createRoom()">새 방 만들기 (방장)</button>
+                <button onclick="createRoom()">새 방 만들기</button>
             </div>
             
-            <div class="card">
-                <h3>기존 방 참가</h3>
+            <!-- 방 참가 카드 (QR 접속 시 닉네임 + 참가만 집중) -->
+            <div class="card" id="card-join-room">
+                <h3 id="join-card-title">게임 참가하기</h3>
+                <input type="text" id="nickname-input" placeholder="사용할 닉네임을 입력하세요">
                 <input type="text" id="room-code-input" placeholder="방 코드 입력 (예: AB12)">
                 <button class="secondary" onclick="joinRoom()">입장하기</button>
             </div>
@@ -361,6 +382,7 @@
 
         <!-- 3. 게임 화면 -->
         <div id="screen-game" class="hidden">
+            <!-- 나의 역할 확인 카드 -->
             <div class="card">
                 <p style="font-size:0.8rem; color:#64748b;">나의 역할 (누르고 있을 때만 표시)</p>
                 <div id="role-display-box" class="hidden">
@@ -368,6 +390,12 @@
                     <p id="my-role-desc" style="font-size:0.85rem; color:#475569;"></p>
                 </div>
                 <button id="role-hold-btn" class="hold-btn">👁️ 눌러서 역할 확인하기</button>
+            </div>
+
+            <!-- 이번 판 공개 역할 브리핑 카드 -->
+            <div class="card">
+                <h4 style="font-size:0.9rem; color:#64748b;">📋 이번 판 등장 역할 (<span id="active-roles-count">0</span>개)</h4>
+                <div id="active-roles-tags" class="role-tag-list"></div>
             </div>
 
             <div class="card">
@@ -420,7 +448,8 @@
                 <small style="color:#64748b;">(예: 마피아 2명 vs 시민 2명 남은 경우, 마피아가 표를 통제할 수 있어 즉시 종료됩니다.)</small></p>
                 
                 <h4>☀️ 낮 규칙 & 언데드</h4>
-                <p>• 생존자와 사망자(언데드) 모두 자유롭게 토론하고 [투표]에 참여합니다 (비밀 투표, 대통령 2표).<br>
+                <p>• 이번 판에 포함된 역할 정보가 상단 카드에 공개됩니다.<br>
+                • 생존자와 사망자(언데드) 모두 자유롭게 토론하고 [투표]에 참여합니다 (비밀 투표, 대통령 2표).<br>
                 • 실시간 표수는 공개되지 않으며, [투표 완료] 여부만 표시됩니다.<br>
                 • 사망자(언데드)는 낮 투표권은 유지되지만 추가 처형 대상 및 밤 능력 사용에서 제외됩니다.<br>
                 • 방장이 [낮 종료 및 처형 집행]을 누르면 최다 득표자가 사망(언데드) 처리됩니다.</p>
@@ -505,11 +534,21 @@
 
             const savedRoomCode = localStorage.getItem('undead_roomCode');
             const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('room') || savedRoomCode;
+            const qrRoomCode = urlParams.get('room');
 
-            if (code) {
-                document.getElementById('room-code-input').value = code.toUpperCase();
-                roomCode = code.toUpperCase();
+            // QR 코드 / 링크로 접속한 경우 UI 간소화 처리
+            if (qrRoomCode) {
+                document.getElementById('card-create-room').classList.add('hidden');
+                document.getElementById('room-code-input').classList.add('hidden');
+                document.getElementById('join-card-title').innerText = `방 코드 [${qrRoomCode.toUpperCase()}] 참가`;
+                document.getElementById('room-code-input').value = qrRoomCode.toUpperCase();
+                roomCode = qrRoomCode.toUpperCase();
+            } else if (savedRoomCode) {
+                document.getElementById('room-code-input').value = savedRoomCode.toUpperCase();
+                roomCode = savedRoomCode.toUpperCase();
+            }
+
+            if (roomCode) {
                 db.ref('undead_rooms/' + roomCode).once('value', snapshot => {
                     if (snapshot.exists() && snapshot.val().players && snapshot.val().players[myPlayerId]) {
                         roomRef = db.ref('undead_rooms/' + roomCode);
@@ -523,7 +562,6 @@
             renderGuideRoles();
         };
 
-        // PC/모바일 터치 및 마우스 이벤트 완벽 대응
         function setupHoldRoleButton() {
             const btn = document.getElementById('role-hold-btn');
             const box = document.getElementById('role-display-box');
@@ -540,7 +578,6 @@
                 btn.innerText = '👁️ 눌러서 역할 확인하기';
             };
 
-            // Pointer / Mouse / Touch 이벤트 바인딩
             btn.addEventListener('pointerdown', showRole);
             btn.addEventListener('pointerup', hideRole);
             btn.addEventListener('pointercancel', hideRole);
@@ -566,7 +603,7 @@
             myNickname = document.getElementById('nickname-input').value.trim();
             const inputKey = document.getElementById('create-key-input').value.trim();
 
-            if (!myNickname) return alert('닉네임을 입력하세요.');
+            if (!myNickname) return alert('사용할 닉네임을 아래 참가하기 카드에 입력하세요.');
             if (!inputKey) return alert('방 생성 인증키를 입력하세요.');
 
             const inputHash = await hashPassword(inputKey);
@@ -649,6 +686,8 @@
                 checkDeathEvent(data.players);
 
                 if (data.state === 'LOBBY') {
+                    document.body.classList.remove('night-mode');
+                    document.getElementById('game-title').innerText = '🧟‍♂️️ 언데드 마피아 (Undead Mafia)';
                     document.getElementById('screen-game').classList.add('hidden');
                     document.getElementById('screen-lobby').classList.remove('hidden');
                     renderLobby(data);
@@ -746,10 +785,12 @@
                     updates[`players/${pId}/usedOnceAbility`] = false;
                 });
 
+                // 게임에 배정된 전체 직업 목록 브리핑 저장
+                updates['activeRoles'] = finalPool;
                 updates['state'] = 'DAY';
                 updates['dayCount'] = 1;
                 updates['nightActions'] = null;
-                updates['logs'] = ['☀️ 제 1일 낮이 밝았습니다. 토론을 진행하고 표를 행사하세요.'];
+                updates['logs'] = ['☀️️ 제 1일 낮이 밝았습니다. 토론을 진행하고 표를 행사하세요.'];
 
                 roomRef.update(updates);
             });
@@ -763,12 +804,21 @@
                 document.getElementById('my-role-desc').innerText = me.role.desc;
             }
 
+            // 이번 판 등장 역할 정보 가이드 생성
+            const activeRoles = data.activeRoles || [];
+            document.getElementById('active-roles-count').innerText = activeRoles.length;
+            const activeTagsEl = document.getElementById('active-roles-tags');
+            activeTagsEl.innerHTML = activeRoles.map(r => {
+                const isMafia = r.team === 'mafia';
+                return `<span class="role-tag ${isMafia ? 'mafia' : 'citizen'}">${isMafia ? '🔴' : '🔵'} ${r.name}</span>`;
+            }).join('');
+
             if (data.state === 'NIGHT') {
                 document.body.classList.add('night-mode');
                 document.getElementById('game-title').innerText = '🌙 언데드 마피아 (밤)';
                 document.getElementById('phase-title').innerText = `🌙 제 ${data.dayCount}일 밤`;
                 document.getElementById('phase-desc').innerText = '특수 능력을 가진 생존자는 대상을 지정하여 능력을 사용하세요.';
-                document.getElementById('phase-toggle-btn').innerText = '☀️️ 밤 종료 및 아침 밝히기 (방장)';
+                document.getElementById('phase-toggle-btn').innerText = '☀️ 밤 종료 및 아침 밝히기 (방장)';
             } else {
                 document.body.classList.remove('night-mode');
                 document.getElementById('game-title').innerText = '☀️ 언데드 마피아 (낮)';
@@ -794,7 +844,6 @@
                     if (p.isDead) {
                         actionBtn = `<button style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem; background:#94a3b8;" disabled>처형 불가</button>`;
                     } else {
-                        // 비밀 투표: 실시간 표 수치 비공개, 본인이 지정한 대상만 표시/취소 가능
                         const btnBg = isMyTarget ? '#0284c7' : '#ea580c';
                         const btnText = isMyTarget ? '지목 취소' : '투표 지목';
                         actionBtn = `<button style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem; background:${btnBg};" onclick="votePlayer('${pId}')">${btnText}</button>`;
