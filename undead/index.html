@@ -61,6 +61,28 @@
         h1 { font-size: 1.3rem; color: #d97706; transition: color 0.5s; }
         body.night-mode h1 { color: #c084fc; }
 
+        .timer-badge {
+            background: #e2e8f0;
+            color: #0f172a;
+            font-weight: bold;
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            border: 1px solid #cbd5e1;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+        body.night-mode .timer-badge {
+            background: #1e1b4b;
+            color: #fbbf24;
+            border-color: #7c3aed;
+        }
+        .timer-warning {
+            color: #dc2626 !important;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
         .guide-btn {
             color: #0284c7;
             background: #f0f9ff;
@@ -138,6 +160,7 @@
         button:hover { background: #c2410c; }
         body.night-mode button { background: #9333ea; }
         body.night-mode button:hover { background: #7e22ce; }
+        button:disabled { background: #94a3b8 !important; cursor: not-allowed; opacity: 0.6; }
 
         button.secondary { background: #64748b; }
         button.secondary:hover { background: #475569; }
@@ -342,6 +365,23 @@
         .vote-status-tag.voted { background: #0284c7; color: white; }
         .vote-status-tag.not-voted { background: #94a3b8; color: white; }
 
+        .invest-history-box {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            text-align: left;
+            max-height: 80px;
+            overflow-y: auto;
+        }
+        body.night-mode .invest-history-box {
+            background: #030712;
+            border-color: #334155;
+            color: #cbd5e1;
+        }
+
         .death-banner-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -432,6 +472,10 @@
 
         <!-- 3. 게임 화면 -->
         <div id="screen-game" class="hidden">
+            <div style="text-align:center;">
+                <div id="timer-display" class="timer-badge">⏱️ 남은 시간 05:00</div>
+            </div>
+
             <div id="role-hold-card" class="role-hold-card">
                 <div id="role-prompt-text" style="font-size:0.9rem; color:#0284c7; font-weight:bold;">
                     👁️ 이곳을 누르고 있는 동안에만 역할이 표시됩니다.
@@ -439,6 +483,11 @@
                 <div id="role-display-box" class="hidden">
                     <div id="my-role-title" class="role-badge"></div>
                     <p id="my-role-desc" style="font-size:0.85rem; color:#475569; text-align:left; line-height:1.4;"></p>
+                    <!-- 조사직 조사 이력 누적 카드 -->
+                    <div id="invest-history-box" class="invest-history-box hidden">
+                        <b>📜 나의 조사 이력:</b>
+                        <div id="invest-history-content"></div>
+                    </div>
                 </div>
             </div>
 
@@ -450,6 +499,17 @@
             <div class="card">
                 <h3 id="phase-title">☀️ 제 1일 낮 페이즈</h3>
                 <p id="phase-desc" style="font-size:0.85rem; color:#64748b; margin-top:0.25rem;"></p>
+                
+                <!-- 찬반 투표 전용 영역 (3번 요구사항) -->
+                <div id="execute-vote-box" class="hidden" style="margin-top:0.8rem; border-top:1px dashed #cbd5e1; padding-top:0.6rem;">
+                    <p style="font-weight:bold; color:#dc2626; font-size:0.9rem;">
+                        ⚖️ <span id="execute-target-name">OOO</span> 님의 처형 여부 찬반 투표
+                    </p>
+                    <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
+                        <button style="background:#dc2626;" onclick="submitExecuteVote(true)">🔪 찬성 (죽이기)</button>
+                        <button style="background:#16a34a;" onclick="submitExecuteVote(false)">🛡️ 반대 (살리기)</button>
+                    </div>
+                </div>
             </div>
 
             <div class="log-box" id="game-log"></div>
@@ -460,7 +520,7 @@
             </div>
 
             <div id="host-controls" class="hidden">
-                <button id="phase-toggle-btn" onclick="nextPhase()">낮 종료 및 처형 집행 (방장)</button>
+                <button id="phase-toggle-btn" onclick="nextPhase()">낮 종료 및 투표 집계 (방장)</button>
                 <button class="danger" style="margin-top:0.5rem;" onclick="forceRestart()">🔄 게임 강제 재시작 (대기실 이동)</button>
             </div>
         </div>
@@ -478,7 +538,7 @@
     <!-- 개인 전용 브리핑 모달 팝업 -->
     <div id="private-modal" class="modal-overlay hidden">
         <div class="modal-content">
-            <h3 style="text-align:center; color:#0284c7; margin-bottom:0.8rem;">🔒 비밀 조사 브리핑</h3>
+            <h3 style="text-align:center; color:#0284c7; margin-bottom:0.8rem;">🔒 비밀 정보 브리핑</h3>
             <p id="private-modal-text" style="font-size:0.95rem; line-height:1.5; color:#0f172a; text-align:center; margin-bottom:1.2rem;"></p>
             <button style="background:#0284c7;" onclick="closePrivateModal()">확인</button>
         </div>
@@ -510,7 +570,7 @@
                 <h4 style="color:#f43f5e;">🔴 마피아팀 캐릭터 (6종)</h4>
                 <div id="mafia-roles-guide"></div>
 
-                <h4 style="color:#38bdf8; margin-top:1rem;">🔵 시민팀 캐릭터 (15종)</h4>
+                <h4 style="color:#38bdf8; margin-top:1rem;">🔵 시민팀 캐릭터 (16종)</h4>
                 <div id="citizen-roles-guide"></div>
             </div>
             <div id="tab-rules" class="tab-body hidden">
@@ -527,12 +587,11 @@
 
                 <h4>🔄 게임 진행 순서</h4>
                 <p><b>1. 대기실:</b> 방장이 역할 배정 방식을 설정하고 게임을 시작합니다.<br>
-                <b>2. 낮 페이즈:</b> 토론 후 지목 투표로 최다 득표자를 처형합니다.<br>
+                <b>2. 낮 페이즈:</b> 토론 후 지목 투표로 최다 득표자의 최후 변론을 진행하고, 찬반 투표로 처형을 결정합니다.<br>
                 <b>3. 밤 페이즈:</b> 각자의 특수 능력을 비밀리에 지정하며, 아침에 동시 연산됩니다.</p>
                 
                 <h4>☀️ 낮 규칙 & 언데드</h4>
                 <p>• 생존자와 사망자(언데드) 모두 자유롭게 토론하고 [투표]에 참여합니다.<br>
-                • 실시간 표수는 공개되지 않으며, [투표 완료] 여부만 표시됩니다.<br>
                 • 사망자(언데드)는 낮 투표권은 유지되지만 추가 처형 대상 및 밤 능력 사용에서 제외됩니다.</p>
 
                 <h4>🌙 밤 규칙 & 동시 연산</h4>
@@ -568,37 +627,37 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        // ===== 21종 완전 캐릭터 설정 정의 =====
+        // ===== 21종 캐릭터 설정 =====
         const ROLE_GODFATHER = { 
             id: 'GODFATHER', name: '대부', team: 'mafia', limitType: 'nightly', 
-            desc: '밤마다 1명을 지목하여 죽일 수 있다. (환각 상태에서는 능력이 무효가 된다)' 
+            desc: '밤마다 1명을 지목하여 죽일 수 있다. (자신 지목 불가. 환각 상태에서는 능력이 무효가 된다)' 
         };
 
         const OTHER_MAFIA_ROLES = [
             { id: 'DRUG_DEALER', name: '마약상', team: 'mafia', limitType: 'nightly', desc: '밤마다 1명을 지목하여 환각 상태로 만든다. (마약상은 환각에 빠져도 영향을 받지 않는다.)' },
             { id: 'LAWYER', name: '변호사', team: 'mafia', limitType: 'nightly', desc: '밤마다 1명을 지목하여 직업을 알 수 있다. (환각 상태에서는 엉뚱한 직업으로 확인된다)' },
-            { id: 'HITMAN', name: '청부업자', team: 'mafia', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상을 암살한다. (환각 상태에서는 능력이 무효가 된다)' },
+            { id: 'HITMAN', name: '청부업자', team: 'mafia', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상을 암살한다. (자신 지목 불가. 환각 상태에서는 능력이 무효가 된다)' },
             { id: 'THUG', name: '폭력배', team: 'mafia', limitType: 'once_game', desc: '게임 중 1번, 1명을 지목하여 대상의 능력을 없앤다. (환각 상태에서는 능력이 무효가 된다)' },
             { id: 'DEPUTY', name: '대리인', team: 'mafia', limitType: 'passive', desc: '능력의 대상이 된 경우에 시민으로 간주된다. (대리인은 환각에 빠져도 영향을 받지 않는다)' }
         ];
 
         const ALL_CITIZEN_ROLES = [
-            { id: 'PSYCHOLOGIST', name: '심리학자', team: 'human', limitType: 'nightly', desc: '밤마다 2명을 지목해서 서로 같은 팀인지 확인한다. (환각 상태에서는 결과가 반대로 나온다)' },
-            { id: 'INVESTIGATOR', name: '수사관', team: 'human', limitType: 'nightly', desc: '밤마다 2명을 지목해서 마피아가 있는지 확인한다. (환각 상태에서는 결과가 반대로 나온다)' },
+            { id: 'PSYCHOLOGIST', name: '심리학자', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 2명을 지목해서 서로 같은 팀인지 확인한다. (환각 상태에서는 결과가 반대로 나온다)' },
+            { id: 'INVESTIGATOR', name: '수사관', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 2명을 지목해서 마피아가 있는지 확인한다. (환각 상태에서는 결과가 반대로 나온다)' },
             { id: 'BREWER', name: '양조사', team: 'human', limitType: 'nightly', desc: '밤마다 1명을 지목하여 환각 상태로 만든다. (환각 상태에서는 능력이 무효가 된다)' },
             { id: 'NURSE', name: '간호사', team: 'human', limitType: 'nightly', desc: '밤마다 지목한 대상이 환각 능력에 지목되었는지 알 수 있다. (환각 상태에서는 결과가 반대로 나온다)' },
             { id: 'BODYGUARD', name: '경호원', team: 'human', limitType: 'nightly', desc: '밤마다 지목한 대상을 대부로부터 보호한다. (환각 상태에서는 능력이 무효가 된다)' },
-            { id: 'SNIPER', name: '저격수', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상을 죽인다. 단, 대상이 시민일 경우 본인이 죽는다. (환각 상태에서는 결과가 반대로 나온다)' },
-            { id: 'WITNESS', name: '목격자', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상에게 그 밤에 능력을 쓴 사람을 알 수 있다. (단, 능력을 쓴 사람이 없는 경우 결과가 랜덤으로 나온다. 환각 상태에서는 결과가 랜덤한 대상으로 바뀐다)' },
-            { id: 'DETECTIVE', name: '탐정', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상이 그 밤에 능력을 쓴 대상을 알 수 있다. (환각 상태에서는 결과가 랜덤하게 바뀐다)' },
+            { id: 'SNIPER', name: '저격수', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상을 죽인다. (자신 지목 불가) 단, 대상이 시민일 경우 본인이 죽는다.' },
+            { id: 'WITNESS', name: '목격자', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상에게 그 밤에 능력을 쓴 사람을 알 수 있다.' },
+            { id: 'DETECTIVE', name: '탐정', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상이 그 밤에 능력을 쓴 대상을 알 수 있다.' },
             { id: 'CLERGY', name: '성직자', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상을 살려낸다. (환각 상태에서는 능력이 무효가 된다)' },
-            { id: 'MAGICIAN', name: '마술사', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 지목한 대상의 직업을 빼앗는다. 단, 대상이 마피아팀이면 마술사는 죽는다. (환각 상태에서 능력 사용 시 죽는다.)' },
-            { id: 'MEDIUM', name: '영매', team: 'human', limitType: 'nightly', desc: '낮에 투표로 죽은 사람이 시민팀인지 마피아팀인지 알 수 있다. (환각 상태에서는 결과가 반대로 나온다)' },
+            { id: 'MAGICIAN', name: '마술사', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 지목한 대상의 직업을 빼앗는다. 단, 대상이 마피아팀이면 마술사는 죽는다.' },
+            { id: 'MEDIUM', name: '영매', team: 'human', limitType: 'nightly', desc: '낮에 투표로 죽은 사람이 시민팀인지 마피아팀인지 알 수 있다.' },
             { id: 'SOLDIER', name: '군인', team: 'human', limitType: 'passive', desc: '대부로부터 죽지 않는다. (환각 상태에서는 능력이 무효가 된다)' },
             { id: 'PRESIDENT', name: '대통령', team: 'human', limitType: 'passive', desc: '낮에 투표로 죽으면 시민팀이 패배한다 (대통령은 환각 상태에 빠지지 않는다)' },
             { id: 'RULER_BULLY', name: '불량배', team: 'human', limitType: 'passive', desc: '마피아로 간주된다 (불량배는 환각 상태에 빠지지 않는다)' },
-            { id: 'COWARD', name: '겁쟁이', team: 'human', limitType: 'passive', desc: '밤에 능력의 대상이 되었을 경우 바로 사망한다. (단, 능력을 건 사람이 환각에 걸렸을 경우에는 능력이 발동되지 않는다.)' },
-            { id: 'FOOL', name: '광대', team: 'human', limitType: 'passive', desc: '본인이 양조사라고 알고 있지만, 아무 능력이 없습니다. (광대는 환각 상태에 빠지지 않는다.)' }
+            { id: 'COWARD', name: '겁쟁이', team: 'human', limitType: 'passive', desc: '밤에 능력의 대상이 되었을 경우 바로 사망한다.' },
+            { id: 'FOOL', name: '광대', team: 'human', limitType: 'passive', desc: '본인이 양조사라고 알고 있지만, 아무 능력이 없습니다.' }
         ];
 
         let roomCode = '';
@@ -608,6 +667,11 @@
         let roomRef = null;
         let previousDeadCount = 0;
         let selectedInvestigatorTargets = [];
+
+        // 타이머용 변수
+        let timerInterval = null;
+        let lastTimerSecond = 300;
+        let localState = null;
 
         window.onload = function() {
             myPlayerId = localStorage.getItem('undead_playerId') || 'p_' + Math.random().toString(36).substring(2, 9);
@@ -795,6 +859,13 @@
 
                 checkDeathEvent(data.players);
 
+                // 타이머 동기화 (10번 요구사항)
+                if (data.phaseStartTime && (data.state === 'DAY' || data.state === 'NIGHT' || data.state === 'DEFENSE' || data.state === 'VOTE_EXECUTE')) {
+                    startLocalTimer(data.phaseStartTime);
+                } else {
+                    stopLocalTimer();
+                }
+
                 if (data.state === 'ENDED') {
                     showResultModal(data);
                 } else if (data.state === 'LOBBY') {
@@ -811,6 +882,55 @@
                     renderGame(data);
                 }
             });
+        }
+
+        // 10번 요구사항: 5분 타이머 및 1분 경고
+        function startLocalTimer(startTime) {
+            if (timerInterval) clearInterval(timerInterval);
+            lastTimerSecond = 300;
+
+            const updateTimer = () => {
+                const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+                const remainSec = Math.max(0, 300 - elapsedSec);
+
+                const m = String(Math.floor(remainSec / 60)).padStart(2, '0');
+                const s = String(remainSec % 60).padStart(2, '0');
+
+                const timerEl = document.getElementById('timer-display');
+                if (remainSec === 0) {
+                    timerEl.innerText = `⏱️ 시간 초과 (00:00)`;
+                    timerEl.classList.add('timer-warning');
+                } else {
+                    timerEl.innerText = `⏱️ 남은 시간 ${m}:${s}`;
+                    if (remainSec <= 60) timerEl.classList.add('timer-warning');
+                    else timerEl.classList.remove('timer-warning');
+                }
+
+                // 1분 경과할 때마다 알림 메시지 체크 (4분, 3분, 2분, 1분 남았을 때)
+                if (remainSec > 0 && remainSec % 60 === 0 && lastTimerSecond !== remainSec) {
+                    lastTimerSecond = remainSec;
+                    const minuteLeft = remainSec / 60;
+                    if (minuteLeft >= 1 && minuteLeft <= 4) {
+                        const logBox = document.getElementById('game-log');
+                        const warnDiv = document.createElement('div');
+                        warnDiv.style.color = '#dc2626';
+                        warnDiv.style.fontWeight = 'bold';
+                        warnDiv.innerText = `⏰ [시간 경고] 남은 시간이 ${minuteLeft}분 남았습니다!`;
+                        logBox.appendChild(warnDiv);
+                        logBox.scrollTop = logBox.scrollHeight;
+                    }
+                }
+            };
+
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function stopLocalTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
         }
 
         function checkDeathEvent(players) {
@@ -903,11 +1023,14 @@
                     updates[`players/${pId}/votedFor`] = null;
                     updates[`players/${pId}/usedOnceAbility`] = false;
                     updates[`players/${pId}/privateResult`] = null;
+                    updates[`players/${pId}/investHistory`] = null;
+                    updates[`players/${pId}/executeVote`] = null;
                 });
 
                 updates['state'] = 'LOBBY';
                 updates['dayCount'] = 1;
                 updates['nightActions'] = null;
+                updates['executeTargetId'] = null;
                 updates['winnerTeam'] = null;
                 updates['winReason'] = null;
                 updates['logs'] = [`🔄 대기실로 이동하였습니다. 새로 게임을 시작할 수 있습니다.`];
@@ -1031,6 +1154,29 @@
 
                 let finalPool = [...mafiaPool, ...citizenPool].sort(() => Math.random() - 0.5);
 
+                // 1번 요구사항: 3연속 대부 방지 처리
+                let godfatherHistory = JSON.parse(sessionStorage.getItem('godfather_history') || '[]');
+                let gfCandidateIndex = finalPool.findIndex(r => r.id === 'GODFATHER');
+
+                if (godfatherHistory.length >= 2 && gfCandidateIndex !== -1) {
+                    const lastGf1 = godfatherHistory[godfatherHistory.length - 1];
+                    const lastGf2 = godfatherHistory[godfatherHistory.length - 2];
+
+                    if (lastGf1 === lastGf2) {
+                        const bannedPlayerId = lastGf1;
+                        let shuffleCount = 0;
+                        while (keys[gfCandidateIndex] === bannedPlayerId && shuffleCount < 10) {
+                            finalPool = finalPool.sort(() => Math.random() - 0.5);
+                            gfCandidateIndex = finalPool.findIndex(r => r.id === 'GODFATHER');
+                            shuffleCount++;
+                        }
+                    }
+                }
+
+                let chosenGodfatherId = keys[gfCandidateIndex];
+                godfatherHistory.push(chosenGodfatherId);
+                sessionStorage.setItem('godfather_history', JSON.stringify(godfatherHistory));
+
                 let updates = {};
                 keys.forEach((pId, idx) => {
                     updates[`players/${pId}/role`] = finalPool[idx];
@@ -1039,6 +1185,8 @@
                     updates[`players/${pId}/votedFor`] = null;
                     updates[`players/${pId}/usedOnceAbility`] = false;
                     updates[`players/${pId}/privateResult`] = null;
+                    updates[`players/${pId}/investHistory`] = null;
+                    updates[`players/${pId}/executeVote`] = null;
                 });
 
                 updates['activeRoles'] = finalPool;
@@ -1047,6 +1195,8 @@
                 updates['state'] = 'DAY';
                 updates['dayCount'] = 1;
                 updates['nightActions'] = null;
+                updates['executeTargetId'] = null;
+                updates['phaseStartTime'] = Date.now(); // 타이머용
                 updates['winnerTeam'] = null;
                 updates['winReason'] = null;
                 updates['logs'] = ['☀ 제 1일 낮이 밝았습니다. 토론을 진행하고 표를 행사하세요.'];
@@ -1058,7 +1208,7 @@
         function renderGame(data) {
             const me = data.players[myPlayerId];
             
-            // 🔒 본인 전용 비밀 브리핑 팝업 출력
+            // 🔒 본인 전용 비밀 브리핑 팝업 출력 (9번 요구사항 능력 상실 알림 포함)
             if (me && me.privateResult) {
                 showPrivateModal(me.privateResult);
             }
@@ -1083,6 +1233,16 @@
 
                 document.getElementById('my-role-title').innerText = `${teamTag} ${displayRoleName}`;
                 document.getElementById('my-role-desc').innerHTML = descHtml;
+
+                // 8번 요구사항: 조사직 조사 이력 누적 카드 표시
+                const historyBox = document.getElementById('invest-history-box');
+                const historyContent = document.getElementById('invest-history-content');
+                if (me.investHistory && me.investHistory.length > 0) {
+                    historyBox.classList.remove('hidden');
+                    historyContent.innerHTML = me.investHistory.map(h => `<div>• ${h}</div>`).join('');
+                } else {
+                    historyBox.classList.add('hidden');
+                }
             }
 
             const activeRolesCard = document.getElementById('active-roles-card');
@@ -1100,18 +1260,39 @@
                 activeRolesCard.classList.add('hidden');
             }
 
+            const executeBox = document.getElementById('execute-vote-box');
+
             if (data.state === 'NIGHT') {
                 document.body.classList.add('night-mode');
                 document.getElementById('game-title').innerText = '🌙 언데드 마피아 (밤)';
                 document.getElementById('phase-title').innerText = `🌙 제 ${data.dayCount}일 밤`;
                 document.getElementById('phase-desc').innerText = '특수 능력을 가진 생존자는 대상을 비밀리에 지정하세요 (아침 전환 시 동시 연산됩니다).';
                 document.getElementById('phase-toggle-btn').innerText = '☀ 밤 종료 및 아침 밝히기 (방장)';
+                executeBox.classList.add('hidden');
+            } else if (data.state === 'DEFENSE') {
+                document.body.classList.remove('night-mode');
+                const targetName = data.players[data.executeTargetId] ? data.players[data.executeTargetId].name : '';
+                document.getElementById('game-title').innerText = '☀️ 언데드 마피아 (최후 변론)';
+                document.getElementById('phase-title').innerText = `🗣️ 최후 변론 페이즈`;
+                document.getElementById('phase-desc').innerText = `[${targetName}] 님의 최후 변론을 들은 후 찬반 투표를 시작하세요.`;
+                document.getElementById('phase-toggle-btn').innerText = '⚖️ 찬반 투표 시작하기 (방장)';
+                executeBox.classList.add('hidden');
+            } else if (data.state === 'VOTE_EXECUTE') {
+                document.body.classList.remove('night-mode');
+                const targetName = data.players[data.executeTargetId] ? data.players[data.executeTargetId].name : '';
+                document.getElementById('game-title').innerText = '☀️ 언데드 마피아 (찬반 투표)';
+                document.getElementById('phase-title').innerText = `⚖️ [${targetName}] 처형 찬반 투표`;
+                document.getElementById('phase-desc').innerText = '아래 버튼을 눌러 처형 찬성/반대를 선택하세요.';
+                document.getElementById('execute-target-name').innerText = targetName;
+                document.getElementById('phase-toggle-btn').innerText = '🔨 찬반 투표 집계 및 밤으로 (방장)';
+                executeBox.classList.remove('hidden');
             } else {
                 document.body.classList.remove('night-mode');
                 document.getElementById('game-title').innerText = '☀️ 언데드 마피아 (낮)';
                 document.getElementById('phase-title').innerText = `☀️ 제 ${data.dayCount}일 낮`;
                 document.getElementById('phase-desc').innerText = '토론 후 지목 투표를 진행하세요. (사망자도 투표 참여 가능)';
-                document.getElementById('phase-toggle-btn').innerText = '🌙 낮 종료 및 처형 집행 (방장)';
+                document.getElementById('phase-toggle-btn').innerText = '🗣️ 낮 지목 투표 종료 및 변론 이동 (방장)';
+                executeBox.classList.add('hidden');
             }
 
             const logBox = document.getElementById('game-log');
@@ -1135,18 +1316,26 @@
                         const btnText = isMyTarget ? '지목 취소' : '투표 지목';
                         actionBtn = `<button style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem; background:${btnBg};" onclick="votePlayer('${pId}')">${btnText}</button>`;
                     }
-                } else {
+                } else if (data.state === 'NIGHT') {
                     const nightActs = data.nightActions || {};
                     const myAct = nightActs[myPlayerId];
                     const isUsedNight = myAct && (myAct.targetId === pId || (Array.isArray(myAct.targetIds) && myAct.targetIds.includes(pId)));
                     const btnText = isUsedNight ? '선택됨' : '능력 지정';
-                    actionBtn = `<button style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem; background:${isUsedNight ? '#0284c7' : '#7c3aed'};" onclick="useAbility('${pId}')">${btnText}</button>`;
+                    
+                    // 6번 요구사항: 1회성 능력 이미 사용시 비활성화
+                    const isOnceAbilityDisabled = (me && me.role && me.role.limitType === 'once_game' && me.usedOnceAbility);
+                    const disabledAttr = isOnceAbilityDisabled ? 'disabled' : '';
+
+                    actionBtn = `<button style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem; background:${isUsedNight ? '#0284c7' : '#7c3aed'};" ${disabledAttr} onclick="useAbility('${pId}')">${btnText}</button>`;
                 }
 
                 let voteStatusHtml = '';
                 if (data.state === 'DAY') {
                     const hasVoted = !!p.votedFor;
                     voteStatusHtml = `<span class="vote-status-tag ${hasVoted ? 'voted' : 'not-voted'}">${hasVoted ? '투표 완료' : '미투표'}</span>`;
+                } else if (data.state === 'VOTE_EXECUTE') {
+                    const hasVoted = (p.executeVote !== undefined && p.executeVote !== null);
+                    voteStatusHtml = `<span class="vote-status-tag ${hasVoted ? 'voted' : 'not-voted'}">${hasVoted ? '찬반 완료' : '미투표'}</span>`;
                 }
 
                 const statusTag = p.isDead ? '💀 [사망/언데드]' : '🟢 [생존]';
@@ -1168,6 +1357,7 @@
             }
         }
 
+        // 2번 요구사항: 체크해제 및 1인 1투표 차감 가산 완벽 보정
         function votePlayer(targetId) {
             roomRef.once('value', snapshot => {
                 const data = snapshot.val();
@@ -1186,18 +1376,30 @@
                 let updates = {};
 
                 if (prevVotedId === targetId) {
+                    // 동일 대상 재클릭 시 투표 취소
                     updates[`players/${targetId}/votes`] = Math.max(0, (players[targetId].votes || 0) - 1);
                     updates[`players/${myPlayerId}/votedFor`] = null;
                 } else {
+                    // 이전 표가 있었을 경우 해당 대상의 표 차감
                     if (prevVotedId && players[prevVotedId]) {
                         updates[`players/${prevVotedId}/votes`] = Math.max(0, (players[prevVotedId].votes || 0) - 1);
                     }
+                    // 새로운 대상 가산
                     updates[`players/${targetId}/votes`] = (players[targetId].votes || 0) + 1;
                     updates[`players/${myPlayerId}/votedFor`] = targetId;
                 }
 
                 roomRef.update(updates);
             });
+        }
+
+        // 3번 요구사항: 찬반 투표 제출
+        function submitExecuteVote(isApprove) {
+            if (roomRef && myPlayerId) {
+                roomRef.child(`players/${myPlayerId}/executeVote`).set(isApprove).then(() => {
+                    alert(isApprove ? '🔪 처형 찬성에 투표하셨습니다.' : '🛡️ 처형 반대(살리기)에 투표하셨습니다.');
+                });
+            }
         }
 
         function useAbility(targetId) {
@@ -1208,26 +1410,43 @@
                 const me = data.players[myPlayerId];
                 const target = data.players[targetId];
 
-                // 1. 행동 주체(자신)의 사망 여부 검사
+                // 1. 사망 여부 검사
                 if (me.isDead) {
                     return alert('사망한(언데드) 플레이어는 능력을 사용할 수 없습니다.');
                 }
 
                 if (!me.role) return alert('능력을 사용할 수 없는 역할입니다.');
 
+                // 5번 요구사항: 자해/자기 지정 방지 (대부, 저격수, 청부업자 등)
+                const killSelfRoles = ['GODFATHER', 'SNIPER', 'HITMAN'];
+                if (killSelfRoles.includes(me.role.id) && targetId === myPlayerId) {
+                    return alert('자신을 지목하여 능력을 사용할 수 없습니다.');
+                }
+
+                // 8번 요구사항: 조사직 본인 대상 조사 불가
+                const investRoles = ['INVESTIGATOR', 'PSYCHOLOGIST', 'LAWYER', 'DETECTIVE', 'WITNESS'];
+                if (investRoles.includes(me.role.id) && targetId === myPlayerId) {
+                    return alert('본인을 대상으로 조사 능력을 사용할 수 없습니다.');
+                }
+
                 // 2. 패시브 직업 검사 (광대는 양조사 위장을 위해 우회)
                 if (me.role.limitType === 'passive' && me.role.id !== 'FOOL') {
                     return alert(`${me.role.name}은(는) 패시브 직업입니다.`);
                 }
 
-                // 3. 지목 대상(상대방)의 사망 여부 검사 (성직자 및 영매 허용)
+                // 8번 요구사항: 조사직(수사관, 심리학자 등)은 죽은 사람 조사 안됨
+                if (investRoles.includes(me.role.id) && target.isDead) {
+                    return alert('사망한 플레이어는 조사할 수 없습니다.');
+                }
+
+                // 3. 지목 대상 사망 여부 검사 (성직자 및 영매만 사망자 허용)
                 if (me.role.id === 'CLERGY' || me.role.id === 'MEDIUM') {
-                    if (!target.isDead) return alert(`${me.role.name}은(는) 사망한 플레이어(언데드)만 선택하여 조사/부활시킬 수 있습니다.`);
+                    if (!target.isDead) return alert(`${me.role.name}은(는) 사망한 플레이어(언데드)만 선택할 수 있습니다.`);
                 } else if (target.isDead) {
                     return alert('사망한 플레이어에게는 능력을 사용할 수 없습니다.');
                 }
 
-                // 4. 1회성 능력 사용 여부 검사 (저격수 포함)
+                // 6번 요구사항: 1회성 능력 사용 제한
                 if (me.role.limitType === 'once_game' && me.usedOnceAbility) {
                     return alert('이 능력은 게임 중 이미 1회 사용하셨습니다.');
                 }
@@ -1243,7 +1462,7 @@
                     };
 
                     roomRef.update(updates).then(() => {
-                        alert(`${target.name}님에게 능력을 지정했습니다. (아침 전환 시 우선순위에 따라 동시 처리됩니다)`);
+                        alert(`${target.name}님에게 능력을 지정했습니다.`);
                     });
                     return;
                 }
@@ -1285,7 +1504,7 @@
                 };
 
                 roomRef.update(updates).then(() => {
-                    alert(`${target.name}님에게 능력을 지정했습니다. (아침 전환 시 우선순위에 따라 동시 처리됩니다)`);
+                    alert(`${target.name}님에게 능력을 지정했습니다.`);
                 });
             });
         }
@@ -1332,6 +1551,7 @@
             roomRef.update(updates);
         }
 
+        // 3번 및 페이즈 전환 로직
         function nextPhase() {
             roomRef.once('value', snapshot => {
                 const data = snapshot.val();
@@ -1339,15 +1559,16 @@
                 const players = data.players;
 
                 if (data.state === 'DAY') {
+                    // 1차 지목 투표 집계 및 최후 변론으로 이동
                     let maxVotes = 0;
-                    let executedPlayerId = null;
+                    let candidateId = null;
                     let isTie = false;
 
                     Object.keys(players).forEach(pId => {
                         const v = players[pId].votes || 0;
                         if (v > maxVotes) {
                             maxVotes = v;
-                            executedPlayerId = pId;
+                            candidateId = pId;
                             isTie = false;
                         } else if (v > 0 && v === maxVotes) {
                             isTie = true;
@@ -1356,19 +1577,64 @@
 
                     let updates = {};
 
-                    if (executedPlayerId && !isTie && maxVotes > 0) {
-                        const victim = players[executedPlayerId];
-                        updates[`players/${executedPlayerId}/isDead`] = true;
-                        players[executedPlayerId].isDead = true;
-                        logs.push(`☠ [처형] ${victim.name}님이 최다 득표(${maxVotes}표)로 처형당해 사망(언데드) 처리되었습니다.`);
+                    if (candidateId && !isTie && maxVotes > 0) {
+                        const candidate = players[candidateId];
+                        updates['state'] = 'DEFENSE';
+                        updates['executeTargetId'] = candidateId;
+                        updates['phaseStartTime'] = Date.now();
+                        logs.push(`📢 [투표 결과] ${candidate.name}님이 최다 득표(${maxVotes}표)를 받았습니다. 최후 변론을 진행합니다.`);
+                    } else {
+                        logs.push(`⚖ [투표 무효] 동점이거나 표가 없어 아무도 변론대에 오르지 않았습니다. 바로 밤이 시작됩니다.`);
+                        updates['state'] = 'NIGHT';
+                        updates['phaseStartTime'] = Date.now();
+                        logs.push(`🌙 제 ${data.dayCount}일 밤이 되었습니다.`);
+                    }
 
-                        if (victim.role && victim.role.id === 'PRESIDENT') {
+                    Object.keys(players).forEach(pId => {
+                        updates[`players/${pId}/votes`] = 0;
+                        updates[`players/${pId}/votedFor`] = null;
+                    });
+
+                    updates['logs'] = logs;
+                    roomRef.update(updates);
+
+                } else if (data.state === 'DEFENSE') {
+                    // 최후 변론 종료 후 찬반 투표 진입
+                    let updates = {};
+                    updates['state'] = 'VOTE_EXECUTE';
+                    updates['phaseStartTime'] = Date.now();
+                    const targetName = players[data.executeTargetId] ? players[data.executeTargetId].name : '';
+                    logs.push(`⚖️ [찬반 투표 시작] ${targetName} 님의 처형 여부를 결정하는 찬반 투표를 시작합니다.`);
+                    updates['logs'] = logs;
+                    roomRef.update(updates);
+
+                } else if (data.state === 'VOTE_EXECUTE') {
+                    // 찬반 투표 집계 및 처형 연산
+                    const candidateId = data.executeTargetId;
+                    const candidate = players[candidateId];
+
+                    let approveCount = 0;
+                    let rejectCount = 0;
+
+                    Object.values(players).forEach(p => {
+                        if (p.executeVote === true) approveCount++;
+                        else if (p.executeVote === false) rejectCount++;
+                    });
+
+                    let updates = {};
+
+                    if (approveCount > rejectCount && candidate) {
+                        updates[`players/${candidateId}/isDead`] = true;
+                        players[candidateId].isDead = true;
+                        logs.push(`☠ [처형 확정] 찬성 ${approveCount}표 / 반대 ${rejectCount}표로 ${candidate.name}님이 처형되었습니다.`);
+
+                        if (candidate.role && candidate.role.id === 'PRESIDENT') {
                             logs.push(`🚨 [대통령 처형!] 대통령이 낮 투표로 처형되어 시민팀이 패배했습니다.`);
                             triggerGameEnd({ winner: 'MAFIA', reason: '대통령이 낮 투표로 처형되었습니다!' }, updates, logs);
                             return;
                         }
                     } else {
-                        logs.push(`⚖ [처형 무효] 투표 결과 동점이거나 표가 없어 아무도 처형되지 않았습니다.`);
+                        logs.push(`🛡️ [처형 부결] 찬성 ${approveCount}표 / 반대 ${rejectCount}표로 ${candidate ? candidate.name : ''}님의 처형이 부결되었습니다.`);
                     }
 
                     const winResult = checkWinCondition(players);
@@ -1378,27 +1644,44 @@
                     }
 
                     Object.keys(players).forEach(pId => {
-                        updates[`players/${pId}/votes`] = 0;
-                        updates[`players/${pId}/votedFor`] = null;
+                        updates[`players/${pId}/executeVote`] = null;
                     });
 
                     updates['state'] = 'NIGHT';
+                    updates['executeTargetId'] = null;
                     updates['nightActions'] = null;
+                    updates['phaseStartTime'] = Date.now();
                     logs.push(`🌙 제 ${data.dayCount}일 밤이 되었습니다.`);
                     updates['logs'] = logs;
 
                     roomRef.update(updates);
 
                 } else {
+                    // 밤 종료 및 능력 동시 연산 (NIGHT -> DAY)
                     const actions = data.nightActions || {};
                     let updates = {};
 
                     let protectedTargetSet = new Set();
                     let hallucinatedActorSet = new Set();
+                    let lostAbilityActorSet = new Set(); // 9번 요구사항: 폭력배에 의한 능력 상실
                     let attackedTargetId = null;
 
-                    // 1단계: 환각 부여
+                    // 0단계: 폭력배(THUG) 능력 박탈 연산
                     Object.keys(actions).forEach(pId => {
+                        const act = actions[pId];
+                        if (act.actorRoleId === 'THUG') {
+                            if (act.targetId) {
+                                lostAbilityActorSet.add(act.targetId);
+                                // 9번 요구사항 알림
+                                updates[`players/${act.targetId}/privateResult`] = `⚡ 능력을 잃었습니다.`;
+                            }
+                            updates[`players/${pId}/usedOnceAbility`] = true;
+                        }
+                    });
+
+                    // 1단계: 환각 부여 (마약상/양조사)
+                    Object.keys(actions).forEach(pId => {
+                        if (lostAbilityActorSet.has(pId)) return;
                         const act = actions[pId];
                         const actor = players[pId];
                         if (actor && (act.actorRoleId === 'DRUG_DEALER' || act.actorRoleId === 'BREWER')) {
@@ -1414,6 +1697,7 @@
 
                     // 2단계: 경호원 보호
                     Object.keys(actions).forEach(pId => {
+                        if (lostAbilityActorSet.has(pId)) return;
                         const act = actions[pId];
                         if (act.actorRoleId === 'BODYGUARD' && !hallucinatedActorSet.has(pId)) {
                             if (act.targetId) protectedTargetSet.add(act.targetId);
@@ -1422,6 +1706,7 @@
 
                     // 3단계: 성직자 부활
                     Object.keys(actions).forEach(pId => {
+                        if (lostAbilityActorSet.has(pId)) return;
                         const act = actions[pId];
                         if (act.actorRoleId === 'CLERGY' && !hallucinatedActorSet.has(pId)) {
                             if (act.targetId && players[act.targetId]) {
@@ -1433,40 +1718,56 @@
                         }
                     });
 
-                    // 4단계: 저격수(SNIPER) 암살/오발 로직
+                    // 4단계: 저격수(SNIPER) & 청부업자(HITMAN)
                     Object.keys(actions).forEach(pId => {
+                        if (lostAbilityActorSet.has(pId)) return;
                         const act = actions[pId];
+                        
+                        if (act.actorRoleId === 'HITMAN' && !hallucinatedActorSet.has(pId)) {
+                            if (act.targetId && players[act.targetId]) {
+                                updates[`players/${act.targetId}/isDead`] = true;
+                                players[act.targetId].isDead = true;
+                                logs.push(`💀 밤 사이 ${players[act.targetId].name}님이 사망했습니다.`);
+                            }
+                            updates[`players/${pId}/usedOnceAbility`] = true;
+                        }
+
                         if (act.actorRoleId === 'SNIPER') {
-                            const sniperActor = players[pId];
                             const target = players[act.targetId];
                             const isHallucinated = hallucinatedActorSet.has(pId);
 
                             if (target && target.role) {
                                 let isTargetMafia = (target.role.team === 'mafia');
-                                if (isHallucinated) isTargetMafia = !isTargetMafia; // 환각 시 판정 반전
+                                if (isHallucinated) isTargetMafia = !isTargetMafia;
 
                                 if (isTargetMafia) {
-                                    // 저격 성공: 마피아 사망
                                     updates[`players/${act.targetId}/isDead`] = true;
                                     players[act.targetId].isDead = true;
-                                    logs.push(`🎯 [저격 성공] 저격수가 마피아인 ${target.name}님을 저격하여 처단했습니다!`);
-                                    updates[`players/${pId}/privateResult`] = `🎯 [저격 성공] ${target.name}님(마피아)을 성공적으로 저격했습니다.`;
+                                    logs.push(`💀 밤 사이 ${target.name}님이 사망했습니다.`);
+                                    updates[`players/${pId}/privateResult`] = `🎯 [저격 성공] ${target.name}님을 성공적으로 저격했습니다.`;
                                 } else {
-                                    // 저격 실패: 시민을 쏘아 저격수 본인이 자책/자멸 사망
                                     updates[`players/${pId}/isDead`] = true;
                                     players[pId].isDead = true;
-                                    logs.push(`🎯 [저격 실패] 저격수가 시민을 잘못 지목하여 본인이 사망했습니다!`);
-                                    updates[`players/${pId}/privateResult`] = `💥 [저격 실패] 지목한 ${target.name}님은 시민이었습니다. 저격 실패로 본인이 사망했습니다.`;
+                                    logs.push(`💀 밤 사이 ${players[pId].name}님이 사망했습니다.`);
+                                    updates[`players/${pId}/privateResult`] = `💥 [저격 실패] 시민을 지목하여 저격 실패로 본인이 사망했습니다.`;
                                 }
                             }
                             updates[`players/${pId}/usedOnceAbility`] = true;
                         }
                     });
 
-                    // 5단계: 수사관 / 심리학자 / 변호사 / 영매 조사 (개인 브리핑 저장)
+                    // 5단계: 탐정, 목격자, 수사관, 심리학자, 변호사, 영매 (7, 8번 요구사항)
                     Object.keys(actions).forEach(pId => {
+                        if (lostAbilityActorSet.has(pId)) return;
                         const act = actions[pId];
                         const isHallucinated = hallucinatedActorSet.has(pId);
+
+                        // 8번 요구사항: 조사 이력 누적 함수
+                        const addInvestHistory = (pId, text) => {
+                            let oldHist = players[pId].investHistory || [];
+                            oldHist.push(`[${data.dayCount}일차 밤] ${text}`);
+                            updates[`players/${pId}/investHistory`] = oldHist;
+                        };
 
                         if (act.actorRoleId === 'INVESTIGATOR') {
                             if (Array.isArray(act.targetIds) && act.targetIds.length === 2) {
@@ -1475,12 +1776,13 @@
                                 if (t1 && t2) {
                                     const t1Team = getInvestigativeTeam(t1);
                                     const t2Team = getInvestigativeTeam(t2);
-                                    
                                     let hasMafia = (t1Team === 'mafia' || (t1.role && t1.role.id === 'RULER_BULLY')) || 
                                                    (t2Team === 'mafia' || (t2.role && t2.role.id === 'RULER_BULLY'));
-                                    
                                     if (isHallucinated) hasMafia = !hasMafia;
-                                    updates[`players/${pId}/privateResult`] = `🔍 [수사 결과] ${t1.name}님과 ${t2.name}님 중 마피아는 ${hasMafia ? '🔴 [존재함]' : '🔵 [없음]'}입니다.`;
+
+                                    const resMsg = `🔍 [수사] ${t1.name}, ${t2.name} 중 마피아는 ${hasMafia ? '🔴 [존재함]' : '🔵 [없음]'}`;
+                                    updates[`players/${pId}/privateResult`] = resMsg;
+                                    addInvestHistory(pId, resMsg);
                                 }
                             }
                         } else if (act.actorRoleId === 'PSYCHOLOGIST') {
@@ -1490,31 +1792,72 @@
                                 if (t1 && t2) {
                                     const t1Team = getInvestigativeTeam(t1);
                                     const t2Team = getInvestigativeTeam(t2);
-                                    
                                     let sameTeam = (t1Team === t2Team);
                                     if (isHallucinated) sameTeam = !sameTeam;
-                                    updates[`players/${pId}/privateResult`] = `🧠 [심리 조사] ${t1.name}님과 ${t2.name}님은 ${sameTeam ? '🟢 [같은 팀]' : '🔴 [다른 팀]'}입니다.`;
+
+                                    const resMsg = `🧠 [심리] ${t1.name}, ${t2.name}은 ${sameTeam ? '🟢 [같은 팀]' : '🔴 [다른 팀]'}`;
+                                    updates[`players/${pId}/privateResult`] = resMsg;
+                                    addInvestHistory(pId, resMsg);
                                 }
                             }
+                        } else if (act.actorRoleId === 'DETECTIVE') { // 7번 요구사항 수정
+                            const target = players[act.targetId];
+                            if (target) {
+                                const targetAct = actions[act.targetId];
+                                let targetUsedToName = '없음 (능력 안씀)';
+                                if (targetAct) {
+                                    if (targetAct.targetName) targetUsedToName = targetAct.targetName;
+                                    else if (Array.isArray(targetAct.targetIds)) targetUsedToName = targetAct.targetIds.map(id => players[id] ? players[id].name : '').join(', ');
+                                }
+                                if (isHallucinated) targetUsedToName = '알 수 없음(환각)';
+
+                                const resMsg = `🕵️ [탐정 조사] ${target.name}님이 밤에 능력을 지목한 대상: [${targetUsedToName}]`;
+                                updates[`players/${pId}/privateResult`] = resMsg;
+                                addInvestHistory(pId, resMsg);
+                            }
+                            updates[`players/${pId}/usedOnceAbility`] = true;
+                        } else if (act.actorRoleId === 'WITNESS') {
+                            const target = players[act.targetId];
+                            if (target) {
+                                let visitedActors = [];
+                                Object.keys(actions).forEach(otherId => {
+                                    const oAct = actions[otherId];
+                                    if (oAct.targetId === act.targetId || (Array.isArray(oAct.targetIds) && oAct.targetIds.includes(act.targetId))) {
+                                        visitedActors.push(players[otherId] ? players[otherId].name : '');
+                                    }
+                                });
+                                let visitedMsg = visitedActors.length > 0 ? visitedActors.join(', ') : '없음';
+                                if (isHallucinated) visitedMsg = '알 수 없음(환각)';
+
+                                const resMsg = `👁️ [목격자 조사] ${target.name}님에게 밤에 능력을 사용한 사람: [${visitedMsg}]`;
+                                updates[`players/${pId}/privateResult`] = resMsg;
+                                addInvestHistory(pId, resMsg);
+                            }
+                            updates[`players/${pId}/usedOnceAbility`] = true;
                         } else if (act.actorRoleId === 'LAWYER') {
                             const target = players[act.targetId];
                             if (target && target.role) {
                                 let shownRole = target.role.name;
                                 if (isHallucinated) shownRole = '엉뚱한 직업';
-                                updates[`players/${pId}/privateResult`] = `⚖ [변호 조사] ${target.name}님의 직업은 [${shownRole}]입니다.`;
+                                const resMsg = `⚖ [변호 조사] ${target.name}님의 직업은 [${shownRole}]`;
+                                updates[`players/${pId}/privateResult`] = resMsg;
+                                addInvestHistory(pId, resMsg);
                             }
                         } else if (act.actorRoleId === 'MEDIUM') {
                             const target = players[act.targetId];
                             if (target && target.isDead && target.role) {
                                 let isMafia = (target.role.team === 'mafia');
                                 if (isHallucinated) isMafia = !isMafia;
-                                updates[`players/${pId}/privateResult`] = `🔮 [영매 조사] 사망자 ${target.name}님은 ${isMafia ? '🔴 [마피아팀]' : '🔵 [시민팀]'} 출신입니다.`;
+                                const resMsg = `🔮 [영매 조사] 사망자 ${target.name}님은 ${isMafia ? '🔴 [마피아팀]' : '🔵 [시민팀]'}`;
+                                updates[`players/${pId}/privateResult`] = resMsg;
+                                addInvestHistory(pId, resMsg);
                             }
                         }
                     });
 
                     // 6단계: 대부 습격
                     Object.keys(actions).forEach(pId => {
+                        if (lostAbilityActorSet.has(pId)) return;
                         const act = actions[pId];
                         if (act.actorRoleId === 'GODFATHER' && !hallucinatedActorSet.has(pId)) {
                             attackedTargetId = act.targetId;
@@ -1531,7 +1874,8 @@
                             } else {
                                 updates[`players/${attackedTargetId}/isDead`] = true;
                                 players[attackedTargetId].isDead = true;
-                                logs.push(`💀 밤 사이 ${victim.name}님이 습격을 받아 사망(언데드)했습니다.`);
+                                // 4번 요구사항: 직업 숨기고 단순 사망 메시지만
+                                logs.push(`💀 밤 사이 ${victim.name}님이 사망했습니다.`);
                             }
                         }
                     } else {
@@ -1551,6 +1895,7 @@
                     updates['dayCount'] = nextDay;
                     updates['logs'] = logs;
                     updates['nightActions'] = null;
+                    updates['phaseStartTime'] = Date.now();
 
                     roomRef.update(updates);
                 }
@@ -1586,7 +1931,7 @@
                 btnRoles.classList.add('active');
                 btnRules.classList.remove('active');
                 bodyRoles.classList.remove('hidden');
-                bodyRules.classList.add('hidden');
+                bodyRoles.classList.add('hidden');
             }
         }
     </script>
