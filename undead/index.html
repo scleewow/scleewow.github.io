@@ -689,7 +689,7 @@
             { id: 'PRESIDENT', name: '대통령', team: 'human', limitType: 'passive', desc: '환각에 면역이다. 낮 찬반 투표로 처형되면 즉시 마피아팀 승리로 게임이 종료된다. 밤에 사망하는 경우에는 이 특수 패배 조건이 발동하지 않는다.' },
             { id: 'RULER_BULLY', name: '불량배', team: 'human', limitType: 'passive', desc: '조사와 마피아팀 판정에서 마피아로 취급된다. 승리 조건에서도 살아 있는 시민 수에 포함되지 않으며, 환각에도 면역이다.' },
             { id: 'COWARD', name: '겁쟁이', team: 'human', limitType: 'passive', desc: '밤에 다른 플레이어의 능력 대상으로 지목되면 즉시 사망한다. 능력이 실제로 성공했는지와 관계없이 지목 자체가 조건이다. 현재 구현에서는 자기 자신의 선택은 대상 지정으로 보지 않는다.' },
-            { id: 'FOOL', name: '광대', team: 'human', limitType: 'passive', desc: '자신은 양조사라고 믿고 있지만 실제로는 아무 밤 능력도 없다. 게임 화면에서는 양조사처럼 보일 수 있으나 실제 능력 사용은 차단된다. 환각에 면역이다.' }
+            { id: 'FOOL', name: '광대', team: 'human', limitType: 'passive', desc: '자신은 양조사라고 믿고 있으며 게임 화면에서도 양조사처럼 보인다. 밤에는 양조사처럼 대상을 지정할 수 있지만 실제 환각 효과는 발생하지 않는다. 환각에 면역이다.' }
         ];
 
         let roomCode = '';
@@ -1517,10 +1517,10 @@
                     return alert('마술사 능력은 이 게임에서 이미 사용되었습니다.');
                 }
 
-                // 🎭 광대(FOOL)는 양조사라고 알고 있지만 실제 능력은 없다.
-                if (me.role.id === 'FOOL') {
-                    return alert('광대는 양조사라고 알고 있지만 실제 능력은 없습니다.');
-                }
+                // 🎭 광대(FOOL)는 자신을 양조사라고 믿는다.
+                // 따라서 능력 지정 자체는 정상적으로 저장해 주어야 하며,
+                // 여기서 '광대'라는 사실을 알려주는 알림을 띄우면 안 된다.
+                // 실제 환각 효과는 밤 처리 단계에서 FOOL을 BREWER와 별도로 취급하므로 발생하지 않는다.
 
                 if (me.role.id === 'INVESTIGATOR' || me.role.id === 'PSYCHOLOGIST') {
                     // 브라우저 전역 변수 대신 Firebase의 현재 밤 선택값을 기준으로 한다.
@@ -2050,9 +2050,9 @@
                         const victim = players[attackedTargetId];
                         if (victim && !victim.isDead) {
                             if (protectedTargetSet.has(attackedTargetId)) {
-								// 경호원이 보호했다는 사실을 공개하지 않음
+                                // 경호원의 존재와 보호 성공 여부를 공개 로그에 노출하지 않는다.
                             } else if (victim.role && victim.role.id === 'SOLDIER' && !hallucinatedActorSet.has(attackedTargetId)) {
-								// 군인이 방어했다는 사실을 공개하지 않음
+                                // 군인의 존재와 방어 성공 여부를 공개 로그에 노출하지 않는다.
                             } else {
                                 updates[`players/${attackedTargetId}/isDead`] = true;
                                 players[attackedTargetId].isDead = true;
