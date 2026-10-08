@@ -64,13 +64,17 @@
         .timer-badge {
             background: #e2e8f0;
             color: #0f172a;
-            font-weight: bold;
-            font-size: 0.85rem;
-            padding: 0.3rem 0.6rem;
-            border-radius: 20px;
-            border: 1px solid #cbd5e1;
+            font-weight: 900;
+            font-size: 1.35rem;
+            padding: 0.45rem 1rem;
+            border-radius: 12px;
+            border: 2px solid #94a3b8;
             display: inline-block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.7rem;
+            min-width: 190px;
+            text-align: center;
+            letter-spacing: 0.04em;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
         }
         body.night-mode .timer-badge {
             background: #1e1b4b;
@@ -82,6 +86,33 @@
             animation: pulse 1s infinite;
         }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        /* 매 1분 경과 시 전체 화면에 짧게 표시되는 알림 */
+        @keyframes minuteFlash {
+            0% { opacity: 1; }
+            15% { opacity: 0.35; }
+            30% { opacity: 1; }
+            45% { opacity: 0.35; }
+            60% { opacity: 1; }
+            100% { opacity: 1; }
+        }
+        body.minute-flash {
+            animation: minuteFlash 0.9s ease-in-out;
+        }
+
+        .execute-vote-btn {
+            flex: 1;
+            border: 3px solid transparent !important;
+            opacity: 0.62;
+            transition: all 0.15s ease;
+            font-weight: 800;
+        }
+        .execute-vote-btn.selected {
+            opacity: 1;
+            transform: translateY(-2px) scale(1.03);
+            border-color: #111827 !important;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.9), 0 4px 12px rgba(0,0,0,0.25);
+        }
 
         .guide-btn {
             color: #0284c7;
@@ -506,9 +537,10 @@
                         ⚖️ <span id="execute-target-name">OOO</span> 님의 처형 여부 찬반 투표
                     </p>
                     <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
-                        <button style="background:#dc2626;" onclick="submitExecuteVote(true)">🔪 찬성 (죽이기)</button>
-                        <button style="background:#16a34a;" onclick="submitExecuteVote(false)">🛡️ 반대 (살리기)</button>
+                        <button id="execute-approve-btn" class="execute-vote-btn" style="background:#dc2626;" onclick="submitExecuteVote(true)">🔪 찬성 (죽이기)</button>
+                        <button id="execute-reject-btn" class="execute-vote-btn" style="background:#16a34a;" onclick="submitExecuteVote(false)">🛡️ 반대 (살리기)</button>
                     </div>
+                    <div id="execute-vote-current" style="text-align:center; margin-top:0.45rem; font-size:0.8rem; font-weight:bold; color:#64748b;">현재 선택: 없음</div>
                 </div>
             </div>
 
@@ -627,37 +659,37 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        // ===== 21종 캐릭터 설정 =====
+        // ===== 22종 캐릭터 설정 =====
         const ROLE_GODFATHER = { 
             id: 'GODFATHER', name: '대부', team: 'mafia', limitType: 'nightly', 
-            desc: '밤마다 1명을 지목하여 죽일 수 있다. (자신 지목 불가. 환각 상태에서는 능력이 무효가 된다)' 
+            desc: '밤마다 생존자 1명을 지목해 사망시킨다. 자신은 지목할 수 없다. 경호원이 보호하면 살아남으며, 군인은 환각되지 않았다면 대부의 공격을 버틴다. 대부 자신이 환각 상태이거나 폭력배에게 능력을 빼앗기면 공격이 무효가 된다.' 
         };
 
         const OTHER_MAFIA_ROLES = [
-            { id: 'DRUG_DEALER', name: '마약상', team: 'mafia', limitType: 'nightly', desc: '밤마다 1명을 지목하여 환각 상태로 만든다. (마약상은 환각에 빠져도 영향을 받지 않는다.)' },
-            { id: 'LAWYER', name: '변호사', team: 'mafia', limitType: 'nightly', desc: '밤마다 1명을 지목하여 직업을 알 수 있다. (환각 상태에서는 엉뚱한 직업으로 확인된다)' },
-            { id: 'HITMAN', name: '청부업자', team: 'mafia', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상을 암살한다. (자신 지목 불가. 환각 상태에서는 능력이 무효가 된다)' },
-            { id: 'THUG', name: '폭력배', team: 'mafia', limitType: 'once_game', desc: '게임 중 1번, 1명을 지목하여 대상의 능력을 없앤다. (환각 상태에서는 능력이 무효가 된다)' },
-            { id: 'DEPUTY', name: '대리인', team: 'mafia', limitType: 'passive', desc: '능력의 대상이 된 경우에 시민으로 간주된다. (대리인은 환각에 빠져도 영향을 받지 않는다)' }
+            { id: 'DRUG_DEALER', name: '마약상', team: 'mafia', limitType: 'nightly', desc: '밤마다 생존자 1명을 환각 상태로 만든다. 환각된 대상의 밤 능력은 종류에 따라 결과가 반대로 나오거나 무효가 된다. 마약상·대리인·대통령·불량배·광대는 환각의 영향을 받지 않는다.' },
+            { id: 'LAWYER', name: '변호사', team: 'mafia', limitType: 'nightly', desc: '밤마다 생존자 1명의 실제 직업을 조사한다. 본인은 조사할 수 없으며, 환각 상태에서는 실제 직업 대신 엉뚱한 직업으로 확인된다.' },
+            { id: 'HITMAN', name: '청부업자', team: 'mafia', limitType: 'once_game', desc: '게임 중 1회, 밤에 생존자 1명을 암살한다. 자신은 지목할 수 없다. 환각 상태이거나 폭력배에게 능력을 빼앗기면 암살이 무효가 된다.' },
+            { id: 'THUG', name: '폭력배', team: 'mafia', limitType: 'once_game', desc: '게임 중 1회, 밤에 1명을 지목해 그 밤의 능력을 사용할 수 없게 만든다. 현재 구현에서는 패시브 역할의 고유 능력은 제거하지 않는다. 환각 상태에서는 무효가 된다.' },
+            { id: 'DEPUTY', name: '대리인', team: 'mafia', limitType: 'passive', desc: '능력의 대상이 되었을 때 조사·팀 판정에서 시민팀으로 간주된다. 환각에 면역이다. 실제 소속은 마피아팀이므로 승리 조건에서는 마피아 쪽으로 계산된다.' }
         ];
 
         const ALL_CITIZEN_ROLES = [
-            { id: 'PSYCHOLOGIST', name: '심리학자', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 2명을 지목해서 서로 같은 팀인지 확인한다. (환각 상태에서는 결과가 반대로 나온다)' },
-            { id: 'INVESTIGATOR', name: '수사관', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 2명을 지목해서 마피아가 있는지 확인한다. (환각 상태에서는 결과가 반대로 나온다)' },
-            { id: 'BREWER', name: '양조사', team: 'human', limitType: 'nightly', desc: '밤마다 1명을 지목하여 환각 상태로 만든다. (환각 상태에서는 능력이 무효가 된다)' },
-            { id: 'NURSE', name: '간호사', team: 'human', limitType: 'nightly', desc: '밤마다 지목한 대상이 환각 능력에 지목되었는지 알 수 있다. (환각 상태에서는 결과가 반대로 나온다)' },
-            { id: 'BODYGUARD', name: '경호원', team: 'human', limitType: 'nightly', desc: '밤마다 지목한 대상을 대부로부터 보호한다. (환각 상태에서는 능력이 무효가 된다)' },
-            { id: 'SNIPER', name: '저격수', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상을 죽인다. (자신 지목 불가) 단, 대상이 시민일 경우 본인이 죽는다.' },
-            { id: 'WITNESS', name: '목격자', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상에게 그 밤에 능력을 쓴 사람을 알 수 있다.' },
-            { id: 'DETECTIVE', name: '탐정', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상이 그 밤에 능력을 쓴 대상을 알 수 있다.' },
-            { id: 'CLERGY', name: '성직자', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상을 살려낸다. (환각 상태에서는 능력이 무효가 된다)' },
-            { id: 'MAGICIAN', name: '마술사', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 지목한 대상의 직업을 빼앗는다. 단, 대상이 마피아팀이면 마술사는 죽는다.' },
-            { id: 'MEDIUM', name: '영매', team: 'human', limitType: 'nightly', desc: '낮에 투표로 죽은 사람이 시민팀인지 마피아팀인지 알 수 있다.' },
-            { id: 'SOLDIER', name: '군인', team: 'human', limitType: 'passive', desc: '대부로부터 죽지 않는다. (환각 상태에서는 능력이 무효가 된다)' },
-            { id: 'PRESIDENT', name: '대통령', team: 'human', limitType: 'passive', desc: '낮에 투표로 죽으면 시민팀이 패배한다 (대통령은 환각 상태에 빠지지 않는다)' },
-            { id: 'RULER_BULLY', name: '불량배', team: 'human', limitType: 'passive', desc: '마피아로 간주된다 (불량배는 환각 상태에 빠지지 않는다)' },
-            { id: 'COWARD', name: '겁쟁이', team: 'human', limitType: 'passive', desc: '밤에 능력의 대상이 되었을 경우 바로 사망한다.' },
-            { id: 'FOOL', name: '광대', team: 'human', limitType: 'passive', desc: '본인이 양조사라고 알고 있지만, 아무 능력이 없습니다.' }
+            { id: 'PSYCHOLOGIST', name: '심리학자', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 2명을 선택해 두 사람이 같은 팀인지 조사한다. 두 대상은 살아 있어야 하며, 환각 상태에서는 같은 팀/다른 팀 결과가 반대로 표시된다.' },
+            { id: 'INVESTIGATOR', name: '수사관', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 2명을 선택해 둘 중 마피아팀이 있는지 조사한다. 불량배는 마피아팀으로 판정되며, 환각 상태에서는 결과가 반대로 표시된다.' },
+            { id: 'BREWER', name: '양조사', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 1명을 환각 상태로 만든다. 본인이 환각되면 능력이 무효가 된다. 대상의 환각 여부는 간호사의 조사 대상이 될 수 있다.' },
+            { id: 'NURSE', name: '간호사', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 1명을 지목해 그 사람이 그 밤 환각 능력의 대상이 되었는지 확인한다. 본인이 환각되면 결과가 반대로 표시된다.' },
+            { id: 'BODYGUARD', name: '경호원', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 1명을 대부의 공격으로부터 보호한다. 현재 구현에서는 청부업자·저격수의 공격은 막지 않는다. 경호원 자신이 환각되면 보호가 무효가 된다.' },
+            { id: 'SNIPER', name: '저격수', team: 'human', limitType: 'once_game', desc: '게임 중 1회, 밤에 1명을 저격한다. 자신은 지목할 수 없다. 대상이 마피아팀이면 대상이 사망하고, 시민팀이면 저격 실패로 저격수가 사망한다. 환각 상태에서는 마피아/시민 판정이 반대로 적용된다.' },
+            { id: 'WITNESS', name: '목격자', team: 'human', limitType: 'once_game', desc: '게임 중 1회, 생존자 1명을 지목해 그 밤 그 대상에게 능력을 사용한 사람들을 확인한다. 목격자 자신의 행동은 방문자로 포함하지 않는다. 환각 상태에서는 알 수 없음으로 표시된다.' },
+            { id: 'DETECTIVE', name: '탐정', team: 'human', limitType: 'once_game', desc: '게임 중 1회, 생존자 1명을 지목해 그 사람이 그 밤에 어떤 대상을 지목했는지 확인한다. 능력을 사용하지 않았다면 없음으로 표시되며, 환각 상태에서는 알 수 없음으로 표시된다.' },
+            { id: 'CLERGY', name: '성직자', team: 'human', limitType: 'once_game', desc: '게임 중 1회, 사망한 플레이어 1명을 부활시킨다. 본인이 환각되거나 폭력배에게 능력을 빼앗기면 무효가 된다. 같은 밤 부활한 사람도 이후 밤 공격의 대상이 될 수 있다.' },
+            { id: 'MAGICIAN', name: '마술사', team: 'human', limitType: 'once_game', desc: '게임 중 1회만 사용한다. 생존자 1명을 지목해 시민팀이면 두 사람의 직업을 교체한다. 마술사였던 사람은 새 직업의 능력을 사용할 수 있지만, 새로 마술사가 된 사람은 마술사 능력을 사용할 수 없다. 대상이 마피아팀이면 마술사가 사망하고 직업 교체는 일어나지 않는다. 환각 상태에서는 무효가 된다.' },
+            { id: 'MEDIUM', name: '영매', team: 'human', limitType: 'nightly', desc: '밤마다 사망한 플레이어 1명을 지목해 팀을 확인한다. 현재 구현에서는 낮 처형뿐 아니라 밤에 사망한 사람도 조사할 수 있다. 본인이 환각되면 시민/마피아 결과가 반대로 표시된다.' },
+            { id: 'SOLDIER', name: '군인', team: 'human', limitType: 'passive', desc: '대부의 공격을 기본적으로 한 번 막아낸다. 단, 군인이 환각 상태라면 이 방어 능력이 사라져 대부에게 사망할 수 있다.' },
+            { id: 'PRESIDENT', name: '대통령', team: 'human', limitType: 'passive', desc: '환각에 면역이다. 낮 찬반 투표로 처형되면 즉시 마피아팀 승리로 게임이 종료된다. 밤에 사망하는 경우에는 이 특수 패배 조건이 발동하지 않는다.' },
+            { id: 'RULER_BULLY', name: '불량배', team: 'human', limitType: 'passive', desc: '조사와 마피아팀 판정에서 마피아로 취급된다. 승리 조건에서도 살아 있는 시민 수에 포함되지 않으며, 환각에도 면역이다.' },
+            { id: 'COWARD', name: '겁쟁이', team: 'human', limitType: 'passive', desc: '밤에 다른 플레이어의 능력 대상으로 지목되면 즉시 사망한다. 능력이 실제로 성공했는지와 관계없이 지목 자체가 조건이다. 현재 구현에서는 자기 자신의 선택은 대상 지정으로 보지 않는다.' },
+            { id: 'FOOL', name: '광대', team: 'human', limitType: 'passive', desc: '자신은 양조사라고 믿고 있지만 실제로는 아무 밤 능력도 없다. 게임 화면에서는 양조사처럼 보일 수 있으나 실제 능력 사용은 차단된다. 환각에 면역이다.' }
         ];
 
         let roomCode = '';
@@ -911,6 +943,12 @@
                     lastTimerSecond = remainSec;
                     const minuteLeft = remainSec / 60;
                     if (minuteLeft >= 1 && minuteLeft <= 4) {
+                        // 로그뿐 아니라 전체 화면을 짧게 깜빡여 1분 경과를 확실히 인지하도록 합니다.
+                        document.body.classList.remove('minute-flash');
+                        void document.body.offsetWidth;
+                        document.body.classList.add('minute-flash');
+                        setTimeout(() => document.body.classList.remove('minute-flash'), 950);
+
                         const logBox = document.getElementById('game-log');
                         const warnDiv = document.createElement('div');
                         warnDiv.style.color = '#dc2626';
@@ -1022,6 +1060,7 @@
                     updates[`players/${pId}/votes`] = 0;
                     updates[`players/${pId}/votedFor`] = null;
                     updates[`players/${pId}/usedOnceAbility`] = false;
+                    updates[`players/${pId}/magicianAbilityUsed`] = false;
                     updates[`players/${pId}/privateResult`] = null;
                     updates[`players/${pId}/investHistory`] = null;
                     updates[`players/${pId}/executeVote`] = null;
@@ -1184,6 +1223,7 @@
                     updates[`players/${pId}/votes`] = 0;
                     updates[`players/${pId}/votedFor`] = null;
                     updates[`players/${pId}/usedOnceAbility`] = false;
+                    updates[`players/${pId}/magicianAbilityUsed`] = false;
                     updates[`players/${pId}/privateResult`] = null;
                     updates[`players/${pId}/investHistory`] = null;
                     updates[`players/${pId}/executeVote`] = null;
@@ -1286,6 +1326,7 @@
                 document.getElementById('execute-target-name').innerText = targetName;
                 document.getElementById('phase-toggle-btn').innerText = '🔨 찬반 투표 집계 및 밤으로 (방장)';
                 executeBox.classList.remove('hidden');
+                renderExecuteVoteSelection(me ? me.executeVote : null);
             } else {
                 document.body.classList.remove('night-mode');
                 document.getElementById('game-title').innerText = '☀️ 언데드 마피아 (낮)';
@@ -1393,12 +1434,31 @@
             });
         }
 
-        // 3번 요구사항: 찬반 투표 제출
+        // 찬반 투표: 마지막으로 누른 버튼의 값이 최종 투표값이 됩니다.
         function submitExecuteVote(isApprove) {
-            if (roomRef && myPlayerId) {
-                roomRef.child(`players/${myPlayerId}/executeVote`).set(isApprove).then(() => {
-                    alert(isApprove ? '🔪 처형 찬성에 투표하셨습니다.' : '🛡️ 처형 반대(살리기)에 투표하셨습니다.');
-                });
+            if (!roomRef || !myPlayerId) return;
+
+            roomRef.child(`players/${myPlayerId}/executeVote`).set(isApprove);
+        }
+
+        function renderExecuteVoteSelection(executeVote) {
+            const approveBtn = document.getElementById('execute-approve-btn');
+            const rejectBtn = document.getElementById('execute-reject-btn');
+            const current = document.getElementById('execute-vote-current');
+            if (!approveBtn || !rejectBtn || !current) return;
+
+            approveBtn.classList.toggle('selected', executeVote === true);
+            rejectBtn.classList.toggle('selected', executeVote === false);
+
+            if (executeVote === true) {
+                current.innerText = '현재 선택: 🔪 찬성 (죽이기)';
+                current.style.color = '#dc2626';
+            } else if (executeVote === false) {
+                current.innerText = '현재 선택: 🛡️ 반대 (살리기)';
+                current.style.color = '#16a34a';
+            } else {
+                current.innerText = '현재 선택: 없음';
+                current.style.color = '#64748b';
             }
         }
 
@@ -1449,6 +1509,12 @@
                 // 6번 요구사항: 1회성 능력 사용 제한
                 if (me.role.limitType === 'once_game' && me.usedOnceAbility) {
                     return alert('이 능력은 게임 중 이미 1회 사용하셨습니다.');
+                }
+
+                // 마술사 능력은 직업을 넘겨받은 뒤 다시 사용할 수 없다.
+                // 즉, 새로 마술사가 된 플레이어도 이미 소모된 마술사 능력을 갖는다.
+                if (me.role.id === 'MAGICIAN' && me.magicianAbilityUsed) {
+                    return alert('마술사 능력은 이 게임에서 이미 사용되었습니다.');
                 }
 
                 // 🎭 광대(FOOL)는 양조사라고 알고 있지만 실제 능력은 없다.
@@ -1667,13 +1733,36 @@
                     let lostAbilityActorSet = new Set(); // 9번 요구사항: 폭력배에 의한 능력 상실
                     let attackedTargetId = null;
 
-                    // 0단계: 폭력배(THUG) 능력 박탈 연산
+                    // 0단계: 환각 여부를 먼저 계산한다.
+                    // 폭력배의 능력 박탈은 환각 상태에서 실패해야 하므로, 환각 -> 박탈 -> 환각 재계산의 2단계로 처리한다.
+                    const calculateHallucinatedActors = (blockedActors) => {
+                        const result = new Set();
+                        Object.keys(actions).forEach(pId => {
+                            if (blockedActors.has(pId)) return;
+                            const act = actions[pId];
+                            const actor = players[pId];
+                            if (actor && (act.actorRoleId === 'DRUG_DEALER' || act.actorRoleId === 'BREWER')) {
+                                const target = players[act.targetId];
+                                if (target && target.role) {
+                                    const immuneRoles = ['DRUG_DEALER', 'DEPUTY', 'PRESIDENT', 'RULER_BULLY', 'FOOL'];
+                                    if (!immuneRoles.includes(target.role.id)) {
+                                        result.add(act.targetId);
+                                    }
+                                }
+                            }
+                        });
+                        return result;
+                    };
+
+                    hallucinatedActorSet = calculateHallucinatedActors(new Set());
+
+                    // 1단계: 폭력배(THUG) 능력 박탈 연산
                     Object.keys(actions).forEach(pId => {
                         const act = actions[pId];
-                        if (act.actorRoleId === 'THUG') {
+                        // 폭력배 자신이 환각 상태면 능력 박탈은 실패한다.
+                        if (act.actorRoleId === 'THUG' && !hallucinatedActorSet.has(pId)) {
                             if (act.targetId) {
                                 const targetPlayer = players[act.targetId];
-                                // 폭력배는 실제로 사용할 수 있는 능력만 제거한다.
                                 // 패시브 역할(대통령/군인/불량배/겁쟁이/광대)은 능력 박탈 대상에서 제외한다.
                                 if (targetPlayer && targetPlayer.role && targetPlayer.role.limitType !== 'passive') {
                                     lostAbilityActorSet.add(act.targetId);
@@ -1684,21 +1773,8 @@
                         }
                     });
 
-                    // 1단계: 환각 부여 (마약상/양조사)
-                    Object.keys(actions).forEach(pId => {
-                        if (lostAbilityActorSet.has(pId)) return;
-                        const act = actions[pId];
-                        const actor = players[pId];
-                        if (actor && (act.actorRoleId === 'DRUG_DEALER' || act.actorRoleId === 'BREWER')) {
-                            const target = players[act.targetId];
-                            if (target && target.role) {
-                                const immuneRoles = ['DRUG_DEALER', 'DEPUTY', 'PRESIDENT', 'RULER_BULLY', 'FOOL'];
-                                if (!immuneRoles.includes(target.role.id)) {
-                                    hallucinatedActorSet.add(act.targetId);
-                                }
-                            }
-                        }
-                    });
+                    // 폭력배가 마약상/양조사를 막았다면 해당 환각도 취소한다.
+                    hallucinatedActorSet = calculateHallucinatedActors(lostAbilityActorSet);
 
                     // 2단계: 겁쟁이(COWARD) - 밤에 능력의 대상이 되면 즉시 사망
                     // 능력의 성공 여부와 관계없이 '지목된 것' 자체를 기준으로 한다.
@@ -1743,8 +1819,19 @@
                         }
                     });
 
-                    // 4단계: 마술사(MAGICIAN) - 대상과 직업을 교체한다.
-                    // 대상이 마피아팀이면 마술사는 죽고 직업 교체는 일어나지 않는다.
+                    // 4단계: 마술사(MAGICIAN)
+                    // [야간 행동 확정 원칙]
+                    // 밤이 시작될 때 각 플레이어가 가지고 있던 직업(actorRoleId)이
+                    // 그 밤에 사용할 능력을 결정한다. 따라서 마술사와 직업을 교환하더라도
+                    // 상대가 밤 시작 시 가지고 있던 능력은 그 밤에 정상적으로 실행된다.
+                    // 반대로 마술사가 교환으로 새롭게 얻은 직업의 능력은 그 밤에는 실행하지 않고
+                    // 다음 밤부터 사용할 수 있다.
+                    //
+                    // 마술사 능력 자체는 게임 전체에서 1회만 사용된다.
+                    // 시민팀 대상이면 두 사람의 직업을 교체하고, 새로 마술사가 된 대상은
+                    // 이미 소모된 마술사 능력을 가지므로 다시 직업 교환을 할 수 없다.
+                    // 마술사가 마피아팀을 대상으로 하면 직업 교환 없이 마술사만 사망한다.
+                    // 이 경우에도 대상 마피아가 밤 시작 시 가지고 있던 능력은 정상 실행된다.
                     Object.keys(actions).forEach(pId => {
                         if (lostAbilityActorSet.has(pId)) return;
                         const act = actions[pId];
@@ -1753,27 +1840,51 @@
                         const magician = players[pId];
                         const target = players[act.targetId];
                         if (magician && target && magician.role && target.role) {
-                            const targetIsMafia = getInvestigativeTeam(target) === 'mafia';
+                            const targetIsMafia = target.role.team === 'mafia'; // 마술사는 실제 소속팀 기준. DEPUTY는 실제 마피아, RULER_BULLY는 실제 시민.
 
                             if (targetIsMafia) {
                                 updates[`players/${pId}/isDead`] = true;
                                 magician.isDead = true;
-                                logs.push(`💥 [마술사 실패] ${target.name}님은 마피아팀이어서 마술사가 사망했습니다.`);
+                                updates[`players/${pId}/magicianAbilityUsed`] = true;
+                                magician.magicianAbilityUsed = true;
                                 updates[`players/${pId}/privateResult`] = `💥 [마술 실패] ${target.name}님은 마피아팀이었습니다.`;
+                                logs.push(`💥 [마술사 실패] ${target.name}님은 마피아팀이어서 마술사가 사망했습니다.`);
                             } else {
                                 const magicianRole = magician.role;
-                                magician.role = target.role;
+                                const targetRole = target.role;
+
+                                // 직업만 서로 교환한다. 생사 상태 등 플레이어 자체 정보는 유지한다.
+                                magician.role = targetRole;
                                 target.role = magicianRole;
+
                                 updates[`players/${pId}/role`] = magician.role;
                                 updates[`players/${act.targetId}/role`] = target.role;
-                                updates[`players/${pId}/privateResult`] = `🎩 [마술 성공] ${target.name}님의 직업을 빼앗았습니다. 당신의 새로운 직업은 [${magician.role.name}]입니다.`;
+
+                                // 원래 마술사였던 사람은 새 직업을 처음 얻은 것이므로
+                                // 그 직업이 1회성이라면 능력을 새롭게 사용할 수 있다.
+                                updates[`players/${pId}/usedOnceAbility`] = false;
+                                magician.usedOnceAbility = false;
+
+                                // 마술사 능력은 이미 사용되었으므로 새로 마술사가 된 사람은
+                                // 마술사 능력을 다시 사용할 수 없다.
+                                updates[`players/${act.targetId}/magicianAbilityUsed`] = true;
+                                target.magicianAbilityUsed = true;
+
+                                updates[`players/${pId}/privateResult`] = `🎩 [마술 성공] ${target.name}님과 직업을 교환했습니다. 당신의 새로운 직업은 [${magician.role.name}]입니다.`;
+                                updates[`players/${act.targetId}/privateResult`] = `🎩 [마술의 결과] 당신은 ${magician.name}님과 직업이 교환되었습니다. 새로운 직업은 [마술사]입니다.`;
                                 logs.push(`🎩 [마술사] ${magician.name}님과 ${target.name}님의 직업이 교체되었습니다.`);
                             }
                         }
-                        updates[`players/${pId}/usedOnceAbility`] = true;
+
+                        // 기존 마술사의 마술사 능력도 이 시점에서 소모 처리한다.
+                        updates[`players/${pId}/magicianAbilityUsed`] = true;
+                        magician.magicianAbilityUsed = true;
                     });
 
                     // 5단계: 저격수(SNIPER) & 청부업자(HITMAN)
+                    // actorRoleId는 밤 시작/능력 선택 당시의 직업이므로,
+                    // 4단계에서 마술사와 직업이 교환된 경우에도 기존 저격수/청부업자 행동은 실행된다.
+                    // 마술사로 새롭게 직업을 얻은 플레이어는 새 직업 능력을 같은 밤에 추가로 사용하지 않는다.
                     Object.keys(actions).forEach(pId => {
                         if (lostAbilityActorSet.has(pId)) return;
                         const act = actions[pId];
@@ -1811,7 +1922,9 @@
                         }
                     });
 
-                    // 5단계: 탐정, 목격자, 수사관, 심리학자, 변호사, 영매 (7, 8번 요구사항)
+                    // 6단계: 탐정, 목격자, 수사관, 심리학자, 변호사, 영매
+                    // 조사자의 능력도 actorRoleId를 기준으로 밤 시작 시 직업을 유지한다.
+                    // 따라서 마술사 교환으로 새 직업을 얻었다고 같은 밤에 새 조사 능력이 생기지는 않는다.
                     Object.keys(actions).forEach(pId => {
                         if (lostAbilityActorSet.has(pId)) return;
                         const act = actions[pId];
@@ -1922,7 +2035,9 @@
                         }
                     });
 
-                    // 6단계: 대부 습격
+                    // 7단계: 대부 습격
+                    // 대부 역시 밤 시작 시 대부였던 플레이어의 행동만 실행한다.
+                    // 마술사에게 직업을 빼앗기지 않는 한, 마술사 교환과 무관하게 정상적으로 습격한다.
                     Object.keys(actions).forEach(pId => {
                         if (lostAbilityActorSet.has(pId)) return;
                         const act = actions[pId];
@@ -1935,9 +2050,9 @@
                         const victim = players[attackedTargetId];
                         if (victim && !victim.isDead) {
                             if (protectedTargetSet.has(attackedTargetId)) {
-                                logs.push(`🛡 밤 사이 대부의 습격이 있었으나, 경호원의 철저한 보호로 무사히 방어했습니다!`);
+								// 경호원이 보호했다는 사실을 공개하지 않음
                             } else if (victim.role && victim.role.id === 'SOLDIER' && !hallucinatedActorSet.has(attackedTargetId)) {
-                                logs.push(`🛡️ [군인 방어] 군인은 대부로부터 죽지 않고 생존했습니다!`);
+								// 군인이 방어했다는 사실을 공개하지 않음
                             } else {
                                 updates[`players/${attackedTargetId}/isDead`] = true;
                                 players[attackedTargetId].isDead = true;
