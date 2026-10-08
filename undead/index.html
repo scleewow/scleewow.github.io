@@ -483,7 +483,7 @@
                 <div id="role-display-box" class="hidden">
                     <div id="my-role-title" class="role-badge"></div>
                     <p id="my-role-desc" style="font-size:0.85rem; color:#475569; text-align:left; line-height:1.4;"></p>
-                    <!-- 조사직 조사 이력 누적 카드 -->
+                    <!-- 조사직 조사 이력 누적 카드 (8번 요구사항) -->
                     <div id="invest-history-box" class="invest-history-box hidden">
                         <b>📜 나의 조사 이력:</b>
                         <div id="invest-history-content"></div>
@@ -635,21 +635,21 @@
 
         const OTHER_MAFIA_ROLES = [
             { id: 'DRUG_DEALER', name: '마약상', team: 'mafia', limitType: 'nightly', desc: '밤마다 1명을 지목하여 환각 상태로 만든다. (마약상은 환각에 빠져도 영향을 받지 않는다.)' },
-            { id: 'LAWYER', name: '변호사', team: 'mafia', limitType: 'nightly', desc: '밤마다 1명을 지목하여 직업을 알 수 있다. (환각 상태에서는 엉뚱한 직업으로 확인된다)' },
+            { id: 'LAWYER', name: '변호사', team: 'mafia', limitType: 'nightly', desc: '밤마다 1명을 지목하여 직업을 알 수 있다. (자신 지목 불가. 환각 상태에서는 엉뚱한 직업으로 확인된다)' },
             { id: 'HITMAN', name: '청부업자', team: 'mafia', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상을 암살한다. (자신 지목 불가. 환각 상태에서는 능력이 무효가 된다)' },
             { id: 'THUG', name: '폭력배', team: 'mafia', limitType: 'once_game', desc: '게임 중 1번, 1명을 지목하여 대상의 능력을 없앤다. (환각 상태에서는 능력이 무효가 된다)' },
             { id: 'DEPUTY', name: '대리인', team: 'mafia', limitType: 'passive', desc: '능력의 대상이 된 경우에 시민으로 간주된다. (대리인은 환각에 빠져도 영향을 받지 않는다)' }
         ];
 
         const ALL_CITIZEN_ROLES = [
-            { id: 'PSYCHOLOGIST', name: '심리학자', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 2명을 지목해서 서로 같은 팀인지 확인한다. (환각 상태에서는 결과가 반대로 나온다)' },
-            { id: 'INVESTIGATOR', name: '수사관', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 2명을 지목해서 마피아가 있는지 확인한다. (환각 상태에서는 결과가 반대로 나온다)' },
+            { id: 'PSYCHOLOGIST', name: '심리학자', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 2명을 지목해서 서로 같은 팀인지 확인한다. (본인 지목 불가. 환각 상태에서는 결과가 반대로 나온다)' },
+            { id: 'INVESTIGATOR', name: '수사관', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 2명을 지목해서 마피아가 있는지 확인한다. (본인 지목 불가. 환각 상태에서는 결과가 반대로 나온다)' },
             { id: 'BREWER', name: '양조사', team: 'human', limitType: 'nightly', desc: '밤마다 1명을 지목하여 환각 상태로 만든다. (환각 상태에서는 능력이 무효가 된다)' },
             { id: 'NURSE', name: '간호사', team: 'human', limitType: 'nightly', desc: '밤마다 지목한 대상이 환각 능력에 지목되었는지 알 수 있다. (환각 상태에서는 결과가 반대로 나온다)' },
             { id: 'BODYGUARD', name: '경호원', team: 'human', limitType: 'nightly', desc: '밤마다 지목한 대상을 대부로부터 보호한다. (환각 상태에서는 능력이 무효가 된다)' },
             { id: 'SNIPER', name: '저격수', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상을 죽인다. (자신 지목 불가) 단, 대상이 시민일 경우 본인이 죽는다.' },
-            { id: 'WITNESS', name: '목격자', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상에게 그 밤에 능력을 쓴 사람을 알 수 있다.' },
-            { id: 'DETECTIVE', name: '탐정', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상이 그 밤에 능력을 쓴 대상을 알 수 있다.' },
+            { id: 'WITNESS', name: '목격자', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상에게 그 밤에 능력을 쓴 사람을 알 수 있다. (본인 지목 불가)' },
+            { id: 'DETECTIVE', name: '탐정', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상이 그 밤에 능력을 쓴 대상을 알 수 있다. (본인 지목 불가)' },
             { id: 'CLERGY', name: '성직자', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 밤에 지목한 대상을 살려낸다. (환각 상태에서는 능력이 무효가 된다)' },
             { id: 'MAGICIAN', name: '마술사', team: 'human', limitType: 'once_game', desc: '게임 중 1번, 지목한 대상의 직업을 빼앗는다. 단, 대상이 마피아팀이면 마술사는 죽는다.' },
             { id: 'MEDIUM', name: '영매', team: 'human', limitType: 'nightly', desc: '낮에 투표로 죽은 사람이 시민팀인지 마피아팀인지 알 수 있다.' },
@@ -668,10 +668,9 @@
         let previousDeadCount = 0;
         let selectedInvestigatorTargets = [];
 
-        // 타이머용 변수
+        // 10번 요구사항: 타이머용 변수
         let timerInterval = null;
         let lastTimerSecond = 300;
-        let localState = null;
 
         window.onload = function() {
             myPlayerId = localStorage.getItem('undead_playerId') || 'p_' + Math.random().toString(36).substring(2, 9);
@@ -859,7 +858,7 @@
 
                 checkDeathEvent(data.players);
 
-                // 타이머 동기화 (10번 요구사항)
+                // 10번 요구사항: 타이머 동기화
                 if (data.phaseStartTime && (data.state === 'DAY' || data.state === 'NIGHT' || data.state === 'DEFENSE' || data.state === 'VOTE_EXECUTE')) {
                     startLocalTimer(data.phaseStartTime);
                 } else {
@@ -884,7 +883,7 @@
             });
         }
 
-        // 10번 요구사항: 5분 타이머 및 1분 경고
+        // 10번 요구사항: 5분 타이머 및 1분 단위 경고
         function startLocalTimer(startTime) {
             if (timerInterval) clearInterval(timerInterval);
             lastTimerSecond = 300;
@@ -906,7 +905,7 @@
                     else timerEl.classList.remove('timer-warning');
                 }
 
-                // 1분 경과할 때마다 알림 메시지 체크 (4분, 3분, 2분, 1분 남았을 때)
+                // 1분 경과할 때마다 알림 메시지 (4분, 3분, 2분, 1분 남았을 때)
                 if (remainSec > 0 && remainSec % 60 === 0 && lastTimerSecond !== remainSec) {
                     lastTimerSecond = remainSec;
                     const minuteLeft = remainSec / 60;
@@ -1162,10 +1161,11 @@
                     const lastGf1 = godfatherHistory[godfatherHistory.length - 1];
                     const lastGf2 = godfatherHistory[godfatherHistory.length - 2];
 
+                    // 직전 2판 연속 동일 플레이어가 대부였던 경우 3연속 대부 방지
                     if (lastGf1 === lastGf2) {
                         const bannedPlayerId = lastGf1;
                         let shuffleCount = 0;
-                        while (keys[gfCandidateIndex] === bannedPlayerId && shuffleCount < 10) {
+                        while (keys[gfCandidateIndex] === bannedPlayerId && shuffleCount < 20) {
                             finalPool = finalPool.sort(() => Math.random() - 0.5);
                             gfCandidateIndex = finalPool.findIndex(r => r.id === 'GODFATHER');
                             shuffleCount++;
@@ -1196,7 +1196,7 @@
                 updates['dayCount'] = 1;
                 updates['nightActions'] = null;
                 updates['executeTargetId'] = null;
-                updates['phaseStartTime'] = Date.now(); // 타이머용
+                updates['phaseStartTime'] = Date.now();
                 updates['winnerTeam'] = null;
                 updates['winReason'] = null;
                 updates['logs'] = ['☀ 제 1일 낮이 밝았습니다. 토론을 진행하고 표를 행사하세요.'];
@@ -1376,15 +1376,15 @@
                 let updates = {};
 
                 if (prevVotedId === targetId) {
-                    // 동일 대상 재클릭 시 투표 취소
+                    // 동일 대상 재클릭 시 투표 취소 및 표 차감
                     updates[`players/${targetId}/votes`] = Math.max(0, (players[targetId].votes || 0) - 1);
                     updates[`players/${myPlayerId}/votedFor`] = null;
                 } else {
-                    // 이전 표가 있었을 경우 해당 대상의 표 차감
+                    // 이전 지목 대상 표 차감
                     if (prevVotedId && players[prevVotedId]) {
                         updates[`players/${prevVotedId}/votes`] = Math.max(0, (players[prevVotedId].votes || 0) - 1);
                     }
-                    // 새로운 대상 가산
+                    // 신규 지목 대상 표 가산
                     updates[`players/${targetId}/votes`] = (players[targetId].votes || 0) + 1;
                     updates[`players/${myPlayerId}/votedFor`] = targetId;
                 }
@@ -1410,48 +1410,47 @@
                 const me = data.players[myPlayerId];
                 const target = data.players[targetId];
 
-                // 1. 사망 여부 검사
                 if (me.isDead) {
                     return alert('사망한(언데드) 플레이어는 능력을 사용할 수 없습니다.');
                 }
 
                 if (!me.role) return alert('능력을 사용할 수 없는 역할입니다.');
 
-                // 5번 요구사항: 자해/자기 지정 방지 (대부, 저격수, 청부업자 등)
+                // 5번 요구사항: 자신 대상 사망 능력 자해 금지
                 const killSelfRoles = ['GODFATHER', 'SNIPER', 'HITMAN'];
                 if (killSelfRoles.includes(me.role.id) && targetId === myPlayerId) {
                     return alert('자신을 지목하여 능력을 사용할 수 없습니다.');
                 }
 
-                // 8번 요구사항: 조사직 본인 대상 조사 불가
+                // 8번 요구사항: 조사직 본인 대상 조사 불가 및 변호사 등 포함
                 const investRoles = ['INVESTIGATOR', 'PSYCHOLOGIST', 'LAWYER', 'DETECTIVE', 'WITNESS'];
                 if (investRoles.includes(me.role.id) && targetId === myPlayerId) {
                     return alert('본인을 대상으로 조사 능력을 사용할 수 없습니다.');
                 }
 
-                // 2. 패시브 직업 검사 (광대는 양조사 위장을 위해 우회)
+                // 패시브 직업 검사 (광대는 양조사 위장을 위해 예외 허용)
                 if (me.role.limitType === 'passive' && me.role.id !== 'FOOL') {
                     return alert(`${me.role.name}은(는) 패시브 직업입니다.`);
                 }
 
-                // 8번 요구사항: 조사직(수사관, 심리학자 등)은 죽은 사람 조사 안됨
+                // 8번 요구사항: 조사직(수사관, 심리학자, 탐정 등) 사망자 조사 불가
                 if (investRoles.includes(me.role.id) && target.isDead) {
                     return alert('사망한 플레이어는 조사할 수 없습니다.');
                 }
 
-                // 3. 지목 대상 사망 여부 검사 (성직자 및 영매만 사망자 허용)
+                // 지목 대상 사망 여부 검사 (성직자 및 영매만 사망자 허용)
                 if (me.role.id === 'CLERGY' || me.role.id === 'MEDIUM') {
                     if (!target.isDead) return alert(`${me.role.name}은(는) 사망한 플레이어(언데드)만 선택할 수 있습니다.`);
                 } else if (target.isDead) {
                     return alert('사망한 플레이어에게는 능력을 사용할 수 없습니다.');
                 }
 
-                // 6번 요구사항: 1회성 능력 사용 제한
+                // 6번 요구사항: 1회성 능력 사용 여부 재검증
                 if (me.role.limitType === 'once_game' && me.usedOnceAbility) {
                     return alert('이 능력은 게임 중 이미 1회 사용하셨습니다.');
                 }
 
-                // 🎭 광대(FOOL) 전용 처리
+                // 🎭 광대(FOOL) 전용 위장 로직
                 if (me.role.id === 'FOOL') {
                     let updates = {};
                     updates[`nightActions/${myPlayerId}`] = {
@@ -1467,6 +1466,7 @@
                     return;
                 }
 
+                // 수사관 / 심리학자 (2명 지정)
                 if (me.role.id === 'INVESTIGATOR' || me.role.id === 'PSYCHOLOGIST') {
                     if (selectedInvestigatorTargets.includes(targetId)) {
                         selectedInvestigatorTargets = selectedInvestigatorTargets.filter(id => id !== targetId);
@@ -1551,7 +1551,7 @@
             roomRef.update(updates);
         }
 
-        // 3번 및 페이즈 전환 로직
+        // 3번 및 핵심 페이즈 순환 로직
         function nextPhase() {
             roomRef.once('value', snapshot => {
                 const data = snapshot.val();
@@ -1559,7 +1559,7 @@
                 const players = data.players;
 
                 if (data.state === 'DAY') {
-                    // 1차 지목 투표 집계 및 최후 변론으로 이동
+                    // 1차 낮 지목 투표 집계 -> 최후 변론 페이즈 이동
                     let maxVotes = 0;
                     let candidateId = null;
                     let isTie = false;
@@ -1599,7 +1599,7 @@
                     roomRef.update(updates);
 
                 } else if (data.state === 'DEFENSE') {
-                    // 최후 변론 종료 후 찬반 투표 진입
+                    // 최후 변론 종료 -> 찬반 투표 진입
                     let updates = {};
                     updates['state'] = 'VOTE_EXECUTE';
                     updates['phaseStartTime'] = Date.now();
@@ -1609,7 +1609,7 @@
                     roomRef.update(updates);
 
                 } else if (data.state === 'VOTE_EXECUTE') {
-                    // 찬반 투표 집계 및 처형 연산
+                    // 찬반 투표 집계 및 최종 처형 처리
                     const candidateId = data.executeTargetId;
                     const candidate = players[candidateId];
 
@@ -1657,22 +1657,22 @@
                     roomRef.update(updates);
 
                 } else {
-                    // 밤 종료 및 능력 동시 연산 (NIGHT -> DAY)
+                    // 밤 종료 및 아침 전환 능력 연산 (NIGHT -> DAY)
                     const actions = data.nightActions || {};
                     let updates = {};
 
                     let protectedTargetSet = new Set();
                     let hallucinatedActorSet = new Set();
-                    let lostAbilityActorSet = new Set(); // 9번 요구사항: 폭력배에 의한 능력 상실
+                    let lostAbilityActorSet = new Set(); // 9번 요구사항: 능력을 빼앗긴 사람 관리
                     let attackedTargetId = null;
 
-                    // 0단계: 폭력배(THUG) 능력 박탈 연산
+                    // 0단계: 폭력배(THUG) 능력 박탈 처리
                     Object.keys(actions).forEach(pId => {
                         const act = actions[pId];
                         if (act.actorRoleId === 'THUG') {
                             if (act.targetId) {
                                 lostAbilityActorSet.add(act.targetId);
-                                // 9번 요구사항 알림
+                                // 9번 요구사항: 능력 상실 알림 메시지
                                 updates[`players/${act.targetId}/privateResult`] = `⚡ 능력을 잃었습니다.`;
                             }
                             updates[`players/${pId}/usedOnceAbility`] = true;
@@ -1727,6 +1727,7 @@
                             if (act.targetId && players[act.targetId]) {
                                 updates[`players/${act.targetId}/isDead`] = true;
                                 players[act.targetId].isDead = true;
+                                // 4번 요구사항 반영: 단순 사망 메시지
                                 logs.push(`💀 밤 사이 ${players[act.targetId].name}님이 사망했습니다.`);
                             }
                             updates[`players/${pId}/usedOnceAbility`] = true;
@@ -1743,11 +1744,13 @@
                                 if (isTargetMafia) {
                                     updates[`players/${act.targetId}/isDead`] = true;
                                     players[act.targetId].isDead = true;
+                                    // 4번 요구사항 반영
                                     logs.push(`💀 밤 사이 ${target.name}님이 사망했습니다.`);
                                     updates[`players/${pId}/privateResult`] = `🎯 [저격 성공] ${target.name}님을 성공적으로 저격했습니다.`;
                                 } else {
                                     updates[`players/${pId}/isDead`] = true;
                                     players[pId].isDead = true;
+                                    // 4번 요구사항 반영
                                     logs.push(`💀 밤 사이 ${players[pId].name}님이 사망했습니다.`);
                                     updates[`players/${pId}/privateResult`] = `💥 [저격 실패] 시민을 지목하여 저격 실패로 본인이 사망했습니다.`;
                                 }
@@ -1756,7 +1759,7 @@
                         }
                     });
 
-                    // 5단계: 탐정, 목격자, 수사관, 심리학자, 변호사, 영매 (7, 8번 요구사항)
+                    // 5단계: 조사직군 연산 (7, 8번 요구사항)
                     Object.keys(actions).forEach(pId => {
                         if (lostAbilityActorSet.has(pId)) return;
                         const act = actions[pId];
@@ -1874,7 +1877,7 @@
                             } else {
                                 updates[`players/${attackedTargetId}/isDead`] = true;
                                 players[attackedTargetId].isDead = true;
-                                // 4번 요구사항: 직업 숨기고 단순 사망 메시지만
+                                // 4번 요구사항 반영: 단순 사망 알림
                                 logs.push(`💀 밤 사이 ${victim.name}님이 사망했습니다.`);
                             }
                         }
