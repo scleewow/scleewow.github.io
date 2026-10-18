@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>십이장기 (Ultimate Victory Edition)</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background-color: #2c2c35;
+            color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+        h1 { margin: 0 0 5px 0; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-size: 1.8rem; text-align: center; }
+        #status { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; color: #60a5fa; text-shadow: 0 2px 4px rgba(0,0,0,0.5); text-align: center; }
+        
+        .main-layout {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            max-width: 800px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            width: 160px;
+            gap: 8px;
+        }
+
+        .captured-title { font-size: 0.85rem; font-weight: bold; color: #a1a1aa; text-align: center; }
+        
+        .captured-box {
+            background: #1f1f23;
+            border: 2px solid #3f3f46;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+            overflow-y: auto;
+        }
+        
+        .captured-piece {
+            background-color: #3f3f46;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+            width: 100%;
+            text-align: center;
+        }
+        .captured-piece:hover { background-color: #52525b; transform: translateY(-2px); }
+        .captured-piece.selected { background: #fde047; color: #000; border: 2px solid #ca8a04; }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(90px, 120px));
+            grid-template-rows: repeat(4, minmax(90px, 120px));
+            gap: 8px;
+            background-color: #5c2c16;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            border: 5px solid #3d1c0e;
+            aspect-ratio: 3 / 4;
+            max-width: 420px;
+            max-height: 560px;
+            position: relative;
+        }
+
+        /* 일반 타격감 흔들림 */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            20% { transform: translate(-3px, 0px) rotate(-1deg); }
+            40% { transform: translate(3px, 2px) rotate(1deg); }
+            60% { transform: translate(-1px, -1px) rotate(0deg); }
+            80% { transform: translate(2px, -2px) rotate(1deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        .shake { animation: shake 0.4s ease-in-out; }
+
+        /* 왕을 잡았을 때의 초대형 울트라 지진 흔들림 */
+        @keyframes ultra-shake {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            10% { transform: translate(-10px, -8px) rotate(-3deg); }
+            20% { transform: translate(10px, 8px) rotate(3deg); }
+            30% { transform: translate(-8px, 10px) rotate(-2deg); }
+            40% { transform: translate(8px, -10px) rotate(2deg); }
+            50% { transform: translate(-6px, -6px) rotate(-1deg); }
+            60% { transform: translate(6px, 6px) rotate(1deg); }
+            80% { transform: translate(-3px, 3px) rotate(0deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        .ultra-shake { animation: ultra-shake 0.8s ease-in-out; }
+
+        .cell {
+            background-color: #dcb386;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            user-select: none;
+            transition: background-color 0.2s, transform 0.1s;
+            position: relative;
+        }
+        .cell:hover { background-color: #e6c59c; transform: scale(1.02); }
+        
+        .cell.selected { background-color: #fde047 !important; border: 3px dashed #ca8a04; }
+        .cell.highlight { background-color: #5eead4 !important; }
+        .cell.highlight::after {
+            content: '';
+            position: absolute;
+            width: 22%;
+            height: 22%;
+            background-color: #0d9488;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #0d9488;
+        }
+
+        .player1-piece {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+            border: 3px solid #dc2626;
+            width: 85%;
+            height: 85%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        } 
+        .player2-piece {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: #1e40af;
+            border: 3px solid #2563eb;
+            width: 85%;
+            height: 85%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .piece-name { font-size: clamp(1.1rem, 3vw, 1.4rem); font-weight: 900; }
+        .piece-sub { font-size: clamp(0.6rem, 1.5vw, 0.75rem); color: #4b5563; font-weight: bold; }
+
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 10px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            background-color: #3f3f46;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        button:hover { background-color: #52525b; transform: translateY(-2px); }
+        button.undo-btn { background-color: #d97706; }
+        button.undo-btn:hover { background-color: #b45309; }
+        button.skip-btn { background-color: #0284c7; }
+        button.skip-btn:hover { background-color: #0369a1; }
+
+        /* 화면을 뒤덮는 극적인 승리/타격 팝업 연출 */
+        #action-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 4rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 20px #ef4444, 0 0 40px #dc2626, 0 4px 10px rgba(0,0,0,0.9);
+            z-index: 1000;
+            pointer-events: none;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s;
+            opacity: 0;
+            text-align: center;
+            white-space: nowrap;
+        }
+        #action-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        /* 승리 시 화면 전체 플래시 효과 */
+        #flash-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(239, 68, 68, 0);
+            z-index: 999;
+            pointer-events: none;
+            transition: background-color 0.3s ease-in-out;
+        }
+        #flash-overlay.flash {
+            background-color: rgba(239, 68, 68, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="flash-overlay"></div>
+    <div id="action-popup">CAPTURE!</div>
+
+    <h1>십이장기</h1>
+    <div id="status">플레이어 1 (빨강)의 턴</div>
+
+    <div class="main-layout">
+        <!-- 플레이어 2 포로 존 (왼쪽) -->
+        <div class="sidebar">
+            <div class="captured-title">플레이어 2 포로 (파랑)</div>
+            <div class="captured-box" id="captured-2"></div>
+        </div>
+
+        <!-- 중앙 보드 및 버튼 -->
+        <div class="game-container">
+            <div class="board" id="board"></div>
+            <div class="btn-container">
+                <button class="undo-btn" onclick="undoMove()">↩ 무르기</button>
+                <button class="skip-btn" onclick="skipTurn()">⏭ 턴 패스</button>
+                <button onclick="resetGameData()">초기화</button>
+            </div>
+        </div>
+
+        <!-- 플레이어 1 포로 존 (오른쪽) -->
+        <div class="sidebar">
+            <div class="captured-title">플레이어 1 포로 (빨강)</div>
+            <div class="captured-box" id="captured-1"></div>
+        </div>
+    </div>
+
+<script>
+    let gameData = {
+        board: [
+            [ {type:'S', player:2}, {type:'K', player:2}, {type:'G', player:2} ],
+            [ 0,                    {type:'P', player:2}, 0                    ],
+            [ 0,                    {type:'P', player:1}, 0                    ],
+            [ {type:'G', player:1}, {type:'K', player:1}, {type:'S', player:1} ]
+        ],
+        turn: 1,
+        captured1: [],
+        captured2: [],
+        selectedPiece: null
+    };
+
+    let historyStack = [];
+
+    const pieceNames = {
+        'K': '왕(王)',
+        'G': '장(將)',
+        'S': '상(相)',
+        'P': '자(子)',
+        'H': '후(侯)'
+    };
+
+    function triggerActionEffect(effectType = 'capture') {
+        const boardEl = document.getElementById('board');
+        const popup = document.getElementById('action-popup');
+        const flash = document.getElementById('flash-overlay');
+
+        if (effectType === 'victory') {
+            // 왕을 잡았을 때의 극적인 연출 (울트라 지진 + 화면 플래시 + 거대한 텍스트)
+            boardEl.classList.remove('shake');
+            boardEl.classList.add('ultra-shake');
+            
+            flash.classList.add('flash');
+
+            popup.innerHTML = `👑 CHECKMATE!<br><span style="font-size: 2.2rem; color: #fde047;">플레이어 ${gameData.turn} 승리!</span>`;
+            popup.style.textShadow = "0 0 30px #facc15, 0 0 60px #eab308, 0 4px 15px rgba(0,0,0,0.9)";
+            popup.classList.add('show');
+
+            setTimeout(() => {
+                boardEl.classList.remove('ultra-shake');
+                flash.classList.remove('flash');
+                popup.classList.remove('show');
+            }, 2500); // 연출이 여유 있게 보이도록 2.5초간 유지
+        } else {
+            // 일반 말을 잡았을 때
+            boardEl.classList.remove('shake');
+            void boardEl.offsetWidth;
+            boardEl.classList.add('shake');
+
+            popup.innerHTML = '💥 CAPTURE!';
+            popup.style.textShadow = "0 0 20px #ef4444, 0 4px 10px rgba(0,0,0,0.9)";
+            popup.classList.add('show');
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 700);
+        }
+    }
+
+    function saveState() {
+        const stateSnapshot = {
+            board: gameData.board.map(row => row.map(cell => cell === 0 ? 0 : { ...cell })),
+            turn: gameData.turn,
+            captured1: [...gameData.captured1],
+            captured2: [...gameData.captured2],
+            selectedPiece: gameData.selectedPiece ? { ...gameData.selectedPiece } : null
+        };
+        historyStack.push(stateSnapshot);
+    }
+
+    function undoMove() {
+        if (historyStack.length === 0) {
+            alert("더 이상 무를 수 없습니다! (초기 상태입니다)");
+            return;
+        }
+        gameData = historyStack.pop();
+        render();
+    }
+
+    function skipTurn() {
+        saveState();
+        gameData.selectedPiece = null;
+        gameData.turn = gameData.turn === 1 ? 2 : 1;
+        render();
+    }
+
+    function render() {
+        const boardEl = document.getElementById('board');
+        boardEl.innerHTML = '';
+
+        let validMoves = [];
+        if (gameData.selectedPiece && !gameData.selectedPiece.fromCaptured) {
+            const sr = gameData.selectedPiece.row;
+            const sc = gameData.selectedPiece.col;
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 3; c++) {
+                    if (isValidMove(sr, sc, r, c)) {
+                        validMoves.push(`${r},${c}`);
+                    }
+                }
+            }
+        }
+
+        for (let r = 0; r < 4; r++) {
+            for (let c = 0; c < 3; c++) {
+                const cellDiv = document.createElement('div');
+                cellDiv.className = 'cell';
+                
+                const piece = gameData.board[r][c];
+                if (piece) {
+                    const wrap = document.createElement('div');
+                    wrap.className = piece.player === 1 ? 'player1-piece' : 'player2-piece';
+                    
+                    const nameSpan = document.createElement('div');
+                    nameSpan.className = 'piece-name';
+                    nameSpan.innerText = pieceNames[piece.type];
+                    wrap.appendChild(nameSpan);
+                    
+                    const subSpan = document.createElement('div');
+                    subSpan.className = 'piece-sub';
+                    subSpan.innerText = `P${piece.player}`;
+                    wrap.appendChild(subSpan);
+
+                    cellDiv.appendChild(wrap);
+                }
+
+                if (gameData.selectedPiece && !gameData.selectedPiece.fromCaptured &&
+                    gameData.selectedPiece.row === r && gameData.selectedPiece.col === c) {
+                    cellDiv.classList.add('selected');
+                }
+
+                if (validMoves.includes(`${r},${c}`)) {
+                    cellDiv.classList.add('highlight');
+                }
+
+                cellDiv.onclick = () => handleCellClick(r, c);
+                boardEl.appendChild(cellDiv);
+            }
+        }
+
+        renderCaptured('captured-1', gameData.captured1, 1);
+        renderCaptured('captured-2', gameData.captured2, 2);
+
+        const statusEl = document.getElementById('status');
+        statusEl.innerText = `플레이어 ${gameData.turn} (${gameData.turn === 1 ? '빨강' : '파랑'})의 턴`;
+        statusEl.style.color = gameData.turn === 1 ? '#f87171' : '#60a5fa';
+    }
+
+    function renderCaptured(elementId, capturedList, playerNum) {
+        const box = document.getElementById(elementId);
+        box.innerHTML = '';
+        capturedList.forEach((type, idx) => {
+            const item = document.createElement('div');
+            item.className = 'captured-piece';
+            item.innerText = pieceNames[type] || type;
+            
+            if (gameData.selectedPiece && gameData.selectedPiece.fromCaptured &&
+                gameData.selectedPiece.player === playerNum && gameData.selectedPiece.index === idx) {
+                item.classList.add('selected');
+            }
+
+            item.onclick = (e) => {
+                e.stopPropagation();
+                if (gameData.turn === playerNum) {
+                    if (gameData.selectedPiece && 
+                        gameData.selectedPiece.fromCaptured && 
+                        gameData.selectedPiece.player === playerNum && 
+                        gameData.selectedPiece.index === idx) {
+                        gameData.selectedPiece = null;
+                    } else {
+                        gameData.selectedPiece = { fromCaptured: true, player: playerNum, index: idx, type: type };
+                    }
+                    render();
+                }
+            };
+            box.appendChild(item);
+        });
+    }
+
+    function handleCellClick(r, c) {
+        const target = gameData.board[r][c];
+
+        if (gameData.selectedPiece && gameData.selectedPiece.fromCaptured) {
+            const isOpponentCamp = (gameData.selectedPiece.player === 1 && r === 0) || 
+                                   (gameData.selectedPiece.player === 2 && r === 3);
+            
+            if (target === 0 && !isOpponentCamp) {
+                saveState();
+                gameData.board[r][c] = { type: gameData.selectedPiece.type, player: gameData.selectedPiece.player };
+                if (gameData.selectedPiece.player === 1) {
+                    gameData.captured1.splice(gameData.selectedPiece.index, 1);
+                } else {
+                    gameData.captured2.splice(gameData.selectedPiece.index, 1);
+                }
+                endTouch();
+            } else {
+                if (isOpponentCamp) {
+                    alert("규칙 위반: 포로는 상대방 진영(맨 끝줄)에 내려놓을 수 없습니다!");
+                } else {
+                    alert("해당 위치에는 말을 놓을 수 없습니다! (이미 말이 있는 칸입니다)");
+                }
+            }
+            return;
+        }
+
+        if (gameData.selectedPiece && !gameData.selectedPiece.fromCaptured) {
+            const sr = gameData.selectedPiece.row;
+            const sc = gameData.selectedPiece.col;
+
+            if (sr === r && sc === c) {
+                gameData.selectedPiece = null;
+                render();
+                return;
+            }
+
+            if (target !== 0 && target.player === gameData.turn) {
+                gameData.selectedPiece = { row: r, col: c };
+                render();
+                return;
+            }
+
+            if (isValidMove(sr, sc, r, c)) {
+                saveState();
+                executeMove(sr, sc, r, c);
+            } else {
+                alert("이동할 수 없는 규칙입니다!");
+            }
+        } else {
+            if (target !== 0 && target.player === gameData.turn) {
+                gameData.selectedPiece = { row: r, col: c };
+                render();
+            }
+        }
+    }
+
+    function isValidMove(sr, sc, tr, tc) {
+        const piece = gameData.board[sr][sc];
+        const target = gameData.board[tr][tc];
+
+        if (target !== 0 && target.player === piece.player) return false;
+
+        const dr = tr - sr;
+        const dc = tc - sc;
+        const absDr = Math.abs(dr);
+        const absDc = Math.abs(dc);
+
+        if (absDr > 1 || absDc > 1) return false;
+        if (absDr === 0 && absDc === 0) return false;
+
+        const forwardDir = (piece.player === 1) ? -1 : 1;
+
+        switch(piece.type) {
+            case 'K': return true;
+            case 'G': return (absDr === 0 && absDc === 1) || (absDr === 1 && absDc === 0);
+            case 'S': return absDr === 1 && absDc === 1;
+            case 'P': return (dr === forwardDir && absDc === 0);
+            case 'H': 
+                if (dr === -forwardDir && absDc === 0) return false;
+                return true;
+        }
+        return false;
+    }
+
+    function executeMove(sr, sc, tr, tc) {
+        const movingPiece = gameData.board[sr][sc];
+        const targetPiece = gameData.board[tr][tc];
+
+        if (targetPiece !== 0) {
+            if (targetPiece.type === 'K') {
+                // 왕을 잡은 경우 최우선 극적 연출 발동 후 리셋
+                triggerActionEffect('victory');
+                setTimeout(() => {
+                    resetGameData();
+                }, 2400); // 연출 끝난 후 리셋
+                return;
+            }
+            
+            triggerActionEffect('capture');
+            let capturedType = targetPiece.type === 'H' ? 'P' : targetPiece.type;
+            if (gameData.turn === 1) {
+                gameData.captured1.push(capturedType);
+            } else {
+                gameData.captured2.push(capturedType);
+            }
+        }
+
+        gameData.board[tr][tc] = movingPiece;
+        gameData.board[sr][sc] = 0;
+
+        if (movingPiece.type === 'P') {
+            if ((movingPiece.player === 1 && tr === 0) || (movingPiece.player === 2 && tr === 3)) {
+                movingPiece.type = 'H';
+            }
+        }
+
+        if (movingPiece.type === 'K') {
+            const isOpponentCamp = (movingPiece.player === 1 && tr === 0) || (movingPiece.player === 2 && tr === 3);
+            if (isOpponentCamp) {
+                // 왕이 상대 진영에 진입하여 생존 승리한 경우
+                triggerActionEffect('victory');
+                setTimeout(() => {
+                    resetGameData();
+                }, 2400);
+                return;
+            }
+        }
+
+        endTouch();
+    }
+
+    function endTouch() {
+        gameData.selectedPiece = null;
+        render();
+        gameData.turn = gameData.turn === 1 ? 2 : 1;
+        render();
+    }
+
+    function resetGameData() {
+        gameData = {
+            board: [
+                [ {type:'S', player:2}, {type:'K', player:2}, {type:'G', player:2} ],
+                [ 0,                    {type:'P', player:2}, 0                    ],
+                [ 0,                    {type:'P', player:1}, 0                    ],
+                [ {type:'G', player:1}, {type:'K', player:1}, {type:'S', player:1} ]
+            ],
+            turn: 1,
+            captured1: [],
+            captured2: [],
+            selectedPiece: null
+        };
+        historyStack = [];
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+</html>
