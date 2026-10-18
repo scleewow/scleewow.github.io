@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>십이장기 (Ultimate Victory Edition)</title>
+    <title>십이장기 (Responsive Layout Edition)</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -19,53 +19,52 @@
             padding: 10px;
             overflow-x: hidden;
         }
-        h1 { margin: 0 0 5px 0; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-size: 1.8rem; text-align: center; }
-        #status { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; color: #60a5fa; text-shadow: 0 2px 4px rgba(0,0,0,0.5); text-align: center; }
+        h1 { margin: 0 0 5px 0; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-size: 1.6rem; text-align: center; }
+        #status { font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; color: #60a5fa; text-shadow: 0 2px 4px rgba(0,0,0,0.5); text-align: center; }
         
+        /* 기본 레이아웃 (모바일 우선: 위, 중앙 보드, 아래 순서) */
         .main-layout {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 20px;
-            max-width: 800px;
+            gap: 12px;
+            max-width: 500px;
             width: 100%;
-            justify-content: center;
         }
 
         .sidebar {
             display: flex;
             flex-direction: column;
-            width: 160px;
-            gap: 8px;
+            width: 100%;
+            gap: 4px;
         }
 
-        .captured-title { font-size: 0.85rem; font-weight: bold; color: #a1a1aa; text-align: center; }
+        .captured-title { font-size: 0.85rem; font-weight: bold; color: #a1a1aa; }
         
         .captured-box {
             background: #1f1f23;
             border: 2px solid #3f3f46;
-            padding: 10px;
+            padding: 8px;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            min-height: 150px;
+            min-height: 55px;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            flex-wrap: wrap;
             gap: 6px;
             align-items: center;
-            overflow-y: auto;
         }
         
         .captured-piece {
             background-color: #3f3f46;
             color: #fff;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: bold;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             transition: transform 0.1s;
-            width: 100%;
-            text-align: center;
         }
         .captured-piece:hover { background-color: #52525b; transform: translateY(-2px); }
         .captured-piece.selected { background: #fde047; color: #000; border: 2px solid #ca8a04; }
@@ -74,26 +73,25 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
+            width: 100%;
         }
 
         .board {
             display: grid;
-            grid-template-columns: repeat(3, minmax(90px, 120px));
-            grid-template-rows: repeat(4, minmax(90px, 120px));
-            gap: 8px;
+            grid-template-columns: repeat(3, minmax(80px, 110px));
+            grid-template-rows: repeat(4, minmax(80px, 110px));
+            gap: 6px;
             background-color: #5c2c16;
-            padding: 10px;
+            padding: 8px;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.6);
             border: 5px solid #3d1c0e;
             aspect-ratio: 3 / 4;
-            max-width: 420px;
-            max-height: 560px;
-            position: relative;
+            width: 100%;
+            max-width: 380px;
         }
 
-        /* 일반 타격감 흔들림 */
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             20% { transform: translate(-3px, 0px) rotate(-1deg); }
@@ -104,16 +102,12 @@
         }
         .shake { animation: shake 0.4s ease-in-out; }
 
-        /* 왕을 잡았을 때의 초대형 울트라 지진 흔들림 */
         @keyframes ultra-shake {
             0% { transform: translate(0, 0) rotate(0deg); }
-            10% { transform: translate(-10px, -8px) rotate(-3deg); }
-            20% { transform: translate(10px, 8px) rotate(3deg); }
-            30% { transform: translate(-8px, 10px) rotate(-2deg); }
-            40% { transform: translate(8px, -10px) rotate(2deg); }
-            50% { transform: translate(-6px, -6px) rotate(-1deg); }
-            60% { transform: translate(6px, 6px) rotate(1deg); }
-            80% { transform: translate(-3px, 3px) rotate(0deg); }
+            20% { transform: translate(-10px, -8px) rotate(-3deg); }
+            40% { transform: translate(10px, 8px) rotate(3deg); }
+            60% { transform: translate(-6px, 6px) rotate(-1deg); }
+            80% { transform: translate(6px, -6px) rotate(1deg); }
             100% { transform: translate(0, 0) rotate(0deg); }
         }
         .ultra-shake { animation: ultra-shake 0.8s ease-in-out; }
@@ -171,20 +165,20 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
-        .piece-name { font-size: clamp(1.1rem, 3vw, 1.4rem); font-weight: 900; }
-        .piece-sub { font-size: clamp(0.6rem, 1.5vw, 0.75rem); color: #4b5563; font-weight: bold; }
+        .piece-name { font-size: clamp(1rem, 3vw, 1.3rem); font-weight: 900; }
+        .piece-sub { font-size: clamp(0.5rem, 1.5vw, 0.7rem); color: #4b5563; font-weight: bold; }
 
         .btn-container {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
-            max-width: 420px;
+            max-width: 380px;
         }
 
         button {
             flex: 1;
-            padding: 12px 10px;
-            font-size: 0.95rem;
+            padding: 10px 8px;
+            font-size: 0.9rem;
             font-weight: bold;
             background-color: #3f3f46;
             color: #fff;
@@ -200,13 +194,12 @@
         button.skip-btn { background-color: #0284c7; }
         button.skip-btn:hover { background-color: #0369a1; }
 
-        /* 화면을 뒤덮는 극적인 승리/타격 팝업 연출 */
         #action-popup {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0);
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 900;
             color: #fff;
             text-shadow: 0 0 20px #ef4444, 0 0 40px #dc2626, 0 4px 10px rgba(0,0,0,0.9);
@@ -222,7 +215,6 @@
             opacity: 1;
         }
 
-        /* 승리 시 화면 전체 플래시 효과 */
         #flash-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -234,6 +226,35 @@
         #flash-overlay.flash {
             background-color: rgba(239, 68, 68, 0.4);
         }
+
+        /* PC처럼 넓은 화면(850px 이상)에서는 포로함을 좌우로 배치 */
+        @media (min-width: 850px) {
+            .main-layout {
+                flex-direction: row;
+                max-width: 850px;
+                align-items: center;
+                justify-content: center;
+                gap: 20px;
+            }
+            .sidebar {
+                width: 160px;
+            }
+            .captured-box {
+                flex-direction: column;
+                min-height: 180px;
+                align-items: center;
+            }
+            .captured-piece {
+                width: 100%;
+                text-align: center;
+            }
+            .board {
+                max-width: 420px;
+            }
+            .btn-container {
+                max-width: 420px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -241,11 +262,8 @@
     <div id="flash-overlay"></div>
     <div id="action-popup">CAPTURE!</div>
 
-    <h1>십이장기</h1>
-    <div id="status">플레이어 1 (빨강)의 턴</div>
-
     <div class="main-layout">
-        <!-- 플레이어 2 포로 존 (왼쪽) -->
+        <!-- 플레이어 2 포로 존 (모바일: 상단 / PC: 좌측) -->
         <div class="sidebar">
             <div class="captured-title">플레이어 2 포로 (파랑)</div>
             <div class="captured-box" id="captured-2"></div>
@@ -253,6 +271,8 @@
 
         <!-- 중앙 보드 및 버튼 -->
         <div class="game-container">
+            <h1>십이장기</h1>
+            <div id="status">플레이어 1 (빨강)의 턴</div>
             <div class="board" id="board"></div>
             <div class="btn-container">
                 <button class="undo-btn" onclick="undoMove()">↩ 무르기</button>
@@ -261,7 +281,7 @@
             </div>
         </div>
 
-        <!-- 플레이어 1 포로 존 (오른쪽) -->
+        <!-- 플레이어 1 포로 존 (모바일: 하단 / PC: 우측) -->
         <div class="sidebar">
             <div class="captured-title">플레이어 1 포로 (빨강)</div>
             <div class="captured-box" id="captured-1"></div>
@@ -298,13 +318,11 @@
         const flash = document.getElementById('flash-overlay');
 
         if (effectType === 'victory') {
-            // 왕을 잡았을 때의 극적인 연출 (울트라 지진 + 화면 플래시 + 거대한 텍스트)
             boardEl.classList.remove('shake');
             boardEl.classList.add('ultra-shake');
-            
             flash.classList.add('flash');
 
-            popup.innerHTML = `👑 CHECKMATE!<br><span style="font-size: 2.2rem; color: #fde047;">플레이어 ${gameData.turn} 승리!</span>`;
+            popup.innerHTML = `👑 CHECKMATE!<br><span style="font-size: 2rem; color: #fde047;">플레이어 ${gameData.turn} 승리!</span>`;
             popup.style.textShadow = "0 0 30px #facc15, 0 0 60px #eab308, 0 4px 15px rgba(0,0,0,0.9)";
             popup.classList.add('show');
 
@@ -312,9 +330,8 @@
                 boardEl.classList.remove('ultra-shake');
                 flash.classList.remove('flash');
                 popup.classList.remove('show');
-            }, 2500); // 연출이 여유 있게 보이도록 2.5초간 유지
+            }, 2500);
         } else {
-            // 일반 말을 잡았을 때
             boardEl.classList.remove('shake');
             void boardEl.offsetWidth;
             boardEl.classList.add('shake');
@@ -539,11 +556,10 @@
 
         if (targetPiece !== 0) {
             if (targetPiece.type === 'K') {
-                // 왕을 잡은 경우 최우선 극적 연출 발동 후 리셋
                 triggerActionEffect('victory');
                 setTimeout(() => {
                     resetGameData();
-                }, 2400); // 연출 끝난 후 리셋
+                }, 2400);
                 return;
             }
             
@@ -568,7 +584,7 @@
         if (movingPiece.type === 'K') {
             const isOpponentCamp = (movingPiece.player === 1 && tr === 0) || (movingPiece.player === 2 && tr === 3);
             if (isOpponentCamp) {
-                // 왕이 상대 진영에 진입하여 생존 승리한 경우
+                triggerActionItem = true;
                 triggerActionEffect('victory');
                 setTimeout(() => {
                     resetGameData();
