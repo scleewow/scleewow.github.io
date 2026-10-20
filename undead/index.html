@@ -491,6 +491,10 @@
                         <input type="checkbox" id="show-roles-in-game-check" style="width:auto; margin:0;">
                         <span>게임 화면 상단에 이번 판 역할 목록 공개</span>
                     </label>
+                    <label style="display:flex; align-items:center; gap:0.3rem; cursor:pointer;">
+                        <input type="checkbox" id="mafia-parity-win-check" style="width:auto; margin:0;" onchange="setMafiaParityWin(this.checked)">
+                        <span>마피아 수와 시민 수가 같아지면 마피아팀 승리</span>
+                    </label>
                 </div>
             </div>
 
@@ -640,7 +644,8 @@
                 • 사망자(언데드)는 낮 투표권은 유지되지만 추가 처형 대상 및 밤 능력 사용에서 제외됩니다.</p>
 
                 <h4>🌙 밤 규칙 & 동시 연산</h4>
-                <p>• 밤에 지정한 능력은 아침이 밝아올 때 우선순위에 따라 동시 처리됩니다.<br>
+                <p>• 밤에 지정한 능력은 아래 우선순위로 처리됩니다. 밤에 사망하더라도 밤 시작 시 선택한 능력은 규칙상 차단·무효화되지 않았다면 실행됩니다.<br>
+                • 처리 순서: 환각 계산 → 폭력배의 능력 차단 및 환각 재계산 → 겁쟁이 사망 → 경호원 보호 지정 → 성직자 부활 → 심령술사 부활 → 마술사 직업 교환/실패 처리 → 저격수·청부업자 공격 → 조사 능력 결과 → 대부 공격(경호원·군인 방어) → 감시자 인원 확인 → 승리 조건 판정.<br>
                 • 마피아 팀은 동료 마피아 닉네임과 이번 판에 <b>제외된 시민 직업</b>을 공유받아 사칭(블러핑)에 활용합니다.</p>
             </div>
             <button class="secondary" style="margin-top:1rem;" onclick="closeGuideModal()">닫기</button>
@@ -689,7 +694,7 @@
         const ALL_CITIZEN_ROLES = [
             { id: 'PSYCHOLOGIST', name: '심리학자', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 2명을 선택해 두 사람이 같은 팀인지 조사한다. 두 대상은 살아 있어야 하며, 환각 상태에서는 같은 팀/다른 팀 결과가 반대로 표시된다.' },
             { id: 'INVESTIGATOR', name: '수사관', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 2명을 선택해 둘 중 마피아팀이 있는지 조사한다. 변호사는 조사 결과에서 시민으로 판정되고 불량배는 마피아로 판정된다. 환각 상태에서는 결과가 반대로 표시된다.' },
-            { id: 'WATCHER', name: '감시자', team: 'human', limitType: 'once_game', desc: '게임 중 1회, 밤에 생존 중인 실제 마피아팀 인원수를 확인한다. 환각 상태에서는 실제 인원수 대신 무작위 숫자를 알려준다.' },
+            { id: 'WATCHER', name: '감시자', team: 'human', limitType: 'once_game', desc: '게임 중 1회, 밤 처리 후 생존한 마피아팀과 조사상 마피아로 취급되는 불량배의 인원수를 확인한다. 환각 상태에서는 실제 인원수 대신 무작위 숫자를 알려준다.' },
             { id: 'BREWER', name: '양조사', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 1명을 환각 상태로 만든다. 본인이 환각되면 능력이 무효가 된다. 대상의 환각 여부는 간호사의 조사 대상이 될 수 있다.' },
             { id: 'NURSE', name: '간호사', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 1명을 지목해 그 사람이 그 밤 환각 능력의 대상이 되었는지 확인한다. 본인이 환각되면 결과가 반대로 표시된다.' },
             { id: 'BODYGUARD', name: '경호원', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 1명을 대부의 공격으로부터 보호한다. 현재 구현에서는 청부업자·저격수의 공격은 막지 않는다. 경호원 자신이 환각되면 보호가 무효가 된다.' },
@@ -699,7 +704,7 @@
             { id: 'CLERGY', name: '성직자', team: 'human', limitType: 'once_game', desc: '게임 중 1회, 사망한 플레이어 1명을 부활시킨다. 본인이 환각되거나 폭력배에게 능력을 빼앗기면 무효가 된다. 같은 밤 부활한 사람도 이후 밤 공격의 대상이 될 수 있다.' },
             { id: 'MAGICIAN', name: '마술사', team: 'human', limitType: 'once_game', desc: '게임 중 1회만 사용한다. 생존자 1명을 지목해 시민팀이면 두 사람의 직업을 교체한다. 마술사였던 사람은 새 직업의 능력을 사용할 수 있지만, 새로 마술사가 된 사람은 마술사 능력을 사용할 수 없다. 대상이 마피아팀이면 마술사가 사망하고 직업 교체는 일어나지 않는다. 환각 상태에서는 무효가 된다.' },
             { id: 'MEDIUM', name: '영매', team: 'human', limitType: 'nightly', desc: '밤마다 사망한 플레이어 1명을 지목해 팀을 확인한다. 현재 구현에서는 낮 처형뿐 아니라 밤에 사망한 사람도 조사할 수 있다. 본인이 환각되면 시민/마피아 결과가 반대로 표시된다.' },
-            { id: 'SOLDIER', name: '군인', team: 'human', limitType: 'passive', desc: '대부의 공격을 기본적으로 한 번 막아낸다. 단, 군인이 환각 상태라면 이 방어 능력이 사라져 대부에게 사망할 수 있다.' },
+            { id: 'SOLDIER', name: '군인', team: 'human', limitType: 'passive', desc: '게임 중 1회, 환각 상태가 아닐 때 대부의 공격을 막아낸다. 방어를 한 번 사용한 뒤에는 다시 막을 수 없다. 환각 상태에서는 방어 능력이 무효가 된다.' },
             { id: 'PRESIDENT', name: '대통령', team: 'human', limitType: 'passive', desc: '환각에 면역이다. 낮 찬반 투표로 처형되면 즉시 마피아팀 승리로 게임이 종료된다. 밤에 사망하는 경우에는 이 특수 패배 조건이 발동하지 않는다.' },
             { id: 'RULER_BULLY', name: '불량배', team: 'human', limitType: 'passive', desc: '조사와 마피아팀 판정에서 마피아로 취급된다. 승리 조건에서도 살아 있는 시민 수에 포함되지 않으며, 환각에도 면역이다.' },
             { id: 'COWARD', name: '겁쟁이', team: 'human', limitType: 'passive', desc: '밤에 다른 플레이어의 능력 대상으로 지목되면 즉시 사망한다. 능력이 실제로 성공했는지와 관계없이 지목 자체가 조건이다. 현재 구현에서는 자기 자신의 선택은 대상 지정으로 보지 않는다.' },
@@ -711,7 +716,7 @@
         let myNickname = '';
         let isHost = false;
         let roomRef = null;
-        let previousDeadCount = 0;
+        let previousDeadIds = null;
         let selectedInvestigatorTargets = [];
 
         // 타이머용 변수
@@ -819,11 +824,38 @@
             ).join('');
         }
 
+        function normalizeNicknameForRoleCheck(value) {
+            return String(value || '').toLowerCase().replace(/[\s\p{P}\p{S}_-]+/gu, '');
+        }
+
+        function isReservedRoleNickname(value) {
+            const normalized = normalizeNicknameForRoleCheck(value);
+            if (!normalized) return false;
+            const roles = [ROLE_GODFATHER, ...OTHER_MAFIA_ROLES, ...ALL_CITIZEN_ROLES];
+            const reserved = new Set();
+            roles.forEach(role => {
+                [role.name, role.id].forEach(v => {
+                    const n = normalizeNicknameForRoleCheck(v);
+                    if (n) reserved.add(n);
+                });
+            });
+            // 광대는 게임 화면에서 양조사로 위장하므로 두 명칭 모두 예약한다.
+            reserved.add(normalizeNicknameForRoleCheck('양조사'));
+            reserved.add(normalizeNicknameForRoleCheck('광대'));
+            return reserved.has(normalized);
+        }
+
+        function validateNickname(value) {
+            if (!value) { alert('사용할 닉네임을 입력해 주세요.'); return false; }
+            if (isReservedRoleNickname(value)) { alert('직업명은 닉네임으로 사용할 수 없습니다. 다른 닉네임을 입력해 주세요.'); return false; }
+            return true;
+        }
+
         async function createRoom() {
             myNickname = document.getElementById('nickname-input').value.trim();
             const inputKey = document.getElementById('create-key-input').value.trim();
 
-            if (!myNickname) return alert('사용할 닉네임을 아래 참가하기 카드에 입력하세요.');
+            if (!validateNickname(myNickname)) return;
             if (!inputKey) return alert('방 생성 인증키를 입력하세요.');
 
             const inputHash = await hashPassword(inputKey);
@@ -854,7 +886,8 @@
             myNickname = document.getElementById('nickname-input').value.trim();
             roomCode = document.getElementById('room-code-input').value.trim().toUpperCase();
 
-            if (!myNickname || !roomCode) return alert('닉네임과 방 코드를 입력해 주세요.');
+            if (!validateNickname(myNickname)) return;
+            if (!roomCode) return alert('방 코드를 입력해 주세요.');
 
             roomRef = db.ref('undead_rooms/' + roomCode);
 
@@ -987,12 +1020,20 @@
         }
 
         function checkDeathEvent(players) {
-            let currentDeadList = Object.values(players).filter(p => p.isDead);
-            if (currentDeadList.length > previousDeadCount && previousDeadCount !== 0) {
-                const latestDead = currentDeadList[currentDeadList.length - 1];
-                showDeathBanner(latestDead.name);
+            const currentDeadIds = Object.keys(players || {}).filter(id => players[id] && players[id].isDead);
+            if (previousDeadIds === null) {
+                previousDeadIds = new Set(currentDeadIds);
+                return;
             }
-            previousDeadCount = currentDeadList.length;
+            const newlyDeadIds = currentDeadIds.filter(id => !previousDeadIds.has(id));
+            if (newlyDeadIds.length) {
+                // 처형 투표는 한 명만 사망시키므로 그 신규 사망자를 정확히 표시한다.
+                const executedId = localState && localState.lastExecutedPlayerId;
+                const chosenId = executedId && newlyDeadIds.includes(executedId) ? executedId : newlyDeadIds[newlyDeadIds.length - 1];
+                const latestDead = players[chosenId];
+                if (latestDead) showDeathBanner(latestDead.name);
+            }
+            previousDeadIds = new Set(currentDeadIds);
         }
 
         function showDeathBanner(playerName) {
@@ -1026,6 +1067,7 @@
             winnerTitle.innerText = isMafiaWin ? '🔴 마피아팀 승리!' : '🔵 시민팀 승리!';
             winnerTitle.style.color = isMafiaWin ? '#f43f5e' : '#0284c7';
             reasonText.innerText = data.winReason || '게임이 종료되었습니다.';
+            if (data.lastExecutedPlayerName) reasonText.innerText += `\n이번 투표 처형 대상: ${data.lastExecutedPlayerName}`;
 
             rolesList.innerHTML = '';
             const players = data.players || {};
@@ -1076,6 +1118,7 @@
                     updates[`players/${pId}/votedFor`] = null;
                     updates[`players/${pId}/usedOnceAbility`] = false;
                     updates[`players/${pId}/magicianAbilityUsed`] = false;
+                    updates[`players/${pId}/soldierDefenseUsed`] = false;
                     updates[`players/${pId}/privateResult`] = null;
                     updates[`players/${pId}/investHistory`] = null;
                     updates[`players/${pId}/executeVote`] = null;
@@ -1087,6 +1130,8 @@
                 updates['moderatorResults'] = null;
                 updates['nightAuditLog'] = null;
                 updates['executeTargetId'] = null;
+                updates['lastExecutedPlayerName'] = null;
+                updates['lastExecutedPlayerId'] = null;
                 updates['winnerTeam'] = null;
                 updates['winReason'] = null;
                 updates['logs'] = [`🔄 대기실로 이동하였습니다. 새로 게임을 시작할 수 있습니다.`];
@@ -1100,6 +1145,11 @@
             roomRef.child(`players/${myPlayerId}/isObserver`).set(!!checked);
         }
 
+        function setMafiaParityWin(checked) {
+            if (!isHost || !roomRef) return;
+            roomRef.child('mafiaWinsOnParity').set(!!checked);
+        }
+
         function renderLobby(data) {
             const players = data.players || {};
             const playerKeys = Object.keys(players);
@@ -1107,6 +1157,8 @@
             document.getElementById('player-count').innerText = playerKeys.length;
             const observerCheck = document.getElementById('host-observer-check');
             if (observerCheck) { observerCheck.checked = !!(players[myPlayerId] && players[myPlayerId].isObserver); observerCheck.disabled = !isHost; }
+            const parityCheck = document.getElementById('mafia-parity-win-check');
+            if (parityCheck) { parityCheck.checked = !!data.mafiaWinsOnParity; parityCheck.disabled = !isHost; }
             const listEl = document.getElementById('lobby-player-list');
             listEl.innerHTML = '';
 
@@ -1167,6 +1219,7 @@
 
                 const mode = document.getElementById('role-mode-select').value;
                 const showRolesInGame = document.getElementById('show-roles-in-game-check').checked;
+                const mafiaWinsOnParity = document.getElementById('mafia-parity-win-check').checked;
 
                 let mafiaPool = [];
                 let citizenPool = [];
@@ -1253,6 +1306,7 @@
                     updates[`players/${pId}/votedFor`] = null;
                     updates[`players/${pId}/usedOnceAbility`] = false;
                     updates[`players/${pId}/magicianAbilityUsed`] = false;
+                    updates[`players/${pId}/soldierDefenseUsed`] = false;
                     updates[`players/${pId}/privateResult`] = null;
                     updates[`players/${pId}/investHistory`] = null;
                     updates[`players/${pId}/executeVote`] = null;
@@ -1264,10 +1318,13 @@
                 updates['activeRoles'] = finalPool;
                 updates['unusedCitizens'] = unusedCitizens;
                 updates['showRolesInGame'] = showRolesInGame;
+                updates['mafiaWinsOnParity'] = mafiaWinsOnParity;
                 updates['state'] = 'NIGHT';
                 updates['dayCount'] = 1;
                 updates['nightActions'] = null;
                 updates['executeTargetId'] = null;
+                updates['lastExecutedPlayerName'] = null;
+                updates['lastExecutedPlayerId'] = null;
                 updates['phaseStartTime'] = Date.now(); // 타이머용
                 updates['winnerTeam'] = null;
                 updates['winReason'] = null;
@@ -1411,7 +1468,8 @@
                 item.className = 'player-item' + (p.isDead ? ' dead' : '');
 
                 let actionBtn = '';
-                if (isObserver || (me && me.isObserver)) {
+                // 옵저버는 목록에 이름과 상태를 표시하되 투표/능력 지정 대상에서 제외한다.
+                if (p.isObserver || isObserver || (me && me.isObserver)) {
                     actionBtn = '';
                 } else if (data.state === 'DAY') {
                     const isMyTarget = me && me.votedFor === pId;
@@ -1474,6 +1532,8 @@
 
                 const players = data.players;
                 const target = players[targetId];
+                if (!target) return;
+                if (target.isObserver) return alert('옵저버는 투표 대상으로 지정할 수 없습니다.');
 
                 if (target.isDead) {
                     return alert('사망한(언데드) 플레이어는 처형 투표 대상이 될 수 없습니다.');
@@ -1538,6 +1598,8 @@
 
                 const me = data.players[myPlayerId];
                 const target = data.players[targetId];
+                if (!me || !target) return;
+                if (target.isObserver) return alert('옵저버는 능력 지정 대상이 될 수 없습니다.');
 
                 // 1. 사망 여부 검사
                 if (me.isObserver) return alert('옵저버는 능력을 사용할 수 없습니다.');
@@ -1664,25 +1726,31 @@
             return player.role.team;
         }
 
-        function checkWinCondition(players) {
+        function checkWinCondition(players, mafiaWinsOnParity = false) {
             let aliveGodfather = false;
             let aliveCitizens = 0;
+            let aliveMafia = 0;
             let totalAlive = 0;
 
             Object.values(players).forEach(p => {
                 if (!p.isDead && p.role) {
                     totalAlive++;
                     if (p.role.id === 'GODFATHER') aliveGodfather = true;
+                    if (p.role.team === 'mafia') aliveMafia++;
                     if (p.role.team === 'human' && p.role.id !== 'RULER_BULLY') aliveCitizens++;
                 }
             });
 
             if (!aliveGodfather) {
-                return { winner: 'CITIZEN', reason: '시민팀이 대부를 처형하여 승리했습니다!' };
+                return { winner: 'CITIZEN', reason: '시민팀이 승리 조건을 충족했습니다!' };
+            }
+
+            if (mafiaWinsOnParity && aliveGodfather && aliveMafia > 0 && aliveMafia === aliveCitizens) {
+                return { winner: 'MAFIA', reason: '생존 마피아 수가 시민 수와 같거나 많아 마피아팀이 승리했습니다!' };
             }
 
             if (aliveGodfather && totalAlive <= 2) {
-                return { winner: 'MAFIA', reason: '대부가 최후 2인까지 생존하여 마피아팀이 승리했습니다!' };
+                return { winner: 'MAFIA', reason: '마피아팀이 최후 2인까지 생존하여 승리했습니다!' };
             }
             if (aliveCitizens === 0) {
                 return { winner: 'MAFIA', reason: '모든 시민이 전멸하여 마피아팀이 승리했습니다!' };
@@ -1781,18 +1849,20 @@
                     if (approveCount > rejectCount && candidate) {
                         updates[`players/${candidateId}/isDead`] = true;
                         players[candidateId].isDead = true;
+                        updates['lastExecutedPlayerName'] = candidate.name;
+                        updates['lastExecutedPlayerId'] = candidateId;
                         logs.push(`☠ [처형 확정] 찬성 ${approveCount}표 / 반대 ${rejectCount}표로 ${candidate.name}님이 처형되었습니다.`);
 
                         if (candidate.role && candidate.role.id === 'PRESIDENT') {
-                            logs.push(`🚨 [대통령 처형!] 대통령이 낮 투표로 처형되어 시민팀이 패배했습니다.`);
-                            triggerGameEnd({ winner: 'MAFIA', reason: '대통령이 낮 투표로 처형되었습니다!' }, updates, logs);
+                            logs.push(`🚨 낮 투표로 특수 패배 조건이 발동했습니다.`);
+                            triggerGameEnd({ winner: 'MAFIA', reason: '낮 투표로 마피아팀 승리 조건이 충족되었습니다.' }, updates, logs);
                             return;
                         }
                     } else {
                         logs.push(`🛡️ [처형 부결] 찬성 ${approveCount}표 / 반대 ${rejectCount}표로 ${candidate ? candidate.name : ''}님의 처형이 부결되었습니다.`);
                     }
 
-                    const winResult = checkWinCondition(players);
+                    const winResult = checkWinCondition(players, !!data.mafiaWinsOnParity);
                     if (winResult) {
                         triggerGameEnd(winResult, updates, logs);
                         return;
@@ -1911,7 +1981,7 @@
                             auditEvents.push(`[겁쟁이] ${target.name}은 밤 능력의 대상이 되어 사망 처리되었습니다.`);
                             updates[`players/${targetId}/isDead`] = true;
                             target.isDead = true;
-                            logs.push(`😱 [겁쟁이] ${target.name}님은 밤에 능력의 대상이 되어 사망했습니다.`);
+                            logs.push(`😱 ${target.name}님은 밤 사이 사망했습니다.`);
                         }
                     });
 
@@ -1935,7 +2005,7 @@
                             if (act.targetId && players[act.targetId]) {
                                 updates[`players/${act.targetId}/isDead`] = false;
                                 players[act.targetId].isDead = false;
-                                logs.push(`✨ [성직자의 기적] 사망했던 ${players[act.targetId].name}님이 부활하였습니다!`);
+                                logs.push(`✨ ${players[act.targetId].name}님이 부활했습니다.`);
                                 auditEvents.push(`[성직자] ${players[act.targetId].name} 부활 처리 완료.`);
                             }
                             updates[`players/${pId}/usedOnceAbility`] = true;
@@ -1951,7 +2021,7 @@
                             if (target && target.isDead) {
                                 updates[`players/${act.targetId}/isDead`] = false;
                                 target.isDead = false;
-                                logs.push(`✨ [심령술사의 의식] ${target.name}님이 부활했습니다. 능력은 다음 밤부터 사용할 수 있습니다.`);
+                                logs.push(`✨ ${target.name}님이 부활했습니다.`);
                                 updates[`players/${pId}/privateResult`] = `🔮 [심령술사] ${target.name}님을 부활시켰습니다.`;
                             } else {
                                 updates[`players/${pId}/privateResult`] = '🔮 [심령술사] 선택한 대상은 부활할 수 없었습니다.';
@@ -1992,7 +2062,7 @@
                                 updates[`players/${pId}/magicianAbilityUsed`] = true;
                                 magician.magicianAbilityUsed = true;
                                 updates[`players/${pId}/privateResult`] = `💥 [마술 실패] ${target.name}님은 마피아팀이었습니다.`;
-                                logs.push(`💥 [마술사 실패] ${target.name}님은 마피아팀이어서 마술사가 사망했습니다.`);
+                                logs.push(`💥 밤 사이 ${magician.name}님이 사망했습니다.`);
                             } else {
                                 const magicianRole = magician.role;
                                 const targetRole = target.role;
@@ -2016,7 +2086,7 @@
 
                                 updates[`players/${pId}/privateResult`] = `🎩 [마술 성공] ${target.name}님과 직업을 교환했습니다. 당신의 새로운 직업은 [${magician.role.name}]입니다.`;
                                 updates[`players/${act.targetId}/privateResult`] = `🎩 [마술의 결과] 당신은 ${magician.name}님과 직업이 교환되었습니다. 새로운 직업은 [마술사]입니다.`;
-                                logs.push(`🎩 [마술사] ${magician.name}님과 ${target.name}님의 직업이 교체되었습니다.`);
+                                logs.push(`🎭 밤 사이 두 플레이어의 상태에 변화가 있었습니다.`);
                             }
                         }
 
@@ -2196,9 +2266,11 @@
                             if (protectedTargetSet.has(attackedTargetId)) {
                                 // 경호원의 존재와 보호 성공 여부를 공개 로그에 노출하지 않는다.
                                 auditEvents.push(`[대부 공격] ${victim.name} 공격이 보호로 막혔습니다.`);
-                            } else if (victim.role && victim.role.id === 'SOLDIER' && !hallucinatedActorSet.has(attackedTargetId)) {
-                                // 군인의 존재와 방어 성공 여부를 공개 로그에 노출하지 않는다.
-                                auditEvents.push(`[대부 공격] ${victim.name} 공격이 군인의 방어 효과로 막혔습니다.`);
+                            } else if (victim.role && victim.role.id === 'SOLDIER' && !victim.soldierDefenseUsed && !hallucinatedActorSet.has(attackedTargetId)) {
+                                // 군인의 방어는 게임 중 1회만 가능하며 공개 로그에는 역할/방어 여부를 노출하지 않는다.
+                                updates[`players/${attackedTargetId}/soldierDefenseUsed`] = true;
+                                victim.soldierDefenseUsed = true;
+                                auditEvents.push(`[대부 공격] ${victim.name} 공격이 군인의 1회 방어 효과로 막혔습니다.`);
                             } else {
                                 updates[`players/${attackedTargetId}/isDead`] = true;
                                 players[attackedTargetId].isDead = true;
@@ -2216,7 +2288,7 @@
                         if (lostAbilityActorSet.has(pId)) return;
                         const act = actions[pId];
                         if (!act || act.actorRoleId !== 'WATCHER') return;
-                        const mafiaAlive = Object.values(players).filter(p => p && !p.isDead && p.role && p.role.team === 'mafia').length;
+                        const mafiaAlive = Object.values(players).filter(p => p && !p.isDead && p.role && (p.role.team === 'mafia' || p.role.id === 'THUG' || p.role.id === 'RULER_BULLY')).length;
                         const isHallucinated = hallucinatedActorSet.has(pId);
                         const livingCount = Object.values(players).filter(p => p && !p.isDead && p.role).length;
                         const shownCount = isHallucinated ? Math.floor(Math.random() * (livingCount + 1)) : mafiaAlive;
@@ -2256,7 +2328,7 @@
                     };
                     updates[`nightAuditLog/${auditKey}`] = auditHistory[auditKey];
 
-                    const winResult = checkWinCondition(players);
+                    const winResult = checkWinCondition(players, !!data.mafiaWinsOnParity);
                     if (winResult) {
                         triggerGameEnd(winResult, updates, logs);
                         return;
