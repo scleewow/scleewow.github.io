@@ -161,6 +161,27 @@
             background: #1e1b4b;
             border-color: #818cf8;
         }
+        .invest-hold-card {
+            background: #fefce8;
+            border: 2px dashed #ca8a04;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            cursor: pointer;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .invest-history-box {
+            text-align: left;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+        body.night-mode .invest-hold-card {
+            background: #422006;
+            border-color: #eab308;
+        }
 
         input, button, select {
             width: 100%;
@@ -517,17 +538,18 @@
 
             <div id="role-hold-card" class="role-hold-card">
                 <div id="role-prompt-text" style="font-size:0.9rem; color:#0284c7; font-weight:bold;">
-                    👁️ 이곳을 누르고 있는 동안에만 역할이 표시됩니다.
+                    🌙 밤에 이곳을 누르고 있는 동안에만 내 역할을 확인할 수 있습니다.
                 </div>
                 <div id="role-display-box" class="hidden">
                     <div id="my-role-title" class="role-badge"></div>
                     <p id="my-role-desc" style="font-size:0.85rem; color:#475569; text-align:left; line-height:1.4;"></p>
-                    <!-- 조사직 조사 이력 누적 카드 -->
-                    <div id="invest-history-box" class="invest-history-box hidden">
-                        <b>📜 나의 조사 이력:</b>
-                        <div id="invest-history-content"></div>
-                    </div>
                 </div>
+            </div>
+
+            <!-- 역할 정보와 분리된 개인 조사 기록. 누르고 있는 동안에만 내용을 표시한다. -->
+            <div id="personal-invest-card" class="invest-hold-card hidden" aria-label="개인 조사 결과. 누르고 있는 동안에만 표시됩니다.">
+                <div id="invest-prompt-text" style="font-weight:bold; color:#854d0e;">🔒 조사 결과 확인 — 누르고 있는 동안에만 표시됩니다.</div>
+                <div id="invest-history-content" class="invest-history-box hidden" aria-live="polite"></div>
             </div>
 
             <div id="active-roles-card" class="card hidden">
@@ -627,7 +649,7 @@
                 <p><b>• 시민팀 승리:</b> 대부를 죽이면 승리합니다.<br>
                 <b>• 마피아팀 승리:</b> 대부가 최후 2인까지 살아남거나, 대통령을 투표로 죽일 경우 또는 시민을 모두 죽이면 승리합니다.(선택옵션:마피아수=시민수)</p>
 				
-				<h4>★ 필독사항 ★</h4>
+				<h4>★ 중요사항</h4>
 				<p><b>• 게임중 서로의 화면을 보여주지 마세요!</b></p>
 				<p>• 마약상·대통령·불량배·광대는 환각의 영향을 받지 않는다.</p>
 				<p><b>• 죽이는 것도 하나의 능력이며, 그밤에 죽은 플레이어의 능력도 발동됩니다.</b>(단, 그밤에 죽은 조사직의 경우 능력발동이 안됩니다.)</p>
@@ -653,7 +675,7 @@
 
                 <h4>🌙 밤 규칙 & 동시 연산</h4>
 				<p>• 모든능력은 밤이 종료되는 시점에 동시에 발동합니다.(단, 환각만 우선발동) <br>
-				• 죽이는 것도 하나의 능력이며, 그밤에 죽은 플레이어의 능력도 발동됩니다.(단, 그밤에 죽은 조사직의 경우 능력발동이 안됩니다.)</p>
+				• 죽이는 것도 하나의 능력이며, 그밤에 죽은 플레이어의 능력도 발동됩니다.</p>
                 <p>• 밤에 지정한 능력은 아래 우선순위로 처리됩니다. 밤에 사망하더라도 밤 시작 시 선택한 능력은 규칙상 차단·무효화되지 않았다면 실행됩니다.<br>
                 • 처리 순서: 환각 계산 → 폭력배의 능력 차단 및 환각 재계산 → 경호원 보호 지정 → 성직자 부활 → 심령술사 부활 → 마술사 직업 교환/실패 처리 → 저격수·청부업자 공격 → 대부 공격(경호원·군인 방어) → 조사직 생존 여부 판정 및 겁쟁이 사망 처리 → 생존한 조사직 결과 생성 → 감시자 인원 확인 → 승리 조건 판정.<br>
                 • 마피아 팀은 동료 마피아 닉네임과 이번 판에 <b>제외된 시민 직업</b>을 공유받아 사칭(블러핑)에 활용합니다.</p>
@@ -764,6 +786,7 @@
             }
 
             setupHoldRoleCard();
+            setupHoldInvestHistory();
             renderGuideRoles();
             renderCustomRoleCheckboxes();
         };
@@ -775,6 +798,10 @@
 
             const showRole = (e) => {
                 if (e) e.preventDefault();
+                // 역할은 밤에만 확인 가능. 낮/최후 변론/찬반 투표 중에는 절대 열지 않는다.
+                if (!localState || localState.state !== 'NIGHT') return;
+                const me = localState.players && localState.players[myPlayerId];
+                if (!me || !me.role || me.isObserver) return;
                 box.classList.remove('hidden');
                 promptText.classList.add('hidden');
             };
@@ -786,8 +813,33 @@
             };
 
             ['pointerdown', 'mousedown', 'touchstart'].forEach(evt => card.addEventListener(evt, showRole));
-            ['pointerup', 'pointercancel', 'mouseleave', 'mouseup', 'touchend'].forEach(evt => card.addEventListener(evt, hideRole));
+            ['pointerup', 'pointercancel', 'mouseleave', 'mouseup', 'touchend', 'touchcancel'].forEach(evt => card.addEventListener(evt, hideRole));
             card.addEventListener('contextmenu', (e) => e.preventDefault());
+        }
+
+        function setupHoldInvestHistory() {
+            const card = document.getElementById('personal-invest-card');
+            const prompt = document.getElementById('invest-prompt-text');
+            const content = document.getElementById('invest-history-content');
+            const showResults = (e) => {
+                if (e) e.preventDefault();
+                // 조사 결과는 페이즈와 관계없이 본인 화면에서 누르고 있는 동안에만 보인다.
+                const me = localState && localState.players && localState.players[myPlayerId];
+                if (!me || !Array.isArray(me.investHistory) || me.investHistory.length === 0) return;
+                content.classList.remove('hidden');
+                prompt.classList.add('hidden');
+            };
+            const hideResults = (e) => {
+                if (e) e.preventDefault();
+                content.classList.add('hidden');
+                prompt.classList.remove('hidden');
+            };
+            ['pointerdown', 'mousedown', 'touchstart'].forEach(evt => card.addEventListener(evt, showResults));
+            ['pointerup', 'pointercancel', 'mouseleave', 'mouseup', 'touchend', 'touchcancel'].forEach(evt => card.addEventListener(evt, hideResults));
+            card.addEventListener('contextmenu', e => e.preventDefault());
+            // 포인터가 카드 밖에서 올라가더라도 비밀 내용을 닫는다.
+            document.addEventListener('pointerup', hideResults);
+            document.addEventListener('pointercancel', hideResults);
         }
 
         function renderCustomRoleCheckboxes() {
@@ -1352,8 +1404,11 @@
         function renderGame(data) {
             const me = data.players[myPlayerId];
             
-            // 🔒 본인 전용 비밀 브리핑 팝업 출력 (9번 요구사항 능력 상실 알림 포함)
-            if (me && me.privateResult) {
+            // 조사 결과는 자동 팝업으로 띄우지 않는다. 별도 개인 영역을 누르고 있는 동안에만 확인한다.
+            // 그 외의 일회성 능력 알림은 기존 비밀 브리핑 팝업을 유지한다.
+            const isSavedInvestigationResult = !!(me && me.privateResult && Array.isArray(me.investHistory) &&
+                me.investHistory.some(entry => typeof entry === 'string' && entry.endsWith(me.privateResult)));
+            if (me && me.privateResult && !isSavedInvestigationResult) {
                 showPrivateModal(me.privateResult);
             }
 
@@ -1381,20 +1436,51 @@
                 document.getElementById('my-role-title').innerText = `${teamTag} ${displayRoleName}`;
                 document.getElementById('my-role-desc').innerHTML = descHtml;
 
-                // 8번 요구사항: 조사직 조사 이력 누적 카드 표시
-                const historyBox = document.getElementById('invest-history-box');
-                const historyContent = document.getElementById('invest-history-content');
-                if (me.investHistory && me.investHistory.length > 0) {
-                    historyBox.classList.remove('hidden');
-                    historyContent.innerHTML = me.investHistory.map(h => `<div>• ${h}</div>`).join('');
-                } else {
-                    historyBox.classList.add('hidden');
-                }
             }
 
-            if (!me || !me.role) {
-                document.getElementById('role-display-box').classList.add('hidden');
-                document.getElementById('role-prompt-text').innerText = me && me.isObserver ? '🛡️ 옵저버 모드: 역할이 배정되지 않았습니다.' : '👁️ 이곳을 누르고 있는 동안에만 역할이 표시됩니다.';
+            // 조사 기록은 본인 데이터만 표시하고, 누르고 있는 동안에만 내용이 보이게 한다.
+            // 역할 카드와 분리되어 있어 낮에도 결과 확인이 가능하다.
+            const personalInvestCard = document.getElementById('personal-invest-card');
+            const historyContent = document.getElementById('invest-history-content');
+            const investPrompt = document.getElementById('invest-prompt-text');
+            const ownInvestHistory = me && Array.isArray(me.investHistory) ? me.investHistory : [];
+            if (ownInvestHistory.length > 0) {
+                personalInvestCard.classList.remove('hidden');
+                historyContent.replaceChildren();
+                ownInvestHistory.forEach(entry => {
+                    const line = document.createElement('div');
+                    line.style.padding = '0.2rem 0';
+                    line.textContent = `• ${entry}`;
+                    historyContent.appendChild(line);
+                });
+                historyContent.classList.add('hidden');
+                investPrompt.classList.remove('hidden');
+                investPrompt.textContent = '🔒 조사 결과 확인 — 누르고 있는 동안에만 표시됩니다.';
+            } else {
+                personalInvestCard.classList.add('hidden');
+                historyContent.classList.add('hidden');
+                historyContent.replaceChildren();
+                investPrompt.classList.remove('hidden');
+            }
+
+            // 페이즈가 밤이 아니면, 누르고 있던 중이라도 역할 정보를 즉시 닫는다.
+            const roleDisplayBox = document.getElementById('role-display-box');
+            const rolePromptText = document.getElementById('role-prompt-text');
+            if (!data || data.state !== 'NIGHT') {
+                roleDisplayBox.classList.add('hidden');
+                rolePromptText.classList.remove('hidden');
+                rolePromptText.innerText = me && me.isObserver
+                    ? '🛡️ 옵저버 모드: 역할이 배정되지 않았습니다.'
+                    : '☀️ 낮에는 내 역할을 확인할 수 없습니다. 조사 결과는 아래 개인 영역에서 확인하세요.';
+            } else if (!me || !me.role) {
+                roleDisplayBox.classList.add('hidden');
+                rolePromptText.classList.remove('hidden');
+                rolePromptText.innerText = me && me.isObserver
+                    ? '🛡️ 옵저버 모드: 역할이 배정되지 않았습니다.'
+                    : '🌙 밤에 이곳을 누르고 있는 동안에만 내 역할을 확인할 수 있습니다.';
+            } else if (roleDisplayBox.classList.contains('hidden')) {
+                rolePromptText.classList.remove('hidden');
+                rolePromptText.innerText = '🌙 밤에 이곳을 누르고 있는 동안에만 내 역할을 확인할 수 있습니다.';
             }
 
             const activeRolesCard = document.getElementById('active-roles-card');
@@ -2065,7 +2151,7 @@
                                 updates[`players/${pId}/magicianAbilityUsed`] = true;
                                 magician.magicianAbilityUsed = true;
                                 updates[`players/${pId}/privateResult`] = `💥 [마술 실패] ${target.name}님은 마피아팀이었습니다.`;
-                                logs.push(`💥 밤 사이 ${magician.name}님이 사망했습니다.`);
+                                logs.push(`💀 밤 사이 ${magician.name}님이 사망했습니다.`);
                             } else {
                                 const magicianRole = magician.role;
                                 const targetRole = target.role;
@@ -2204,7 +2290,7 @@
                             updates[`players/${targetId}/isDead`] = true;
                             target.isDead = true;
                             diedDuringNightSet.add(targetId);
-                            logs.push(`💀 밤 사이 ${target.name}님은 사망했습니다.`);
+                            logs.push(`💀 밤 사이 ${target.name}님이 사망했습니다.`);
                         }
                     });
 
