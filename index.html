@@ -1,2514 +1,1302 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🕵️🔮 언데드 마피아 (Undead Mafia)</title>
-    <!-- Firebase 8.x SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <!-- QR Code Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>레지스탕스 아발론</title>
 
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+  <!-- Firebase SDK v9 Compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <!-- QR Code Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    // ===== Firebase 초기화 =====
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrvXAVaA46-qVmNek_MnUlRRLRmeYpvu8",
+      authDomain: "myavalon-d1c3a.firebaseapp.com",
+      databaseURL: "https://myavalon-d1c3a-default-rtdb.firebaseio.com",
+      projectId: "myavalon-d1c3a",
+      storageBucket: "myavalon-d1c3a.firebasestorage.app",
+      messagingSenderId: "974314177774",
+      appId: "1:974314177774:web:625f22956117cdc9f29fff",
+      measurementId: "G-3503TJXX0W"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // --- 게임 상태 및 세션 변수 ---
+    let myName = "";
+    let isHost = false;
+    let mySessionId = localStorage.getItem("avalon_session_id") || "user_" + Math.random().toString(36).substring(2, 9);
+    localStorage.setItem("avalon_session_id", mySessionId);
+
+    let selectionTimerInterval = null;
+    let lastProcessedLogCount = 0;
+
+    let gameState = {
+      roomId: null,
+      phase: 'LOBBY',
+      players: {},
+      rolesConfig: {},
+      questResults: [], 
+      currentQuest: 0,
+      rejectCount: 0,
+      leaderSessionId: null,
+      selectedTeam: [],
+      teamVotes: {},
+      missionVotes: {},
+      winner: null,
+      logs: [],
+      teamSelectionStartTime: null,
+      lastTeamVoteDetails: null,
+      roleHistory: {}
+    };
+
+    const QUEST_CONFIG = {
+      5: [2, 3, 2, 3, 3],
+      6: [2, 3, 4, 3, 4],
+      7: [2, 3, 3, 4, 4],
+      8: [3, 4, 4, 5, 5],
+      9: [3, 4, 4, 5, 5],
+      10: [3, 4, 4, 5, 5]
+    };
+
+    const CHARACTER_INFO = [
+      { name: "머린 (선)", desc: "모든 악의 무리(모드레드 제외)를 파악할 수 있습니다. 단, 정체가 발각되어 암살당하면 패배합니다." },
+      { name: "퍼시벌 (선)", desc: "머린과 모거나 2명을 머린 후보로 봅니다. 진짜 머린을 찾아 보호하고 조력해야 합니다." },
+      { name: "시종 (선)", desc: "특수 능력은 없지만 표를 행사하고 논리적인 추리로 원정을 성공시켜야 합니다." },
+      { name: "암살자 (악)", desc: "선 세력이 3승을 거두더라도 마지막에 진짜 머린을 지목하여 암살하면 역전 승리합니다." },
+      { name: "모거나 (악)", desc: "퍼시벌에게 자신이 머린인 것처럼 혼란을 줍니다." },
+      { name: "모드레드 (악)", desc: "머린에게 자신의 정체를 숨길 수 있는 강력한 악의 세력입니다." },
+      { name: "오베론 (악)", desc: "다른 악의 세력과 서로의 정체를 알 수 없는 고독한 악입니다." },
+      { name: "악의 무리 (악)", desc: "특별한 기능은 없지만 동료 악의 무리와 협력하여 원정을 방해해야 합니다." }
+    ];
+
+    let screens, inputs, displays, lists;
+
+    function initializeElements() {
+      screens = {
+        lobby: document.getElementById('screen-lobby'),
+        room: document.getElementById('screen-room'),
+        game: document.getElementById('screen-game')
+      };
+      inputs = {
+        name: document.getElementById('player-name'),
+        createPassword: document.getElementById('create-password'),
+        roomId: document.getElementById('room-id')
+      };
+      displays = {
+        roomId: document.getElementById('display-room-id'),
+        playerCount: document.getElementById('player-count'),
+        rejectCount: document.getElementById('reject-count'),
+        currentLeader: document.getElementById('current-leader'),
+        secretContent: document.getElementById('secret-content'),
+        secretHint: document.getElementById('secret-hint')
+      };
+      lists = {
+        waiting: document.getElementById('waiting-player-list'),
+        game: document.getElementById('game-player-list'),
+        log: document.getElementById('log-box')
+      };
+    }
+
+    // SHA-256 해시 함수
+    async function hashPassword(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function secureShuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const randomBuffer = new Uint32Array(1);
+        window.crypto.getRandomValues(randomBuffer);
+        const j = randomBuffer[0] % (i + 1);
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    window.onload = async function() {
+      try {
+        initializeElements();
+        renderHelpModalList();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomParam = urlParams.get('room');
+
+        if (roomParam) {
+          inputs.roomId.value = roomParam.toUpperCase();
+          document.getElementById('join-ui').classList.remove('hidden');
+        }
+
+        const savedSession = sessionStorage.getItem('avalon_active_session');
+        if (savedSession) {
+          try {
+            const session = JSON.parse(savedSession);
+            myName = session.name;
+            inputs.name.value = myName;
+            isHost = session.isHost;
+            await startRoomListing(session.roomId.toUpperCase());
+            return;
+          } catch(e) {
+            console.error('세션 복구 오류:', e);
+            sessionStorage.removeItem('avalon_active_session');
+          }
+        }
+      } catch(e) {
+        console.error('onload 오류:', e);
+      }
+    };
+
+    async function startRoomListing(roomId) {
+      try {
+        if (!roomId) return;
+        const formattedRoomId = roomId.toUpperCase();
+        gameState.roomId = formattedRoomId;
+        const roomRef = database.ref('rooms/' + formattedRoomId);
+
+        const snapshot = await roomRef.once('value');
+        if (!snapshot.exists()) {
+          alert("존재하지 않는 방이거나 연결 대기 중입니다.");
+          showScreen('lobby');
+          sessionStorage.removeItem('avalon_active_session');
+          return;
+        }
+
+        roomRef.on('value', (snapshot) => {
+          try {
+            const data = snapshot.val();
+            if (!data) return;
+
+            if (data.players && !data.players[mySessionId]) {
+              alert("방장에 의해 강제 퇴장되었습니다.");
+              roomRef.off();
+              sessionStorage.removeItem('avalon_active_session');
+              inputs.name.disabled = false;
+              showScreen('lobby');
+              return;
+            }
+
+            if (data.logs && data.logs.length > lastProcessedLogCount) {
+              const newLogs = data.logs.slice(lastProcessedLogCount);
+              newLogs.forEach(log => {
+                if (log.includes("[표결") || log.includes("원정 결과") || log.includes("[암살") || log.includes("승리했습니다")) {
+                  showNotificationPopup(log);
+                }
+              });
+              lastProcessedLogCount = data.logs.length;
+            }
+
+            gameState = data;
+
+            if (gameState.players && gameState.players[mySessionId]) {
+              myName = gameState.players[mySessionId].name;
+              saveSessionToStorage(formattedRoomId, isHost);
+            }
+
+            if (gameState.phase === 'LOBBY') {
+              showScreen('room');
+              renderWaitingList();
+            } else {
+              showScreen('game');
+              renderGameUI();
+            }
+          } catch(e) {
+            console.error('DB 업데이트 처리 오류:', e);
+          }
+        });
+      } catch(e) {
+        console.error('startRoomListing 오류:', e);
+        alert('방 연결 중 오류: ' + e.message);
+      }
+    }
+
+    async function initializeRoomOnDB(roomId) {
+      try {
+        const roomRef = database.ref('rooms/' + roomId);
+        await roomRef.set({
+          roomId: roomId,
+          phase: 'LOBBY',
+          players: {
+            [mySessionId]: { name: myName, joinedAt: Date.now(), status: 'active' }
+          },
+          logs: ["방이 생성되었습니다. 참가자를 기다립니다."]
+        });
+      } catch(e) {
+        console.error('방 생성 오류:', e);
+        alert('방 생성 실패: ' + e.message);
+        throw e;
+      }
+    }
+
+    function saveSessionToStorage(roomId, hostFlag) {
+      sessionStorage.setItem('avalon_active_session', JSON.stringify({
+        name: myName,
+        roomId: roomId.toUpperCase(),
+        isHost: hostFlag
+      }));
+    }
+
+    function showNotificationPopup(message) {
+      const banner = document.getElementById('event-banner');
+      banner.innerText = message;
+      banner.classList.remove('hidden');
+      setTimeout(() => { banner.classList.add('hidden'); }, 4000);
+    }
+
+    function showScreen(screenName) {
+      try {
+        Object.values(screens).forEach(s => s.classList.add('hidden'));
+        screens[screenName].classList.remove('hidden');
+        if (screenName === 'room') {
+          displays.roomId.innerText = gameState.roomId.toUpperCase();
+          generateQRCode(gameState.roomId.toUpperCase());
+          if (isHost) {
+            document.getElementById('host-controls').classList.remove('hidden');
+            document.getElementById('client-wait-msg').classList.add('hidden');
+          } else {
+            document.getElementById('host-controls').classList.add('hidden');
+            document.getElementById('client-wait-msg').classList.remove('hidden');
+          }
+        }
+      } catch(e) {
+        console.error('showScreen 오류:', e);
+      }
+    }
+
+    function renderWaitingList() {
+      try {
+        const players = gameState.players ? Object.entries(gameState.players) : [];
+        lists.waiting.innerHTML = players
+          .sort((a, b) => a[1].joinedAt - b[1].joinedAt)
+          .map(([sId, p]) => {
+            const kickBtn = (isHost && sId !== mySessionId) 
+              ? `<button class="btn btn-danger" style="width:auto; padding:2px 8px; font-size:0.75rem;" onclick="kickPlayer('${sId}')">강퇴</button>` 
+              : '';
+            return `<li class="player-item"><span>${p.name} ${sId === mySessionId ? '(나)' : ''}</span>${kickBtn}</li>`;
+          })
+          .join('');
+        displays.playerCount.innerText = players.length;
+      } catch(e) {
+        console.error('renderWaitingList 오류:', e);
+      }
+    }
+
+    window.kickPlayer = async function(targetSessionId) {
+      if (!isHost) return;
+      const targetName = gameState.players[targetSessionId]?.name || "해당 플레이어";
+      if (!confirm(`${targetName} 님을 강제 퇴장시키시겠습니까?`)) return;
+
+      try {
+        await database.ref(`rooms/${gameState.roomId}/players/${targetSessionId}`).remove();
+      } catch(e) {
+        alert("강퇴 실패: " + e.message);
+      }
+    };
+
+    function renderGameUI() {
+      try {
+        renderBoard();
+        renderLogs();
+
+        const restartBtn = document.getElementById('btn-host-restart');
+        if (isHost) {
+          restartBtn.classList.remove('hidden');
+        } else {
+          restartBtn.classList.add('hidden');
+        }
+
+        displays.rejectCount.innerText = gameState.rejectCount || 0;
+        const leaderName = gameState.players[gameState.leaderSessionId]?.name || '-';
+        displays.currentLeader.innerText = leaderName;
+
+        const pEntries = gameState.players ? Object.entries(gameState.players) : [];
+        lists.game.innerHTML = pEntries.map(([sId, p]) => {
+          const isSelected = gameState.selectedTeam?.includes(sId);
+          const isPlayerLeader = sId === gameState.leaderSessionId;
+          const isMe = sId === mySessionId;
+
+          let voteStatus = '';
+          if (gameState.phase === 'TEAM_VOTE' && gameState.teamVotes?.[sId] !== undefined) {
+            voteStatus = ' (투표완료)';
+          }
+          if (gameState.phase === 'MISSION_VOTE' && isSelected) {
+            if (gameState.missionVotes?.[sId] !== undefined) voteStatus = ' (미션완료)';
+          }
+
+          return `
+            <li class="player-item ${isSelected ? 'selected' : ''} ${isPlayerLeader ? 'leader' : ''}" 
+                onclick="handlePlayerClick('${sId}')">
+              <span>${p.name} ${isPlayerLeader ? '👑' : ''}${isMe ? ' (나)' : ''}${voteStatus}</span>
+              ${isSelected ? '<span style="color:var(--gold); font-size:0.8rem;">[선발됨]</span>' : ''}
+            </li>
+          `;
+        }).join('');
+
+        renderActionArea();
+        handleSelectionTimer();
+      } catch(e) {
+        console.error('renderGameUI 오류:', e);
+      }
+    }
+
+    function handleSelectionTimer() {
+      const timerDisplay = document.getElementById('selection-timer');
+      if (gameState.phase === 'TEAM_SELECTION' && gameState.teamSelectionStartTime) {
+        timerDisplay.classList.remove('hidden');
+        if (selectionTimerInterval) clearInterval(selectionTimerInterval);
+
+        selectionTimerInterval = setInterval(() => {
+          const elapsed = Math.floor((Date.now() - gameState.teamSelectionStartTime) / 1000);
+          const remaining = Math.max(0, 300 - elapsed);
+          const min = Math.floor(remaining / 60);
+          const sec = remaining % 60;
+          timerDisplay.innerText = `⏱️ 팀 구성 남은시간: ${min}:${sec < 10 ? '0' : ''}${sec}`;
+
+          if (remaining === 0) {
+            clearInterval(selectionTimerInterval);
+            timerDisplay.innerText = `⏱️ 팀 구성 시간 종료 (5분 경과)`;
+          }
+        }, 1000);
+      } else {
+        if (selectionTimerInterval) clearInterval(selectionTimerInterval);
+        timerDisplay.classList.add('hidden');
+      }
+    }
+
+    function renderBoard() {
+      try {
+        const playerCount = Object.keys(gameState.players).length;
+        const reqs = QUEST_CONFIG[playerCount] || [2,3,2,3,3];
+        const board = document.getElementById('quest-board');
+
+        board.innerHTML = reqs.map((req, i) => {
+          let statusClass = '';
+          if (gameState.questResults?.[i] === true) statusClass = 'success';
+          if (gameState.questResults?.[i] === false) statusClass = 'fail';
+          if (i === gameState.currentQuest && gameState.phase !== 'GAME_OVER') statusClass += ' active';
+
+          return `<div class="quest-slot ${statusClass}">${i+1}차<br>(${req}명)</div>`;
+        }).join('');
+      } catch(e) {
+        console.error('renderBoard 오류:', e);
+      }
+    }
+
+    function renderLogs() {
+      try {
+        if (!gameState.logs) return;
+        lists.log.innerHTML = gameState.logs.slice(-20).map(m => `<div>• ${m}</div>`).join('');
+        lists.log.scrollTop = lists.log.scrollHeight;
+      } catch(e) {
+        console.error('renderLogs 오류:', e);
+      }
+    }
+
+    function renderActionArea() {
+      try {
+        const area = document.getElementById('action-area');
+        const isLeader = gameState.leaderSessionId === mySessionId;
+        const playerCount = Object.keys(gameState.players).length;
+        const reqCount = QUEST_CONFIG[playerCount]?.[gameState.currentQuest];
+        const myPlayer = gameState.players[mySessionId];
+
+        if (!myPlayer || !myPlayer.role) {
+          area.innerHTML = '<p style="text-align:center; color:var(--text-muted);">게임 데이터 로딩 중...</p>';
+          return;
+        }
+
+        let voteDetailsHTML = '';
+        if (gameState.lastTeamVoteDetails) {
+          const detailList = Object.entries(gameState.lastTeamVoteDetails).map(([sId, vote]) => {
+            const pName = gameState.players[sId]?.name || '알수없음';
+            return `<span style="margin-right:8px; color:${vote ? 'var(--blue)' : 'var(--red)'};">${pName}: ${vote ? '찬성' : '반대'}</span>`;
+          }).join(' | ');
+          voteDetailsHTML = `<div style="margin-bottom:10px; padding:6px; background:#0f172a; border-radius:4px; font-size:0.8rem;"><strong>직전 찬반 결과:</strong><br>${detailList}</div>`;
+        }
+
+        if (gameState.phase === 'TEAM_SELECTION') {
+          if (isLeader) {
+            const canSubmit = gameState.selectedTeam?.length === reqCount;
+            area.innerHTML = `${voteDetailsHTML}
+              <p style="margin-bottom:8px;">원정대원 ${reqCount}명을 선택하세요.</p>
+              <button class="btn btn-primary" ${canSubmit ? '' : 'disabled'} onclick="submitTeamProposal()">팀 구성 완료 및 투표 요청</button>
+            `;
+          } else {
+            area.innerHTML = `${voteDetailsHTML}<p style="text-align:center; color:var(--text-muted);">원정대장(${gameState.players[gameState.leaderSessionId]?.name || '?'})이 팀 구성 중입니다...</p>`;
+          }
+        } else if (gameState.phase === 'TEAM_VOTE') {
+          const hasVoted = gameState.teamVotes?.[mySessionId] !== undefined;
+          let statusMsg = '';
+          if (hasVoted) {
+            const myVote = gameState.teamVotes[mySessionId];
+            statusMsg = myVote 
+              ? `<div class="vote-status-badge approved">✔ [찬성] 선택함 (결과 대기 중)</div>`
+              : `<div class="vote-status-badge rejected">✖ [반대] 선택함 (결과 대기 중)</div>`;
+          }
+          area.innerHTML = `${voteDetailsHTML}
+            <p style="margin-bottom:8px;">지목된 팀 찬반 투표</p>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-blue" ${hasVoted ? 'disabled' : ''} onclick="voteTeam(true)">찬성</button>
+              <button class="btn btn-danger" ${hasVoted ? 'disabled' : ''} onclick="voteTeam(false)">반대</button>
+            </div>
+            <div style="text-align:center; margin-top:8px;">${statusMsg}</div>
+          `;
+        } else if (gameState.phase === 'MISSION_VOTE') {
+          const isTeamMember = gameState.selectedTeam?.includes(mySessionId);
+          const hasVoted = gameState.missionVotes?.[mySessionId] !== undefined;
+
+          if (isTeamMember) {
+            area.innerHTML = `${voteDetailsHTML}
+              <p style="margin-bottom:8px; color:var(--gold);">[원정대원 전용] 임무 성공/실패 선택</p>
+              <div style="display:flex; gap:8px;">
+                <button class="btn btn-blue" ${hasVoted ? 'disabled' : ''} onclick="voteMission(true)">임무 성공</button>
+                <button class="btn btn-danger" ${hasVoted ? 'disabled' : ''} onclick="voteMission(false)">임무 실패</button>
+              </div>
+              ${hasVoted ? '<p style="text-align:center; margin-top:8px; color:var(--gold);">투표 완료. 다른 대원을 기다립니다...</p>' : ''}
+            `;
+          } else {
+            area.innerHTML = `${voteDetailsHTML}<p style="text-align:center; color:var(--text-muted);">원정대가 임무 수행 중입니다...</p>`;
+          }
+        } else if (gameState.phase === 'ASSASSINATE') {
+          if (myPlayer.role === 'Assassin') {
+            area.innerHTML = `${voteDetailsHTML}<p style="color:var(--red);">머린으로 의심되는 플레이어를 목록에서 클릭하여 암살하세요!</p>`;
+          } else {
+            area.innerHTML = `${voteDetailsHTML}<p style="text-align:center; color:var(--red);">선 세력 3승! 암살자가 머린을 찾는 중입니다...</p>`;
+          }
+        } else if (gameState.phase === 'GAME_OVER') {
+          const isGoodWin = gameState.winner === 'GOOD';
+          let restartBtnHTML = isHost 
+            ? `<button class="btn btn-primary" style="margin-top:12px;" onclick="restartGame()">게임 다시하기 (대기실 이동)</button>`
+            : `<p style="text-align:center; font-size:0.85rem; color:var(--text-muted); margin-top:12px;">방장이 다시하기를 누르기를 기다리고 있습니다...</p>`;
+
+          const allRolesSummary = Object.entries(gameState.players).map(([sId, p]) => {
+            return `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #334155; padding:4px 0;">
+              <span>${p.name}</span>
+              <strong style="color:var(--gold);">${getRoleKorean(p.role)}</strong>
+            </div>`;
+          }).join('');
+
+          area.innerHTML = `
+            <h2 style="text-align:center; color:${isGoodWin ? 'var(--blue)' : 'var(--red)'}">
+              ${isGoodWin ? '정의의 세력 승리!' : '악의 세력 승리!'}
+            </h2>
+            <div style="margin-top:12px; background:#0f172a; padding:10px; border-radius:6px; font-size:0.85rem;">
+              <h4 style="margin-bottom:6px; color:var(--gold);">👑 최종 캐릭터 공개</h4>
+              ${allRolesSummary}
+            </div>
+            ${restartBtnHTML}
+          `;
+        }
+      } catch(e) {
+        console.error('renderActionArea 오류:', e);
+      }
+    }
+
+    // --- 방 생성 (해시값 비교 방식 적용) ---
+    window.createRoom = async function() {
+      try {
+        myName = inputs.name.value.trim();
+        const inputPwd = inputs.createPassword.value.trim();
+
+        if (!myName) return alert('닉네임을 입력하세요.');
+        if (!inputPwd) return alert('키를 입력하세요.');
+
+        // 1. 입력받은 패스워드를 SHA-256 해시로 변환
+        const hashedInput = await hashPassword(inputPwd);
+
+        // 2. Firebase Realtime DB에서 저장된 해시값 가져오기
+        const keyRef = database.ref('admin/createKey');
+        const snapshot = await keyRef.once('value');
+        const dbHashedKey = snapshot.val();
+
+        if (!dbHashedKey) {
+          alert('서버에 방 생성 키가 설정되어 있지 않습니다.');
+          return;
+        }
         
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f1f5f9;
-            color: #0f172a;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-            transition: background-color 0.5s ease, color 0.5s ease;
+        // 3. 해시값 비교
+        if (hashedInput !== dbHashedKey) {
+          alert('키가 일치하지 않습니다. 방을 만들 수 없습니다.');
+          return;
         }
 
-        body.night-mode {
-            background-color: #030712;
-            color: #f9fafb;
+        const randomCode = Math.random().toString(36).substring(2, 7).toUpperCase();
+        const roomId = "ROOM_" + randomCode;
+        isHost = true;
+
+        await initializeRoomOnDB(roomId);
+        inputs.name.disabled = true;
+        saveSessionToStorage(roomId, isHost);
+        await startRoomListing(roomId);
+
+      } catch(e) {
+        console.error('createRoom 오류:', e);
+        alert('방 생성 오류: ' + e.message);
+      }
+    };
+
+    window.joinGame = async function() {
+      try {
+        myName = inputs.name.value.trim();
+        let rawInput = inputs.roomId.value.trim();
+        if (!myName || !rawInput) return alert('닉네임과 방 코드를 입력하세요.');
+
+        rawInput = rawInput.replace(/^room_/i, '');
+        const roomId = "ROOM_" + rawInput.toUpperCase();
+
+        isHost = false;
+        await switchToRoomUI(roomId, isHost);
+      } catch(e) {
+        console.error('joinGame 오류:', e);
+        alert('입장 오류: ' + e.message);
+      }
+    };
+
+    async function switchToRoomUI(roomId, hostFlag) {
+      try {
+        inputs.name.disabled = true;
+
+        if (!hostFlag) {
+          const playerRef = database.ref(`rooms/${roomId}/players/${mySessionId}`);
+          await playerRef.set({ name: myName, joinedAt: Date.now(), status: 'active' });
         }
 
-        .container {
-            width: 100%;
-            max-width: 480px;
-            background-color: #ffffff;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border: 2px solid #cbd5e1;
-            transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
-            position: relative;
+        saveSessionToStorage(roomId, hostFlag);
+        await startRoomListing(roomId);
+      } catch(e) {
+        console.error('switchToRoomUI 오류:', e);
+        inputs.name.disabled = false;
+        throw e;
+      }
+    }
+
+    window.startGame = async function() {
+      try {
+        if (!isHost) return;
+
+        const roomRef = database.ref('rooms/' + gameState.roomId);
+        const snapshot = await roomRef.once('value');
+        const latestData = snapshot.val();
+
+        if (!latestData || !latestData.players) return;
+
+        const pIds = Object.keys(latestData.players);
+        const count = pIds.length;
+
+        if (count < 5 || count > 10) {
+          alert(`5~10명이어야 합니다. (현재: ${count}명)`);
+          return;
         }
 
-        body.night-mode .container {
-            background-color: #0f172a;
-            border-color: #6b21a8;
-            box-shadow: 0 0 25px rgba(147, 51, 234, 0.3);
+        const rolesConfig = {
+          percival: document.getElementById('role-percival').checked,
+          morgana: document.getElementById('role-morgana').checked,
+          mordred: document.getElementById('role-mordred').checked,
+          oberon: document.getElementById('role-oberon').checked,
+        };
+
+        let evilCount = 2;
+        if (count >= 7) evilCount = 3;
+        if (count >= 9) evilCount = 4;
+
+        let rolesTemplate = ['Merlin', 'Assassin'];
+        let goodCount = count - evilCount - 1;
+        let remainingEvil = evilCount - 1;
+
+        if (rolesConfig.percival && goodCount > 0) { rolesTemplate.push('Percival'); goodCount--; }
+        if (rolesConfig.morgana && remainingEvil > 0) { rolesTemplate.push('Morgana'); remainingEvil--; }
+        if (rolesConfig.mordred && remainingEvil > 0) { rolesTemplate.push('Mordred'); remainingEvil--; }
+        if (rolesConfig.oberon && remainingEvil > 0) { rolesTemplate.push('Oberon'); remainingEvil--; }
+
+        while (goodCount > 0) { rolesTemplate.push('Servant'); goodCount--; }
+        while (remainingEvil > 0) { rolesTemplate.push('Minion'); remainingEvil--; }
+
+        let currentRoleHistory = latestData.roleHistory || {};
+        let finalShuffledRoles = null;
+        let validAssignmentFound = false;
+
+        for (let attempt = 0; attempt < 100; attempt++) {
+          let candidateRoles = secureShuffle(rolesTemplate);
+          let isValid = true;
+
+          for (let i = 0; i < pIds.length; i++) {
+            const sId = pIds[i];
+            const assignedRole = candidateRoles[i];
+            const history = currentRoleHistory[sId] || [];
+
+            if (history.length >= 2) {
+              const lastOne = history[history.length - 1];
+              const lastTwo = history[history.length - 2];
+              if (lastOne === assignedRole && lastTwo === assignedRole) {
+                isValid = false;
+                break;
+              }
+            }
+          }
+
+          if (isValid) {
+            finalShuffledRoles = candidateRoles;
+            validAssignmentFound = true;
+            break;
+          }
         }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.25rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid #e2e8f0;
-        }
-        body.night-mode header { border-bottom-color: #3b0764; }
-
-        h1 { font-size: 1.3rem; color: #d97706; transition: color 0.5s; }
-        body.night-mode h1 { color: #c084fc; }
-
-        .timer-badge {
-            background: #e2e8f0;
-            color: #0f172a;
-            font-weight: 900;
-            font-size: 1.35rem;
-            padding: 0.45rem 1rem;
-            border-radius: 12px;
-            border: 2px solid #94a3b8;
-            display: inline-block;
-            margin-bottom: 0.7rem;
-            min-width: 190px;
-            text-align: center;
-            letter-spacing: 0.04em;
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
-        }
-        body.night-mode .timer-badge {
-            background: #1e1b4b;
-            color: #fbbf24;
-            border-color: #7c3aed;
-        }
-        .timer-warning {
-            color: #dc2626 !important;
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-
-        /* 매 1분 경과 시 전체 화면에 짧게 표시되는 알림 */
-        @keyframes minuteFlash {
-            0% { opacity: 1; }
-            15% { opacity: 0.35; }
-            30% { opacity: 1; }
-            45% { opacity: 0.35; }
-            60% { opacity: 1; }
-            100% { opacity: 1; }
-        }
-        body.minute-flash {
-            animation: minuteFlash 0.9s ease-in-out;
+        if (!validAssignmentFound) {
+          finalShuffledRoles = secureShuffle(rolesTemplate);
         }
 
-        .execute-vote-btn {
-            flex: 1;
-            border: 3px solid transparent !important;
-            opacity: 0.62;
-            transition: all 0.15s ease;
-            font-weight: 800;
+        const shuffledPIds = secureShuffle(pIds);
+        const playersUpdate = {};
+        const updatedRoleHistory = { ...currentRoleHistory };
+
+        shuffledPIds.forEach((sId, i) => {
+          const newRole = finalShuffledRoles[i];
+          playersUpdate[`players/${sId}/role`] = newRole;
+
+          if (!updatedRoleHistory[sId]) updatedRoleHistory[sId] = [];
+          updatedRoleHistory[sId].push(newRole);
+          if (updatedRoleHistory[sId].length > 5) updatedRoleHistory[sId].shift();
+        });
+
+        const leaderIndex = Math.floor(Math.random() * count);
+
+        await roomRef.update({
+          ...playersUpdate,
+          roleHistory: updatedRoleHistory,
+          phase: 'TEAM_SELECTION',
+          currentQuest: 0,
+          questResults: [],
+          rejectCount: 0,
+          leaderSessionId: shuffledPIds[leaderIndex],
+          teamSelectionStartTime: Date.now(),
+          logs: ["게임이 시작되었습니다! 역할 정보를 확인하고 리더는 팀을 구성하세요."],
+          teamVotes: null,
+          missionVotes: null,
+          selectedTeam: null,
+          lastTeamVoteDetails: null
+        });
+      } catch(e) {
+        console.error('startGame 오류:', e);
+        alert('게임 시작 오류: ' + e.message);
+      }
+    }
+
+    window.restartGame = async function() {
+      try {
+        if (!isHost) return alert('방장만 강제 다시시작을 실행할 수 있습니다.');
+        if (!confirm('게임을 초기화하고 대기실 화면으로 이동하시겠습니까?')) return;
+
+        const roomRef = database.ref('rooms/' + gameState.roomId);
+        const snapshot = await roomRef.once('value');
+        const latestData = snapshot.val();
+
+        if (!latestData || !latestData.players) return;
+
+        const playerUpdates = {};
+        Object.keys(latestData.players).forEach(sId => {
+          playerUpdates[`players/${sId}/role`] = null;
+        });
+
+        await roomRef.update({
+          ...playerUpdates,
+          phase: 'LOBBY',
+          winner: null,
+          currentQuest: 0,
+          rejectCount: 0,
+          selectedTeam: null,
+          teamVotes: null,
+          missionVotes: null,
+          questResults: null,
+          leaderSessionId: null,
+          lastTeamVoteDetails: null,
+          logs: ["방장에 의해 게임이 초기화되었습니다. 대기실에서 다시 게임을 설정하세요."]
+        });
+      } catch(e) {
+        console.error('restartGame 오류:', e);
+      }
+    }
+
+    window.handlePlayerClick = async function(targetSessionId) {
+      try {
+        if (gameState.phase === 'TEAM_SELECTION') {
+          if (gameState.leaderSessionId === mySessionId) {
+            const roomRef = database.ref('rooms/' + gameState.roomId);
+            let currentTeam = gameState.selectedTeam ? [...gameState.selectedTeam] : [];
+            const idx = currentTeam.indexOf(targetSessionId);
+            const reqCount = QUEST_CONFIG[Object.keys(gameState.players).length][gameState.currentQuest];
+
+            if (idx > -1) {
+              currentTeam.splice(idx, 1);
+            } else {
+              if (currentTeam.length < reqCount) {
+                currentTeam.push(targetSessionId);
+              }
+            }
+            await roomRef.update({ selectedTeam: currentTeam });
+          }
+        } else if (gameState.phase === 'ASSASSINATE') {
+          const myPlayer = gameState.players[mySessionId];
+          if (myPlayer.role === 'Assassin') {
+            const targetName = gameState.players[targetSessionId].name;
+            if (confirm(`${targetName} 님을 머린으로 지목하고 암살하시겠습니까?`)) {
+              submitAssassination(targetSessionId);
+            }
+          }
         }
-        .execute-vote-btn.selected {
-            opacity: 1;
-            transform: translateY(-2px) scale(1.03);
-            border-color: #111827 !important;
-            box-shadow: 0 0 0 3px rgba(255,255,255,0.9), 0 4px 12px rgba(0,0,0,0.25);
+      } catch(e) {
+        console.error('handlePlayerClick 오류:', e);
+      }
+    }
+
+    window.submitTeamProposal = async function() {
+      try {
+        if (gameState.leaderSessionId !== mySessionId) return;
+        const roomRef = database.ref('rooms/' + gameState.roomId);
+        await roomRef.update({ 
+          phase: 'TEAM_VOTE', 
+          teamVotes: null,
+          logs: [...(gameState.logs||[]), "리더가 원정대 구성을 완료했습니다. 찬반 투표를 시작합니다."]
+        });
+      } catch(e) {
+        console.error('submitTeamProposal 오류:', e);
+      }
+    }
+
+    window.voteTeam = async function(vote) {
+      try {
+        if (gameState.phase !== 'TEAM_VOTE') return;
+        if (gameState.teamVotes?.[mySessionId] !== undefined) return;
+
+        const roomRef = database.ref('rooms/' + gameState.roomId);
+        await roomRef.update({ [`teamVotes/${mySessionId}`]: vote });
+
+        const snapshot = await roomRef.once('value');
+        const latestData = snapshot.val();
+        const pIds = Object.keys(latestData.players);
+        const votesIds = latestData.teamVotes ? Object.keys(latestData.teamVotes) : [];
+
+        if (votesIds.length === pIds.length) {
+          processTeamVoteResult(latestData);
+        }
+      } catch(e) {
+        console.error('voteTeam 오류:', e);
+      }
+    }
+
+    async function processTeamVoteResult(data) {
+      try {
+        const approves = Object.values(data.teamVotes).filter(v => v).length;
+        const rejects = Object.values(data.teamVotes).length - approves;
+        const roomRef = database.ref('rooms/' + data.roomId);
+        const currentLogs = data.logs || [];
+
+        if (approves > rejects) {
+          await roomRef.update({
+            phase: 'MISSION_VOTE',
+            missionVotes: null,
+            rejectCount: 0,
+            lastTeamVoteDetails: data.teamVotes,
+            logs: [...currentLogs, `[표결 가결] 찬성 ${approves}표 / 반대 ${rejects}표. 원정을 출발합니다!`]
+          });
+        } else {
+          const nextRejectCount = data.rejectCount + 1;
+          if (nextRejectCount >= 5) {
+            await roomRef.update({
+              phase: 'GAME_OVER',
+              winner: 'EVIL',
+              lastTeamVoteDetails: data.teamVotes,
+              logs: [...currentLogs, `[표결 부결] 찬성 ${approves}표 / 반대 ${rejects}표. (연속 부결 5회)`, "5회 연속 부결로 인해 악의 세력이 승리했습니다!"]
+            });
+          } else {
+            const pIds = Object.keys(data.players);
+            const currentLeaderIdx = pIds.indexOf(data.leaderSessionId);
+            const nextLeaderIdx = (currentLeaderIdx + 1) % pIds.length;
+
+            await roomRef.update({
+              phase: 'TEAM_SELECTION',
+              leaderSessionId: pIds[nextLeaderIdx],
+              rejectCount: nextRejectCount,
+              selectedTeam: null,
+              teamSelectionStartTime: Date.now(),
+              lastTeamVoteDetails: data.teamVotes,
+              logs: [...currentLogs, `[표결 부결] 찬성 ${approves}표 / 반대 ${rejects}표. (연속 부결 ${nextRejectCount}회)`, `다음 원정대장(${data.players[pIds[nextLeaderIdx]].name})에게 기회가 넘어갑니다.`]
+            });
+          }
+        }
+      } catch(e) {
+        console.error('processTeamVoteResult 오류:', e);
+      }
+    }
+
+    window.voteMission = async function(vote) {
+      try {
+        if (gameState.phase !== 'MISSION_VOTE') return;
+        if (!gameState.selectedTeam?.includes(mySessionId)) return;
+        if (gameState.missionVotes?.[mySessionId] !== undefined) return;
+
+        const myPlayer = gameState.players[mySessionId];
+        const isEvil = ['Assassin', 'Morgana', 'Mordred', 'Oberon', 'Minion'].includes(myPlayer.role);
+        if (!vote && !isEvil) {
+          alert("정의의 세력은 실패를 제출할 수 없습니다!");
+          return;
         }
 
-        .guide-btn {
-            color: #0284c7;
-            background: #f0f9ff;
-            border: 1px solid #0284c7;
-            padding: 0.35rem 0.7rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            width: auto;
-            margin: 0;
-            font-weight: bold;
+        const roomRef = database.ref('rooms/' + gameState.roomId);
+        await roomRef.update({ [`missionVotes/${mySessionId}`]: vote });
+
+        const snapshot = await roomRef.once('value');
+        const latestData = snapshot.val();
+        const votesIds = latestData.missionVotes ? Object.keys(latestData.missionVotes) : [];
+        const teamCount = latestData.selectedTeam?.length || 0;
+
+        if (votesIds.length === teamCount) {
+          processMissionResult(latestData);
         }
-        body.night-mode .guide-btn {
-            background: #1e1b4b;
-            color: #38bdf8;
-            border-color: #38bdf8;
+      } catch(e) {
+        console.error('voteMission 오류:', e);
+      }
+    }
+
+    async function processMissionResult(data) {
+      try {
+        const fails = Object.values(data.missionVotes).filter(v => !v).length;
+        const playerCount = Object.keys(data.players).length;
+
+        let requiredFails = 1;
+        if (playerCount >= 7 && data.currentQuest === 3) {
+          requiredFails = 2;
         }
 
-        .card {
-            background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            text-align: center;
-            transition: background-color 0.5s, border-color 0.5s;
-        }
+        const isSuccess = fails < requiredFails;
+        const currentQuestResults = data.questResults ? [...data.questResults] : [];
+        currentQuestResults.push(isSuccess);
 
-        body.night-mode .card {
-            background: #020617;
-            border-color: #3730a3;
-        }
+        const roomRef = database.ref('rooms/' + data.roomId);
+        const currentLogs = data.logs || [];
+        const pIds = Object.keys(data.players);
 
-        .role-hold-card {
-            background: #e0f2fe;
-            border: 2px dashed #0284c7;
-            border-radius: 10px;
-            padding: 1.2rem;
-            margin-bottom: 1rem;
-            text-align: center;
-            cursor: pointer;
-            touch-action: none;
-        }
-        body.night-mode .role-hold-card {
-            background: #1e1b4b;
-            border-color: #818cf8;
-        }
-        .invest-hold-card {
-            background: #fefce8;
-            border: 2px dashed #ca8a04;
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            text-align: center;
-            cursor: pointer;
-            touch-action: none;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        .invest-history-box {
-            text-align: left;
-            line-height: 1.5;
-            overflow-wrap: anywhere;
-        }
-        body.night-mode .invest-hold-card {
-            background: #422006;
-            border-color: #eab308;
-        }
+        const resultLog = isSuccess ? "성공했습니다." : "실패했습니다.";
+        currentLogs.push(`${data.currentQuest + 1}차 원정 결과: ${resultLog} (실패 표: ${fails}장)`);
 
-        input, button, select {
-            width: 100%;
-            padding: 0.8rem;
-            margin-top: 0.5rem;
-            border-radius: 8px;
-            border: 1px solid #94a3b8;
-            background: #ffffff;
-            color: #0f172a;
-            font-size: 1rem;
-        }
+        const wins = currentQuestResults.filter(r => r).length;
+        const losses = currentQuestResults.filter(r => !r).length;
 
-        body.night-mode input, body.night-mode select {
-            background: #0f172a;
-            color: white;
-            border-color: #475569;
-        }
+        if (wins >= 3) {
+          await roomRef.update({
+            questResults: currentQuestResults,
+            phase: 'ASSASSINATE',
+            missionVotes: null,
+            logs: [...currentLogs, "정의의 세력이 3번 성공했습니다! 암살자 단계를 진행합니다."]
+          });
+        } else if (losses >= 3) {
+          await roomRef.update({
+            questResults: currentQuestResults,
+            phase: 'GAME_OVER',
+            winner: 'EVIL',
+            logs: [...currentLogs, "악의 세력이 3번 실패를 이끌어내어 승리했습니다!"]
+          });
+        } else {
+          const currentLeaderIdx = pIds.indexOf(data.leaderSessionId);
+          const nextLeaderIdx = (currentLeaderIdx + 1) % pIds.length;
 
-        button {
-            background: #ea580c;
-            color: white;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            transition: background 0.2s;
+          await roomRef.update({
+            questResults: currentQuestResults,
+            phase: 'TEAM_SELECTION',
+            leaderSessionId: pIds[nextLeaderIdx],
+            currentQuest: data.currentQuest + 1,
+            selectedTeam: null,
+            missionVotes: null,
+            teamSelectionStartTime: Date.now(),
+            logs: [...currentLogs, `다음 원정대장(${data.players[pIds[nextLeaderIdx]].name})에게 기회가 넘어갑니다.`]
+          });
         }
+      } catch(e) {
+        console.error('processMissionResult 오류:', e);
+      }
+    }
 
-        button:hover { background: #c2410c; }
-        body.night-mode button { background: #9333ea; }
-        body.night-mode button:hover { background: #7e22ce; }
-        button:disabled { background: #94a3b8 !important; cursor: not-allowed; opacity: 0.6; }
+    async function submitAssassination(targetSessionId) {
+      try {
+        if (gameState.phase !== 'ASSASSINATE') return;
 
-        button.secondary { background: #64748b; }
-        button.secondary:hover { background: #475569; }
-        button.danger { background: #dc2626; }
-        button.danger:hover { background: #b91c1c; }
-        
-        button.kick-btn {
-            width: auto;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-            background: #ef4444;
-            margin: 0;
-        }
+        const target = gameState.players[targetSessionId];
+        const roomRef = database.ref('rooms/' + gameState.roomId);
+        const currentLogs = gameState.logs || [];
 
-        #qrcode {
-            display: flex;
-            justify-content: center;
-            margin: 0.75rem 0;
-            padding: 0.5rem;
-            background: white;
-            border-radius: 8px;
+        if (target.role === 'Merlin') {
+          await roomRef.update({
+            phase: 'GAME_OVER',
+            winner: 'EVIL',
+            logs: [...currentLogs, `[암살 성공] 암살자가 머린(${target.name})을 맞추었습니다!`, "악의 세력이 최종 승리했습니다!"]
+          });
+        } else {
+          await roomRef.update({
+            phase: 'GAME_OVER',
+            winner: 'GOOD',
+            logs: [...currentLogs, `[암살 실패] 지목한 사람(${target.name})은 머린이 아닙니다.`, "정의의 세력이 최종 승리했습니다!"]
+          });
         }
+      } catch(e) {
+        console.error('submitAssassination 오류:', e);
+      }
+    }
 
-        .hidden { display: none !important; }
+    // --- 시야 정보 ---
+    window.revealSecret = function() {
+      try {
+        const myPlayer = gameState.players[mySessionId];
+        if (!myPlayer || !myPlayer.role || gameState.phase === 'LOBBY') return;
 
-        .player-list {
-            display: grid;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-            text-align: left;
-        }
+        displays.secretHint.classList.add('hidden');
+        displays.secretContent.classList.remove('hidden');
 
-        .player-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #ffffff;
-            padding: 0.65rem 0.8rem;
-            border-radius: 6px;
-            border: 1px solid #cbd5e1;
-        }
+        let text = `역할: <strong>${getRoleKorean(myPlayer.role)}</strong><br>`;
+        text += `<small style="color:var(--text-muted);">${getRoleVision(myPlayer)}</small>`;
+        displays.secretContent.innerHTML = text;
+      } catch(e) {
+        console.error('revealSecret 오류:', e);
+      }
+    }
 
-        .player-item.dead {
-            background: #f1f5f9;
-            border-color: #94a3b8;
-            opacity: 0.7;
-        }
+    window.hideSecret = function() {
+      try {
+        displays.secretHint.classList.remove('hidden');
+        displays.secretContent.classList.add('hidden');
+      } catch(e) {
+        console.error('hideSecret 오류:', e);
+      }
+    }
 
-        body.night-mode .player-item {
-            background: #0f172a;
-            border-color: #334155;
-        }
+    function getRoleKorean(role) {
+      const map = {
+        Merlin: '머린 (선)', Assassin: '암살자 (악)', Percival: '퍼시벌 (선)',
+        Morgana: '모거나 (악)', Mordred: '모드레드 (악)', Oberon: '오베론 (악)',
+        Servant: '시종 (선)', Minion: '악의 무리 (악)'
+      };
+      return map[role] || role;
+    }
 
-        body.night-mode .player-item.dead {
-            background: #030712;
-            border-color: #1e293b;
-        }
+    function getRoleVision(myPlayer) {
+      try {
+        const role = myPlayer.role;
+        const allPlayers = Object.values(gameState.players);
+        const evilsExceptMordred = allPlayers.filter(p => ['Assassin', 'Morgana', 'Minion', 'Oberon'].includes(p.role) && p.role !== 'Mordred');
+        const evilsExceptOberon = allPlayers.filter(p => ['Assassin', 'Morgana', 'Minion', 'Mordred'].includes(p.role));
+        const merlinCandidates = allPlayers.filter(p => p.role === 'Merlin' || p.role === 'Morgana');
 
-        .role-badge {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #0284c7;
-            margin: 0.5rem 0;
+        if (role === 'Merlin') {
+          return `악의 무리 확인(오베론 포함/모드레드 제외): ` + evilsExceptMordred.map(p => p.name).join(', ');
+        } else if (['Assassin', 'Morgana', 'Minion', 'Mordred'].includes(role)) {
+          const teammates = evilsExceptOberon.filter(p => p.name !== myPlayer.name);
+          return `동료 악 세력(모드레드 포함/오베론 제외): ` + (teammates.map(p => p.name).join(', ') || '없음');
+        } else if (role === 'Percival') {
+          return `머린 후보 (머린/모거나): ` + merlinCandidates.map(p => p.name).join(', ');
         }
-        body.night-mode .role-badge { color: #38bdf8; }
+        return `정보가 없습니다. 발언에 집중하세요.`;
+      } catch(e) {
+        return '정보 조회 오류';
+      }
+    }
 
-        .role-tag-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.35rem;
-            justify-content: center;
-            margin-top: 0.5rem;
-        }
-        .role-tag {
-            font-size: 0.75rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 12px;
-            font-weight: bold;
-        }
-        .role-tag.mafia { background: #ffe4e6; color: #e11d48; border: 1px solid #f43f5e; }
-        .role-tag.citizen { background: #e0f2fe; color: #0284c7; border: 1px solid #38bdf8; }
+    // --- 도움말 탭 기능 ---
+    window.toggleHelpModal = function(show) {
+      const modal = document.getElementById('help-modal');
+      if (show) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
+    }
 
-        body.night-mode .role-tag.mafia { background: #4c0519; color: #fda4af; border-color: #e11d48; }
-        body.night-mode .role-tag.citizen { background: #082f49; color: #7dd3fc; border-color: #0284c7; }
+    window.switchHelpTab = function(tabName) {
+      const tabChar = document.getElementById('tab-char');
+      const tabRules = document.getElementById('tab-rules');
+      const btnChar = document.getElementById('btn-tab-char');
+      const btnRules = document.getElementById('btn-tab-rules');
 
-        .checkbox-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.4rem;
-            text-align: left;
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
-            max-height: 150px;
-            overflow-y: auto;
-            border: 1px solid #cbd5e1;
-            padding: 0.5rem;
-            border-radius: 6px;
-        }
-        .checkbox-group label { display: flex; align-items: center; gap: 0.3rem; cursor: pointer; }
-        .checkbox-group input { width: auto; margin: 0; }
+      if (tabName === 'char') {
+        tabChar.classList.remove('hidden');
+        tabRules.classList.add('hidden');
+        btnChar.classList.add('active');
+        btnRules.classList.remove('active');
+      } else {
+        tabChar.classList.add('hidden');
+        tabRules.classList.remove('hidden');
+        btnChar.classList.remove('active');
+        btnRules.classList.add('active');
+      }
+    }
 
-        .log-box {
-            background: #ffffff;
-            padding: 0.75rem;
-            border-radius: 8px;
-            height: 140px;
-            overflow-y: auto;
-            font-size: 0.85rem;
-            color: #334155;
-            text-align: left;
-            margin-bottom: 1rem;
-            border: 1px solid #cbd5e1;
-            line-height: 1.4;
-        }
+    function renderHelpModalList() {
+      const listContainer = document.getElementById('help-character-list');
+      if (!listContainer) return;
+      listContainer.innerHTML = CHARACTER_INFO.map(char => `
+        <div style="background:#0f172a; border-left: 3px solid var(--gold); padding:8px 10px; border-radius:4px;">
+          <strong style="color:var(--gold); font-size:0.9rem;">${char.name}</strong>
+          <p style="font-size:0.8rem; color:var(--text); margin-top:2px; line-height:1.3;">${char.desc}</p>
+        </div>
+      `).join('');
+    }
 
-        body.night-mode .log-box {
-            background: #020617;
-            color: #cbd5e1;
-            border-color: #1e293b;
-        }
+    function showJoinUI() { 
+      document.getElementById('join-ui').classList.toggle('hidden'); 
+    }
 
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: #ffffff;
-            color: #0f172a;
-            width: 90%;
-            max-width: 440px;
-            border-radius: 12px;
-            padding: 1.25rem;
-            border: 1px solid #94a3b8;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-        }
-        body.night-mode .modal-content {
-            background: #0f172a;
-            color: #f8fafc;
-            border-color: #475569;
-        }
+    function generateQRCode(roomId) { 
+      try {
+        const qrDiv = document.getElementById('qrcode');
+        qrDiv.innerHTML = ''; 
+        const joinUrl = `${window.location.origin}${window.location.pathname}?room=${roomId.toUpperCase()}`;
+        new QRCode(qrDiv, { text: joinUrl, width: 128, height: 128 });
+      } catch(e) {
+        console.error('generateQRCode 오류:', e);
+      }
+    }
 
-        .tab-buttons {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        .tab-btn {
-            flex: 1;
-            padding: 0.5rem;
-            font-size: 0.85rem;
-            background: #e2e8f0;
-            color: #334155;
-            border: 1px solid #cbd5e1;
-            margin: 0;
-            cursor: pointer;
-        }
-        body.night-mode .tab-btn {
-            background: #020617;
-            color: #cbd5e1;
-            border-color: #334155;
-        }
-        .tab-btn.active {
-            background: #ea580c !important;
-            color: white !important;
-            border-color: #ea580c !important;
-        }
-        body.night-mode .tab-btn.active {
-            background: #9333ea !important;
-            border-color: #9333ea !important;
-        }
+  </script>
 
-        .tab-body {
-            overflow-y: auto;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            text-align: left;
-            padding-right: 0.3rem;
-        }
-        .tab-body h4 { color: #ea580c; margin: 0.8rem 0 0.3rem 0; }
-        body.night-mode .tab-body h4 { color: #c084fc; }
-        .tab-body h4:first-child { margin-top: 0; }
-        .role-desc-item { 
-            margin-bottom: 0.6rem; 
-            padding-bottom: 0.5rem;
-            border-bottom: 1px dashed #cbd5e1;
-        }
-        body.night-mode .role-desc-item { border-bottom-color: #334155; }
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --gold: #f59e0b;
+      --gold-dark: #b45309;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text); display: flex; justify-content: center; min-height: 100vh; padding: 12px; }
+    .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 16px; position: relative; }
+    h1 { text-align: center; color: var(--gold); font-size: 1.6rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); border-bottom: 2px solid var(--gold-dark); padding-bottom: 8px; }
+    h4 { color: var(--text-muted); font-size: 0.95rem; margin-top: 8px;}
+    .card { background: var(--card-bg); border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid #334155; }
+    .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    label { font-size: 0.85rem; color: var(--text-muted); }
+    input[type="text"], input[type="password"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 1rem; }
+    .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+    .btn:hover { filter: brightness(1.1); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: var(--gold); color: #000; }
+    .btn-secondary { background: #475569; color: #fff; }
+    .btn-blue { background: var(--blue); color: #fff; }
+    .btn-danger { background: var(--red); color: #fff; }
+    .roles-option { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+    .role-toggle { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--text); }
+    .hidden { display: none !important; }
+    .board { display: flex; justify-content: space-between; margin: 12px 0; gap: 4px; }
+    .quest-slot { flex: 1; background: #0f172a; border: 2px solid #334155; border-radius: 8px; height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; }
+    .quest-slot.success { border-color: var(--blue); background: #1e3a8a66; color: var(--blue); }
+    .quest-slot.fail { border-color: var(--red); background: #7f1d1d66; color: var(--red); }
+    .quest-slot.active { border-color: var(--gold); box-shadow: 0 0 8px var(--gold); color: var(--gold); font-weight: bold; }
+    .player-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .player-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #0f172a; border-radius: 6px; cursor: pointer; border: 1px solid transparent; font-size: 0.9rem; }
+    .player-item:hover { border-color: #475569; }
+    .player-item.selected { border-color: var(--gold); background: #f59e0b11; }
+    .player-item.leader { border-left: 4px solid var(--gold); }
+    .secret-box { background: #0f172a; border: 1px dashed var(--gold); padding: 16px; text-align: center; border-radius: 8px; margin: 12px 0; cursor: pointer; color: var(--gold); user-select: none; -webkit-user-select: none; }
+    .secret-box small { font-size: 0.8rem; line-height: 1.3; }
+    .log-box { height: 120px; overflow-y: auto; background: #0f172a; border-radius: 6px; padding: 8px; font-size: 0.8rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px; border: 1px solid #334155; }
+    .qr-container { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 16px 0; padding: 12px; background: #fff; border-radius: 8px; width: fit-content; margin-left: auto; margin-right: auto; }
+    #qrcode img { display: block; margin-bottom: 6px;}
+    .vote-status-badge { display: inline-block; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+    .vote-status-badge.approved { background: var(--blue); color: #fff; }
+    .vote-status-badge.rejected { background: var(--red); color: #fff; }
 
-        .vote-status-tag {
-            font-size: 0.7rem;
-            padding: 0.15rem 0.35rem;
-            border-radius: 4px;
-            margin-left: 0.3rem;
-        }
-        .vote-status-tag.voted { background: #0284c7; color: white; }
-        .vote-status-tag.not-voted { background: #94a3b8; color: white; }
+    /* 이벤트 팝업 알림 */
+    .event-banner { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--gold); color: #000; padding: 12px 20px; border-radius: 8px; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 2000; font-size: 0.9rem; text-align: center; max-width: 90%; }
 
-        .invest-history-box {
-            background: #f1f5f9;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            padding: 0.5rem;
-            margin-top: 0.5rem;
-            font-size: 0.8rem;
-            text-align: left;
-            max-height: 80px;
-            overflow-y: auto;
-        }
-        body.night-mode .invest-history-box {
-            background: #030712;
-            border-color: #334155;
-            color: #cbd5e1;
-        }
+    /* 모달 & 탭 스타일 */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+    .modal-content { background: var(--card-bg); border-radius: 12px; width: 100%; max-width: 440px; max-height: 80vh; display: flex; flex-direction: column; padding: 16px; gap: 12px; border: 1px solid #475569; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+    .modal-scroll-area { overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; font-size: 0.85rem; line-height: 1.4; }
+    .tab-btn-group { display: flex; gap: 4px; border-bottom: 1px solid #334155; padding-bottom: 8px; }
+    .tab-btn { flex: 1; padding: 8px; border: none; background: #0f172a; color: var(--text-muted); border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .tab-btn.active { background: var(--gold); color: #000; }
 
-        .death-banner-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.85);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            animation: fadeIn 0.3s ease-out;
-        }
-        .death-banner-content {
-            text-align: center;
-            color: #ef4444;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .death-banner-content .skull { font-size: 4rem; margin-bottom: 0.5rem; }
-        .death-banner-content h2 { font-size: 1.8rem; margin-bottom: 0.5rem; text-shadow: 0 0 10px #ef4444; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-    </style>
+    /* 안내용 테이블 스타일 */
+    .rule-table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 0.78rem; text-align: center; }
+    .rule-table th, .rule-table td { border: 1px solid #334155; padding: 5px 4px; }
+    .rule-table th { background: #0f172a; color: var(--gold); }
+    .rule-table td { background: #1e293b; }
+  </style>
 </head>
-<body class="night-mode">
-    <div class="container">
-        <header>
-            <h1 id="game-title">🧟‍♂️ 언데드 마피아 (Undead Mafia)</h1>
-            <button class="guide-btn" onclick="openGuideModal()">📖 게임 설명</button>
-        </header>
+<body>
 
-        <!-- 1. 메인 화면 -->
-        <div id="screen-main">
-            <div class="card" id="card-create-room">
-                <h3>방 만들기 (방장)</h3>
-                <input type="password" id="create-key-input" placeholder="방 생성 인증키 입력">
-                <button onclick="createRoom()">새 방 만들기</button>
-            </div>
-            
-            <div class="card" id="card-join-room">
-                <h3 id="join-card-title">게임 참가하기</h3>
-                <input type="text" id="nickname-input" placeholder="사용할 닉네임을 입력하세요">
-                <input type="text" id="room-code-input" placeholder="방 코드 입력 (예: AB12)">
-                <button class="secondary" onclick="joinRoom()">입장하기</button>
-            </div>
-        </div>
+<!-- 이벤트 상단 알림 팝업 -->
+<div id="event-banner" class="event-banner hidden"></div>
 
-        <!-- 2. 대기실 화면 -->
-        <div id="screen-lobby" class="hidden">
-            <div class="card">
-                <h3>방 코드: <span id="room-code-display" style="color:#f43f5e;"></span></h3>
-                <div id="qrcode"></div>
-                <p style="font-size:0.75rem; color:#64748b;">QR 코드를 스캔하여 접속 가능합니다.</p>
-            </div>
+<div class="container">
+  <h1>레지스탕스 아발론</h1>
 
-            <div id="host-role-setting-card" class="card hidden">
-                <h4 style="text-align:left;">🎭 역할 배정 설정</h4>
-                <select id="role-mode-select" onchange="toggleRoleSelectMode()">
-                    <option value="DEFAULT">기본 추천 구성 (대부 필수 + 자동 밸런스)</option>
-                    <option value="CUSTOM">방장 직접 지정 (추가 희망 직업 선택)</option>
-                    <option value="RANDOM">완전 랜덤 구성 (대부 필수 + 팀 비율)</option>
-                </select>
+  <!-- 1. 메인 / 로비 화면 -->
+  <div id="screen-lobby" class="card">
+    <div class="input-group">
+      <label for="player-name">내 닉네임</label>
+      <input type="text" id="player-name" placeholder="닉네임 입력">
+    </div>
+    <div class="input-group">
+      <label for="create-password">키 (방 생성 전용)</label>
+      <input type="password" id="create-password" placeholder="키 입력">
+    </div>
+    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+      <button class="btn btn-primary" onclick="createRoom()">방 만들기</button>
+      <button class="btn btn-secondary" onclick="showJoinUI()">참가하기</button>
+    </div>
+    <div id="join-ui" class="hidden card" style="background: rgba(0,0,0,0.3); border: none; padding: 12px;">
+      <div class="input-group">
+        <label for="room-id">방 코드 (예: ROOM_ABCD)</label>
+        <input type="text" id="room-id" placeholder="방 코드 입력">
+      </div>
+      <button class="btn btn-blue" onclick="joinGame()">입장하기</button>
+    </div>
+    <p style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-top:16px;">
+      새로고침하거나 브라우저를 껐다 켜도 진행 중인 방으로 재접속됩니다.
+    </p>
+  </div>
 
-                <div id="custom-role-options" class="checkbox-group hidden">
-                    <p style="grid-column: 1/-1; font-weight:bold; color:#f43f5e;">🔴 추가할 마피아 직업</p>
-                    <div id="custom-mafia-list" style="grid-column: 1/-1;" class="checkbox-group"></div>
-                    <p style="grid-column: 1/-1; font-weight:bold; color:#0284c7; margin-top:0.3rem;">🔵 추가할 시민 직업</p>
-                    <div id="custom-citizen-list" style="grid-column: 1/-1;" class="checkbox-group"></div>
-                </div>
+  <!-- 2. 대기실 화면 -->
+  <div id="screen-room" class="card hidden">
+    <h3 style="text-align: center;">방 코드: <span id="display-room-id" style="color:var(--gold); word-break: break-all;"></span></h3>
+    <div class="qr-container">
+      <div id="qrcode"></div>
+      <p style="color:#000; font-size:0.7rem; font-weight:bold;">스캔하여 모바일 접속</p>
+    </div>
+    <h4>참가자 (<span id="player-count">0</span>/10)</h4>
+    <ul id="waiting-player-list" class="player-list"></ul>
+    <div id="host-controls" class="hidden card" style="background: rgba(0,0,0,0.3); border: none; padding: 12px; margin-top:12px;">
+      <label>특수 역할 설정</label>
+      <div class="roles-option">
+        <label class="role-toggle"><input type="checkbox" id="role-percival" checked> 퍼시벌</label>
+        <label class="role-toggle"><input type="checkbox" id="role-morgana" checked> 모거나</label>
+        <label class="role-toggle"><input type="checkbox" id="role-mordred"> 모드레드</label>
+        <label class="role-toggle"><input type="checkbox" id="role-oberon"> 오베론</label>
+      </div>
+      <button class="btn btn-primary" id="btn-start-game" onclick="startGame()">게임 시작 (5~10인)</button>
+    </div>
+    <div id="client-wait-msg" class="hidden card" style="text-align: center; color: var(--gold); background: rgba(0,0,0,0.3); border: none; padding: 12px; margin-top:12px;">
+      방장이 게임 설정을 완료하기를 기다리는 중...
+    </div>
+  </div>
 
-                <div style="text-align:left; margin-top:0.5rem; font-size:0.8rem; display:grid; gap:0.55rem;">
-                    <label style="display:flex; align-items:center; gap:0.3rem; cursor:pointer;">
-                        <input type="checkbox" id="host-observer-check" style="width:auto; margin:0;" onchange="setHostObserver(this.checked)">
-                        <span>방장은 관전자(옵저버)로 참여</span>
-                    </label>
-                    <label style="display:flex; align-items:center; gap:0.3rem; cursor:pointer;">
-                        <input type="checkbox" id="show-roles-in-game-check" style="width:auto; margin:0;">
-                        <span>게임 화면 상단에 이번 판 역할 목록 공개</span>
-                    </label>
-                    <label style="display:flex; align-items:center; gap:0.3rem; cursor:pointer;">
-                        <input type="checkbox" id="mafia-parity-win-check" style="width:auto; margin:0;" onchange="setMafiaParityWin(this.checked)">
-                        <span>생존 마피아 수가 생존 시민 수보다 많아지면 마피아팀 승리</span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="card">
-                <h4>현재 접속자 (<span id="player-count">0</span>명)</h4>
-                <div id="lobby-player-list" class="player-list"></div>
-            </div>
-
-            <div id="host-lobby-controls" class="hidden">
-                <button id="host-start-btn" onclick="startGame()">역할 배분 및 게임 시작</button>
-                <button class="danger" style="margin-top:0.5rem;" onclick="deleteRoomByHost()">🗑️ 현재 방 삭제 및 새로 만들기 (방장)</button>
-            </div>
-        </div>
-
-        <!-- 3. 게임 화면 -->
-        <div id="screen-game" class="hidden">
-            <div style="text-align:center;">
-                <div id="timer-display" class="timer-badge">⏱️ 남은 시간 05:00</div>
-            </div>
-
-            <div id="role-hold-card" class="role-hold-card">
-                <div id="role-prompt-text" style="font-size:0.9rem; color:#0284c7; font-weight:bold;">
-                    🌙 밤에 이곳을 누르고 있는 동안에만 내 역할을 확인할 수 있습니다.
-                </div>
-                <div id="role-display-box" class="hidden">
-                    <div id="my-role-title" class="role-badge"></div>
-                    <p id="my-role-desc" style="font-size:0.85rem; color:#475569; text-align:left; line-height:1.4;"></p>
-                </div>
-            </div>
-
-            <!-- 역할 정보와 분리된 개인 조사 기록. 누르고 있는 동안에만 내용을 표시한다. -->
-            <div id="personal-invest-card" class="invest-hold-card hidden" aria-label="개인 조사 결과. 누르고 있는 동안에만 표시됩니다.">
-                <div id="invest-prompt-text" style="font-weight:bold; color:#854d0e;">🔒 조사 결과 확인 — 누르고 있는 동안에만 표시됩니다.</div>
-                <div id="invest-history-content" class="invest-history-box hidden" aria-live="polite"></div>
-            </div>
-
-            <div id="active-roles-card" class="card hidden">
-                <h4 style="font-size:0.85rem; color:#64748b;">📋 이번 판 등장 역할 (<span id="active-roles-count">0</span>개)</h4>
-                <div id="active-roles-tags" class="role-tag-list"></div>
-            </div>
-
-            <div class="card">
-                <h3 id="phase-title">☀️ 제 1일 낮 페이즈</h3>
-                <p id="phase-desc" style="font-size:0.85rem; color:#64748b; margin-top:0.25rem;"></p>
-                <div id="watcher-action-box" class="hidden" style="margin-top:0.7rem;">
-                    <button id="watcher-action-btn" onclick="useWatcherAbility()">👁️ 감시 결과 확인 (게임 중 1회)</button>
-                </div>
-                <div id="observer-panel" class="card hidden" style="margin-top:0.8rem;">
-                    <h4>🛡️ 옵저버 전용 정보</h4>
-                    <p style="font-size:0.8rem; margin-bottom:0.5rem;">현재 게임 현황은 바로 확인하고, 밤별 상세 처리 기록은 필요할 때 펼쳐볼 수 있습니다.</p>
-                    <div id="observer-info-content"></div>
-                    <div id="observer-history-content" style="margin-top:0.75rem;"></div>
-                </div>
-                
-                <!-- 찬반 투표 전용 영역 (3번 요구사항) -->
-                <div id="execute-vote-box" class="hidden" style="margin-top:0.8rem; border-top:1px dashed #cbd5e1; padding-top:0.6rem;">
-                    <p style="font-weight:bold; color:#dc2626; font-size:0.9rem;">
-                        ⚖️ <span id="execute-target-name">OOO</span> 님의 처형 여부 찬반 투표
-                    </p>
-                    <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
-                        <button id="execute-approve-btn" class="execute-vote-btn" style="background:#dc2626;" onclick="submitExecuteVote(true)">🔪 찬성 (죽이기)</button>
-                        <button id="execute-reject-btn" class="execute-vote-btn" style="background:#16a34a;" onclick="submitExecuteVote(false)">🛡️ 반대 (살리기)</button>
-                    </div>
-                    <div id="execute-vote-current" style="text-align:center; margin-top:0.45rem; font-size:0.8rem; font-weight:bold; color:#64748b;">현재 선택: 없음</div>
-                </div>
-            </div>
-
-            <div class="log-box" id="game-log"></div>
-
-            <div class="card">
-                <h4 style="text-align:left; margin-bottom:0.5rem;">플레이어 목록</h4>
-                <div id="game-player-list" class="player-list"></div>
-            </div>
-
-            <div id="host-controls" class="hidden">
-                <button id="phase-toggle-btn" onclick="nextPhase()">낮 종료 및 투표 집계 (방장)</button>
-                <button class="danger" style="margin-top:0.5rem;" onclick="forceRestart()">🔄 게임 강제 재시작 (대기실 이동)</button>
-            </div>
-        </div>
+  <!-- 3. 메인 게임 화면 -->
+  <div id="screen-game" class="card hidden">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+      <h3 style="color:var(--gold); font-size:1.1rem;">게임 진행 중</h3>
+      <div style="display: flex; gap: 6px;">
+        <button class="btn btn-secondary" style="width:auto; padding:6px 10px; font-size:0.8rem;" onclick="toggleHelpModal(true)">📖 게임설명</button>
+        <button id="btn-host-restart" class="btn btn-danger hidden" style="width:auto; padding:6px 10px; font-size:0.8rem;" onclick="restartGame()">🔄 강제 다시시작</button>
+      </div>
     </div>
 
-    <!-- 사망 연출 팝업 -->
-    <div id="death-banner" class="death-banner-overlay hidden">
-        <div class="death-banner-content">
-            <div class="skull">💀</div>
-            <h2 id="death-player-name">OOO 사망!</h2>
-            <p id="death-cause-text">언데드로 전환되었습니다.</p>
-        </div>
+    <!-- 타이머 표시 구역 -->
+    <div id="selection-timer" class="hidden" style="text-align:center; color:var(--gold); font-weight:bold; font-size:0.85rem; margin-bottom:8px;"></div>
+
+    <div class="board" id="quest-board"></div>
+    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
+      <span>부결 횟수: <strong id="reject-count" style="color:var(--red);">0</strong> / 5</span>
+      <span>리더: <strong id="current-leader" style="color:var(--gold);">-</strong></span>
+    </div>
+    <div class="secret-box" id="secret-box" onmousedown="revealSecret()" onmouseup="hideSecret()" ontouchstart="revealSecret()" ontouchend="hideSecret()">
+      <span id="secret-hint">👉 누르고 있으면 역할/정보 확인</span>
+      <div id="secret-content" class="hidden"></div>
+    </div>
+    <div id="action-area" class="card" style="background: rgba(0,0,0,0.3); border: none; padding: 12px; margin: 12px 0;"></div>
+    <h4>플레이어 목록</h4>
+    <ul id="game-player-list" class="player-list"></ul>
+    <h4>게임 로그</h4>
+    <div id="log-box" class="log-box"></div>
+  </div>
+</div>
+
+<!-- 도움말 탭 모달 레이어 -->
+<div id="help-modal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <div class="tab-btn-group">
+      <button id="btn-tab-char" class="tab-btn active" onclick="switchHelpTab('char')">🎭 캐릭터 정보</button>
+      <button id="btn-tab-rules" class="tab-btn" onclick="switchHelpTab('rules')">📜 게임 진행 설명</button>
     </div>
 
-    <!-- 개인 전용 브리핑 모달 팝업 -->
-    <div id="private-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h3 style="text-align:center; color:#0284c7; margin-bottom:0.8rem;">🔒 비밀 정보 브리핑</h3>
-            <p id="private-modal-text" style="font-size:0.95rem; line-height:1.5; color:#0f172a; text-align:center; margin-bottom:1.2rem;"></p>
-            <button style="background:#0284c7;" onclick="closePrivateModal()">확인</button>
-        </div>
+    <!-- 탭 1: 캐릭터 설명 -->
+    <div id="tab-char" class="modal-scroll-area">
+      <div id="help-character-list" style="display:flex; flex-direction:column; gap:8px;"></div>
     </div>
 
-    <!-- 게임 결과 modal 팝업 -->
-    <div id="result-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h2 id="result-winner-title" style="text-align:center; margin-bottom:0.5rem; font-size:1.5rem;">🏆 게임 종료</h2>
-            <div id="result-reason-text" style="font-size:0.9rem; color:#64748b; text-align:center; margin-bottom:1rem;"></div>
-            
-            <div class="tab-body" style="max-height: 250px;">
-                <h4 style="margin-bottom:0.5rem;">📋 전체 직업 공개</h4>
-                <div id="result-roles-list" class="player-list"></div>
-            </div>
-            
-            <button style="margin-top:1.2rem; background:#0284c7;" onclick="confirmGameEnd()">확인 (대기실 이동)</button>
-        </div>
+    <!-- 탭 2: 게임 진행 설명 -->
+    <div id="tab-rules" class="modal-scroll-area hidden">
+      <strong style="color:var(--gold);">👥 인원별 세력 구성 (선 vs 악)</strong>
+      <table class="rule-table">
+        <thead>
+          <tr>
+            <th>인원수</th>
+            <th>5명</th>
+            <th>6명</th>
+            <th>7명</th>
+            <th>8명</th>
+            <th>9명</th>
+            <th>10명</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>선 세력</strong></td>
+            <td>3명</td>
+            <td>4명</td>
+            <td>4명</td>
+            <td>5명</td>
+            <td>5명</td>
+            <td>6명</td>
+          </tr>
+          <tr>
+            <td><strong>악 세력</strong></td>
+            <td>2명</td>
+            <td>2명</td>
+            <td>3명</td>
+            <td>3명</td>
+            <td>4명</td>
+            <td>4명</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <strong style="color:var(--gold); margin-top:8px;">🛡️ 차수별 원정 인원 수</strong>
+      <table class="rule-table">
+        <thead>
+          <tr>
+            <th>인원수</th>
+            <th>1차</th>
+            <th>2차</th>
+            <th>3차</th>
+            <th>4차</th>
+            <th>5차</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>5명</td><td>2명</td><td>3명</td><td>2명</td><td>3명</td><td>3명</td></tr>
+          <tr><td>6명</td><td>2명</td><td>3명</td><td>4명</td><td>3명</td><td>4명</td></tr>
+          <tr><td>7명</td><td>2명</td><td>3명</td><td>3명</td><td>4명*</td><td>4명</td></tr>
+          <tr><td>8~10명</td><td>3명</td><td>4명</td><td>4명</td><td>5명*</td><td>5명</td></tr>
+        </tbody>
+      </table>
+
+      <strong style="color:var(--gold); margin-top:8px;">❌ 원정 실패 조건 (반대표 수)</strong>
+      <p>• <strong>기본 규칙:</strong> 원정표 중 <span style="color:var(--red); font-weight:bold;">실패(반대) 1장 이상</span> 제출 시 해당 원정은 실패합니다.</p>
+      <p>• <strong>* 7인 이상 4차 원정 예외 규칙:</strong> 7명 이상 게임의 4차 원정은 <span style="color:var(--red); font-weight:bold;">실패(반대) 2장 이상</span>이어야 실패 처리되며, 실패표가 1장이면 원정이 성공합니다.</p>
+
+      <hr style="border-color:#334155; margin:8px 0;">
+      <strong style="color:var(--gold);">⚔️ 승리 조건</strong>
+      <p>• 정의의 세력: 원정 3회 성공 + 암살자로부터 머린 보호</p>
+      <p>• 악의 세력: 원정 3회 실패 OR 표결 5회 연속 부결 OR 머린 암살 성공</p>
     </div>
 
-    <!-- 게임 설명 모달 팝업 -->
-    <div id="guide-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="tab-buttons">
-                <button class="tab-btn" id="tab-btn-roles" onclick="switchTab('roles')">🎭 캐릭터 설명</button>
-                <button class="tab-btn" id="tab-btn-rules" onclick="switchTab('rules')">🎮 게임 진행</button>
-            </div>
-            <div id="tab-roles" class="tab-body">
-                <h4 style="color:#f43f5e;">🔴 마피아팀 캐릭터 (6종)</h4>
-                <div id="mafia-roles-guide"></div>
+    <button class="btn btn-secondary" onclick="toggleHelpModal(false)" style="margin-top:4px;">닫기</button>
+  </div>
+</div>
 
-                <h4 style="color:#38bdf8; margin-top:1rem;">🔵 시민팀 캐릭터 (17종)</h4>
-                <div id="citizen-roles-guide"></div>
-            </div>
-            <div id="tab-rules" class="tab-body hidden">
-                <h4>🏆 팀별 승리 조건</h4>
-                <p><b>• 시민팀 승리:</b> 대부를 죽이면 승리합니다.<br>
-                <b>• 마피아팀 승리:</b> 대부가 최후 2인까지 살아남거나, 대통령을 투표로 죽일 경우 또는 시민을 모두 죽이면 승리합니다.(선택옵션: 생존 마피아 수 &gt; 생존 시민 수)</p>
-				
-				<h4>★ 중요사항</h4>
-				<p><b>• 게임중 서로의 화면을 보여주지 마세요!</b></p>
-				<p>• 마약상·대통령·불량배·광대는 환각의 영향을 받지 않는다.</p>
-				<p><b>• 죽이는 것도 하나의 능력이며, 그밤에 죽은 플레이어의 능력도 발동됩니다.</b></p>
-				<p>• 마피아는 이번판 제외된 시민의 직업을 알고 있습니다. 언데드 마피아는 마피아의 생존이 중요한게 아닙니다. 대부가 아닌이상 시민들에게 혼란을 주고 선동하는 것이 훨씬 유리합니다.</p>
-				<p>• 끝까지 사람들은 다른사람의 직업을 모릅니다.</p>
-				<p>• 죽어도 낮투표가 가능하니 포기하지 마세요!</p>
-
-                <h4>👥 인원수별 마피아 수 (대부 포함)</h4>
-                <p>• <b>4~5명:</b> 마피아 1명 (대부)<br>
-                • <b>6~8명:</b> 마피아 2명 (대부 + 1명)<br>
-                • <b>9~12명:</b> 마피아 3명 (대부 + 2명)<br>
-                • <b>13~16명:</b> 마피아 4명 (대부 + 3명)<br>
-                • <b>17~20명:</b> 마피아 5명 (대부 + 4명)</p>
-
-                <h4>🔄 게임 진행 순서</h4>
-                <p><b>1. 대기실:</b> 방장이 역할 배정 방식을 설정하고 게임을 시작합니다. 첫 페이즈는 밤입니다.<br>
-                <b>2. 낮 페이즈:</b> 토론 후 지목 투표로 최다 득표자의 최후 변론을 진행하고, 찬반 투표로 처형을 결정합니다.<br>
-                <b>3. 밤 페이즈:</b> 각자의 특수 능력을 비밀리에 지정하며, 아침에 동시 연산됩니다.</p>
-                
-                <h4>☀️ 낮 규칙 & 언데드</h4>
-                <p>• 생존자와 사망자(언데드) 모두 자유롭게 토론하고 [투표]에 참여합니다.<br>
-                • 사망자(언데드)는 낮 투표권은 유지되지만 추가 처형 대상 및 밤 능력 사용에서 제외됩니다.</p>
-
-                <h4>🌙 밤 규칙 & 동시 연산</h4>
-				<p>• 모든능력은 밤이 종료되는 시점에 동시에 발동합니다.(단, 환각만 우선발동) <br>
-				• 죽이는 것도 하나의 능력이며, 그밤에 죽은 플레이어의 능력도 발동됩니다.</p>
-                <p>• 밤에 지정한 능력은 아래 우선순위로 처리됩니다. 밤에 사망하더라도 밤 시작 시 선택한 능력은 규칙상 차단·무효화되지 않았다면 실행됩니다.<br>
-                • 처리 순서: 환각 계산 → 폭력배의 능력 차단 및 환각 재계산 → 경호원 보호 지정 → 성직자 부활 → 심령술사 부활 → 마술사 직업 교환/실패 처리 → 저격수·청부업자 공격 → 대부 공격(경호원·군인 방어) → 겁쟁이 사망 처리 → 조사직 결과 생성(그 밤에 사망한 조사직 포함) → 감시자 인원 확인 → 승리 조건 판정.<br>
-                • 마피아 팀은 동료 마피아 닉네임과 이번 판에 <b>제외된 시민 직업</b>을 공유받아 사칭(블러핑)에 활용합니다.</p>
-            </div>
-            <button class="secondary" style="margin-top:1rem;" onclick="closeGuideModal()">닫기</button>
-        </div>
-    </div>
-
-    <script>
-        // ===== Firebase 설정 =====
-        const firebaseConfig = {
-            apiKey: "AIzaSyBrvXAVaA46-qVmNek_MnUlRRLRmeYpvu8",
-            authDomain: "myavalon-d1c3a.firebaseapp.com",
-            databaseURL: "https://myavalon-d1c3a-default-rtdb.firebaseio.com",
-            projectId: "myavalon-d1c3a",
-            storageBucket: "myavalon-d1c3a.firebasestorage.app",
-            messagingSenderId: "974314177774",
-            appId: "1:974314177774:web:625f22956117cdc9f29fff",
-            measurementId: "G-3503TJXX0W"
-        };
-
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.database();
-
-        async function hashPassword(message) {
-            const msgBuffer = new TextEncoder().encode(message);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        // ===== 캐릭터 설정 =====
-        const ROLE_GODFATHER = { 
-            id: 'GODFATHER', name: '대부', team: 'mafia', limitType: 'nightly', 
-            desc: '밤마다 생존자 1명을 지목해 사망시킨다. 자신은 지목할 수 없다. 경호원이 보호하면 살아남으며, 군인은 환각되지 않았다면 대부의 공격을 1회 버틴다. 대부 자신이 환각 상태이거나 폭력배에게 능력을 빼앗기면 공격이 무효가 된다.' 
-        };
-
-        const OTHER_MAFIA_ROLES = [
-            { id: 'DRUG_DEALER', name: '마약상', team: 'mafia', limitType: 'nightly', desc: '환각에 면역이다. 밤마다 생존자 1명을 환각 상태로 만든다. 환각된 대상의 밤 능력은 종류에 따라 결과가 반대로 나오거나 무효가 된다.' },
-            { id: 'LAWYER', name: '변호사', team: 'mafia', limitType: 'nightly', desc: '밤마다 생존자 1명의 직업을 조사한다. 변호사는 조사 결과에서만 시민으로 판정되며, 공격·처치 등 다른 능력에서는 실제 마피아팀으로 취급된다. 본인은 조사할 수 없고, 환각 상태에서는 엉뚱한 직업으로 확인된다.' },
-            { id: 'HITMAN', name: '청부업자', team: 'mafia', limitType: 'once_game', desc: '게임 중 1회, 밤에 생존자 1명을 암살한다. 자신은 지목할 수 없다. 환각 상태이거나 폭력배에게 능력을 빼앗기면 암살이 무효가 된다.' },
-            { id: 'THUG', name: '폭력배', team: 'mafia', limitType: 'once_game', desc: '게임 중 1회, 밤에 1명을 지목해 그 밤의 능력을 사용할 수 없게 만든다. 패시브 역할의 고유 능력은 제거하지 않는다. 환각 상태에서는 무효가 된다.' },
-            { id: 'SPIRITIST', name: '심령술사', team: 'mafia', limitType: 'once_game', desc: '게임 중 1회, 밤에 사망한 플레이어 1명을 즉시 부활시킨다. 부활한 플레이어는 그 밤에는 능력을 사용할 수 없고 다음 밤부터 사용할 수 있다. 본인이 환각되거나 폭력배에게 능력을 빼앗기면 부활은 무효가 된다.' }
-        ];
-
-        const ALL_CITIZEN_ROLES = [
-            { id: 'PSYCHOLOGIST', name: '심리학자', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 2명을 선택해 두 사람이 같은 팀인지 조사한다. 두 대상은 살아 있어야 하며, 환각 상태에서는 같은 팀/다른 팀 결과가 반대로 표시된다.' },
-            { id: 'INVESTIGATOR', name: '수사관', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 2명을 선택해 둘 중 마피아팀이 있는지 조사한다. 변호사는 조사 결과에서 시민으로 판정되고 불량배는 마피아로 판정된다. 환각 상태에서는 결과가 반대로 표시된다.' },
-            { id: 'WATCHER', name: '감시자', team: 'human', limitType: 'once_game', desc: '게임 중 1회, 밤 처리 후 생존한 마피아팀과 조사상 마피아로 취급되는 불량배의 인원수를 확인한다. 환각 상태에서는 실제 인원수 대신 무작위 숫자를 알려준다.' },
-            { id: 'BREWER', name: '양조사', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 1명을 환각 상태로 만든다. 본인이 환각되면 능력이 무효가 된다. 대상의 환각 여부는 간호사의 조사 대상이 될 수 있다.' },
-            { id: 'NURSE', name: '간호사', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 1명을 지목해 그 사람이 그 밤 환각 능력의 대상이 되었는지 확인한다. 본인이 환각되면 결과가 반대로 표시된다.' },
-            { id: 'BODYGUARD', name: '경호원', team: 'human', limitType: 'nightly', desc: '밤마다 생존자 1명을 대부의 공격으로부터 보호한다. 단, 청부업자·저격수의 공격은 막지 않는다. 경호원 자신이 환각되면 보호가 무효가 된다.' },
-            { id: 'SNIPER', name: '저격수', team: 'human', limitType: 'once_game', desc: '게임 중 1회, 밤에 1명을 저격한다. 자신은 지목할 수 없다. 대상이 마피아팀이면 대상이 사망하고, 시민팀이면 저격 실패로 저격수가 사망한다. 환각 상태에서는 마피아/시민 판정이 반대로 적용된다.' },
-            { id: 'WITNESS', name: '목격자', team: 'human', limitType: 'once_game', desc: '게임 중 1회, 생존자 1명을 지목해 그 밤 그 대상에게 능력을 사용한 사람들을 확인한다. 목격자 자신의 행동은 방문자로 포함하지 않는다. 환각 상태에서는 알 수 없음으로 표시된다.' },
-            { id: 'DETECTIVE', name: '탐정', team: 'human', limitType: 'once_game', desc: '게임 중 1회, 생존자 1명을 지목해 그 사람이 그 밤에 어떤 대상을 지목했는지 확인한다. 능력을 사용하지 않았다면 없음으로 표시되며, 환각 상태에서는 알 수 없음으로 표시된다.' },
-            { id: 'CLERGY', name: '성직자', team: 'human', limitType: 'once_game', desc: '게임 중 1회, 사망한 플레이어 1명을 부활시킨다. 본인이 환각되거나 폭력배에게 능력을 빼앗기면 무효가 된다. 같은 밤 부활한 사람도 이후 밤 공격의 대상이 될 수 있다.' },
-            { id: 'MAGICIAN', name: '마술사', team: 'human', limitType: 'once_game', desc: '게임 중 1회만 사용한다. 생존자 1명을 지목해 시민팀이면 두 사람의 직업을 교체한다. 마술사였던 사람은 새 직업의 능력을 사용할 수 있지만, 새로 마술사가 된 사람은 마술사 능력을 사용할 수 없다. 대상이 마피아팀이면 마술사가 사망하고 직업 교체는 일어나지 않는다. 환각 상태에서는 무효가 된다.' },
-            { id: 'MEDIUM', name: '영매', team: 'human', limitType: 'nightly', desc: '밤마다 사망한 플레이어 1명을 지목해 팀을 확인한다. 낮 처형뿐 아니라 밤에 사망한 사람도 조사할 수 있다. 본인이 환각되면 시민/마피아 결과가 반대로 표시된다.' },
-            { id: 'SOLDIER', name: '군인', team: 'human', limitType: 'passive', desc: '게임 중 1회, 환각 상태가 아닐 때 대부의 공격을 막아낸다. 방어를 한 번 사용한 뒤에는 다시 막을 수 없다. 환각 상태에서는 방어 능력이 무효가 된다.' },
-            { id: 'PRESIDENT', name: '대통령', team: 'human', limitType: 'passive', desc: '환각에 면역이다. 낮 찬반 투표로 처형되면 즉시 마피아팀 승리로 게임이 종료된다. 밤에 사망하는 경우에는 이 특수 패배 조건이 발동하지 않는다.' },
-            { id: 'RULER_BULLY', name: '불량배', team: 'human', limitType: 'passive', desc: '환각에 면역이다. 조사직의 마피아팀 판정에서 마피아로 취급된다. 승리 조건에서도 살아 있는 시민 수에 포함되지 않는다.' },
-            { id: 'COWARD', name: '겁쟁이', team: 'human', limitType: 'passive', desc: '밤에 다른 플레이어의 능력 대상으로 지목되면 사망한다. 능력의 성공 여부와 관계없이 지목 자체가 조건이다. 지목한 사람이 같은 밤에 사망하더라도 그 능력은 발동되므로 겁쟁이는 사망한다. 자기 자신의 선택은 대상 지정으로 보지 않는다.' },
-            { id: 'FOOL', name: '광대', team: 'human', limitType: 'passive', desc: '환각에 면역이다. 자신은 양조사라고 믿고 있으며 게임 화면에서도 양조사처럼 보인다. 밤에는 양조사처럼 대상을 지정할 수 있지만 실제 환각 효과는 발생하지 않는다.' }
-        ];
-
-        let roomCode = '';
-        let myPlayerId = '';
-        let myNickname = '';
-        let isHost = false;
-        let roomRef = null;
-        let previousDeadIds = null;
-        let selectedInvestigatorTargets = [];
-
-        // 타이머용 변수
-        let timerInterval = null;
-        let lastTimerSecond = 300;
-        let localState = null;
-
-        window.onload = function() {
-            myPlayerId = localStorage.getItem('undead_playerId') || 'p_' + Math.random().toString(36).substring(2, 9);
-            localStorage.setItem('undead_playerId', myPlayerId);
-
-            const savedRoomCode = localStorage.getItem('undead_roomCode');
-            const urlParams = new URLSearchParams(window.location.search);
-            const qrRoomCode = urlParams.get('room');
-
-            if (qrRoomCode) {
-                document.getElementById('card-create-room').classList.add('hidden');
-                document.getElementById('room-code-input').classList.add('hidden');
-                document.getElementById('join-card-title').innerText = `방 코드 [${qrRoomCode.toUpperCase()}] 참가`;
-                document.getElementById('room-code-input').value = qrRoomCode.toUpperCase();
-                roomCode = qrRoomCode.toUpperCase();
-            } else if (savedRoomCode) {
-                document.getElementById('room-code-input').value = savedRoomCode.toUpperCase();
-                roomCode = savedRoomCode.toUpperCase();
-            }
-
-            if (roomCode) {
-                db.ref('undead_rooms/' + roomCode).once('value', snapshot => {
-                    if (snapshot.exists() && snapshot.val().players && snapshot.val().players[myPlayerId]) {
-                        roomRef = db.ref('undead_rooms/' + roomCode);
-                        myNickname = snapshot.val().players[myPlayerId].name;
-                        joinRoomData();
-                    }
-                });
-            }
-
-            setupHoldRoleCard();
-            setupHoldInvestHistory();
-            renderGuideRoles();
-            renderCustomRoleCheckboxes();
-        };
-
-        function setupHoldRoleCard() {
-            const card = document.getElementById('role-hold-card');
-            const promptText = document.getElementById('role-prompt-text');
-            const box = document.getElementById('role-display-box');
-
-            const showRole = (e) => {
-                if (e) e.preventDefault();
-                // 역할은 밤에만 확인 가능. 낮/최후 변론/찬반 투표 중에는 절대 열지 않는다.
-                if (!localState || localState.state !== 'NIGHT') return;
-                const me = localState.players && localState.players[myPlayerId];
-                if (!me || !me.role || me.isObserver) return;
-                box.classList.remove('hidden');
-                promptText.classList.add('hidden');
-            };
-
-            const hideRole = (e) => {
-                if (e) e.preventDefault();
-                box.classList.add('hidden');
-                promptText.classList.remove('hidden');
-            };
-
-            ['pointerdown', 'mousedown', 'touchstart'].forEach(evt => card.addEventListener(evt, showRole));
-            ['pointerup', 'pointercancel', 'mouseleave', 'mouseup', 'touchend', 'touchcancel'].forEach(evt => card.addEventListener(evt, hideRole));
-            card.addEventListener('contextmenu', (e) => e.preventDefault());
-        }
-
-        function setupHoldInvestHistory() {
-            const card = document.getElementById('personal-invest-card');
-            const prompt = document.getElementById('invest-prompt-text');
-            const content = document.getElementById('invest-history-content');
-            const showResults = (e) => {
-                if (e) e.preventDefault();
-                // 조사 결과는 페이즈와 관계없이 본인 화면에서 누르고 있는 동안에만 보인다.
-                const me = localState && localState.players && localState.players[myPlayerId];
-                if (!me || !Array.isArray(me.investHistory) || me.investHistory.length === 0) return;
-                content.classList.remove('hidden');
-                prompt.classList.add('hidden');
-            };
-            const hideResults = (e) => {
-                if (e) e.preventDefault();
-                content.classList.add('hidden');
-                prompt.classList.remove('hidden');
-            };
-            ['pointerdown', 'mousedown', 'touchstart'].forEach(evt => card.addEventListener(evt, showResults));
-            ['pointerup', 'pointercancel', 'mouseleave', 'mouseup', 'touchend', 'touchcancel'].forEach(evt => card.addEventListener(evt, hideResults));
-            card.addEventListener('contextmenu', e => e.preventDefault());
-            // 포인터가 카드 밖에서 올라가더라도 비밀 내용을 닫는다.
-            document.addEventListener('pointerup', hideResults);
-            document.addEventListener('pointercancel', hideResults);
-        }
-
-        function renderCustomRoleCheckboxes() {
-            const mList = document.getElementById('custom-mafia-list');
-            const cList = document.getElementById('custom-citizen-list');
-
-            mList.innerHTML = OTHER_MAFIA_ROLES.map(r => 
-                `<label><input type="checkbox" value="${r.id}" class="custom-mafia-cb"> ${r.name}</label>`
-            ).join('');
-
-            cList.innerHTML = ALL_CITIZEN_ROLES.map(r => 
-                `<label><input type="checkbox" value="${r.id}" class="custom-citizen-cb"> ${r.name}</label>`
-            ).join('');
-        }
-
-        function toggleRoleSelectMode() {
-            const mode = document.getElementById('role-mode-select').value;
-            const customBox = document.getElementById('custom-role-options');
-            if (mode === 'CUSTOM') {
-                customBox.classList.remove('hidden');
-            } else {
-                customBox.classList.add('hidden');
-            }
-        }
-
-        function renderGuideRoles() {
-            const mafiaContainer = document.getElementById('mafia-roles-guide');
-            const citizenContainer = document.getElementById('citizen-roles-guide');
-
-            const allMafia = [ROLE_GODFATHER, ...OTHER_MAFIA_ROLES];
-
-            mafiaContainer.innerHTML = allMafia.map(r => 
-                `<div class="role-desc-item">
-                    <b>• ${r.name}</b>
-                    <br>${r.desc}
-                </div>`
-            ).join('');
-
-            // 전체 공개 게임 설명에는 광대 역할도 정상적으로 표시한다.
-            // 개인 역할 영역에서만 광대를 양조사로 위장해 표시한다.
-            citizenContainer.innerHTML = ALL_CITIZEN_ROLES
-                .map(r =>
-                    `<div class="role-desc-item">
-                        <b>• ${r.name}</b>
-                        <br>${r.desc}
-                    </div>`
-                ).join('');
-        }
-
-        function normalizeNicknameForRoleCheck(value) {
-            return String(value || '').toLowerCase().replace(/[\s\p{P}\p{S}_-]+/gu, '');
-        }
-
-        function isReservedRoleNickname(value) {
-            const normalized = normalizeNicknameForRoleCheck(value);
-            if (!normalized) return false;
-            const roles = [ROLE_GODFATHER, ...OTHER_MAFIA_ROLES, ...ALL_CITIZEN_ROLES];
-            const reserved = new Set();
-            roles.forEach(role => {
-                [role.name, role.id].forEach(v => {
-                    const n = normalizeNicknameForRoleCheck(v);
-                    if (n) reserved.add(n);
-                });
-            });
-            // 광대는 게임 화면에서 양조사로 위장하므로 두 명칭 모두 예약한다.
-            reserved.add(normalizeNicknameForRoleCheck('양조사'));
-            reserved.add(normalizeNicknameForRoleCheck('광대'));
-            return reserved.has(normalized);
-        }
-
-        function validateNickname(value) {
-            if (!value) { alert('사용할 닉네임을 입력해 주세요.'); return false; }
-            if (isReservedRoleNickname(value)) { alert('직업명은 닉네임으로 사용할 수 없습니다. 다른 닉네임을 입력해 주세요.'); return false; }
-            return true;
-        }
-
-        async function createRoom() {
-            myNickname = document.getElementById('nickname-input').value.trim();
-            const inputKey = document.getElementById('create-key-input').value.trim();
-
-            if (!validateNickname(myNickname)) return;
-            if (!inputKey) return alert('방 생성 인증키를 입력하세요.');
-
-            const inputHash = await hashPassword(inputKey);
-
-            db.ref('admin/createKey').once('value', snapshot => {
-                const storedHash = snapshot.val();
-
-                if (!storedHash) return alert('Firebase에 인증키 설정이 존재하지 않습니다.');
-                if (inputHash !== storedHash) return alert('올바르지 않은 방 생성 키입니다.');
-
-                roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
-                isHost = true;
-                localStorage.setItem('undead_roomCode', roomCode);
-                roomRef = db.ref('undead_rooms/' + roomCode);
-
-                roomRef.set({
-                    hostId: myPlayerId,
-                    state: 'LOBBY',
-                    dayCount: 1,
-                    logs: [`방이 생성되었습니다. (방 코드: ${roomCode})`]
-                }).then(() => {
-                    joinRoomData();
-                });
-            });
-        }
-
-        function joinRoom() {
-            myNickname = document.getElementById('nickname-input').value.trim();
-            roomCode = document.getElementById('room-code-input').value.trim().toUpperCase();
-
-            if (!validateNickname(myNickname)) return;
-            if (!roomCode) return alert('방 코드를 입력해 주세요.');
-
-            roomRef = db.ref('undead_rooms/' + roomCode);
-
-            roomRef.once('value', snapshot => {
-                if (!snapshot.exists()) return alert('존재하지 않는 방입니다.');
-                localStorage.setItem('undead_roomCode', roomCode);
-                joinRoomData();
-            });
-        }
-
-        function joinRoomData() {
-            const playerRef = roomRef.child('players/' + myPlayerId);
-            
-            playerRef.update({
-                name: myNickname,
-                isHost: isHost
-            });
-
-            document.getElementById('screen-main').classList.add('hidden');
-            document.getElementById('screen-lobby').classList.remove('hidden');
-            document.getElementById('room-code-display').innerText = roomCode;
-
-            const joinUrl = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
-            document.getElementById('qrcode').innerHTML = '';
-            new QRCode(document.getElementById('qrcode'), { text: joinUrl, width: 120, height: 120 });
-
-            listenRoom();
-        }
-
-        function listenRoom() {
-            roomRef.on('value', snapshot => {
-                const data = snapshot.val();
-                if (!data) {
-                    alert('방이 삭제되었습니다.');
-                    localStorage.removeItem('undead_roomCode');
-                    location.href = './index.html';
-                    return;
-                }
-
-                if (!data.players || !data.players[myPlayerId]) {
-                    alert('퇴장 되었거나 접속이 끊겼습니다.');
-                    localStorage.removeItem('undead_roomCode');
-                    location.href = './index.html';
-                    return;
-                }
-
-                isHost = (data.hostId === myPlayerId);
-                localState = data;
-
-                checkDeathEvent(data.players);
-
-                // 타이머 동기화 (10번 요구사항)
-                if (data.phaseStartTime && (data.state === 'DAY' || data.state === 'NIGHT' || data.state === 'DEFENSE' || data.state === 'VOTE_EXECUTE')) {
-                    startLocalTimer(data.phaseStartTime);
-                } else {
-                    stopLocalTimer();
-                }
-
-                if (data.state === 'ENDED') {
-                    showResultModal(data);
-                } else if (data.state === 'LOBBY') {
-                    document.getElementById('result-modal').classList.add('hidden');
-                    document.body.classList.add('night-mode');
-                    document.getElementById('game-title').innerText = '🧟‍♂️ 언데드 마피아 (Undead Mafia)';
-                    document.getElementById('screen-game').classList.add('hidden');
-                    document.getElementById('screen-lobby').classList.remove('hidden');
-                    renderLobby(data);
-                } else {
-                    document.getElementById('result-modal').classList.add('hidden');
-                    document.getElementById('screen-lobby').classList.add('hidden');
-                    document.getElementById('screen-game').classList.remove('hidden');
-                    renderGame(data);
-                }
-            });
-        }
-
-        // 10번 요구사항: 5분 타이머 및 1분 경고
-        function startLocalTimer(startTime) {
-            if (timerInterval) clearInterval(timerInterval);
-            lastTimerSecond = 300;
-
-            const updateTimer = () => {
-                const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
-                const remainSec = Math.max(0, 300 - elapsedSec);
-
-                const m = String(Math.floor(remainSec / 60)).padStart(2, '0');
-                const s = String(remainSec % 60).padStart(2, '0');
-
-                const timerEl = document.getElementById('timer-display');
-                if (remainSec === 0) {
-                    timerEl.innerText = `⏱️ 시간 초과 (00:00)`;
-                    timerEl.classList.add('timer-warning');
-                } else {
-                    timerEl.innerText = `⏱️ 남은 시간 ${m}:${s}`;
-                    if (remainSec <= 60) timerEl.classList.add('timer-warning');
-                    else timerEl.classList.remove('timer-warning');
-                }
-
-                // 1분 경과할 때마다 알림 메시지 체크 (4분, 3분, 2분, 1분 남았을 때)
-                if (remainSec > 0 && remainSec % 60 === 0 && lastTimerSecond !== remainSec) {
-                    lastTimerSecond = remainSec;
-                    const minuteLeft = remainSec / 60;
-                    if (minuteLeft >= 1 && minuteLeft <= 4) {
-                        // 로그뿐 아니라 전체 화면을 짧게 깜빡여 1분 경과를 확실히 인지하도록 합니다.
-                        document.body.classList.remove('minute-flash');
-                        void document.body.offsetWidth;
-                        document.body.classList.add('minute-flash');
-                        setTimeout(() => document.body.classList.remove('minute-flash'), 950);
-
-                        const logBox = document.getElementById('game-log');
-                        const warnDiv = document.createElement('div');
-                        warnDiv.style.color = '#dc2626';
-                        warnDiv.style.fontWeight = 'bold';
-                        warnDiv.innerText = `⏰ [시간 경고] 남은 시간이 ${minuteLeft}분 남았습니다!`;
-                        logBox.appendChild(warnDiv);
-                        logBox.scrollTop = logBox.scrollHeight;
-                    }
-                }
-            };
-
-            updateTimer();
-            timerInterval = setInterval(updateTimer, 1000);
-        }
-
-        function stopLocalTimer() {
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-        }
-
-        function checkDeathEvent(players) {
-            const currentDeadIds = Object.keys(players || {}).filter(id => players[id] && players[id].isDead);
-            if (previousDeadIds === null) {
-                previousDeadIds = new Set(currentDeadIds);
-                return;
-            }
-            const newlyDeadIds = currentDeadIds.filter(id => !previousDeadIds.has(id));
-            if (newlyDeadIds.length) {
-                // 처형 투표는 한 명만 사망시키므로 그 신규 사망자를 정확히 표시한다.
-                const executedId = localState && localState.lastExecutedPlayerId;
-                const chosenId = executedId && newlyDeadIds.includes(executedId) ? executedId : newlyDeadIds[newlyDeadIds.length - 1];
-                const latestDead = players[chosenId];
-                if (latestDead) showDeathBanner(latestDead.name);
-            }
-            previousDeadIds = new Set(currentDeadIds);
-        }
-
-        function showDeathBanner(playerName) {
-            const banner = document.getElementById('death-banner');
-            document.getElementById('death-player-name').innerText = `${playerName} 사망!`;
-            banner.classList.remove('hidden');
-            setTimeout(() => {
-                banner.classList.add('hidden');
-            }, 3200);
-        }
-
-        function showPrivateModal(text) {
-            document.getElementById('private-modal-text').innerText = text;
-            document.getElementById('private-modal').classList.remove('hidden');
-        }
-
-        function closePrivateModal() {
-            document.getElementById('private-modal').classList.add('hidden');
-            if (roomRef && myPlayerId) {
-                roomRef.child(`players/${myPlayerId}/privateResult`).remove();
-            }
-        }
-
-        function showResultModal(data) {
-            const resultModal = document.getElementById('result-modal');
-            const winnerTitle = document.getElementById('result-winner-title');
-            const reasonText = document.getElementById('result-reason-text');
-            const rolesList = document.getElementById('result-roles-list');
-
-            const isMafiaWin = data.winnerTeam === 'MAFIA';
-            winnerTitle.innerText = isMafiaWin ? '🔴 마피아팀 승리!' : '🔵 시민팀 승리!';
-            winnerTitle.style.color = isMafiaWin ? '#f43f5e' : '#0284c7';
-            reasonText.innerText = data.winReason || '게임이 종료되었습니다.';
-            if (data.lastExecutedPlayerName) reasonText.innerText += `\n이번 투표 처형 대상: ${data.lastExecutedPlayerName}`;
-
-            rolesList.innerHTML = '';
-            const players = data.players || {};
-            Object.values(players).forEach(p => {
-                const item = document.createElement('div');
-                item.className = 'player-item';
-                const isMafia = p.role && p.role.team === 'mafia';
-                const roleName = p.role ? (p.role.id === 'FOOL' ? '광대 (양조사 위장)' : p.role.name) : '미배정';
-                
-                item.innerHTML = `
-                    <span><b>${p.name}</b></span>
-                    <span class="role-tag ${isMafia ? 'mafia' : 'citizen'}">${isMafia ? '🔴' : '🔵'} ${roleName}</span>
-                `;
-                rolesList.appendChild(item);
-            });
-
-            resultModal.classList.remove('hidden');
-        }
-
-        function confirmGameEnd() {
-            document.getElementById('result-modal').classList.add('hidden');
-            if (isHost) {
-                forceRestartSilent();
-            }
-        }
-
-        function deleteRoomByHost() {
-            if (!confirm('현재 방을 정말 삭제하시겠습니까? (접속 중인 모든 플레이어가 메인 화면으로 이동합니다)')) return;
-            if (roomRef) {
-                roomRef.remove().then(() => {
-                    localStorage.removeItem('undead_roomCode');
-                    location.href = './index.html';
-                });
-            }
-        }
-
-        function forceRestartSilent() {
-            roomRef.once('value', snapshot => {
-                const data = snapshot.val();
-                if (!data) return;
-                const players = data.players || {};
-
-                let updates = {};
-                Object.keys(players).forEach(pId => {
-                    updates[`players/${pId}/role`] = null;
-                    updates[`players/${pId}/isDead`] = false;
-                    updates[`players/${pId}/votes`] = 0;
-                    updates[`players/${pId}/votedFor`] = null;
-                    updates[`players/${pId}/usedOnceAbility`] = false;
-                    updates[`players/${pId}/magicianAbilityUsed`] = false;
-                    updates[`players/${pId}/soldierDefenseUsed`] = false;
-                    updates[`players/${pId}/privateResult`] = null;
-                    updates[`players/${pId}/investHistory`] = null;
-                    updates[`players/${pId}/executeVote`] = null;
-                });
-
-                updates['state'] = 'LOBBY';
-                updates['dayCount'] = 1;
-                updates['nightActions'] = null;
-                updates['moderatorResults'] = null;
-                updates['nightAuditLog'] = null;
-                updates['executeTargetId'] = null;
-                updates['lastExecutedPlayerName'] = null;
-                updates['lastExecutedPlayerId'] = null;
-                updates['winnerTeam'] = null;
-                updates['winReason'] = null;
-                updates['logs'] = [`🔄 대기실로 이동하였습니다. 새로 게임을 시작할 수 있습니다.`];
-
-                roomRef.update(updates);
-            });
-        }
-
-        function setHostObserver(checked) {
-            if (!isHost || !roomRef || !myPlayerId) return;
-            roomRef.child(`players/${myPlayerId}/isObserver`).set(!!checked);
-        }
-
-        function setMafiaParityWin(checked) {
-            if (!isHost || !roomRef) return;
-            roomRef.child('mafiaWinsOnParity').set(!!checked);
-        }
-
-        function renderLobby(data) {
-            const players = data.players || {};
-            const playerKeys = Object.keys(players);
-
-            document.getElementById('player-count').innerText = playerKeys.length;
-            const observerCheck = document.getElementById('host-observer-check');
-            if (observerCheck) { observerCheck.checked = !!(players[myPlayerId] && players[myPlayerId].isObserver); observerCheck.disabled = !isHost; }
-            const parityCheck = document.getElementById('mafia-parity-win-check');
-            if (parityCheck) { parityCheck.checked = !!data.mafiaWinsOnParity; parityCheck.disabled = !isHost; }
-            const listEl = document.getElementById('lobby-player-list');
-            listEl.innerHTML = '';
-
-            playerKeys.forEach(pId => {
-                const p = players[pId];
-                const item = document.createElement('div');
-                item.className = 'player-item';
-
-                let kickBtnHtml = '';
-                if (isHost && pId !== myPlayerId) {
-                    kickBtnHtml = `<button class="kick-btn" onclick="kickPlayer('${pId}')">강퇴</button>`;
-                }
-
-                item.innerHTML = `
-                    <span>${p.name} ${p.isHost ? '👑' : ''}</span>
-                    <div>${kickBtnHtml}</div>
-                `;
-                listEl.appendChild(item);
-            });
-
-            if (isHost) {
-                document.getElementById('host-lobby-controls').classList.remove('hidden');
-                document.getElementById('host-role-setting-card').classList.remove('hidden');
-            } else {
-                document.getElementById('host-lobby-controls').classList.add('hidden');
-                document.getElementById('host-role-setting-card').classList.add('hidden');
-            }
-        }
-
-        function kickPlayer(targetId) {
-            if (confirm('해당 플레이어를 강퇴하시겠습니까?')) {
-                roomRef.child('players/' + targetId).remove();
-            }
-        }
-
-        function getMafiaCountByPlayers(totalCount) {
-            if (totalCount <= 5) return 1;
-            if (totalCount <= 8) return 2;
-            if (totalCount <= 12) return 3;
-            if (totalCount <= 16) return 4;
-            if (totalCount <= 20) return 5;
-            return Math.floor(totalCount * 0.28);
-        }
-
-        function startGame() {
-            roomRef.child('players').once('value', snapshot => {
-                const players = snapshot.val() || {};
-                const allKeys = Object.keys(players);
-                const keys = allKeys.filter(pId => !(players[pId] && players[pId].isObserver));
-                const count = keys.length;
-
-                if (count < 4) {
-                    return alert('옵저버를 제외하고 최소 4명의 플레이어가 필요합니다.');
-                }
-
-                let mafiaCount = getMafiaCountByPlayers(count);
-                let citizenCount = count - mafiaCount;
-
-                const mode = document.getElementById('role-mode-select').value;
-                const showRolesInGame = document.getElementById('show-roles-in-game-check').checked;
-                const mafiaWinsOnParity = document.getElementById('mafia-parity-win-check').checked;
-
-                let mafiaPool = [];
-                let citizenPool = [];
-
-                if (mode === 'RANDOM') {
-                    let restM = [...OTHER_MAFIA_ROLES].sort(() => Math.random() - 0.5);
-                    mafiaPool = [ROLE_GODFATHER, ...restM.slice(0, mafiaCount - 1)];
-
-                    const mandatoryInvestigator = ALL_CITIZEN_ROLES.find(r => r.id === 'INVESTIGATOR');
-                    let allC = ALL_CITIZEN_ROLES.filter(r => r.id !== 'INVESTIGATOR').sort(() => Math.random() - 0.5);
-                    citizenPool = [mandatoryInvestigator, ...allC.slice(0, Math.max(0, citizenCount - 1))];
-                } else if (mode === 'CUSTOM') {
-                    mafiaPool = [ROLE_GODFATHER];
-                    citizenPool = [];
-
-                    const selectedMafiaIds = Array.from(document.querySelectorAll('.custom-mafia-cb:checked')).map(cb => cb.value);
-                    const selectedMafia = OTHER_MAFIA_ROLES.filter(r => selectedMafiaIds.includes(r.id));
-                    mafiaPool.push(...selectedMafia);
-
-                    const selectedCitizenIds = Array.from(document.querySelectorAll('.custom-citizen-cb:checked')).map(cb => cb.value);
-                    const mandatoryInvestigator = ALL_CITIZEN_ROLES.find(r => r.id === 'INVESTIGATOR');
-                    const selectedCitizen = ALL_CITIZEN_ROLES.filter(r => selectedCitizenIds.includes(r.id) && r.id !== 'INVESTIGATOR');
-                    citizenPool.push(mandatoryInvestigator, ...selectedCitizen);
-
-                    if (mafiaPool.length < mafiaCount) {
-                        let remainingM = OTHER_MAFIA_ROLES.filter(r => !mafiaPool.some(mp => mp.id === r.id)).sort(() => Math.random() - 0.5);
-                        mafiaPool.push(...remainingM.slice(0, mafiaCount - mafiaPool.length));
-                    } else if (mafiaPool.length > mafiaCount) {
-                        mafiaPool = mafiaPool.slice(0, mafiaCount);
-                    }
-
-                    if (citizenPool.length < citizenCount) {
-                        let remainingC = ALL_CITIZEN_ROLES.filter(r => !citizenPool.some(cp => cp.id === r.id)).sort(() => Math.random() - 0.5);
-                        citizenPool.push(...remainingC.slice(0, citizenCount - citizenPool.length));
-                    } else if (citizenPool.length > citizenCount) {
-                        citizenPool = [citizenPool.find(r => r.id === 'INVESTIGATOR'), ...citizenPool.filter(r => r.id !== 'INVESTIGATOR').slice(0, citizenCount - 1)];
-                    }
-                } else {
-                    let extraM = [...OTHER_MAFIA_ROLES].sort(() => Math.random() - 0.5).slice(0, mafiaCount - 1);
-                    mafiaPool = [ROLE_GODFATHER, ...extraM];
-
-                    const mandatoryInvestigator = ALL_CITIZEN_ROLES.find(r => r.id === 'INVESTIGATOR');
-                    let extraC = [...ALL_CITIZEN_ROLES].filter(r => r.id !== 'INVESTIGATOR').sort(() => Math.random() - 0.5).slice(0, Math.max(0, citizenCount - 1));
-                    citizenPool = [mandatoryInvestigator, ...extraC];
-                }
-
-                const unusedCitizenCount = mafiaCount >= 4 ? 4 : 3;
-                const unusedCitizens = ALL_CITIZEN_ROLES
-                    .filter(r => !citizenPool.some(cp => cp.id === r.id))
-                    .sort(() => Math.random() - 0.5)
-                    .slice(0, unusedCitizenCount)
-                    .map(r => r.name);
-
-                let finalPool = [...mafiaPool, ...citizenPool].sort(() => Math.random() - 0.5);
-
-                // 1번 요구사항: 3연속 대부 방지 처리
-                let godfatherHistory = JSON.parse(sessionStorage.getItem('godfather_history') || '[]');
-                let gfCandidateIndex = finalPool.findIndex(r => r.id === 'GODFATHER');
-
-                if (godfatherHistory.length >= 2 && gfCandidateIndex !== -1) {
-                    const lastGf1 = godfatherHistory[godfatherHistory.length - 1];
-                    const lastGf2 = godfatherHistory[godfatherHistory.length - 2];
-
-                    if (lastGf1 === lastGf2) {
-                        const bannedPlayerId = lastGf1;
-                        let shuffleCount = 0;
-                        while (keys[gfCandidateIndex] === bannedPlayerId && shuffleCount < 10) {
-                            finalPool = finalPool.sort(() => Math.random() - 0.5);
-                            gfCandidateIndex = finalPool.findIndex(r => r.id === 'GODFATHER');
-                            shuffleCount++;
-                        }
-                    }
-                }
-
-                let chosenGodfatherId = keys[gfCandidateIndex];
-                godfatherHistory.push(chosenGodfatherId);
-                sessionStorage.setItem('godfather_history', JSON.stringify(godfatherHistory));
-
-                let updates = {};
-                allKeys.forEach(pId => {
-                    updates[`players/${pId}/role`] = null;
-                    updates[`players/${pId}/isDead`] = false;
-                    updates[`players/${pId}/votes`] = 0;
-                    updates[`players/${pId}/votedFor`] = null;
-                    updates[`players/${pId}/usedOnceAbility`] = false;
-                    updates[`players/${pId}/magicianAbilityUsed`] = false;
-                    updates[`players/${pId}/soldierDefenseUsed`] = false;
-                    updates[`players/${pId}/privateResult`] = null;
-                    updates[`players/${pId}/investHistory`] = null;
-                    updates[`players/${pId}/executeVote`] = null;
-                });
-                keys.forEach((pId, idx) => {
-                    updates[`players/${pId}/role`] = finalPool[idx];
-                });
-
-                updates['activeRoles'] = finalPool;
-                updates['unusedCitizens'] = unusedCitizens;
-                updates['showRolesInGame'] = showRolesInGame;
-                updates['mafiaWinsOnParity'] = mafiaWinsOnParity;
-                updates['state'] = 'NIGHT';
-                updates['dayCount'] = 1;
-                updates['nightActions'] = null;
-                updates['executeTargetId'] = null;
-                updates['lastExecutedPlayerName'] = null;
-                updates['lastExecutedPlayerId'] = null;
-                updates['phaseStartTime'] = Date.now(); // 타이머용
-                updates['winnerTeam'] = null;
-                updates['winReason'] = null;
-                updates['moderatorResults'] = null;
-                updates['nightAuditLog'] = null;
-                updates['logs'] = ['🌙 제 1일 밤이 되었습니다. 생존자는 비밀리에 능력을 지정하세요.'];
-
-                roomRef.update(updates);
-            });
-        }
-
-        function renderGame(data) {
-            const me = data.players[myPlayerId];
-            
-            // 조사 결과는 자동 팝업으로 띄우지 않는다. 별도 개인 영역을 누르고 있는 동안에만 확인한다.
-            // 그 외의 일회성 능력 알림은 기존 비밀 브리핑 팝업을 유지한다.
-            const isSavedInvestigationResult = !!(me && me.privateResult && Array.isArray(me.investHistory) &&
-                me.investHistory.some(entry => typeof entry === 'string' && entry.endsWith(me.privateResult)));
-            if (me && me.privateResult && !isSavedInvestigationResult) {
-                showPrivateModal(me.privateResult);
-            }
-
-            if (me && me.role) {
-                const displayRoleName = me.role.id === 'FOOL' ? '양조사' : me.role.name;
-                const isMafia = me.role.team === 'mafia';
-                const teamTag = isMafia ? '🔴 [마피아팀]' : '🔵 [시민팀]';
-                
-                const personalRoleDesc = me.role.id === 'FOOL'
-                    ? ALL_CITIZEN_ROLES.find(r => r.id === 'BREWER').desc
-                    : me.role.desc;
-                let descHtml = `<b>${personalRoleDesc}</b>`;
-
-                if (isMafia) {
-                    const mafiaTeammates = Object.values(data.players)
-                        .filter(p => p.role && p.role.team === 'mafia')
-                        .map(p => p.name);
-                    
-                    const unused = data.unusedCitizens || [];
-
-                    descHtml += `<br><br>👥 <b>🔴 동료 마피아:</b> ${mafiaTeammates.join(', ')}`;
-                    descHtml += `<br>🎭 <b>제외된 시민 직업 (블러핑 추천):</b> ${unused.join(', ')}`;
-                }
-
-                document.getElementById('my-role-title').innerText = `${teamTag} ${displayRoleName}`;
-                document.getElementById('my-role-desc').innerHTML = descHtml;
-
-            }
-
-            // 조사 기록은 본인 데이터만 표시하고, 누르고 있는 동안에만 내용이 보이게 한다.
-            // 역할 카드와 분리되어 있어 낮에도 결과 확인이 가능하다.
-            const personalInvestCard = document.getElementById('personal-invest-card');
-            const historyContent = document.getElementById('invest-history-content');
-            const investPrompt = document.getElementById('invest-prompt-text');
-            const ownInvestHistory = me && Array.isArray(me.investHistory) ? me.investHistory : [];
-            if (ownInvestHistory.length > 0) {
-                personalInvestCard.classList.remove('hidden');
-                historyContent.replaceChildren();
-                ownInvestHistory.forEach(entry => {
-                    const line = document.createElement('div');
-                    line.style.padding = '0.2rem 0';
-                    line.textContent = `• ${entry}`;
-                    historyContent.appendChild(line);
-                });
-                historyContent.classList.add('hidden');
-                investPrompt.classList.remove('hidden');
-                investPrompt.textContent = '🔒 조사 결과 확인 — 누르고 있는 동안에만 표시됩니다.';
-            } else {
-                personalInvestCard.classList.add('hidden');
-                historyContent.classList.add('hidden');
-                historyContent.replaceChildren();
-                investPrompt.classList.remove('hidden');
-            }
-
-            // 페이즈가 밤이 아니면, 누르고 있던 중이라도 역할 정보를 즉시 닫는다.
-            const roleDisplayBox = document.getElementById('role-display-box');
-            const rolePromptText = document.getElementById('role-prompt-text');
-            if (!data || data.state !== 'NIGHT') {
-                roleDisplayBox.classList.add('hidden');
-                rolePromptText.classList.remove('hidden');
-                rolePromptText.innerText = me && me.isObserver
-                    ? '🛡️ 옵저버 모드: 역할이 배정되지 않았습니다.'
-                    : '☀️ 낮에는 내 역할을 확인할 수 없습니다. 조사 결과는 아래 개인 영역에서 확인하세요.';
-            } else if (!me || !me.role) {
-                roleDisplayBox.classList.add('hidden');
-                rolePromptText.classList.remove('hidden');
-                rolePromptText.innerText = me && me.isObserver
-                    ? '🛡️ 옵저버 모드: 역할이 배정되지 않았습니다.'
-                    : '🌙 밤에 이곳을 누르고 있는 동안에만 내 역할을 확인할 수 있습니다.';
-            } else if (roleDisplayBox.classList.contains('hidden')) {
-                rolePromptText.classList.remove('hidden');
-                rolePromptText.innerText = '🌙 밤에 이곳을 누르고 있는 동안에만 내 역할을 확인할 수 있습니다.';
-            }
-
-            const activeRolesCard = document.getElementById('active-roles-card');
-            if (data.showRolesInGame) {
-                activeRolesCard.classList.remove('hidden');
-                const activeRoles = data.activeRoles || [];
-                document.getElementById('active-roles-count').innerText = activeRoles.length;
-                const activeTagsEl = document.getElementById('active-roles-tags');
-                activeTagsEl.innerHTML = activeRoles.map(r => {
-                    const isMafia = r.team === 'mafia';
-                    const tagName = r.id === 'FOOL' ? '양조사' : r.name;
-                    return `<span class="role-tag ${isMafia ? 'mafia' : 'citizen'}">${isMafia ? '🔴' : '🔵'} ${tagName}</span>`;
-                }).join('');
-            } else {
-                activeRolesCard.classList.add('hidden');
-            }
-
-            const executeBox = document.getElementById('execute-vote-box');
-            const watcherBox = document.getElementById('watcher-action-box');
-            const observerPanel = document.getElementById('observer-panel');
-            const isObserver = !!(me && me.isObserver && isHost);
-            watcherBox.classList.toggle('hidden', !(data.state === 'NIGHT' && me && me.role && me.role.id === 'WATCHER' && !me.isDead && !me.usedOnceAbility));
-            observerPanel.classList.toggle('hidden', !isObserver);
-            if (isObserver) {
-                const infoEl = document.getElementById('observer-info-content');
-                const actions = data.nightActions || {};
-                infoEl.innerHTML = '<h4>👥 현재 참가자 현황</h4>' + Object.keys(data.players || {}).map(pid => {
-                    const p = data.players[pid];
-                    if (p.isObserver) return `<div class="role-desc-item"><b>${p.name}</b> — 옵저버</div>`;
-                    const roleName = p.role ? `${p.role.team === 'mafia' ? '🔴' : '🔵'} ${p.role.name}` : '역할 미배정';
-                    return `<div class="role-desc-item"><b>${p.name}</b> — ${roleName} / ${p.isDead ? '사망' : '생존'}</div>`;
-                }).join('');
-                const historyEl = document.getElementById('observer-history-content');
-                const history = data.nightAuditLog || {};
-                const nightKeys = Object.keys(history).sort((a,b) => Number(a.replace('night_','')) - Number(b.replace('night_','')));
-                historyEl.innerHTML = '<h4>📜 밤별 상세 처리 기록</h4>' + (nightKeys.length ? nightKeys.slice().reverse().map(key => {
-                    const night = history[key] || {};
-                    const lines = [...(night.actions || []).map(x => `행동: ${x}`), ...(night.results || []).map(x => `결과: ${x}`), ...(night.summary || []).map(x => `상황: ${x}`)];
-                    return `<details class="role-desc-item"><summary><b>${night.label || key.replace('night_','제 ' ) + '일 밤'}</b> — 기록 ${lines.length}건</summary>${lines.length ? lines.map(x => `<div style="padding:0.2rem 0;">${x}</div>`).join('') : '<div>상세 기록 없음</div>'}</details>`;
-                }).join('') : '<div class="role-desc-item">아직 완료된 밤 기록이 없습니다. 밤 종료 후 기록이 추가됩니다.</div>');
-            }
-
-            if (data.state === 'NIGHT') {
-                document.body.classList.add('night-mode');
-                document.getElementById('game-title').innerText = '🌙 언데드 마피아 (밤)';
-                document.getElementById('phase-title').innerText = `🌙 제 ${data.dayCount}일 밤`;
-                document.getElementById('phase-desc').innerText = '특수 능력을 가진 생존자는 대상을 비밀리에 지정하세요 (아침 전환 시 동시 연산됩니다).';
-                document.getElementById('phase-toggle-btn').innerText = '☀ 밤 종료 및 아침 밝히기 (방장)';
-                executeBox.classList.add('hidden');
-            } else if (data.state === 'DEFENSE') {
-                document.body.classList.remove('night-mode');
-                const targetName = data.players[data.executeTargetId] ? data.players[data.executeTargetId].name : '';
-                document.getElementById('game-title').innerText = '☀️ 언데드 마피아 (최후 변론)';
-                document.getElementById('phase-title').innerText = `🗣️ 최후 변론 페이즈`;
-                document.getElementById('phase-desc').innerText = `[${targetName}] 님의 최후 변론을 들은 후 찬반 투표를 시작하세요.`;
-                document.getElementById('phase-toggle-btn').innerText = '⚖️ 찬반 투표 시작하기 (방장)';
-                executeBox.classList.add('hidden');
-            } else if (data.state === 'VOTE_EXECUTE') {
-                document.body.classList.remove('night-mode');
-                const targetName = data.players[data.executeTargetId] ? data.players[data.executeTargetId].name : '';
-                document.getElementById('game-title').innerText = '☀️ 언데드 마피아 (찬반 투표)';
-                document.getElementById('phase-title').innerText = `⚖️ [${targetName}] 처형 찬반 투표`;
-                document.getElementById('phase-desc').innerText = '아래 버튼을 눌러 처형 찬성/반대를 선택하세요.';
-                document.getElementById('execute-target-name').innerText = targetName;
-                document.getElementById('phase-toggle-btn').innerText = '🔨 찬반 투표 집계 및 밤으로 (방장)';
-                if (isObserver) executeBox.classList.add('hidden');
-                else executeBox.classList.remove('hidden');
-                renderExecuteVoteSelection(me ? me.executeVote : null);
-            } else {
-                document.body.classList.remove('night-mode');
-                document.getElementById('game-title').innerText = '☀️ 언데드 마피아 (낮)';
-                document.getElementById('phase-title').innerText = `☀️ 제 ${data.dayCount}일 낮`;
-                document.getElementById('phase-desc').innerText = '토론 후 지목 투표를 진행하세요. (사망자도 투표 참여 가능)';
-                document.getElementById('phase-toggle-btn').innerText = '🗣️ 낮 지목 투표 종료 및 변론 이동 (방장)';
-                executeBox.classList.add('hidden');
-            }
-
-            const logBox = document.getElementById('game-log');
-            logBox.innerHTML = (data.logs || []).map(l => `<div>${l}</div>`).join('');
-            logBox.scrollTop = logBox.scrollHeight;
-
-            const listEl = document.getElementById('game-player-list');
-            listEl.innerHTML = '';
-            Object.keys(data.players).forEach(pId => {
-                const p = data.players[pId];
-                const item = document.createElement('div');
-                item.className = 'player-item' + (p.isDead ? ' dead' : '');
-
-                let actionBtn = '';
-                // 옵저버는 목록에 이름과 상태를 표시하되 투표/능력 지정 대상에서 제외한다.
-                if (p.isObserver || isObserver || (me && me.isObserver)) {
-                    actionBtn = '';
-                } else if (data.state === 'DAY') {
-                    const isMyTarget = me && me.votedFor === pId;
-                    if (p.isDead) {
-                        actionBtn = `<button style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem; background:#94a3b8;" disabled>처형 불가</button>`;
-                    } else {
-                        const btnBg = isMyTarget ? '#0284c7' : '#ea580c';
-                        const btnText = isMyTarget ? '지목 취소' : '투표 지목';
-                        actionBtn = `<button style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem; background:${btnBg};" onclick="votePlayer('${pId}')">${btnText}</button>`;
-                    }
-                } else if (data.state === 'NIGHT') {
-                    const nightActs = data.nightActions || {};
-                    const myAct = nightActs[myPlayerId];
-                    const isUsedNight = myAct && (myAct.targetId === pId || (Array.isArray(myAct.targetIds) && myAct.targetIds.includes(pId)));
-                    const btnText = isUsedNight ? '선택됨' : '능력 지정';
-                    
-                    // 6번 요구사항: 1회성 능력 이미 사용시 비활성화
-                    const isOnceAbilityDisabled = (me && me.role && me.role.limitType === 'once_game' && me.usedOnceAbility);
-                    const disabledAttr = isOnceAbilityDisabled ? 'disabled' : '';
-
-                    if (me && me.role && me.role.id === 'WATCHER') { actionBtn = ''; }
-                    else if (p.isDead && !(me && me.role && ['CLERGY','MEDIUM','SPIRITIST'].includes(me.role.id))) { actionBtn = `<button disabled style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem; background:#94a3b8;">사망자</button>`; }
-                    else { actionBtn = `<button style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem; background:${isUsedNight ? '#0284c7' : '#7c3aed'};" ${disabledAttr} onclick="useAbility('${pId}')">${btnText}</button>`; }
-                }
-
-                let voteStatusHtml = '';
-                if (data.state === 'DAY') {
-                    const hasVoted = !!p.votedFor;
-                    voteStatusHtml = `<span class="vote-status-tag ${hasVoted ? 'voted' : 'not-voted'}">${hasVoted ? '투표 완료' : '미투표'}</span>`;
-                } else if (data.state === 'VOTE_EXECUTE') {
-                    const hasVoted = (p.executeVote !== undefined && p.executeVote !== null);
-                    voteStatusHtml = `<span class="vote-status-tag ${hasVoted ? 'voted' : 'not-voted'}">${hasVoted ? '찬반 완료' : '미투표'}</span>`;
-                }
-
-                const statusTag = p.isObserver ? '🛡️ [옵저버]' : (p.isDead ? '💀 [사망/언데드]' : '🟢 [생존]');
-                item.innerHTML = `
-                    <span>
-                        <b>${p.name}</b> 
-                        <small style="font-size:0.75rem; color:${p.isDead ? '#ef4444' : '#16a34a'};">${statusTag}</small>
-                        ${voteStatusHtml}
-                    </span>
-                    ${actionBtn}
-                `;
-                listEl.appendChild(item);
-            });
-
-            if (isHost) {
-                document.getElementById('host-controls').classList.remove('hidden');
-            } else {
-                document.getElementById('host-controls').classList.add('hidden');
-            }
-        }
-
-        // 2번 요구사항: 체크해제 및 1인 1투표 차감 가산 완벽 보정
-        function votePlayer(targetId) {
-            roomRef.once('value', snapshot => {
-                const data = snapshot.val();
-                if (data.state !== 'DAY') return;
-                if (data.players[myPlayerId] && data.players[myPlayerId].isObserver) return alert('옵저버는 투표할 수 없습니다.');
-
-                const players = data.players;
-                const target = players[targetId];
-                if (!target) return;
-                if (target.isObserver) return alert('옵저버는 투표 대상으로 지정할 수 없습니다.');
-
-                if (target.isDead) {
-                    return alert('사망한(언데드) 플레이어는 처형 투표 대상이 될 수 없습니다.');
-                }
-
-                const me = players[myPlayerId];
-                const prevVotedId = me.votedFor;
-
-                let updates = {};
-
-                if (prevVotedId === targetId) {
-                    // 동일 대상 재클릭 시 투표 취소
-                    updates[`players/${targetId}/votes`] = Math.max(0, (players[targetId].votes || 0) - 1);
-                    updates[`players/${myPlayerId}/votedFor`] = null;
-                } else {
-                    // 이전 표가 있었을 경우 해당 대상의 표 차감
-                    if (prevVotedId && players[prevVotedId]) {
-                        updates[`players/${prevVotedId}/votes`] = Math.max(0, (players[prevVotedId].votes || 0) - 1);
-                    }
-                    // 새로운 대상 가산
-                    updates[`players/${targetId}/votes`] = (players[targetId].votes || 0) + 1;
-                    updates[`players/${myPlayerId}/votedFor`] = targetId;
-                }
-
-                roomRef.update(updates);
-            });
-        }
-
-        // 찬반 투표: 마지막으로 누른 버튼의 값이 최종 투표값이 됩니다.
-        function submitExecuteVote(isApprove) {
-            if (!roomRef || !myPlayerId) return;
-            if (localState && localState.players && localState.players[myPlayerId] && localState.players[myPlayerId].isObserver) return alert('옵저버는 투표할 수 없습니다.');
-
-            roomRef.child(`players/${myPlayerId}/executeVote`).set(isApprove);
-        }
-
-        function renderExecuteVoteSelection(executeVote) {
-            const approveBtn = document.getElementById('execute-approve-btn');
-            const rejectBtn = document.getElementById('execute-reject-btn');
-            const current = document.getElementById('execute-vote-current');
-            if (!approveBtn || !rejectBtn || !current) return;
-
-            approveBtn.classList.toggle('selected', executeVote === true);
-            rejectBtn.classList.toggle('selected', executeVote === false);
-
-            if (executeVote === true) {
-                current.innerText = '현재 선택: 🔪 찬성 (죽이기)';
-                current.style.color = '#dc2626';
-            } else if (executeVote === false) {
-                current.innerText = '현재 선택: 🛡️ 반대 (살리기)';
-                current.style.color = '#16a34a';
-            } else {
-                current.innerText = '현재 선택: 없음';
-                current.style.color = '#64748b';
-            }
-        }
-
-        function useAbility(targetId) {
-            roomRef.once('value', snapshot => {
-                const data = snapshot.val();
-                if (data.state !== 'NIGHT') return;
-
-                const me = data.players[myPlayerId];
-                const target = data.players[targetId];
-                if (!me || !target) return;
-                if (target.isObserver) return alert('옵저버는 능력 지정 대상이 될 수 없습니다.');
-
-                // 1. 사망 여부 검사
-                if (me.isObserver) return alert('옵저버는 능력을 사용할 수 없습니다.');
-                if (me.isDead) {
-                    return alert('사망한(언데드) 플레이어는 능력을 사용할 수 없습니다.');
-                }
-
-                if (!me.role) return alert('능력을 사용할 수 없는 역할입니다.');
-
-                // 5번 요구사항: 자해/자기 지정 방지 (대부, 저격수, 청부업자 등)
-                const killSelfRoles = ['GODFATHER', 'SNIPER', 'HITMAN'];
-                if (killSelfRoles.includes(me.role.id) && targetId === myPlayerId) {
-                    return alert('자신을 지목하여 능력을 사용할 수 없습니다.');
-                }
-
-                // 8번 요구사항: 조사직 본인 대상 조사 불가
-                const investRoles = ['INVESTIGATOR', 'PSYCHOLOGIST', 'LAWYER', 'DETECTIVE', 'WITNESS'];
-                if (investRoles.includes(me.role.id) && targetId === myPlayerId) {
-                    return alert('본인을 대상으로 조사 능력을 사용할 수 없습니다.');
-                }
-
-                // 2. 패시브 직업 검사 (광대는 양조사 위장을 위해 우회)
-                if (me.role.limitType === 'passive' && me.role.id !== 'FOOL') {
-                    return alert(`${me.role.name}은(는) 패시브 직업입니다.`);
-                }
-
-                // 8번 요구사항: 조사직(수사관, 심리학자 등)은 죽은 사람 조사 안됨
-                if (investRoles.includes(me.role.id) && target.isDead) {
-                    return alert('사망한 플레이어는 조사할 수 없습니다.');
-                }
-
-                // 3. 지목 대상 사망 여부 검사 (성직자 및 영매만 사망자 허용)
-                if (me.role.id === 'CLERGY' || me.role.id === 'MEDIUM' || me.role.id === 'SPIRITIST') {
-                    if (!target.isDead) return alert(`${me.role.name}은(는) 사망한 플레이어(언데드)만 선택할 수 있습니다.`);
-                } else if (target.isDead) {
-                    return alert('사망한 플레이어에게는 능력을 사용할 수 없습니다.');
-                }
-
-                // 6번 요구사항: 1회성 능력 사용 제한
-                if (me.role.limitType === 'once_game' && me.usedOnceAbility) {
-                    return alert('이 능력은 게임 중 이미 1회 사용하셨습니다.');
-                }
-
-                // 마술사 능력은 직업을 넘겨받은 뒤 다시 사용할 수 없다.
-                // 즉, 새로 마술사가 된 플레이어도 이미 소모된 마술사 능력을 갖는다.
-                if (me.role.id === 'MAGICIAN' && me.magicianAbilityUsed) {
-                    return alert('마술사 능력은 이 게임에서 이미 사용되었습니다.');
-                }
-
-                // 🎭 광대(FOOL)는 자신을 양조사라고 믿는다.
-                // 따라서 능력 지정 자체는 정상적으로 저장해 주어야 하며,
-                // 여기서 '광대'라는 사실을 알려주는 알림을 띄우면 안 된다.
-                // 실제 환각 효과는 밤 처리 단계에서 FOOL을 BREWER와 별도로 취급하므로 발생하지 않는다.
-
-                if (me.role.id === 'INVESTIGATOR' || me.role.id === 'PSYCHOLOGIST') {
-                    // 브라우저 전역 변수 대신 Firebase의 현재 밤 선택값을 기준으로 한다.
-                    // 페이지 새로고침/여러 밤 진행 후 이전 밤의 대상이 섞이는 문제를 방지한다.
-                    let currentTargets = (data.nightActions && data.nightActions[myPlayerId] && Array.isArray(data.nightActions[myPlayerId].targetIds))
-                        ? [...data.nightActions[myPlayerId].targetIds] : [];
-
-                    if (currentTargets.includes(targetId)) {
-                        currentTargets = currentTargets.filter(id => id !== targetId);
-                    } else {
-                        if (currentTargets.length >= 2) currentTargets.shift();
-                        currentTargets.push(targetId);
-                    }
-
-                    let updates = {};
-                    updates[`nightActions/${myPlayerId}`] = {
-                        actorName: me.name,
-                        actorRoleId: me.role.id,
-                        targetIds: currentTargets
-                    };
-
-                    roomRef.update(updates).then(() => {
-                        const count = currentTargets.length;
-                        if (count < 2) {
-                            alert(`지목 대상 1번째 선택됨. 1명을 더 지정해주세요.`);
-                        } else {
-                            alert(`지목 대상 2명 완료. 결과는 아침 브리핑 시 동시 계산됩니다.`);
-                        }
-                    });
-                    return;
-                }
-
-                let updates = {};
-                updates[`nightActions/${myPlayerId}`] = {
-                    actorName: me.name,
-                    actorRoleId: me.role.id,
-                    actorRoleName: me.role.name,
-                    actorTeam: me.role.team,
-                    targetId: targetId,
-                    targetName: target.name
-                };
-
-                roomRef.update(updates).then(() => {
-                    alert(`${target.name}님에게 능력을 지정했습니다.`);
-                });
-            });
-        }
-
-        function useWatcherAbility() {
-            roomRef.once('value', snapshot => {
-                const data = snapshot.val();
-                if (!data || data.state !== 'NIGHT') return;
-                const me = data.players && data.players[myPlayerId];
-                if (!me || me.isDead || me.isObserver || !me.role || me.role.id !== 'WATCHER') return;
-                if (me.usedOnceAbility) return alert('감시자 능력은 게임 중 이미 1회 사용했습니다.');
-                const action = { actorName: me.name, actorRoleId: 'WATCHER', actorRoleName: me.role.name, actorTeam: me.role.team, targetId: null, targetName: null };
-                roomRef.child(`nightActions/${myPlayerId}`).set(action).then(() => alert('감시 능력을 지정했습니다. 밤 종료 시 결과를 확인할 수 있습니다.'));
-            });
-        }
-
-        function getInvestigativeTeam(player) {
-            if (!player || !player.role) return 'human';
-            if (player.role.id === 'LAWYER') return 'human';
-            if (player.role.id === 'RULER_BULLY') return 'mafia';
-            return player.role.team;
-        }
-
-        function getCombatTeam(player) {
-            if (!player || !player.role) return 'human';
-            if (player.role.id === 'RULER_BULLY') return 'mafia';
-            return player.role.team;
-        }
-
-        function checkWinCondition(players, mafiaWinsOnParity = false) {
-            let aliveGodfather = false;
-            let aliveCitizens = 0;
-            let aliveMafia = 0;
-            let totalAlive = 0;
-
-            Object.values(players).forEach(p => {
-                if (!p.isDead && p.role) {
-                    totalAlive++;
-                    if (p.role.id === 'GODFATHER') aliveGodfather = true;
-                    if (p.role.team === 'mafia') aliveMafia++;
-                    if (p.role.team === 'human' && p.role.id !== 'RULER_BULLY') aliveCitizens++;
-                }
-            });
-
-            if (!aliveGodfather) {
-                return { winner: 'CITIZEN', reason: '시민팀이 승리 조건을 충족했습니다!' };
-            }
-
-            // 선택 옵션: 생존 마피아 수가 생존 시민 수보다 많아지면 마피아팀 승리 (동수는 승리 아님)
-            // 내부 키 이름(mafiaWinsOnParity)은 기존 방과의 호환을 위해 유지한다.
-            if (mafiaWinsOnParity && aliveGodfather && aliveMafia > aliveCitizens) {
-                return { winner: 'MAFIA', reason: `생존 마피아 수(${aliveMafia}명)가 생존 시민 수(${aliveCitizens}명)보다 많아져 마피아팀이 승리했습니다!` };
-            }
-
-            if (aliveGodfather && totalAlive <= 2) {
-                return { winner: 'MAFIA', reason: '마피아팀이 최후 2인까지 생존하여 승리했습니다!' };
-            }
-            if (aliveCitizens === 0) {
-                return { winner: 'MAFIA', reason: '모든 시민이 전멸하여 마피아팀이 승리했습니다!' };
-            }
-
-            return null;
-        }
-
-        function triggerGameEnd(winnerInfo, updates, logs) {
-            updates['state'] = 'ENDED';
-            updates['winnerTeam'] = winnerInfo.winner;
-            updates['winReason'] = winnerInfo.reason;
-            logs.push(`🎉 [게임 종료] ${winnerInfo.winner === 'MAFIA' ? '🔴 마피아팀 승리!' : '🔵 시민팀 승리!'} (${winnerInfo.reason})`);
-            updates['logs'] = logs;
-            roomRef.update(updates);
-        }
-
-        // 3번 및 페이즈 전환 로직
-        function nextPhase() {
-            roomRef.once('value', snapshot => {
-                const data = snapshot.val();
-                let logs = data.logs || [];
-                // 현재 페이즈 처리 전 로그 길이: data.logs와 logs가 같은 배열을 참조하므로 숫자로 고정한다.
-                const initialLogCount = logs.length;
-                const players = data.players;
-
-                if (data.state === 'DAY') {
-                    // 1차 지목 투표 집계 및 최후 변론으로 이동
-                    let maxVotes = 0;
-                    let candidateId = null;
-                    let isTie = false;
-
-                    Object.keys(players).forEach(pId => {
-                        if (players[pId].isObserver || !players[pId].role) return;
-                        const v = players[pId].votes || 0;
-                        if (v > maxVotes) {
-                            maxVotes = v;
-                            candidateId = pId;
-                            isTie = false;
-                        } else if (v > 0 && v === maxVotes) {
-                            isTie = true;
-                        }
-                    });
-
-                    let updates = {};
-
-                    if (candidateId && !isTie && maxVotes > 0) {
-                        const candidate = players[candidateId];
-                        updates['state'] = 'DEFENSE';
-                        updates['executeTargetId'] = candidateId;
-                        updates['phaseStartTime'] = Date.now();
-                        logs.push(`📢 [투표 결과] ${candidate.name}님이 최다 득표(${maxVotes}표)를 받았습니다. 최후 변론을 진행합니다.`);
-                    } else {
-                        logs.push(`⚖ [투표 무효] 동점이거나 표가 없어 아무도 변론대에 오르지 않았습니다. 바로 밤이 시작됩니다.`);
-                        updates['state'] = 'NIGHT';
-                        updates['nightActions'] = null;
-                        Object.keys(players).forEach(pId => { updates[`players/${pId}/privateResult`] = null; });
-                        updates['phaseStartTime'] = Date.now();
-                        logs.push(`🌙 제 ${data.dayCount}일 밤이 되었습니다.`);
-                    }
-
-                    Object.keys(players).forEach(pId => {
-                        updates[`players/${pId}/votes`] = 0;
-                        updates[`players/${pId}/votedFor`] = null;
-                    });
-
-                    updates['logs'] = logs;
-                    roomRef.update(updates);
-
-                } else if (data.state === 'DEFENSE') {
-                    // 최후 변론 종료 후 찬반 투표 진입
-                    let updates = {};
-                    updates['state'] = 'VOTE_EXECUTE';
-                    updates['phaseStartTime'] = Date.now();
-                    const targetName = players[data.executeTargetId] ? players[data.executeTargetId].name : '';
-                    logs.push(`⚖️ [찬반 투표 시작] ${targetName} 님의 처형 여부를 결정하는 찬반 투표를 시작합니다.`);
-                    updates['logs'] = logs;
-                    roomRef.update(updates);
-
-                } else if (data.state === 'VOTE_EXECUTE') {
-                    // 찬반 투표 집계 및 처형 연산
-                    const candidateId = data.executeTargetId;
-                    const candidate = players[candidateId];
-
-                    let approveCount = 0;
-                    let rejectCount = 0;
-
-                    Object.values(players).forEach(p => {
-                        if (p.isObserver || !p.role) return;
-                        if (p.executeVote === true) approveCount++;
-                        else if (p.executeVote === false) rejectCount++;
-                    });
-
-                    let updates = {};
-
-                    if (approveCount > rejectCount && candidate) {
-                        updates[`players/${candidateId}/isDead`] = true;
-                        players[candidateId].isDead = true;
-                        updates['lastExecutedPlayerName'] = candidate.name;
-                        updates['lastExecutedPlayerId'] = candidateId;
-                        logs.push(`☠ [처형 확정] 찬성 ${approveCount}표 / 반대 ${rejectCount}표로 ${candidate.name}님이 처형되었습니다.`);
-
-                        if (candidate.role && candidate.role.id === 'PRESIDENT') {
-                            logs.push(`🚨 낮 투표로 특수 패배 조건이 발동했습니다.`);
-                            triggerGameEnd({ winner: 'MAFIA', reason: '낮 투표로 마피아팀 승리 조건이 충족되었습니다.' }, updates, logs);
-                            return;
-                        }
-                    } else {
-                        logs.push(`🛡️ [처형 부결] 찬성 ${approveCount}표 / 반대 ${rejectCount}표로 ${candidate ? candidate.name : ''}님의 처형이 부결되었습니다.`);
-                    }
-
-                    const winResult = checkWinCondition(players, !!data.mafiaWinsOnParity);
-                    if (winResult) {
-                        triggerGameEnd(winResult, updates, logs);
-                        return;
-                    }
-
-                    Object.keys(players).forEach(pId => {
-                        updates[`players/${pId}/executeVote`] = null;
-                    });
-
-                    updates['state'] = 'NIGHT';
-                    updates['executeTargetId'] = null;
-                    updates['nightActions'] = null;
-                    Object.keys(players).forEach(pId => { updates[`players/${pId}/privateResult`] = null; });
-                    updates['phaseStartTime'] = Date.now();
-                    logs.push(`🌙 제 ${data.dayCount}일 밤이 되었습니다.`);
-                    updates['logs'] = logs;
-
-                    roomRef.update(updates);
-
-                } else {
-                    // 밤 종료 및 능력 동시 연산 (NIGHT -> DAY)
-                    const actions = data.nightActions || {};
-                    let updates = {};
-
-                    // 밤 시작 시점의 사망자 상태를 고정한다.
-                    // 성직자가 같은 밤 부활시켜도 영매는 '그 밤 시작 전에 죽어 있던 사람'을 조사할 수 있다.
-                    const deadAtNightStartSet = new Set(
-                        Object.keys(players).filter(id => players[id] && players[id].isDead)
-                    );
-
-                    let protectedTargetSet = new Set();
-                    let auditEvents = []; // 옵저버 전용 상세 처리 결과
-                    let hallucinatedActorSet = new Set();
-                    let lostAbilityActorSet = new Set(); // 9번 요구사항: 폭력배에 의한 능력 상실
-                    // 그 밤 도중 사망한 플레이어를 기록한다. (기록/감사용)
-                    // 언데드 기본 규칙: 그 밤에 죽은 플레이어의 능력도 정상 발동되므로,
-                    // 이 값은 능력 발동 여부를 막는 데 사용하지 않는다.
-                    let diedDuringNightSet = new Set();
-                    let attackedTargetId = null;
-
-                    // 0단계: 환각 여부를 먼저 계산한다.
-                    // 폭력배의 능력 박탈은 환각 상태에서 실패해야 하므로, 환각 -> 박탈 -> 환각 재계산의 2단계로 처리한다.
-                    const calculateHallucinatedActors = (blockedActors) => {
-                        // 마약상은 환각 면역이므로 차단되지 않았다면 항상 효과를 낸다.
-                        // 양조사는 자신이 환각 대상이 되면 능력이 무효이므로, 양조사끼리의
-                        // 연쇄/상호 지목에서는 무효가 된 양조사의 대상 효과를 제외한다.
-                        const immuneRoles = ['DRUG_DEALER', 'PRESIDENT', 'RULER_BULLY', 'FOOL'];
-                        const sources = Object.keys(actions).map(actorId => {
-                            const act = actions[actorId];
-                            const actor = players[actorId];
-                            const target = act && players[act.targetId];
-                            if (!actor || !act || blockedActors.has(actorId)) return null;
-                            if (!['DRUG_DEALER', 'BREWER'].includes(act.actorRoleId)) return null;
-                            if (!target || !target.role || immuneRoles.includes(target.role.id)) return null;
-                            return { actorId, targetId: act.targetId, roleId: act.actorRoleId };
-                        }).filter(Boolean);
-
-                        // 양조사 중 활성 환각원에게 지목된 양조사는 비활성화한다.
-                        // 반복 제거로 A→B, B→C에서는 A만 작동하고 C는 환각되지 않게 하며,
-                        // 상호 지목 A↔B는 둘 다 무효로 처리해 순서에 따른 결과 차이를 막는다.
-                        const activeSourceIds = new Set(sources.map(source => source.actorId));
-                        let changed = true;
-                        while (changed) {
-                            changed = false;
-                            const targetedByActive = new Set(
-                                sources.filter(source => activeSourceIds.has(source.actorId)).map(source => source.targetId)
-                            );
-                            sources.forEach(source => {
-                                if (source.roleId === 'BREWER' && activeSourceIds.has(source.actorId) && targetedByActive.has(source.actorId)) {
-                                    activeSourceIds.delete(source.actorId);
-                                    changed = true;
-                                }
-                            });
-                        }
-
-                        const result = new Set();
-                        sources.forEach(source => {
-                            if (activeSourceIds.has(source.actorId)) result.add(source.targetId);
-                        });
-                        return result;
-                    };
-
-                    hallucinatedActorSet = calculateHallucinatedActors(new Set());
-
-                    // 1단계: 폭력배(THUG) 능력 박탈 연산
-                    Object.keys(actions).forEach(pId => {
-                        const act = actions[pId];
-                        // 폭력배 자신이 환각 상태면 능력 박탈은 실패한다.
-                        if (act.actorRoleId === 'THUG' && !hallucinatedActorSet.has(pId)) {
-                            if (act.targetId) {
-                                const targetPlayer = players[act.targetId];
-                                // 패시브 역할(대통령/군인/불량배/겁쟁이/광대)은 능력 박탈 대상에서 제외한다.
-                                if (targetPlayer && targetPlayer.role && targetPlayer.role.limitType !== 'passive') {
-                                    lostAbilityActorSet.add(act.targetId);
-                                    updates[`players/${act.targetId}/privateResult`] = `⚡ 능력을 잃었습니다.`;
-                                    auditEvents.push(`[폭력배] ${targetPlayer.name}의 능력을 차단했습니다.`);
-                                }
-                            }
-                            updates[`players/${pId}/usedOnceAbility`] = true;
-                        }
-                    });
-
-                    // 폭력배가 마약상/양조사를 막았다면 해당 환각도 취소한다.
-                    hallucinatedActorSet = calculateHallucinatedActors(lostAbilityActorSet);
-
-                    // 2단계: 겁쟁이(COWARD) 사망 판정은 모든 공격이 끝난 뒤에 처리한다.
-                    // 그 밤에 죽은 플레이어의 능력도 발동되므로, 지목한 사람의 생사와 무관하게 지목 자체가 조건이다.
-
-                    // 3단계: 경호원 보호
-                    Object.keys(actions).forEach(pId => {
-                        if (lostAbilityActorSet.has(pId)) return;
-                        const act = actions[pId];
-                        if (act.actorRoleId === 'BODYGUARD' && !hallucinatedActorSet.has(pId)) {
-                            if (act.targetId) {
-                                protectedTargetSet.add(act.targetId);
-                                auditEvents.push(`[경호원] ${players[act.targetId] ? players[act.targetId].name : act.targetId}을 보호 대상으로 지정했습니다.`);
-                            }
-                        }
-                    });
-
-                    // 3단계: 성직자 부활
-                    Object.keys(actions).forEach(pId => {
-                        if (lostAbilityActorSet.has(pId)) return;
-                        const act = actions[pId];
-                        if (act.actorRoleId === 'CLERGY' && !hallucinatedActorSet.has(pId)) {
-                            if (act.targetId && players[act.targetId]) {
-                                updates[`players/${act.targetId}/isDead`] = false;
-                                players[act.targetId].isDead = false;
-                                logs.push(`✨ ${players[act.targetId].name}님이 부활했습니다.`);
-                                auditEvents.push(`[성직자] ${players[act.targetId].name} 부활 처리 완료.`);
-                            }
-                            updates[`players/${pId}/usedOnceAbility`] = true;
-                        }
-                    });
-
-                    // 3-2단계: 심령술사(SPIRITIST) - 부활은 즉시 처리하고, 부활 대상의 능력은 다음 밤부터 허용한다.
-                    Object.keys(actions).forEach(pId => {
-                        if (lostAbilityActorSet.has(pId)) return;
-                        const act = actions[pId];
-                        if (act.actorRoleId === 'SPIRITIST' && !hallucinatedActorSet.has(pId)) {
-                            const target = act.targetId && players[act.targetId];
-                            if (target && target.isDead) {
-                                updates[`players/${act.targetId}/isDead`] = false;
-                                target.isDead = false;
-                                logs.push(`✨ ${target.name}님이 부활했습니다.`);
-                                updates[`players/${pId}/privateResult`] = `🔮 [심령술사] ${target.name}님을 부활시켰습니다.`;
-                            } else {
-                                updates[`players/${pId}/privateResult`] = '🔮 [심령술사] 선택한 대상은 부활할 수 없었습니다.';
-                            }
-                            updates[`players/${pId}/usedOnceAbility`] = true;
-                            players[pId].usedOnceAbility = true;
-                        }
-                    });
-
-                    // 감시자 결과는 모든 밤 행동·사망·부활·직업 교환이 끝난 뒤 계산한다.
-
-                    // 4단계: 마술사(MAGICIAN)
-                    // [야간 행동 확정 원칙]
-                    // 밤이 시작될 때 각 플레이어가 가지고 있던 직업(actorRoleId)이
-                    // 그 밤에 사용할 능력을 결정한다. 따라서 마술사와 직업을 교환하더라도
-                    // 상대가 밤 시작 시 가지고 있던 능력은 그 밤에 정상적으로 실행된다.
-                    // 반대로 마술사가 교환으로 새롭게 얻은 직업의 능력은 그 밤에는 실행하지 않고
-                    // 다음 밤부터 사용할 수 있다.
-                    //
-                    // 마술사 능력 자체는 게임 전체에서 1회만 사용된다.
-                    // 시민팀 대상이면 두 사람의 직업을 교체하고, 새로 마술사가 된 대상은
-                    // 이미 소모된 마술사 능력을 가지므로 다시 직업 교환을 할 수 없다.
-                    // 마술사가 마피아팀을 대상으로 하면 직업 교환 없이 마술사만 사망한다.
-                    // 이 경우에도 대상 마피아가 밤 시작 시 가지고 있던 능력은 정상 실행된다.
-                    Object.keys(actions).forEach(pId => {
-                        if (lostAbilityActorSet.has(pId)) return;
-                        const act = actions[pId];
-                        if (act.actorRoleId !== 'MAGICIAN' || hallucinatedActorSet.has(pId)) return;
-
-                        const magician = players[pId];
-                        const target = players[act.targetId];
-                        if (magician && target && magician.role && target.role) {
-                            const targetIsMafia = target.role.team === 'mafia'; // 마술사는 실제 소속팀 기준. RULER_BULLY는 실제 시민팀.
-
-                            if (targetIsMafia) {
-                                updates[`players/${pId}/isDead`] = true;
-                                magician.isDead = true;
-                                diedDuringNightSet.add(pId);
-                                updates[`players/${pId}/magicianAbilityUsed`] = true;
-                                magician.magicianAbilityUsed = true;
-                                updates[`players/${pId}/privateResult`] = `💥 [마술 실패] ${target.name}님은 마피아팀이었습니다.`;
-                                logs.push(`💀 밤 사이 ${magician.name}님이 사망했습니다.`);
-                            } else {
-                                const magicianRole = magician.role;
-                                const targetRole = target.role;
-
-                                // 직업만 서로 교환한다. 생사 상태 등 플레이어 자체 정보는 유지한다.
-                                magician.role = targetRole;
-                                target.role = magicianRole;
-
-                                updates[`players/${pId}/role`] = magician.role;
-                                updates[`players/${act.targetId}/role`] = target.role;
-
-                                // 원래 마술사였던 사람은 새 직업을 처음 얻은 것이므로
-                                // 그 직업이 1회성이라면 능력을 새롭게 사용할 수 있다.
-                                updates[`players/${pId}/usedOnceAbility`] = false;
-                                magician.usedOnceAbility = false;
-
-                                // 마술사 능력은 이미 사용되었으므로 새로 마술사가 된 사람은
-                                // 마술사 능력을 다시 사용할 수 없다.
-                                updates[`players/${act.targetId}/magicianAbilityUsed`] = true;
-                                target.magicianAbilityUsed = true;
-
-                                updates[`players/${pId}/privateResult`] = `🎩 [마술 성공] ${target.name}님과 직업을 교환했습니다. 당신의 새로운 직업은 [${magician.role.name}]입니다.`;
-                                updates[`players/${act.targetId}/privateResult`] = `🎩 [마술의 결과] 당신은 ${magician.name}님과 직업이 교환되었습니다. 새로운 직업은 [마술사]입니다.`;
-                                logs.push(`🎭 밤 사이 두 플레이어의 상태에 변화가 있었습니다.`);
-                            }
-                        }
-
-                        // 기존 마술사의 마술사 능력도 이 시점에서 소모 처리한다.
-                        updates[`players/${pId}/magicianAbilityUsed`] = true;
-                        magician.magicianAbilityUsed = true;
-                    });
-
-                    // 5단계: 저격수(SNIPER) & 청부업자(HITMAN)
-                    // actorRoleId는 밤 시작/능력 선택 당시의 직업이므로,
-                    // 4단계에서 마술사와 직업이 교환된 경우에도 기존 저격수/청부업자 행동은 실행된다.
-                    // 마술사로 새롭게 직업을 얻은 플레이어는 새 직업 능력을 같은 밤에 추가로 사용하지 않는다.
-                    Object.keys(actions).forEach(pId => {
-                        if (lostAbilityActorSet.has(pId)) return;
-                        const act = actions[pId];
-                        
-                        if (act.actorRoleId === 'HITMAN' && !hallucinatedActorSet.has(pId)) {
-                            if (act.targetId && players[act.targetId]) {
-                                updates[`players/${act.targetId}/isDead`] = true;
-                                players[act.targetId].isDead = true;
-                                diedDuringNightSet.add(act.targetId);
-                                logs.push(`💀 밤 사이 ${players[act.targetId].name}님이 사망했습니다.`);
-                            }
-                            updates[`players/${pId}/usedOnceAbility`] = true;
-                        }
-
-                        if (act.actorRoleId === 'SNIPER') {
-                            const target = players[act.targetId];
-                            const isHallucinated = hallucinatedActorSet.has(pId);
-
-                            if (target && target.role) {
-                                let isTargetMafia = (getCombatTeam(target) === 'mafia');
-                                if (isHallucinated) isTargetMafia = !isTargetMafia;
-
-                                if (isTargetMafia) {
-                                    updates[`players/${act.targetId}/isDead`] = true;
-                                    players[act.targetId].isDead = true;
-                                    diedDuringNightSet.add(act.targetId);
-                                    logs.push(`💀 밤 사이 ${target.name}님이 사망했습니다.`);
-                                    updates[`players/${pId}/privateResult`] = `🎯 [저격 성공] ${target.name}님을 성공적으로 저격했습니다.`;
-                                } else {
-                                    updates[`players/${pId}/isDead`] = true;
-                                    players[pId].isDead = true;
-                                    diedDuringNightSet.add(pId);
-                                    logs.push(`💀 밤 사이 ${players[pId].name}님이 사망했습니다.`);
-                                    updates[`players/${pId}/privateResult`] = `💥 [저격 실패] 시민을 지목하여 저격 실패로 본인이 사망했습니다.`;
-                                }
-                            }
-                            updates[`players/${pId}/usedOnceAbility`] = true;
-                        }
-                    });
-
-                    // 조사 결과 생성은 대부 공격까지 포함한 밤중 사망 판정 후 실행한다.
-
-                    // 7단계: 대부 습격
-                    // 대부 역시 밤 시작 시 대부였던 플레이어의 행동만 실행한다.
-                    // 마술사에게 직업을 빼앗기지 않는 한, 마술사 교환과 무관하게 정상적으로 습격한다.
-                    Object.keys(actions).forEach(pId => {
-                        if (lostAbilityActorSet.has(pId)) return;
-                        const act = actions[pId];
-                        if (act.actorRoleId === 'GODFATHER' && !hallucinatedActorSet.has(pId)) {
-                            attackedTargetId = act.targetId;
-                        }
-                    });
-
-                    if (attackedTargetId) {
-                        const victim = players[attackedTargetId];
-                        if (victim && !victim.isDead) {
-                            if (protectedTargetSet.has(attackedTargetId)) {
-                                // 경호원의 존재와 보호 성공 여부를 공개 로그에 노출하지 않는다.
-                                auditEvents.push(`[대부 공격] ${victim.name} 공격이 보호로 막혔습니다.`);
-                            } else if (victim.role && victim.role.id === 'SOLDIER' && !victim.soldierDefenseUsed && !hallucinatedActorSet.has(attackedTargetId)) {
-                                // 군인의 방어는 게임 중 1회만 가능하며 공개 로그에는 역할/방어 여부를 노출하지 않는다.
-                                updates[`players/${attackedTargetId}/soldierDefenseUsed`] = true;
-                                victim.soldierDefenseUsed = true;
-                                auditEvents.push(`[대부 공격] ${victim.name} 공격이 군인의 1회 방어 효과로 막혔습니다.`);
-                            } else {
-                                updates[`players/${attackedTargetId}/isDead`] = true;
-                                players[attackedTargetId].isDead = true;
-                                diedDuringNightSet.add(attackedTargetId);
-                                // 공개 로그에는 직업을 숨기고 단순 사망 메시지만 기록한다.
-                                logs.push(`💀 밤 사이 ${victim.name}님이 사망했습니다.`);
-                                auditEvents.push(`[대부 공격] ${victim.name} 사망 처리 완료.`);
-                            }
-                        }
-                    }
-
-                    // 8단계: 겁쟁이 사망 판정 — 지목 자체를 기준으로 한다.
-                    // 그 밤에 죽은 플레이어의 능력도 발동되므로, 조사직이 밤중에 사망했더라도 그 지목은 유효하다.
-                    Object.keys(players).forEach(targetId => {
-                        const target = players[targetId];
-                        if (!target || !target.role || target.role.id !== 'COWARD' || target.isDead) return;
-
-                        const wasTargetedByValidAbility = Object.keys(actions).some(actorId => {
-                            if (actorId === targetId) return false;
-                            const act = actions[actorId];
-                            if (!act) return false;
-                            return act.targetId === targetId ||
-                                   (Array.isArray(act.targetIds) && act.targetIds.includes(targetId));
-                        });
-
-                        if (wasTargetedByValidAbility) {
-                            auditEvents.push(`[겁쟁이] ${target.name}은 밤 능력의 대상으로 지목되어 사망 처리되었습니다.`);
-                            updates[`players/${targetId}/isDead`] = true;
-                            target.isDead = true;
-                            diedDuringNightSet.add(targetId);
-                            logs.push(`💀 밤 사이 ${target.name}님이 사망했습니다.`);
-                        }
-                    });
-
-                    // 9단계: 조사직의 결과 생성 (그 밤에 사망한 조사직도 결과를 받는다)
-                    // 조사자의 능력도 actorRoleId를 기준으로 밤 시작 시 직업을 유지한다.
-                    // 따라서 마술사 교환으로 새 직업을 얻었다고 같은 밤에 새 조사 능력이 생기지는 않는다.
-                    Object.keys(actions).forEach(pId => {
-                        // 폭력배에게 능력을 차단당한 경우에만 조사가 무효다. 그 밤에 사망했더라도 조사 결과는 정상 발동된다.
-                        if (lostAbilityActorSet.has(pId)) return;
-                        const act = actions[pId];
-                        const isHallucinated = hallucinatedActorSet.has(pId);
-
-                        // 8번 요구사항: 조사 이력 누적 함수
-                        const addInvestHistory = (pId, text) => {
-                            let oldHist = players[pId].investHistory || [];
-                            oldHist.push(`[${data.dayCount}일차 밤] ${text}`);
-                            updates[`players/${pId}/investHistory`] = oldHist;
-                        };
-
-                        if (act.actorRoleId === 'INVESTIGATOR') {
-                            if (Array.isArray(act.targetIds) && act.targetIds.length === 2) {
-                                const t1 = players[act.targetIds[0]];
-                                const t2 = players[act.targetIds[1]];
-                                if (t1 && t2) {
-                                    const t1Team = getInvestigativeTeam(t1);
-                                    const t2Team = getInvestigativeTeam(t2);
-                                    let hasMafia = (t1Team === 'mafia' || (t1.role && t1.role.id === 'RULER_BULLY')) || 
-                                                   (t2Team === 'mafia' || (t2.role && t2.role.id === 'RULER_BULLY'));
-                                    if (isHallucinated) hasMafia = !hasMafia;
-
-                                    const resMsg = `🔍[조사결과] ${t1.name}, ${t2.name} 중 마피아는 ${hasMafia ? '🔴 [존재함]' : '🔵 [없음]'}`;
-                                    updates[`players/${pId}/privateResult`] = resMsg;
-                                    addInvestHistory(pId, resMsg);
-                                }
-                            }
-                        } else if (act.actorRoleId === 'PSYCHOLOGIST') {
-                            if (Array.isArray(act.targetIds) && act.targetIds.length === 2) {
-                                const t1 = players[act.targetIds[0]];
-                                const t2 = players[act.targetIds[1]];
-                                if (t1 && t2) {
-                                    const t1Team = getInvestigativeTeam(t1);
-                                    const t2Team = getInvestigativeTeam(t2);
-                                    let sameTeam = (t1Team === t2Team);
-                                    if (isHallucinated) sameTeam = !sameTeam;
-
-                                    const resMsg = `🔍[조사결과] ${t1.name}, ${t2.name}은 ${sameTeam ? '🟢 [같은 팀]' : '🔴 [다른 팀]'}`;
-                                    updates[`players/${pId}/privateResult`] = resMsg;
-                                    addInvestHistory(pId, resMsg);
-                                }
-                            }
-                        } else if (act.actorRoleId === 'DETECTIVE') { // 7번 요구사항 수정
-                            const target = players[act.targetId];
-                            if (target) {
-                                const targetAct = actions[act.targetId];
-                                let targetUsedToName = '없음 (능력 안씀)';
-                                if (targetAct) {
-                                    if (targetAct.targetName) targetUsedToName = targetAct.targetName;
-                                    else if (Array.isArray(targetAct.targetIds)) targetUsedToName = targetAct.targetIds.map(id => players[id] ? players[id].name : '').join(', ');
-                                }
-                                if (isHallucinated) targetUsedToName = '알 수 없음(환각)';
-
-                                const resMsg = `🔍[조사결과] ${target.name}님이 밤에 능력을 지목한 대상: [${targetUsedToName}]`;
-                                updates[`players/${pId}/privateResult`] = resMsg;
-                                addInvestHistory(pId, resMsg);
-                            }
-                            updates[`players/${pId}/usedOnceAbility`] = true;
-                        } else if (act.actorRoleId === 'WITNESS') {
-                            const target = players[act.targetId];
-                            if (target) {
-                                let visitedActors = [];
-                                Object.keys(actions).forEach(otherId => {
-                                    const oAct = actions[otherId];
-                                    if (otherId !== pId && (oAct.targetId === act.targetId || (Array.isArray(oAct.targetIds) && oAct.targetIds.includes(act.targetId)))) {
-                                        visitedActors.push(players[otherId] ? players[otherId].name : '');
-                                    }
-                                });
-                                let visitedMsg = visitedActors.length > 0 ? visitedActors.join(', ') : '없음';
-                                if (isHallucinated) visitedMsg = '알 수 없음(환각)';
-
-                                const resMsg = `🔍[조사결과] ${target.name}님에게 밤에 능력을 사용한 사람: [${visitedMsg}]`;
-                                updates[`players/${pId}/privateResult`] = resMsg;
-                                addInvestHistory(pId, resMsg);
-                            }
-                            updates[`players/${pId}/usedOnceAbility`] = true;
-                        } else if (act.actorRoleId === 'NURSE') {
-                            const target = players[act.targetId];
-                            if (target) {
-                                // 환각 능력(마약상/양조사)의 대상이 되었는지를 확인한다.
-                                // 간호사 본인이 환각 상태면 결과를 반대로 알려준다.
-                                let wasHallucinated = hallucinatedActorSet.has(act.targetId);
-                                if (isHallucinated) wasHallucinated = !wasHallucinated;
-
-                                const resMsg = `🔍[조사결과] ${target.name}님은 환각 능력에 ${wasHallucinated ? '🔴 [지목되었습니다]' : '🔵 [지목되지 않았습니다]'}`;
-                                updates[`players/${pId}/privateResult`] = resMsg;
-                                addInvestHistory(pId, resMsg);
-                            }
-                        } else if (act.actorRoleId === 'LAWYER') {
-                            const target = players[act.targetId];
-                            if (target && target.role) {
-                                let shownRole = target.role.id === 'LAWYER' ? '시민' : target.role.name;
-                                if (isHallucinated) shownRole = '엉뚱한 직업';
-                                const resMsg = `🔍[조사결과] ${target.name}님의 직업은 [${shownRole}]`;
-                                updates[`players/${pId}/privateResult`] = resMsg;
-                                addInvestHistory(pId, resMsg);
-                            }
-                        } else if (act.actorRoleId === 'MEDIUM') {
-                            const target = players[act.targetId];
-                            if (target && deadAtNightStartSet.has(act.targetId) && target.role) {
-                                let isMafia = (getInvestigativeTeam(target) === 'mafia');
-                                if (isHallucinated) isMafia = !isMafia;
-                                const resMsg = `🔍[조사결과] 사망자 ${target.name}님은 ${isMafia ? '🔴 [마피아팀]' : '🔵 [시민팀]'}`;
-                                updates[`players/${pId}/privateResult`] = resMsg;
-                                addInvestHistory(pId, resMsg);
-                            }
-                        }
-                    });
-
-                    // 일관된 밤 결과 로그: 이번 밤에 사망 로그가 하나도 없을 때만 기록한다.
-                    // 대부 공격이 경호원/군인에게 막혔거나 대부가 환각 상태여도,
-                    // 다른 밤 능력으로 사망자가 발생했다면 '아무 일도 일어나지 않았습니다'를 남기지 않는다.
-                    const nightHasDeathLog = logs.slice(initialLogCount).some(message =>
-                        typeof message === 'string' && /님이 사망했습니다|님은 밤 사이 사망했습니다/.test(message)
-                    );
-                    if (!nightHasDeathLog) {
-                        logs.push(`🕊️ 밤 사이 조용하게 아무 일도 일어나지 않았습니다.`);
-                    }
-
-                    // 감시자 결과는 해당 밤의 모든 사망·부활·직업 교환 처리가 끝난 최종 상태를 기준으로 계산한다.
-                    Object.keys(actions).forEach(pId => {
-                        if (lostAbilityActorSet.has(pId) || deadAtNightStartSet.has(pId)) return;
-                        const act = actions[pId];
-                        if (!act || act.actorRoleId !== 'WATCHER') return;
-                        const mafiaAlive = Object.values(players).filter(p => p && !p.isDead && p.role && (p.role.team === 'mafia' || p.role.id === 'THUG' || p.role.id === 'RULER_BULLY')).length;
-                        const isHallucinated = hallucinatedActorSet.has(pId);
-                        const livingCount = Object.values(players).filter(p => p && !p.isDead && p.role).length;
-                        const shownCount = isHallucinated ? Math.floor(Math.random() * (livingCount + 1)) : mafiaAlive;
-                        const resultText = `👁️ [감시 결과] 밤 처리 후 생존 중인 마피아팀 인원은 ${shownCount}명입니다.${isHallucinated ? ' (환각으로 인해 잘못된 결과)' : ''}`;
-                        updates[`players/${pId}/privateResult`] = resultText;
-                        updates[`players/${pId}/usedOnceAbility`] = true;
-                        players[pId].usedOnceAbility = true;
-                    });
-
-                    // 밤별 상세 감사 기록: 행동 대상, 개인 능력 결과, 밤의 주요 사건을 Firebase에 보관한다.
-                    // UI에서는 옵저버 전용으로 접어서 표시하므로 일반 참가자에게 노출되지 않는다.
-                    const nightNumber = Number(data.dayCount || 1);
-                    const auditKey = `night_${nightNumber}`;
-                    const auditActions = Object.keys(actions).map(pId => {
-                        const act = actions[pId];
-                        if (!act) return null;
-                        const actor = players[pId];
-                        let targetText = act.targetName || '';
-                        if (!targetText && Array.isArray(act.targetIds)) targetText = act.targetIds.map(id => players[id] ? players[id].name : id).join(', ');
-                        if (!targetText && act.targetId) targetText = players[act.targetId] ? players[act.targetId].name : act.targetId;
-                        return `${actor ? actor.name : pId} (${act.actorRoleName || act.actorRoleId || '직업 미상'}) → ${targetText || '대상 없음'}`;
-                    }).filter(Boolean);
-                    const auditResults = [...auditEvents];
-                    Object.keys(updates).forEach(path => {
-                        const match = path.match(/^players\/([^/]+)\/privateResult$/);
-                        if (match && updates[path]) {
-                            const actor = players[match[1]];
-                            auditResults.push(`${actor ? actor.name : match[1]}: ${updates[path]}`);
-                        }
-                    });
-                    const auditHistory = data.nightAuditLog || {};
-                    auditHistory[auditKey] = {
-                        label: `제 ${nightNumber}일 밤`,
-                        actions: auditActions,
-                        results: auditResults,
-                        summary: logs.slice(initialLogCount)
-                    };
-                    updates[`nightAuditLog/${auditKey}`] = auditHistory[auditKey];
-
-                    const winResult = checkWinCondition(players, !!data.mafiaWinsOnParity);
-                    if (winResult) {
-                        triggerGameEnd(winResult, updates, logs);
-                        return;
-                    }
-
-                    let nextDay = data.dayCount + 1;
-                    logs.push(`☀️ 제 ${nextDay}일 낮이 밝았습니다.`);
-
-                    updates['state'] = 'DAY';
-                    updates['dayCount'] = nextDay;
-                    updates['logs'] = logs;
-                    updates['nightActions'] = null;
-                    updates['phaseStartTime'] = Date.now();
-
-                    roomRef.update(updates);
-                }
-            });
-        }
-
-        function forceRestart() {
-            if (!confirm('게임의 모든 진행 상태를 초기화하고 대기실로 이동하시겠습니까?')) return;
-            forceRestartSilent();
-        }
-
-        function openGuideModal() {
-            switchTab('roles');
-            document.getElementById('guide-modal').classList.remove('hidden');
-        }
-
-        function closeGuideModal() {
-            document.getElementById('guide-modal').classList.add('hidden');
-        }
-
-        function switchTab(tabType) {
-            const btnRules = document.getElementById('tab-btn-rules');
-            const btnRoles = document.getElementById('tab-btn-roles');
-            const bodyRules = document.getElementById('tab-rules');
-            const bodyRoles = document.getElementById('tab-roles');
-
-            if (tabType === 'rules') {
-                btnRules.classList.add('active');
-                btnRoles.classList.remove('active');
-                bodyRules.classList.remove('hidden');
-                bodyRoles.classList.add('hidden');
-            } else {
-                btnRoles.classList.add('active');
-                btnRules.classList.remove('active');
-                bodyRoles.classList.remove('hidden');
-                bodyRules.classList.add('hidden');
-            }
-        }
-    </script>
 </body>
 </html>
