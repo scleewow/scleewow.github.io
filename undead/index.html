@@ -425,8 +425,10 @@
             margin-top: 0.5rem;
             font-size: 0.8rem;
             text-align: left;
-            max-height: 80px;
-            overflow-y: auto;
+            /* 누르고 있는 동안에만 보이는 영역이라 스크롤이 불가능하다.
+               높이 제한 없이 모든 조사 기록을 한 번에 펼쳐 보여준다. */
+            max-height: none;
+            overflow: visible;
         }
         body.night-mode .invest-history-box {
             background: #030712;
@@ -1447,7 +1449,8 @@
             if (ownInvestHistory.length > 0) {
                 personalInvestCard.classList.remove('hidden');
                 historyContent.replaceChildren();
-                ownInvestHistory.forEach(entry => {
+                // 최신 조사 결과가 맨 위에 오도록 역순으로 표시한다. (원본 배열은 변경하지 않음)
+                ownInvestHistory.slice().reverse().forEach(entry => {
                     const line = document.createElement('div');
                     line.style.padding = '0.2rem 0';
                     line.textContent = `• ${entry}`;
