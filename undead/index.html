@@ -514,7 +514,7 @@
                     </label>
                     <label style="display:flex; align-items:center; gap:0.3rem; cursor:pointer;">
                         <input type="checkbox" id="mafia-parity-win-check" style="width:auto; margin:0;" onchange="setMafiaParityWin(this.checked)">
-                        <span>마피아 수와 시민 수가 같아지면 마피아팀 승리</span>
+                        <span>생존 마피아 수가 생존 시민 수보다 많아지면 마피아팀 승리</span>
                     </label>
                 </div>
             </div>
@@ -647,12 +647,12 @@
             <div id="tab-rules" class="tab-body hidden">
                 <h4>🏆 팀별 승리 조건</h4>
                 <p><b>• 시민팀 승리:</b> 대부를 죽이면 승리합니다.<br>
-                <b>• 마피아팀 승리:</b> 대부가 최후 2인까지 살아남거나, 대통령을 투표로 죽일 경우 또는 시민을 모두 죽이면 승리합니다.(선택옵션:마피아수=시민수)</p>
+                <b>• 마피아팀 승리:</b> 대부가 최후 2인까지 살아남거나, 대통령을 투표로 죽일 경우 또는 시민을 모두 죽이면 승리합니다.(선택옵션: 생존 마피아 수 &gt; 생존 시민 수)</p>
 				
 				<h4>★ 중요사항</h4>
 				<p><b>• 게임중 서로의 화면을 보여주지 마세요!</b></p>
 				<p>• 마약상·대통령·불량배·광대는 환각의 영향을 받지 않는다.</p>
-				<p><b>• 죽이는 것도 하나의 능력이며, 그밤에 죽은 플레이어의 능력도 발동됩니다.</b>(단, 그밤에 죽은 조사직의 경우 능력발동이 안됩니다.)</p>
+				<p><b>• 죽이는 것도 하나의 능력이며, 그밤에 죽은 플레이어의 능력도 발동됩니다.</b></p>
 				<p>• 마피아는 이번판 제외된 시민의 직업을 알고 있습니다. 언데드 마피아는 마피아의 생존이 중요한게 아닙니다. 대부가 아닌이상 시민들에게 혼란을 주고 선동하는 것이 훨씬 유리합니다.</p>
 				<p>• 끝까지 사람들은 다른사람의 직업을 모릅니다.</p>
 				<p>• 죽어도 낮투표가 가능하니 포기하지 마세요!</p>
@@ -677,7 +677,7 @@
 				<p>• 모든능력은 밤이 종료되는 시점에 동시에 발동합니다.(단, 환각만 우선발동) <br>
 				• 죽이는 것도 하나의 능력이며, 그밤에 죽은 플레이어의 능력도 발동됩니다.</p>
                 <p>• 밤에 지정한 능력은 아래 우선순위로 처리됩니다. 밤에 사망하더라도 밤 시작 시 선택한 능력은 규칙상 차단·무효화되지 않았다면 실행됩니다.<br>
-                • 처리 순서: 환각 계산 → 폭력배의 능력 차단 및 환각 재계산 → 경호원 보호 지정 → 성직자 부활 → 심령술사 부활 → 마술사 직업 교환/실패 처리 → 저격수·청부업자 공격 → 대부 공격(경호원·군인 방어) → 조사직 생존 여부 판정 및 겁쟁이 사망 처리 → 생존한 조사직 결과 생성 → 감시자 인원 확인 → 승리 조건 판정.<br>
+                • 처리 순서: 환각 계산 → 폭력배의 능력 차단 및 환각 재계산 → 경호원 보호 지정 → 성직자 부활 → 심령술사 부활 → 마술사 직업 교환/실패 처리 → 저격수·청부업자 공격 → 대부 공격(경호원·군인 방어) → 겁쟁이 사망 처리 → 조사직 결과 생성(그 밤에 사망한 조사직 포함) → 감시자 인원 확인 → 승리 조건 판정.<br>
                 • 마피아 팀은 동료 마피아 닉네임과 이번 판에 <b>제외된 시민 직업</b>을 공유받아 사칭(블러핑)에 활용합니다.</p>
             </div>
             <button class="secondary" style="margin-top:1rem;" onclick="closeGuideModal()">닫기</button>
@@ -739,7 +739,7 @@
             { id: 'SOLDIER', name: '군인', team: 'human', limitType: 'passive', desc: '게임 중 1회, 환각 상태가 아닐 때 대부의 공격을 막아낸다. 방어를 한 번 사용한 뒤에는 다시 막을 수 없다. 환각 상태에서는 방어 능력이 무효가 된다.' },
             { id: 'PRESIDENT', name: '대통령', team: 'human', limitType: 'passive', desc: '환각에 면역이다. 낮 찬반 투표로 처형되면 즉시 마피아팀 승리로 게임이 종료된다. 밤에 사망하는 경우에는 이 특수 패배 조건이 발동하지 않는다.' },
             { id: 'RULER_BULLY', name: '불량배', team: 'human', limitType: 'passive', desc: '환각에 면역이다. 조사직의 마피아팀 판정에서 마피아로 취급된다. 승리 조건에서도 살아 있는 시민 수에 포함되지 않는다.' },
-            { id: 'COWARD', name: '겁쟁이', team: 'human', limitType: 'passive', desc: '밤에 다른 플레이어의 능력 대상으로 지목되면 사망한다. 능력의 성공 여부와 관계없이 지목 자체가 조건이다. 단, 조사직이 그 밤 도중 사망했거나 밤 시작 시 이미 사망 상태였다면 해당 조사 지목만으로는 사망하지 않는다. 자기 자신의 선택은 대상 지정으로 보지 않는다.' },
+            { id: 'COWARD', name: '겁쟁이', team: 'human', limitType: 'passive', desc: '밤에 다른 플레이어의 능력 대상으로 지목되면 사망한다. 능력의 성공 여부와 관계없이 지목 자체가 조건이다. 지목한 사람이 같은 밤에 사망하더라도 그 능력은 발동되므로 겁쟁이는 사망한다. 자기 자신의 선택은 대상 지정으로 보지 않는다.' },
             { id: 'FOOL', name: '광대', team: 'human', limitType: 'passive', desc: '환각에 면역이다. 자신은 양조사라고 믿고 있으며 게임 화면에서도 양조사처럼 보인다. 밤에는 양조사처럼 대상을 지정할 수 있지만 실제 환각 효과는 발생하지 않는다.' }
         ];
 
@@ -1847,8 +1847,10 @@
                 return { winner: 'CITIZEN', reason: '시민팀이 승리 조건을 충족했습니다!' };
             }
 
-            if (mafiaWinsOnParity && aliveGodfather && aliveMafia > 0 && aliveMafia === aliveCitizens) {
-                return { winner: 'MAFIA', reason: '생존 마피아 수가 시민 수와 같거나 많아 마피아팀이 승리했습니다!' };
+            // 선택 옵션: 생존 마피아 수가 생존 시민 수보다 많아지면 마피아팀 승리 (동수는 승리 아님)
+            // 내부 키 이름(mafiaWinsOnParity)은 기존 방과의 호환을 위해 유지한다.
+            if (mafiaWinsOnParity && aliveGodfather && aliveMafia > aliveCitizens) {
+                return { winner: 'MAFIA', reason: `생존 마피아 수(${aliveMafia}명)가 생존 시민 수(${aliveCitizens}명)보다 많아져 마피아팀이 승리했습니다!` };
             }
 
             if (aliveGodfather && totalAlive <= 2) {
@@ -1999,8 +2001,9 @@
                     let auditEvents = []; // 옵저버 전용 상세 처리 결과
                     let hallucinatedActorSet = new Set();
                     let lostAbilityActorSet = new Set(); // 9번 요구사항: 폭력배에 의한 능력 상실
-                    // 그 밤 도중 한 번이라도 사망한 플레이어를 기록한다.
-                    // 같은 밤 부활하더라도 조사직의 해당 밤 능력은 무효로 판정한다.
+                    // 그 밤 도중 사망한 플레이어를 기록한다. (기록/감사용)
+                    // 언데드 기본 규칙: 그 밤에 죽은 플레이어의 능력도 정상 발동되므로,
+                    // 이 값은 능력 발동 여부를 막는 데 사용하지 않는다.
                     let diedDuringNightSet = new Set();
                     let attackedTargetId = null;
 
@@ -2069,9 +2072,8 @@
                     // 폭력배가 마약상/양조사를 막았다면 해당 환각도 취소한다.
                     hallucinatedActorSet = calculateHallucinatedActors(lostAbilityActorSet);
 
-                    // 2단계: 겁쟁이(COWARD) 사망 판정은 모든 공격이 끝난 뒤로 미룬다.
-                    // 조사직이 밤중에 사망했다면 그 조사 능력은 무효이며,
-                    // 그 능력만으로 지목된 겁쟁이도 사망하지 않아야 하기 때문이다.
+                    // 2단계: 겁쟁이(COWARD) 사망 판정은 모든 공격이 끝난 뒤에 처리한다.
+                    // 그 밤에 죽은 플레이어의 능력도 발동되므로, 지목한 사람의 생사와 무관하게 지목 자체가 조건이다.
 
                     // 3단계: 경호원 보호
                     Object.keys(actions).forEach(pId => {
@@ -2263,12 +2265,8 @@
                         }
                     }
 
-                    // 8단계: 겁쟁이 사망 판정 — 기존 규칙대로 지목 자체를 기준으로 한다.
-                    // 단, 조사직이 밤 시작 시 이미 사망했거나 그 밤 도중 사망했다면 그 조사 지목은 무효다.
-                    const investigativeRoleIds = new Set([
-                        'INVESTIGATOR', 'PSYCHOLOGIST', 'DETECTIVE', 'WITNESS',
-                        'NURSE', 'LAWYER', 'MEDIUM', 'WATCHER'
-                    ]);
+                    // 8단계: 겁쟁이 사망 판정 — 지목 자체를 기준으로 한다.
+                    // 그 밤에 죽은 플레이어의 능력도 발동되므로, 조사직이 밤중에 사망했더라도 그 지목은 유효하다.
                     Object.keys(players).forEach(targetId => {
                         const target = players[targetId];
                         if (!target || !target.role || target.role.id !== 'COWARD' || target.isDead) return;
@@ -2277,10 +2275,6 @@
                             if (actorId === targetId) return false;
                             const act = actions[actorId];
                             if (!act) return false;
-                            if (investigativeRoleIds.has(act.actorRoleId) &&
-                                (deadAtNightStartSet.has(actorId) || diedDuringNightSet.has(actorId))) {
-                                return false;
-                            }
                             return act.targetId === targetId ||
                                    (Array.isArray(act.targetIds) && act.targetIds.includes(targetId));
                         });
@@ -2294,12 +2288,12 @@
                         }
                     });
 
-                    // 9단계: 생존한 조사직의 결과 생성 (밤중 사망자는 제외)
+                    // 9단계: 조사직의 결과 생성 (그 밤에 사망한 조사직도 결과를 받는다)
                     // 조사자의 능력도 actorRoleId를 기준으로 밤 시작 시 직업을 유지한다.
                     // 따라서 마술사 교환으로 새 직업을 얻었다고 같은 밤에 새 조사 능력이 생기지는 않는다.
                     Object.keys(actions).forEach(pId => {
-                        // 조사직은 밤중 한 번이라도 사망했다면(같은 밤 부활 포함) 그 밤의 조사가 무효다.
-                        if (lostAbilityActorSet.has(pId) || diedDuringNightSet.has(pId)) return;
+                        // 폭력배에게 능력을 차단당한 경우에만 조사가 무효다. 그 밤에 사망했더라도 조사 결과는 정상 발동된다.
+                        if (lostAbilityActorSet.has(pId)) return;
                         const act = actions[pId];
                         const isHallucinated = hallucinatedActorSet.has(pId);
 
@@ -2420,7 +2414,7 @@
 
                     // 감시자 결과는 해당 밤의 모든 사망·부활·직업 교환 처리가 끝난 최종 상태를 기준으로 계산한다.
                     Object.keys(actions).forEach(pId => {
-                        if (lostAbilityActorSet.has(pId) || deadAtNightStartSet.has(pId) || diedDuringNightSet.has(pId)) return;
+                        if (lostAbilityActorSet.has(pId) || deadAtNightStartSet.has(pId)) return;
                         const act = actions[pId];
                         if (!act || act.actorRoleId !== 'WATCHER') return;
                         const mafiaAlive = Object.values(players).filter(p => p && !p.isDead && p.role && (p.role.team === 'mafia' || p.role.id === 'THUG' || p.role.id === 'RULER_BULLY')).length;
