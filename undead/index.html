@@ -510,6 +510,13 @@
                         <input type="checkbox" id="host-observer-check" style="width:auto; margin:0;" onchange="setHostObserver(this.checked)">
                         <span>방장은 관전자(옵저버)로 참여</span>
                     </label>
+                    <div id="godfather-choice-wrap" class="hidden" style="margin-left:1.2rem; text-align:left;">
+                        <label for="godfather-player-select" style="font-weight:bold;">👑 대부로 지정할 플레이어</label>
+                        <select id="godfather-player-select" onchange="setGodfatherChoice(this.value)">
+                            <option value="">대부를 지정할 플레이어를 선택하세요</option>
+                        </select>
+                        <p style="font-size:0.75rem; color:#64748b; margin-top:0.25rem;">옵저버인 방장은 게임에 참여하지 않으며, 선택한 참가자가 대부가 됩니다.</p>
+                    </div>
                     <label style="display:flex; align-items:center; gap:0.3rem; cursor:pointer;">
                         <input type="checkbox" id="show-roles-in-game-check" style="width:auto; margin:0;">
                         <span>게임 화면 상단에 이번 판 역할 목록 공개</span>
@@ -1212,6 +1219,11 @@
             roomRef.child(`players/${myPlayerId}/isObserver`).set(!!checked);
         }
 
+        function setGodfatherChoice(playerId) {
+            if (!isHost || !roomRef) return;
+            roomRef.child('godfatherPlayerId').set(playerId || null);
+        }
+
         function setMafiaParityWin(checked) {
             if (!isHost || !roomRef) return;
             roomRef.child('mafiaWinsOnParity').set(!!checked);
@@ -1224,6 +1236,24 @@
             document.getElementById('player-count').innerText = playerKeys.length;
             const observerCheck = document.getElementById('host-observer-check');
             if (observerCheck) { observerCheck.checked = !!(players[myPlayerId] && players[myPlayerId].isObserver); observerCheck.disabled = !isHost; }
+            const godfatherWrap = document.getElementById('godfather-choice-wrap');
+            const godfatherSelect = document.getElementById('godfather-player-select');
+            const hostIsObserver = !!(players[myPlayerId] && players[myPlayerId].isObserver);
+            if (godfatherWrap && godfatherSelect) {
+                godfatherWrap.classList.toggle('hidden', !hostIsObserver);
+                const previousChoice = data.godfatherPlayerId || godfatherSelect.value;
+                godfatherSelect.innerHTML = '<option value="">대부를 지정할 플레이어를 선택하세요</option>';
+                playerKeys.forEach(pId => {
+                    const p = players[pId];
+                    if (!p || p.isObserver) return;
+                    const option = document.createElement('option');
+                    option.value = pId;
+                    option.textContent = p.name + (p.isHost ? ' 👑' : '');
+                    godfatherSelect.appendChild(option);
+                });
+                godfatherSelect.value = players[previousChoice] && !players[previousChoice].isObserver ? previousChoice : '';
+                godfatherSelect.disabled = !isHost;
+            }
             const parityCheck = document.getElementById('mafia-parity-win-check');
             if (parityCheck) { parityCheck.checked = !!data.mafiaWinsOnParity; parityCheck.disabled = !isHost; }
             const listEl = document.getElementById('lobby-player-list');
@@ -1276,6 +1306,12 @@
                 const allKeys = Object.keys(players);
                 const keys = allKeys.filter(pId => !(players[pId] && players[pId].isObserver));
                 const count = keys.length;
+                const hostIsObserver = !!(players[myPlayerId] && players[myPlayerId].isObserver);
+                const chosenGodfatherId = document.getElementById('godfather-player-select')?.value || '';
+
+                if (hostIsObserver && (!chosenGodfatherId || !keys.includes(chosenGodfatherId))) {
+                    return alert('옵저버 모드에서는 게임 시작 전에 대부로 지정할 플레이어를 선택해야 합니다.');
+                }
 
                 if (count < 4) {
                     return alert('옵저버를 제외하고 최소 4명의 플레이어가 필요합니다.');
@@ -1361,8 +1397,16 @@
                     }
                 }
 
-                let chosenGodfatherId = keys[gfCandidateIndex];
-                godfatherHistory.push(chosenGodfatherId);
+                let randomGodfatherPlayerId = keys[gfCandidateIndex];
+                if (hostIsObserver) {
+                    const selectedIndex = keys.indexOf(chosenGodfatherId);
+                    if (selectedIndex < 0 || gfCandidateIndex < 0) {
+                        return alert('대부 지정에 실패했습니다. 참가자 목록을 확인한 뒤 다시 시도해 주세요.');
+                    }
+                    [finalPool[gfCandidateIndex], finalPool[selectedIndex]] = [finalPool[selectedIndex], finalPool[gfCandidateIndex]];
+                    randomGodfatherPlayerId = chosenGodfatherId;
+                }
+                godfatherHistory.push(randomGodfatherPlayerId);
                 sessionStorage.setItem('godfather_history', JSON.stringify(godfatherHistory));
 
                 let updates = {};
