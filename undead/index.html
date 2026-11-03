@@ -454,6 +454,25 @@
         }
         .death-banner-content .skull { font-size: 4rem; margin-bottom: 0.5rem; }
         .death-banner-content h2 { font-size: 1.8rem; margin-bottom: 0.5rem; text-shadow: 0 0 10px #ef4444; }
+        /* 여러 명이 동시에 사망했을 때 이름 목록 */
+        .death-names-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.4rem;
+            max-width: 90vw;
+            margin: 0.5rem auto;
+        }
+        .death-name-chip {
+            padding: 0.3rem 0.8rem;
+            border: 1px solid #ef4444;
+            border-radius: 999px;
+            background: rgba(239, 68, 68, 0.15);
+            color: #fecaca;
+            font-size: 1.1rem;
+            font-weight: bold;
+            overflow-wrap: anywhere;
+        }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
@@ -611,6 +630,7 @@
         <div class="death-banner-content">
             <div class="skull">💀</div>
             <h2 id="death-player-name">OOO 사망!</h2>
+            <div id="death-names-list" class="death-names-list hidden"></div>
             <p id="death-cause-text">언데드로 전환되었습니다.</p>
         </div>
     </div>
@@ -1101,22 +1121,57 @@
             }
             const newlyDeadIds = currentDeadIds.filter(id => !previousDeadIds.has(id));
             if (newlyDeadIds.length) {
-                // 처형 투표는 한 명만 사망시키므로 그 신규 사망자를 정확히 표시한다.
+                // 새로 사망한 플레이어의 이름을 전부 수집한다.
+                // 처형 투표로 죽은 플레이어가 있으면 맨 앞에 두고, 나머지는 기존 순서를 유지한다.
                 const executedId = localState && localState.lastExecutedPlayerId;
-                const chosenId = executedId && newlyDeadIds.includes(executedId) ? executedId : newlyDeadIds[newlyDeadIds.length - 1];
-                const latestDead = players[chosenId];
-                if (latestDead) showDeathBanner(latestDead.name);
+                const orderedIds = executedId && newlyDeadIds.includes(executedId)
+                    ? [executedId, ...newlyDeadIds.filter(id => id !== executedId)]
+                    : newlyDeadIds;
+                const deadNames = orderedIds
+                    .map(id => players[id] && players[id].name)
+                    .filter(Boolean);
+                if (deadNames.length) showDeathBanner(deadNames);
             }
             previousDeadIds = new Set(currentDeadIds);
         }
 
-        function showDeathBanner(playerName) {
+        let deathBannerTimer = null;
+
+        // playerNames: 이름 배열(문자열 하나도 허용). 한 명이면 기존 연출, 여러 명이면 인원수와 이름을 모두 표시한다.
+        function showDeathBanner(playerNames) {
+            const names = Array.isArray(playerNames) ? playerNames : [playerNames];
             const banner = document.getElementById('death-banner');
-            document.getElementById('death-player-name').innerText = `${playerName} 사망!`;
+            const title = document.getElementById('death-player-name');
+            const namesBox = document.getElementById('death-names-list');
+            const causeText = document.getElementById('death-cause-text');
+
+            if (names.length === 1) {
+                title.innerText = `${names[0]} 사망!`;
+                namesBox.classList.add('hidden');
+                namesBox.replaceChildren();
+                causeText.classList.remove('hidden');
+            } else {
+                title.innerText = `${names.length}명 사망!`;
+                namesBox.replaceChildren();
+                names.forEach(name => {
+                    const chip = document.createElement('div');
+                    chip.className = 'death-name-chip';
+                    chip.textContent = name;
+                    namesBox.appendChild(chip);
+                });
+                namesBox.classList.remove('hidden');
+                causeText.classList.add('hidden');
+            }
+
             banner.classList.remove('hidden');
-            setTimeout(() => {
+            // 연속으로 호출돼도 이전 타이머 때문에 새 팝업이 일찍 닫히지 않게 한다.
+            if (deathBannerTimer) clearTimeout(deathBannerTimer);
+            // 이름이 많을수록 읽을 시간을 조금 더 준다. (최대 6초)
+            const duration = Math.min(3200 + (names.length - 1) * 600, 6000);
+            deathBannerTimer = setTimeout(() => {
                 banner.classList.add('hidden');
-            }, 3200);
+                deathBannerTimer = null;
+            }, duration);
         }
 
         function showPrivateModal(text) {
