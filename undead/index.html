@@ -1205,11 +1205,27 @@
                 item.className = 'player-item';
                 const isMafia = p.role && p.role.team === 'mafia';
                 const roleName = p.role ? (p.role.id === 'FOOL' ? '광대 (양조사 위장)' : p.role.name) : '미배정';
-                
-                item.innerHTML = `
-                    <span><b>${p.name}</b></span>
-                    <span class="role-tag ${isMafia ? 'mafia' : 'citizen'}">${isMafia ? '🔴' : '🔵'} ${roleName}</span>
-                `;
+
+                // 닉네임 옆에 게임 종료 시점의 상태(생존/사망·언데드/옵저버)를 함께 보여준다.
+                let statusText, statusColor;
+                if (p.isObserver) { statusText = '🛡️ 옵저버'; statusColor = '#64748b'; }
+                else if (p.isDead) { statusText = '💀 사망/언데드'; statusColor = '#ef4444'; }
+                else { statusText = '🟢 생존'; statusColor = '#16a34a'; }
+
+                // 닉네임은 textContent로 넣어 특수문자가 HTML로 해석되지 않게 한다.
+                const nameWrap = document.createElement('span');
+                const nameEl = document.createElement('b');
+                nameEl.textContent = p.name;
+                const statusEl = document.createElement('small');
+                statusEl.style.cssText = `font-size:0.75rem; margin-left:0.4rem; white-space:nowrap; color:${statusColor};`;
+                statusEl.textContent = `[${statusText}]`;
+                nameWrap.append(nameEl, statusEl);
+
+                const roleEl = document.createElement('span');
+                roleEl.className = `role-tag ${isMafia ? 'mafia' : 'citizen'}`;
+                roleEl.textContent = `${isMafia ? '🔴' : '🔵'} ${roleName}`;
+
+                item.append(nameWrap, roleEl);
                 rolesList.appendChild(item);
             });
 
