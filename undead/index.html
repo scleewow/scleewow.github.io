@@ -2134,30 +2134,51 @@
                         }
                     });
 
-                    // 3단계: 성직자 부활
+                    // 부활 공통 처리:
+                    // 성직자와 심령술사는 같은 부활 능력을 사용하므로 공통 규칙을 적용한다.
+                    // 부활한 밤에는 대상이 밤 시작 시 이미 사망 상태였으므로 능력 행동을 제출할 수 없고,
+                    // 다음 밤부터 능력 사용이 가능하다. 부활 시 모든 1회성 능력 사용 기록을 초기화한다.
+                    const revivePlayer = (targetId) => {
+                        const target = players[targetId];
+                        if (!target || !target.isDead) return false;
+
+                        updates[`players/${targetId}/isDead`] = false;
+                        target.isDead = false;
+
+                        // 모든 1회성/게임 중 1회 사용 기록 초기화
+                        // 일반 1회성 능력, 마술사 능력, 군인의 1회 방어 기록을 포함한다.
+                        updates[`players/${targetId}/usedOnceAbility`] = false;
+                        target.usedOnceAbility = false;
+                        updates[`players/${targetId}/magicianAbilityUsed`] = false;
+                        target.magicianAbilityUsed = false;
+                        updates[`players/${targetId}/soldierDefenseUsed`] = false;
+                        target.soldierDefenseUsed = false;
+
+                        return true;
+                    };
+
+                    // 3단계: 성직자 부활 (시민팀)
                     Object.keys(actions).forEach(pId => {
                         if (lostAbilityActorSet.has(pId)) return;
                         const act = actions[pId];
                         if (act.actorRoleId === 'CLERGY' && !hallucinatedActorSet.has(pId)) {
-                            if (act.targetId && players[act.targetId]) {
-                                updates[`players/${act.targetId}/isDead`] = false;
-                                players[act.targetId].isDead = false;
-                                logs.push(`✨ ${players[act.targetId].name}님이 부활했습니다.`);
-                                auditEvents.push(`[성직자] ${players[act.targetId].name} 부활 처리 완료.`);
+                            const target = act.targetId && players[act.targetId];
+                            if (target && revivePlayer(act.targetId)) {
+                                logs.push(`✨ ${target.name}님이 부활했습니다.`);
+                                auditEvents.push(`[성직자] ${target.name} 부활 처리 완료. 1회성 능력 기록 초기화.`);
                             }
                             updates[`players/${pId}/usedOnceAbility`] = true;
+                            players[pId].usedOnceAbility = true;
                         }
                     });
 
-                    // 3-2단계: 심령술사(SPIRITIST) - 부활은 즉시 처리하고, 부활 대상의 능력은 다음 밤부터 허용한다.
+                    // 3-2단계: 심령술사 부활 (마피아팀) — 성직자와 동일한 공통 부활 규칙
                     Object.keys(actions).forEach(pId => {
                         if (lostAbilityActorSet.has(pId)) return;
                         const act = actions[pId];
                         if (act.actorRoleId === 'SPIRITIST' && !hallucinatedActorSet.has(pId)) {
                             const target = act.targetId && players[act.targetId];
-                            if (target && target.isDead) {
-                                updates[`players/${act.targetId}/isDead`] = false;
-                                target.isDead = false;
+                            if (target && revivePlayer(act.targetId)) {
                                 logs.push(`✨ ${target.name}님이 부활했습니다.`);
                                 updates[`players/${pId}/privateResult`] = `🔮 [심령술사] ${target.name}님을 부활시켰습니다.`;
                             } else {
