@@ -1619,6 +1619,13 @@
             const observerPanel = document.getElementById('observer-panel');
             const isObserver = !!(me && me.isObserver && isHost);
             watcherBox.classList.toggle('hidden', !(data.state === 'NIGHT' && me && me.role && me.role.id === 'WATCHER' && !me.isDead && !me.usedOnceAbility));
+            // 감시 지정 여부에 따라 버튼을 토글 표시한다. (지정됨 → '감시 취소')
+            const watcherBtn = document.getElementById('watcher-action-btn');
+            if (watcherBtn) {
+                const watcherSelected = !!(data.nightActions && data.nightActions[myPlayerId]);
+                watcherBtn.innerText = watcherSelected ? '↩️ 감시 취소' : '👁️ 감시 결과 확인 (게임 중 1회)';
+                watcherBtn.style.background = watcherSelected ? '#0284c7' : '';
+            }
             observerPanel.classList.toggle('hidden', !isObserver);
             if (isObserver) {
                 const infoEl = document.getElementById('observer-info-content');
@@ -1702,7 +1709,8 @@
                     const nightActs = data.nightActions || {};
                     const myAct = nightActs[myPlayerId];
                     const isUsedNight = myAct && (myAct.targetId === pId || (Array.isArray(myAct.targetIds) && myAct.targetIds.includes(pId)));
-                    const btnText = isUsedNight ? '선택됨' : '능력 지정';
+                    // 이미 지정한 대상의 버튼을 다시 누르면 지정이 취소된다(토글). 그래서 선택된 버튼은 '지목 취소'로 표시한다.
+                    const btnText = isUsedNight ? '지목 취소' : '능력 지정';
                     
                     // 6번 요구사항: 1회성 능력 이미 사용시 비활성화
                     const isOnceAbilityDisabled = (me && me.role && me.role.limitType === 'once_game' && me.usedOnceAbility);
@@ -1827,6 +1835,17 @@
 
                 if (!me.role) return alert('능력을 사용할 수 없는 역할입니다.');
 
+                // 토글 취소: 이미 이 대상에게 능력을 지정해 둔 상태에서 같은 대상을 다시 누르면 지정을 취소한다.
+                // (수사관·심리학자는 대상이 2명이라 아래의 개별 토글 로직에서 처리한다.)
+                // 1회용 능력의 사용 처리는 밤 종료 시점에 이뤄지므로, 취소해도 사용 횟수는 소모되지 않는다.
+                if (me.role.id !== 'INVESTIGATOR' && me.role.id !== 'PSYCHOLOGIST') {
+                    const existingAct = data.nightActions && data.nightActions[myPlayerId];
+                    if (existingAct && existingAct.targetId === targetId) {
+                        return roomRef.child(`nightActions/${myPlayerId}`).remove()
+                            .then(() => alert(`${target.name}님에 대한 능력 지정을 취소했습니다.`));
+                    }
+                }
+
                 // 5번 요구사항: 자해/자기 지정 방지 (대부, 저격수, 청부업자 등)
                 const killSelfRoles = ['GODFATHER', 'SNIPER', 'HITMAN'];
                 if (killSelfRoles.includes(me.role.id) && targetId === myPlayerId) {
@@ -1885,6 +1904,12 @@
                         currentTargets.push(targetId);
                     }
 
+                    // 선택한 대상이 모두 해제되면 능력 지정 자체를 취소한 것으로 보고 기록을 지운다.
+                    if (currentTargets.length === 0) {
+                        return roomRef.child(`nightActions/${myPlayerId}`).remove()
+                            .then(() => alert('능력 지정을 모두 취소했습니다.'));
+                    }
+
                     let updates = {};
                     updates[`nightActions/${myPlayerId}`] = {
                         actorName: me.name,
@@ -1926,6 +1951,10 @@
                 const me = data.players && data.players[myPlayerId];
                 if (!me || me.isDead || me.isObserver || !me.role || me.role.id !== 'WATCHER') return;
                 if (me.usedOnceAbility) return alert('감시자 능력은 게임 중 이미 1회 사용했습니다.');
+                // 토글 취소: 이미 감시를 지정한 상태에서 다시 누르면 취소한다. (1회 사용권은 밤 종료 시 소모되므로 취소해도 유지된다.)
+                if (data.nightActions && data.nightActions[myPlayerId]) {
+                    return roomRef.child(`nightActions/${myPlayerId}`).remove().then(() => alert('감시 능력 지정을 취소했습니다.'));
+                }
                 const action = { actorName: me.name, actorRoleId: 'WATCHER', actorRoleName: me.role.name, actorTeam: me.role.team, targetId: null, targetName: null };
                 roomRef.child(`nightActions/${myPlayerId}`).set(action).then(() => alert('감시 능력을 지정했습니다. 밤 종료 시 결과를 확인할 수 있습니다.'));
             });
