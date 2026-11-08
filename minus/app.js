@@ -1,5 +1,6 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
+// Supabase 라이브러리와 config.js 는 boot() 안에서 불러옴
+// (불러오다 실패하면 '불러오는 중'에서 멈추지 않고 원인을 화면에 보여주기 위해)
+const SUPABASE_JS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 // ---------------------------------------------------------------------
 // 설정 / 상수
@@ -14,8 +15,7 @@ const TIME_OPTIONS = [0, 10, 15, 20, 30, 45, 60];
 const app = document.getElementById('app');
 const toastEl = document.getElementById('toast');
 
-const configured = !SUPABASE_URL.includes('YOUR-PROJECT') && !SUPABASE_ANON_KEY.includes('YOUR-');
-const sb = configured ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+let sb = null;
 
 const S = {
   roomId: null,
@@ -97,11 +97,32 @@ function qrSvg(text) {
 // ---------------------------------------------------------------------
 // 시작
 // ---------------------------------------------------------------------
+function bootError(html) {
+  app.innerHTML = `<div class="config-error">${html}</div>`;
+}
+
 async function boot() {
-  if (!configured) {
-    app.innerHTML = `<div class="config-error">Supabase 설정이 필요합니다.<br/>
-      <code>config.js</code> 에 프로젝트 URL과 anon key를 넣어 주세요.</div>`;
-    return;
+  let createClient, cfg;
+  try {
+    ({ createClient } = await import(SUPABASE_JS));
+  } catch (e) {
+    return bootError(`Supabase 라이브러리를 불러오지 못했어요.<br/>인터넷 연결을 확인해 주세요.<br/><br/>${esc(errMsg(e))}`);
+  }
+  try {
+    cfg = await import('./config.js');
+  } catch (e) {
+    return bootError(`<code>config.js</code> 를 읽지 못했어요. 따옴표나 세미콜론이 빠졌는지 확인해 주세요.<br/><br/>${esc(errMsg(e))}`);
+  }
+
+  const url = String(cfg.SUPABASE_URL || '').trim();
+  const key = String(cfg.SUPABASE_ANON_KEY || '').trim();
+  if (!url || !key || url.includes('YOUR-PROJECT') || key.includes('YOUR-')) {
+    return bootError(`Supabase 설정이 필요합니다.<br/><code>config.js</code> 에 프로젝트 URL과 anon key를 넣어 주세요.`);
+  }
+  try {
+    sb = createClient(url, key);
+  } catch (e) {
+    return bootError(`Supabase URL 형식이 올바르지 않아요.<br/>예: <code>https://abcd1234.supabase.co</code><br/><br/>${esc(errMsg(e))}`);
   }
 
   // 닉네임만으로 쓰기 위한 익명 로그인 (새로고침해도 같은 ID 유지)
@@ -160,46 +181,55 @@ function showHome(prefillCode = '') {
     </header>
 
     <section class="panel">
-      <label class="field"><span>닉네임</span>
-        <input id="nick" maxlength="12" placeholder="닉네임 (1~12자)" value="${esc(nick)}" autocomplete="off" />
+      <h2>방 만들기 (방장)</h2>
+      <label class="field"><span>방 생성 인증키</span>
+        <input id="hostKey" type="password" placeholder="방 생성 인증키 입력" autocomplete="off" />
       </label>
+      <label class="field"><span>닉네임</span>
+        <input id="hostNick" maxlength="12" placeholder="사용할 닉네임 (1~12자)" value="${fromQr ? '' : esc(nick)}" autocomplete="off" />
+      </label>
+      <button id="createBtn" class="gold block">새 방 만들기</button>
     </section>
 
     <section class="panel">
-      <h2>방 입장</h2>
-      <div class="row">
+      <h2>게임 참가하기</h2>
+      <label class="field"><span>닉네임</span>
+        <input id="joinNick" maxlength="12" placeholder="사용할 닉네임 (1~12자)" value="${esc(nick)}" autocomplete="off" />
+      </label>
+      <label class="field"><span>방 번호</span>
         <input id="code" class="code-input" inputmode="numeric" maxlength="5" placeholder="방 번호"
                value="${esc(prefillCode)}" autocomplete="off" />
-        <button id="joinBtn" class="primary" style="flex:0 0 96px">입장</button>
-      </div>
-    </section>
-
-    <section class="panel" ${fromQr ? 'style="opacity:.6"' : ''}>
-      <h2>새 방 만들기</h2>
-      <button id="createBtn" class="gold block">방 만들기</button>
+      </label>
+      <button id="joinBtn" class="primary block">입장하기</button>
     </section>
   `;
 
-  const $nick = document.getElementById('nick');
+  const $hostKey = document.getElementById('hostKey');
+  const $hostNick = document.getElementById('hostNick');
+  const $joinNick = document.getElementById('joinNick');
   const $code = document.getElementById('code');
-  if (fromQr) $nick.focus();
+  if (fromQr) { $joinNick.scrollIntoView({ block: 'center' }); $joinNick.focus(); }
 
-  const getNick = () => {
-    const v = $nick.value.trim();
-    if (!v) { toast('닉네임을 입력해 주세요', true); $nick.focus(); return null; }
+  const readNick = ($el) => {
+    const v = $el.value.trim();
+    if (!v) { toast('닉네임을 입력해 주세요', true); $el.focus(); return null; }
     localStorage.setItem(LS_NICK, v);
     return v;
   };
 
-  document.getElementById('createBtn').onclick = guard(async () => {
-    const n = getNick(); if (!n) return;
-    const roomId = await rpc('ma_create_room', { p_nickname: n });
+  const create = guard(async () => {
+    const key = $hostKey.value.trim();
+    if (!key) { toast('방 생성 인증키를 입력해 주세요', true); $hostKey.focus(); return; }
+    const n = readNick($hostNick); if (!n) return;
+    const roomId = await rpc('ma_create_room', { p_key: key, p_nickname: n });
     clearQuery();
     await enterRoom(roomId);
   });
+  document.getElementById('createBtn').onclick = create;
+  $hostNick.onkeydown = (e) => { if (e.key === 'Enter') create(); };
 
   const join = guard(async () => {
-    const n = getNick(); if (!n) return;
+    const n = readNick($joinNick); if (!n) return;
     const code = $code.value.trim();
     if (!code) { toast('방 번호를 입력해 주세요', true); $code.focus(); return; }
     const roomId = await rpc('ma_join_room', { p_code: code, p_nickname: n });
@@ -208,7 +238,7 @@ function showHome(prefillCode = '') {
   });
   document.getElementById('joinBtn').onclick = join;
   $code.onkeydown = (e) => { if (e.key === 'Enter') join(); };
-  $nick.onkeydown = (e) => { if (e.key === 'Enter' && $code.value.trim()) join(); };
+  $joinNick.onkeydown = (e) => { if (e.key === 'Enter') join(); };
 }
 
 // 버튼 연타 방지 + 에러 토스트
@@ -607,4 +637,7 @@ function renderResult() {
   };
 }
 
-boot();
+boot().catch((e) => {
+  console.error(e);
+  bootError(`시작하는 중 오류가 났어요.<br/><br/>${esc(errMsg(e))}`);
+});
