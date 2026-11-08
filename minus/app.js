@@ -177,7 +177,7 @@ function showHome(prefillCode = '') {
 
   app.innerHTML = `
     <header class="brand">
-      <div class="kicker">THE GENIUS</div>
+      <div class="kicker">THE HMGenius</div>
       <h1><span class="minus">마이너스</span> 경매</h1>
       <p>마이너스 점수를 가장 적게 받는 사람이 승리합니다</p>
     </header>
