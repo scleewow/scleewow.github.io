@@ -339,35 +339,50 @@ button.block { width: 100%; }
 .config-error { color: #ffb3bf; text-align: center; padding: 60px 10px; }
 .config-error code { background: var(--panel-2); padding: 2px 6px; border-radius: 4px; }
 
-/* 게임: 경매 카드 + 옆에 행동 버튼 */
-.stage-row { display: flex; gap: 16px; align-items: center; margin-bottom: 6px; }
-.stage-side { flex: 1; min-width: 0; }
+/* 게임: 경매 카드와 버튼 영역 1:1 */
+.stage-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: center; margin-bottom: 6px; }
+.stage-card { display: flex; flex-direction: column; align-items: center; }
+.stage-side { min-width: 0; }
+.pot { margin-top: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 13px; }
+.pot b { font-size: 20px; }
+.pot-chips { display: inline-flex; min-height: 14px; }
+.pot-chips .chip-dot + .chip-dot { margin-left: -6px; }
 .act-col { display: grid; gap: 8px; margin-top: 10px; }
 .act-col button { padding: 10px 8px; font-size: 15px; }
 .act-col button small { display: block; font-weight: 400; font-size: 11px; opacity: 0.85; }
+button.secondary {
+  background: #2c3446;
+  border: 1px solid #46516b;
+  color: #fff;
+  box-shadow: 0 2px 0 #1a1f2b;
+}
+button.secondary:active:not(:disabled), button.primary:active:not(:disabled) { transform: translateY(1px); box-shadow: none; }
+button.primary { box-shadow: 0 2px 0 #7d1729; }
 .section-title { font-size: 13px; color: var(--muted); letter-spacing: .08em; margin: 18px 0 10px; }
 
 /* 순서: 칩과 점수 */
-.chip-dot.small { width: 13px; height: 13px; vertical-align: -2px; margin-right: 4px; }
+.chip-dot.small { width: 13px; height: 13px; vertical-align: -2px; }
+.seat-head .stat.chips .chip-dot { margin-right: 4px; }
 .seat-head .stat.chips b { color: var(--gold); font-size: 17px; }
 .seat-head .stat.total b { color: var(--gold); }
 .seat-head { flex-wrap: wrap; }
 
-/* 가져간 카드: 연속된 숫자는 겹쳐서 표시 */
+/* 가져간 카드: 연속된 숫자는 겹쳐서 표시 (작은 수가 위, 큰 수는 뒤로) */
 .runs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .stack { display: inline-flex; }
 .mc {
   position: relative;
-  width: 34px;
-  height: 46px;
+  width: 42px;
+  height: 30px;
   border-radius: 6px;
   background: var(--card);
   color: #9a8a8f;
   font-family: 'Oswald', sans-serif;
-  font-size: 12px;
-  line-height: 1;
-  padding: 4px 0 0 3px;
-  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.35), inset 0 0 0 2px #fff;
+  font-size: 16px;
+  line-height: 30px;
+  text-align: right;
+  padding-right: 4px;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.35), inset 0 0 0 2px #fff;
 }
-.mc + .mc { margin-left: -11px; }
-.mc.count { color: var(--card-ink); font-weight: 700; }
+.mc + .mc { margin-left: -14px; }
+.mc.count { color: var(--card-ink); font-weight: 700; text-align: center; padding-right: 0; }
