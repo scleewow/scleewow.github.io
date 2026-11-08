@@ -575,7 +575,20 @@ function renderGame() {
       <h2 style="font-size:13px;color:var(--muted);letter-spacing:.08em;margin:18px 0 10px">순서</h2>
       ${seats}
     </section>
+
+    ${room.host_id === me ? `
+      <div class="spacer"></div>
+      <button id="forceEndBtn" class="danger block">게임 강제 종료</button>` : ''}
   `;
+
+  const forceBtn = document.getElementById('forceEndBtn');
+  if (forceBtn) {
+    forceBtn.onclick = guard(async () => {
+      if (!confirm('게임을 강제 종료할까요?\n모든 플레이어가 대기실로 돌아갑니다.')) return;
+      await rpc('ma_force_end', { p_room: room.id });
+      await refresh();
+    });
+  }
 
   if (myTurn) {
     document.getElementById('passBtn').onclick = guard(async () => {
