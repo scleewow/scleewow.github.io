@@ -176,9 +176,9 @@ button.block { width: 100%; }
 
 .stage { text-align: center; padding: 8px 0 4px; }
 .big-card {
-  width: 150px;
-  height: 210px;
-  margin: 0 auto;
+  width: 112px;
+  height: 158px;
+  flex: 0 0 auto;
   border-radius: 16px;
   background: var(--card);
   color: var(--card-ink);
@@ -186,14 +186,13 @@ button.block { width: 100%; }
   align-items: center;
   justify-content: center;
   font-family: 'Oswald', sans-serif;
-  font-size: 68px;
+  font-size: 46px;
   font-weight: 700;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5), inset 0 0 0 6px #fff, inset 0 0 0 7px rgba(179, 19, 47, 0.25);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), inset 0 0 0 6px #fff, inset 0 0 0 7px rgba(179, 19, 47, 0.25);
   animation: flip 0.35s ease-out;
 }
 @keyframes flip { from { transform: rotateY(80deg); opacity: 0.2; } to { transform: none; opacity: 1; } }
 .pot {
-  margin-top: 14px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -208,16 +207,15 @@ button.block { width: 100%; }
 .pot b { font-family: 'Oswald', sans-serif; font-size: 22px; color: var(--gold); }
 
 .turn-banner {
-  margin: 14px 0 8px;
-  text-align: center;
+  margin: 6px 0 8px;
   font-weight: 700;
-  font-size: 17px;
+  font-size: 16px;
 }
 .turn-banner.mine { color: var(--gold); }
 .timer { height: 6px; background: var(--panel-2); border-radius: 999px; overflow: hidden; }
 .timer > i { display: block; height: 100%; background: var(--gold); transition: width 0.25s linear; }
 .timer.low > i { background: var(--garnet); }
-.timer-text { text-align: center; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.timer-text { font-size: 12px; color: var(--muted); margin-top: 4px; }
 
 .act-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
 .act-row button { padding: 16px 10px; font-size: 16px; }
@@ -340,3 +338,36 @@ button.block { width: 100%; }
 
 .config-error { color: #ffb3bf; text-align: center; padding: 60px 10px; }
 .config-error code { background: var(--panel-2); padding: 2px 6px; border-radius: 4px; }
+
+/* 게임: 경매 카드 + 옆에 행동 버튼 */
+.stage-row { display: flex; gap: 16px; align-items: center; margin-bottom: 6px; }
+.stage-side { flex: 1; min-width: 0; }
+.act-col { display: grid; gap: 8px; margin-top: 10px; }
+.act-col button { padding: 10px 8px; font-size: 15px; }
+.act-col button small { display: block; font-weight: 400; font-size: 11px; opacity: 0.85; }
+.section-title { font-size: 13px; color: var(--muted); letter-spacing: .08em; margin: 18px 0 10px; }
+
+/* 순서: 칩과 점수 */
+.chip-dot.small { width: 13px; height: 13px; vertical-align: -2px; margin-right: 4px; }
+.seat-head .stat.chips b { color: var(--gold); font-size: 17px; }
+.seat-head .stat.total b { color: var(--gold); }
+.seat-head { flex-wrap: wrap; }
+
+/* 가져간 카드: 연속된 숫자는 겹쳐서 표시 */
+.runs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.stack { display: inline-flex; }
+.mc {
+  position: relative;
+  width: 34px;
+  height: 46px;
+  border-radius: 6px;
+  background: var(--card);
+  color: #9a8a8f;
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  line-height: 1;
+  padding: 4px 0 0 3px;
+  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.35), inset 0 0 0 2px #fff;
+}
+.mc + .mc { margin-left: -11px; }
+.mc.count { color: var(--card-ink); font-weight: 700; }
