@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Oswald:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23d12a4a'/%3E%3Crect x='8' y='14' width='16' height='4' fill='white'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 </head>
@@ -17,8 +18,10 @@
   </main>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script>
+    // 파일을 더블클릭해서 열면(file://) 브라우저가 app.js 모듈을 막기 때문에 안내를 보여줌
     function maShowLoadError(msg) {
-      document.getElementById('app').innerHTML = '<div class="config-error">' + msg + '</div>';
+      document.getElementById('app').innerHTML =
+        '<div class="config-error">' + msg + '</div>';
     }
     if (location.protocol === 'file:') {
       maShowLoadError('파일을 직접 열면 실행되지 않아요.<br/>GitHub Pages에 올리거나 로컬 서버로 열어 주세요.');
