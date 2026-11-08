@@ -68,10 +68,12 @@ function runsOf(cards) {
 // 카드 점수: 묶음마다 가장 작은 절댓값만 계산 (음수로 반환)
 const cardScore = (cards) => -runsOf(cards).reduce((sum, run) => sum + run[0], 0);
 
+// 가져간 카드: 연속된 숫자는 겹쳐서 한 묶음으로 (맨 앞 카드만 점수에 들어감)
 function runsHtml(cards) {
   if (!cards || cards.length === 0) return '<div class="empty">가져간 카드 없음</div>';
   return `<div class="runs">${runsOf(cards).map((run) =>
-    `<span class="run">${run.map((c) => `<span>-${c}</span>`).join('')}</span>`).join('')}</div>`;
+    `<span class="stack">${run.map((c, i) =>
+      `<span class="mc ${i === 0 ? 'count' : ''}" style="z-index:${i + 1}">-${c}</span>`).join('')}</span>`).join('')}</div>`;
 }
 
 const serverNow = () => Date.now() + S.skew;
@@ -180,7 +182,7 @@ function showHome(prefillCode = '') {
       <p>마이너스 점수를 가장 적게 받는 사람이 승리합니다</p>
     </header>
 
-    <section class="panel">
+    ${fromQr ? '' : `<section class="panel">
       <h2>방 만들기 (방장)</h2>
       <label class="field"><span>방 생성 인증키</span>
         <input id="hostKey" type="password" placeholder="방 생성 인증키 입력" autocomplete="off" />
@@ -189,7 +191,7 @@ function showHome(prefillCode = '') {
         <input id="hostNick" maxlength="12" placeholder="사용할 닉네임 (1~12자)" value="${fromQr ? '' : esc(nick)}" autocomplete="off" />
       </label>
       <button id="createBtn" class="gold block">새 방 만들기</button>
-    </section>
+    </section>`}
 
     <section class="panel">
       <h2>게임 참가하기</h2>
@@ -218,6 +220,7 @@ function showHome(prefillCode = '') {
   };
 
   const create = guard(async () => {
+    if (!$hostKey) return;
     const key = $hostKey.value.trim();
     if (!key) { toast('방 생성 인증키를 입력해 주세요', true); $hostKey.focus(); return; }
     const n = readNick($hostNick); if (!n) return;
@@ -225,8 +228,10 @@ function showHome(prefillCode = '') {
     clearQuery();
     await enterRoom(roomId);
   });
-  document.getElementById('createBtn').onclick = create;
-  $hostNick.onkeydown = (e) => { if (e.key === 'Enter') create(); };
+  if ($hostKey) {
+    document.getElementById('createBtn').onclick = create;
+    $hostNick.onkeydown = (e) => { if (e.key === 'Enter') create(); };
+  }
 
   const join = guard(async () => {
     const n = readNick($joinNick); if (!n) return;
@@ -510,8 +515,6 @@ function renderGame() {
   const turnId = room.turn_order[room.turn_index];
   const turnPlayer = order.find((p) => p.user_id === turnId);
   const myTurn = turnId === me;
-  const mine = order.find((p) => p.user_id === me);
-  const myCardScore = mine ? cardScore(mine.cards) : 0;
 
   // 카드가 바뀔 때만 뒤집기 애니메이션
   const cardKey = `${room.game_no}:${room.current_card}`;
@@ -521,13 +524,15 @@ function renderGame() {
   const seats = order.map((p) => {
     const isMe = p.user_id === me;
     const chips = isMe ? myChips : (s.show_chips ? p.chips : '?');
+    const score = cardScore(p.cards);
     return `
       <div class="seat ${p.user_id === turnId ? 'turn' : ''} ${isMe ? 'me' : ''}">
         <div class="seat-head">
           <span class="order">${p.seat + 1}</span>
           <span class="name">${esc(p.nickname)}${isMe ? ' (나)' : ''}</span>
-          <span class="stat">칩 <b>${chips}</b></span>
-          <span class="stat">카드 <b>${cardScore(p.cards)}</b></span>
+          <span class="stat chips"><span class="chip-dot small"></span><b>${chips}</b></span>
+          <span class="stat">카드 <b>${score}</b></span>
+          ${isMe ? `<span class="stat total">총점 <b>${score + myChips}</b></span>` : ''}
         </div>
         ${runsHtml(p.cards)}
       </div>`;
@@ -539,40 +544,28 @@ function renderGame() {
       <span>남은 카드 <b>${room.deck_count}</b>장 · 제외 <b>${s.exclude_count}</b>장</span>
     </div>
 
-    <section class="stage">
+    <section class="stage-row">
       <div class="big-card" style="${animate ? '' : 'animation:none'}">-${room.current_card}</div>
-      <div class="pot"><span class="chip-dot"></span>쌓인 칩 <b>${room.pot}</b></div>
-    </section>
-
-    <div class="turn-banner ${myTurn ? 'mine' : ''}">
-      ${myTurn ? '내 차례입니다' : `${esc(turnPlayer?.nickname ?? '')} 님 차례`}
-    </div>
-    ${room.turn_deadline ? `
-      <div id="timerBar" class="timer"><i style="width:100%"></i></div>
-      <div id="timerText" class="timer-text"></div>` : ''}
-
-    ${myTurn ? `
-      <div class="act-row">
-        <button id="passBtn" class="ghost" ${myChips <= 0 ? 'disabled' : ''}>
-          거부<small>${myChips <= 0 ? '칩이 없어요' : '칩 1개 내기'}</small>
-        </button>
-        <button id="takeBtn" class="primary">
-          가져가기<small>칩 ${room.pot}개 획득</small>
-        </button>
-      </div>` : ''}
-
-    <div class="spacer"></div>
-    <section class="panel">
-      <h2>내 현황</h2>
-      <div class="my-summary">
-        <div><small>보유 칩</small><b>${myChips}</b></div>
-        <div><small>카드 점수</small><b>${myCardScore}</b></div>
-        <div class="total"><small>총점</small><b>${myCardScore + myChips}</b></div>
+      <div class="stage-side">
+        <div class="pot"><span class="chip-dot"></span>쌓인 칩 <b>${room.pot}</b></div>
+        <div class="turn-banner ${myTurn ? 'mine' : ''}">
+          ${myTurn ? '내 차례입니다' : `${esc(turnPlayer?.nickname ?? '')} 님 차례`}
+        </div>
+        ${room.turn_deadline ? `
+          <div id="timerBar" class="timer"><i style="width:100%"></i></div>
+          <div id="timerText" class="timer-text"></div>` : ''}
+        ${myTurn ? `
+          <div class="act-col">
+            <button id="takeBtn" class="primary">가져가기<small>칩 ${room.pot}개 획득</small></button>
+            <button id="passBtn" class="ghost" ${myChips <= 0 ? 'disabled' : ''}>
+              거부<small>${myChips <= 0 ? '칩이 없어요' : '칩 1개 내기'}</small>
+            </button>
+          </div>` : ''}
       </div>
     </section>
 
     <section>
-      <h2 style="font-size:13px;color:var(--muted);letter-spacing:.08em;margin:18px 0 10px">순서</h2>
+      <h2 class="section-title">순서</h2>
       ${seats}
     </section>
 
