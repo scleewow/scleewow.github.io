@@ -176,8 +176,9 @@ function showHome(prefillCode = '') {
   const fromQr = !!prefillCode;
 
   app.innerHTML = `
+    <div class="help-row"><button class="help-btn" data-help>게임 설명</button></div>
     <header class="brand">
-      <div class="kicker">THE HMGenius</div>
+      <div class="kicker">THE GENIUS</div>
       <h1><span class="minus">마이너스</span> 경매</h1>
       <p>마이너스 점수를 가장 적게 받는 사람이 승리합니다</p>
     </header>
@@ -418,6 +419,7 @@ function renderLobby() {
     </div>`;
 
   app.innerHTML = `
+    <div class="help-row"><button class="help-btn" data-help>게임 설명</button></div>
     <section class="panel">
       <div class="room-head">
         <div class="qr" title="${esc(url)}">${qrSvg(url)
@@ -542,6 +544,7 @@ function renderGame() {
     <div class="game-top">
       <span>방 <b>${esc(room.code)}</b></span>
       <span>남은 카드 <b>${room.deck_count}</b>장 · 제외 <b>${s.exclude_count}</b>장</span>
+      <button class="help-btn" data-help>설명</button>
     </div>
 
     <section class="stage-row">
@@ -647,6 +650,89 @@ function renderResult() {
     renderLobby();
   };
 }
+
+// ---------------------------------------------------------------------
+// 게임 설명 팝업 (어느 화면에서든 data-help 버튼으로 열기)
+// ---------------------------------------------------------------------
+const HELP_HTML = `
+  <h2>마이너스 경매 게임 설명</h2>
+  <p class="lead">경매로 숫자 카드를 받거나 피하면서, <b>마이너스 점수를 가장 적게</b> 받는 사람이 이기는 게임입니다.</p>
+
+  <h3>준비</h3>
+  <ul>
+    <li>숫자 카드는 <b>-3부터 -35까지 33장</b>입니다.</li>
+    <li>방장이 정한 장수(1~5장)만큼 카드가 몰래 빠집니다. 어떤 숫자가 빠졌는지는 게임이 끝나야 공개됩니다(히든 카드).</li>
+    <li>모든 플레이어가 같은 개수의 칩을 받습니다.</li>
+    <li>게임을 시작할 때마다 순서가 무작위로 정해집니다.</li>
+  </ul>
+
+  <h3>진행</h3>
+  <ol>
+    <li>경매 카드 한 장이 공개됩니다.</li>
+    <li>차례인 사람은 둘 중 하나를 고릅니다.
+      <ul>
+        <li><b>거부</b>: 칩 1개를 카드 위에 올리고 다음 사람에게 넘깁니다.</li>
+        <li><b>가져가기</b>: 카드와 그 위에 쌓인 칩을 모두 가져갑니다. 다음 카드도 <b>가져간 사람이 먼저</b> 결정합니다.</li>
+      </ul>
+    </li>
+    <li>칩이 하나도 없으면 거부할 수 없고 반드시 가져가야 합니다.</li>
+    <li>제한 시간이 지나면 칩이 있으면 자동으로 거부, 칩이 없으면 자동으로 가져갑니다.</li>
+    <li>카드가 모두 소진되면 게임이 끝납니다.</li>
+  </ol>
+
+  <h3>점수 계산</h3>
+  <ul>
+    <li>가져간 카드의 숫자를 모두 더합니다.</li>
+    <li>단, <b>연속된 숫자는 묶음에서 0에 가장 가까운 숫자 하나만</b> 계산합니다.</li>
+    <li>남은 칩은 1개당 <b>+1점</b>입니다.</li>
+  </ul>
+  <div class="example">
+    <div class="ex-title">예시</div>
+    <div>가져간 카드: <b>-20, -21, -22</b>, <b>-30</b> / 남은 칩 <b>5개</b></div>
+    <div>-20, -21, -22는 연속이라 <b>-20</b>만 계산 → 카드 점수 -20 + (-30) = <b>-50</b></div>
+    <div>최종 점수 = -50 + 5 = <b>-45</b></div>
+  </div>
+
+  <h3>승패</h3>
+  <ul>
+    <li>최종 점수가 가장 높은(마이너스가 가장 적은) 사람이 <b>승자</b>, 가장 낮은 사람이 <b>패자</b>입니다.</li>
+    <li>게임이 끝나면 순위와 히든 카드가 공개되고 대기실로 돌아갑니다.</li>
+  </ul>
+
+  <h3>화면 보는 법</h3>
+  <ul>
+    <li>가져간 카드 중 연속된 숫자는 겹쳐서 보입니다. 맨 위의 빨간 숫자가 점수에 들어가는 카드입니다.</li>
+    <li>다른 사람은 카드 점수만 보입니다. 칩 개수는 방장이 '칩 개수 공개'로 설정했을 때만 보입니다.</li>
+    <li>내 줄에는 칩, 카드 점수, 총점이 모두 표시됩니다.</li>
+  </ul>
+
+  <h3>작전 팁</h3>
+  <ul>
+    <li>내 카드와 이어지는 숫자는 가져가도 점수가 거의 늘지 않습니다.</li>
+    <li>큰 마이너스 카드라도 칩이 많이 쌓였다면 가져가서 칩을 버는 것도 방법입니다.</li>
+    <li>칩이 바닥나면 원치 않는 카드도 가져가야 하니 칩 관리가 중요합니다.</li>
+  </ul>
+`;
+
+function openHelp() {
+  if (document.getElementById('helpModal')) return;
+  const el = document.createElement('div');
+  el.id = 'helpModal';
+  el.className = 'modal';
+  el.innerHTML = `<div class="modal-box" role="dialog" aria-modal="true">
+      <button class="modal-close" aria-label="닫기">✕</button>
+      <div class="modal-body">${HELP_HTML}</div>
+      <button class="gold block modal-ok">확인</button>
+    </div>`;
+  const close = () => el.remove();
+  el.addEventListener('click', (e) => { if (e.target === el) close(); });
+  el.querySelector('.modal-close').onclick = close;
+  el.querySelector('.modal-ok').onclick = close;
+  document.body.appendChild(el);
+}
+document.addEventListener('click', (e) => { if (e.target.closest('[data-help]')) openHelp(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.getElementById('helpModal')?.remove(); });
+
 
 boot().catch((e) => {
   console.error(e);
