@@ -73,7 +73,7 @@ function runsHtml(cards) {
   if (!cards || cards.length === 0) return '<div class="empty">가져간 카드 없음</div>';
   return `<div class="runs">${runsOf(cards).map((run) =>
     `<span class="stack">${run.map((c, i) =>
-      `<span class="mc ${i === 0 ? 'count' : ''}" style="z-index:${i + 1}">-${c}</span>`).join('')}</span>`).join('')}</div>`;
+      `<span class="mc ${i === 0 ? 'count' : ''}" style="z-index:${run.length - i}">-${c}</span>`).join('')}</span>`).join('')}</div>`;
 }
 
 const serverNow = () => Date.now() + S.skew;
@@ -545,9 +545,14 @@ function renderGame() {
     </div>
 
     <section class="stage-row">
-      <div class="big-card" style="${animate ? '' : 'animation:none'}">-${room.current_card}</div>
+      <div class="stage-card">
+        <div class="big-card" style="${animate ? '' : 'animation:none'}">-${room.current_card}</div>
+        <div class="pot">
+          <span class="pot-chips">${Array.from({ length: Math.min(room.pot, 8) }, () => '<span class="chip-dot small"></span>').join('')}</span>
+          <span>쌓인 칩 <b>${room.pot}</b></span>
+        </div>
+      </div>
       <div class="stage-side">
-        <div class="pot"><span class="chip-dot"></span>쌓인 칩 <b>${room.pot}</b></div>
         <div class="turn-banner ${myTurn ? 'mine' : ''}">
           ${myTurn ? '내 차례입니다' : `${esc(turnPlayer?.nickname ?? '')} 님 차례`}
         </div>
@@ -557,7 +562,7 @@ function renderGame() {
         ${myTurn ? `
           <div class="act-col">
             <button id="takeBtn" class="primary">가져가기<small>칩 ${room.pot}개 획득</small></button>
-            <button id="passBtn" class="ghost" ${myChips <= 0 ? 'disabled' : ''}>
+            <button id="passBtn" class="secondary" ${myChips <= 0 ? 'disabled' : ''}>
               거부<small>${myChips <= 0 ? '칩이 없어요' : '칩 1개 내기'}</small>
             </button>
           </div>` : ''}
