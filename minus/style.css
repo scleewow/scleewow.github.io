@@ -386,3 +386,63 @@ button.primary { box-shadow: 0 2px 0 #7d1729; }
 }
 .mc + .mc { margin-left: -14px; }
 .mc.count { color: var(--card-ink); font-weight: 700; text-align: center; padding-right: 0; }
+
+/* 게임 설명 버튼과 팝업 */
+.help-row { display: flex; justify-content: flex-end; margin-bottom: -8px; }
+.help-btn {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid rgba(230, 182, 92, 0.5);
+}
+.game-top .help-btn { padding: 4px 10px; }
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 100;
+}
+.modal-box {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100vh - 32px);
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 16px 16px;
+}
+.modal-body { overflow-y: auto; padding-right: 4px; margin-bottom: 14px; font-size: 14px; word-break: keep-all; }
+.modal-body h2 { margin: 0 32px 8px 0; font-size: 19px; }
+.modal-body h3 { margin: 18px 0 6px; font-size: 15px; color: var(--gold); }
+.modal-body .lead { color: var(--muted); margin: 0; }
+.modal-body ul, .modal-body ol { margin: 0; padding-left: 20px; }
+.modal-body li { margin: 3px 0; }
+.modal-body li ul { margin-top: 4px; }
+.modal-body b { color: #fff; }
+.modal-body .example {
+  margin-top: 10px;
+  background: var(--panel-2);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+.modal-body .ex-title { color: var(--gold); font-weight: 700; margin-bottom: 4px; }
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--panel-2);
+}
