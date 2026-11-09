@@ -100,6 +100,12 @@
   }
   .chip.me { border-color: var(--gold); }
   .chip .host { color: var(--gold); font-size: 11px; font-weight: 700; margin-left: 4px; }
+  .chip .kick {
+    background: none; border: none; color: var(--muted); cursor: pointer;
+    font: 700 14px 'Pretendard', sans-serif; margin-left: 6px; padding: 0 2px; line-height: 1;
+  }
+  .chip .kick:hover { color: var(--red); }
+  .host-sub { display: block; margin-top: 12px; color: var(--red); }
   .notice { font-size: 13px; color: var(--muted); text-align: center; margin-top: 12px; line-height: 1.5; }
 
   /* 게임 상단 */
@@ -347,7 +353,7 @@
       <div class="card-title">라운드 결과</div>
       <div class="rounds" id="resultRounds"></div>
       <table class="tbl">
-        <thead><tr><th>과일</th><th>판매가</th><th>판매자 · 수입</th></tr></thead>
+        <thead><tr><th>과일</th><th>판매가</th><th>판매 결과</th></tr></thead>
         <tbody id="resultBody"></tbody>
       </table>
     </div>
@@ -360,7 +366,7 @@
 
     <!-- 시장 -->
     <div class="card">
-      <div class="card-title">시장 현황 · 누가 무엇을 파나</div>
+      <div class="card-title" id="marketTitle">시장 현황</div>
       <div id="marketBody"></div>
       <div class="log hidden" id="changeLog"></div>
     </div>
@@ -389,13 +395,33 @@
     <p>내가 가진 과일을 팔아 4라운드 동안 가장 많은 수익을 올리세요.</p>
 
     <h3>내 과일</h3>
-    <p>게임이 시작되면 각자 과일 2개를 무작위로 받아요. 받은 과일만 팔 수 있고, 같은 과일을 2개 받을 수도 있어요. 누가 어떤 과일을 가졌는지는 모두에게 공개돼요.</p>
+    <p>게임이 시작되면 각자 과일 2개를 무작위로 받아요. 받은 과일만 팔 수 있고, 같은 과일을 2개 받을 수도 있어요.</p>
+    <p><b>내 과일은 나만 알아요.</b> 과일별로 판매자가 몇 명인지만 공개되고, 누가 무엇을 파는지는 직접 물어봐야 해요. 물론 거짓말을 할 수도 있어요. 누가 무엇을 팔았는지는 게임이 끝나면 공개돼요.</p>
+
+    <h3>인원별 과일 구성</h3>
+    <p>인원 × 2개의 판매권을 아래처럼 나눠서 무작위로 2개씩 나눠줘요.</p>
+    <table>
+      <tr><th>인원</th><th>과일 구성 (판매자 수)</th></tr>
+      <tr><td>4명</td><td>딸기 4 · 수박 4</td></tr>
+      <tr><td>5명</td><td>딸기 4 · 수박 3 · 사과 3</td></tr>
+      <tr><td>6명</td><td>딸기 · 수박 · 사과 각 4</td></tr>
+      <tr><td>7명</td><td>딸기 5 · 수박 5 · 사과 4</td></tr>
+      <tr><td>8명</td><td>딸기 · 수박 · 사과 · 포도 각 4</td></tr>
+      <tr><td>9명</td><td>딸기 5 · 수박 5 · 사과 · 포도 각 4</td></tr>
+      <tr><td>10명</td><td>5가지 과일 각 4</td></tr>
+      <tr><td>11명</td><td>딸기 5 · 수박 5 · 사과 · 포도 · 참외 각 4</td></tr>
+      <tr><td>12명</td><td>6가지 과일 각 4</td></tr>
+      <tr><td>13명</td><td>딸기 5 · 수박 5 · 사과 · 포도 · 참외 · 감귤 각 4 (원작)</td></tr>
+      <tr><td>14명</td><td>7가지 과일 각 4</td></tr>
+      <tr><td>15명</td><td>딸기 5 · 수박 5 · 사과 · 포도 · 참외 · 감귤 · 복숭아 각 4</td></tr>
+    </table>
+    <p>과일은 딸기, 수박, 사과, 포도, 참외, 감귤, 복숭아 순서로 쓰여요.</p>
 
     <h3>라운드 진행</h3>
     <ul>
       <li><b>협상</b> — 자유롭게 돌아다니며 이야기하세요. 담합도, 거짓말도 자유예요.</li>
       <li><b>희망가 제시</b> — 내 과일마다 1천~5천 원 중 하나를 몰래 제출해요. 내지 않으면 5천 원으로 처리돼요.</li>
-      <li><b>결과 발표</b> — 과일별 판매가와 판매 수입이 공개돼요. 각자의 누적 수입은 끝날 때까지 비공개예요.</li>
+      <li><b>결과 발표</b> — 과일별 판매가, 몇 명이 팔았는지, 판매 수입이 공개돼요. 누가 팔았는지와 각자의 누적 수입은 끝날 때까지 비공개예요.</li>
     </ul>
 
     <h3>판매 규칙</h3>
@@ -410,7 +436,7 @@
     <h3>특수 능력 (게임 중 단 한 번, 둘 중 하나만)</h3>
     <ul>
       <li><b>비밀</b> — 이번 라운드에 원하는 과일 하나의 판매가와 수입을 가려요. 내 과일이 아니어도 되고, 누가 썼는지는 공개되지 않아요.</li>
-      <li><b>교체</b> — 내 과일 하나를 다른 과일로 바꿔요. 희망가 제시 전에만 쓸 수 있고, 바꾸는 즉시 모두에게 공개돼요.</li>
+      <li><b>교체</b> — 내 과일 하나를 다른 과일로 바꿔요. 희망가 제시 전에만 쓸 수 있고, 바꾸는 즉시 누가 무엇을 무엇으로 바꿨는지 모두에게 공개돼요.</li>
     </ul>
 
     <h3>승패</h3>
@@ -437,13 +463,13 @@ const PHASE_BANNER = {
   negotiate: '자유롭게 돌아다니며 협상하세요. 교체 능력은 지금만 쓸 수 있어요.',
   bid: '내 과일마다 희망가를 골라주세요. 방장이 마감하기 전까지 바꿀 수 있고, 내지 않으면 5천 원으로 처리돼요.',
   result: '이번 라운드 결과가 나왔어요. 방장이 다음 라운드를 열 때까지 다음 수를 준비하세요.',
-  finished: '모든 라운드가 끝났어요. 최종 순위를 확인하세요.',
+  finished: '모든 라운드가 끝났어요. 방장이 대기실로 돌아가면 같은 멤버로 한 판 더 할 수 있어요.',
 };
 
 function freshState(me = null) {
   return {
     roomId: null, room: null, players: [], me, channel: null, qrFor: null,
-    holdings: [], results: [], events: [], bids: [], ability: null, income: [],
+    holdings: [], counts: {}, results: [], events: [], bids: [], ability: null, income: [],
     bidStatus: [], viewRound: null, lastRound: null, statusTimer: null, refreshTimer: null,
   };
 }
@@ -587,13 +613,15 @@ async function loadGame() {
     sb.from('fs_bids').select('*').eq('room_id', id),
     sb.from('fs_abilities').select('*').eq('room_id', id).maybeSingle(),
     sb.from('fs_income').select('*').eq('room_id', id),
+    sb.rpc('fs_fruit_counts', { p_room: id }),
   ]);
   const bad = res.find((r) => r.error);
   if (bad) throw bad.error;
 
-  const [rm, holdings, results, events, bids, ability, income] = res.map((r) => r.data);
+  const [rm, holdings, results, events, bids, ability, income, counts] = res.map((r) => r.data);
   state.room = rm;
-  state.holdings = holdings || [];
+  state.holdings = holdings || [];   // 진행 중에는 내 것만, 종료 후에는 전체
+  state.counts = Object.fromEntries((counts || []).map((c) => [c.fruit, c.sellers]));
   state.results = results || [];
   state.events = events || [];
   state.bids = bids || [];
@@ -615,7 +643,18 @@ function subscribe() {
   state.channel = sb.channel(`fs-room-${id}`)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'fs_players', filter: f }, scheduleRefresh)
     .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'fs_rooms', filter: `id=eq.${id}` },
-      (p) => { state.room = { ...state.room, ...p.new }; scheduleRefresh(); })
+      (p) => {
+        const prev = state.room && state.room.status;
+        state.room = { ...state.room, ...p.new };
+        if (prev && prev !== 'lobby' && p.new.status === 'lobby') {
+          resetGameState();
+          toast(prev === 'playing' ? '방장이 게임을 종료했어요. 대기실로 돌아왔어요' : '대기실로 돌아왔어요', true);
+        }
+        scheduleRefresh();
+      })
+    // 강제 퇴장 감지 (삭제 이벤트는 필터가 적용되지 않아서 직접 비교)
+    .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'fs_players' },
+      (p) => { if (p.old && p.old.room_id === id && p.old.user_id === state.me) kicked(); })
     .on('postgres_changes', { event: '*', schema: 'public', table: 'fs_holdings', filter: f }, scheduleRefresh)
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'fs_results', filter: f }, scheduleRefresh)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'fs_income', filter: f }, scheduleRefresh)
@@ -642,6 +681,7 @@ async function refresh() {
     if (!error && !rm) return roomGone();
     if (rm) state.room = rm;
     await loadPlayers();
+    if (!state.players.some((p) => p.user_id === state.me)) return kicked();
     if (state.room && state.room.status !== 'lobby') await loadGame();
     render();
   } catch (e) {
@@ -671,6 +711,7 @@ function render() {
 
 function renderLobby() {
   show('viewLobby');
+  resetGameState();
   const room = state.room;
 
   if (state.qrFor !== room.code) {
@@ -690,7 +731,9 @@ function renderLobby() {
   $('playerList').innerHTML = state.players.map((p) => {
     const cls = 'chip' + (p.user_id === state.me ? ' me' : '');
     const host = p.user_id === room.host_id ? '<span class="host">방장</span>' : '';
-    return `<span class="${cls}">${escapeHtml(p.nickname)}${host}</span>`;
+    const kick = isHost && p.user_id !== room.host_id
+      ? `<button class="kick" data-kick="${p.user_id}" aria-label="내보내기">✕</button>` : '';
+    return `<span class="${cls}">${escapeHtml(p.nickname)}${host}${kick}</span>`;
   }).join('');
 
   $('btnStart').classList.toggle('hidden', !isHost);
@@ -734,7 +777,7 @@ function renderGame() {
 const myHoldings = () => state.holdings
   .filter((h) => h.user_id === state.me)
   .sort((a, b) => a.slot - b.slot);
-const sellersOf = (fruit) => state.holdings.filter((h) => h.fruit === fruit).length;
+const sellersOf = (fruit) => state.counts[fruit] || 0;
 const myBid = (slot) => {
   const b = state.bids.find((x) => x.round === state.room.round && x.slot === slot && x.user_id === state.me);
   return b ? b.price : null;
@@ -862,9 +905,15 @@ function openSecret() {
 function renderHost() {
   const room = state.room;
   const isHost = room.host_id === state.me;
-  const visible = isHost && room.status !== 'finished';
-  $('cardHost').classList.toggle('hidden', !visible);
-  if (!visible) return;
+  $('cardHost').classList.toggle('hidden', !isHost);
+  if (!isHost) return;
+
+  if (room.status === 'finished') {
+    $('hostBody').innerHTML = `<p class="host-status">같은 멤버로 한 판 더 하려면 대기실로 돌아가세요.</p>
+      <button class="btn btn-gold" id="hostLobby">대기실로 돌아가기</button>`;
+    $('hostLobby').onclick = () => hostAction('fs_reset_room');
+    return;
+  }
 
   const n = state.players.length;
   let html = '';
@@ -882,8 +931,12 @@ function renderHost() {
     html = `<p class="host-status">결과를 확인했으면 다음 라운드를 여세요.</p>
       <button class="btn btn-gold" id="hostNext">${room.round + 1}라운드 시작</button>`;
   }
+  html += '<button class="link-btn host-sub" id="hostForceEnd">게임 강제 종료</button>';
   $('hostBody').innerHTML = html;
 
+  $('hostForceEnd').onclick = () => {
+    if (confirm('게임을 강제 종료하고 모두 대기실로 돌아갈까요?\n지금까지의 결과와 수입은 모두 사라져요.')) hostAction('fs_reset_room');
+  };
   if ($('hostOpen')) $('hostOpen').onclick = () => hostAction('fs_open_bidding');
   if ($('hostNext')) $('hostNext').onclick = () => hostAction('fs_next_round');
   if ($('hostSettle')) $('hostSettle').onclick = () => {
@@ -947,14 +1000,40 @@ function renderResults() {
       return `<tr><td class="f">${fruitCell}</td><td class="p secret">🔒</td>
         <td class="w secret">비밀이 걸렸어요 (판매 ${r.sellers}개)</td></tr>`;
     }
-    const winners = (r.winners || []).map((w) => {
-      const me = w.user_id === state.me;
-      return `<span class="${me ? 'me' : ''}">${escapeHtml(nickOf(w.user_id))} ${won(w.amount)}</span>`;
-    }).join('<br>');
-    const mine = (r.winners || []).some((w) => w.user_id === state.me);
-    return `<tr class="${mine ? 'mine' : ''}"><td class="f">${fruitCell}</td>
-      <td class="p">${won(r.price)}</td><td class="w">${winners}</td></tr>`;
+    const total = (r.share || 0) * (r.winner_slots || 0);
+    let desc;
+    if (r.winner_people === 1) {
+      desc = `1명이 ${r.sellers}개 모두 판매 · ${won(total)}`;
+    } else if (r.winner_people === r.winner_slots) {
+      desc = `${r.winner_people}명이 나눠 판매 · 1인 ${won(r.share)}`;
+    } else {
+      desc = `${r.winner_people}명이 나눠 판매 · 총 ${won(total)}`;
+    }
+    const mySlots = myWinningSlots(r);
+    const mine = mySlots > 0
+      ? `<br><span class="me">내가 팔았어요 +${won(r.share * mySlots)}</span>` : '';
+    return `<tr class="${mySlots ? 'mine' : ''}"><td class="f">${fruitCell}</td>
+      <td class="p">${won(r.price)}</td><td class="w">${desc}${mine}</td></tr>`;
   }).join('');
+}
+
+// 내 희망가가 그 과일의 최저가였던 칸 수 (교체 이력을 반영해 그 라운드의 과일로 판단)
+function myWinningSlots(r) {
+  return [1, 2].filter((slot) => {
+    if (fruitOfSlotAt(slot, r.round) !== r.fruit) return false;
+    const b = state.bids.find((x) => x.round === r.round && x.slot === slot && x.user_id === state.me);
+    const price = b ? b.price : 5;
+    return price * 1000 === r.price;
+  }).length;
+}
+
+function fruitOfSlotAt(slot, round) {
+  const h = state.holdings.find((x) => x.user_id === state.me && x.slot === slot);
+  if (!h) return null;
+  const ab = state.ability;
+  // 이 칸을 그 라운드 이후에 교체했다면, 그 라운드엔 교체 전 과일이었음
+  if (ab && ab.kind === 'change' && ab.slot === slot && round < ab.round) return ab.from_fruit;
+  return h.fruit;
 }
 
 // ---------- 수입 ----------
@@ -1003,17 +1082,35 @@ function renderFinal() {
 // ---------- 시장 ----------
 function renderMarket() {
   const fruits = state.room.fruits || [];
-  $('marketBody').innerHTML = fruits.map((f) => {
-    const sellers = state.holdings.filter((h) => h.fruit === f);
-    const counts = {};
-    sellers.forEach((h) => { counts[h.user_id] = (counts[h.user_id] || 0) + 1; });
-    const chips = Object.entries(counts).map(([uid, c]) =>
-      `<span class="chip${uid === state.me ? ' me' : ''}">${escapeHtml(nickOf(uid))}${c > 1 ? ` ×${c}` : ''}</span>`).join('');
-    return `<div class="market-row">
-      <div class="market-head"><span class="f">${fe(f)} ${escapeHtml(f)}</span><span class="n">판매자 ${sellers.length}명</span></div>
-      <div class="players">${chips || '<span class="small-note" style="margin:0">판매자 없음</span>'}</div>
-    </div>`;
-  }).join('');
+  const finished = state.room.status === 'finished';
+
+  if (!finished) {
+    // 진행 중: 과일별 판매자 수만 공개
+    $('marketTitle').innerHTML = '시장 현황 <span style="font-weight:500;color:var(--muted);font-size:12px">· 누가 파는지는 직접 물어보세요</span>';
+    const mine = myHoldings().map((h) => h.fruit);
+    $('marketBody').innerHTML = fruits.map((f) => {
+      const n = sellersOf(f);
+      const my = mine.filter((x) => x === f).length;
+      return `<div class="market-row" style="display:flex;justify-content:space-between;align-items:center">
+        <span class="f" style="font-weight:800;font-size:15px">${fe(f)} ${escapeHtml(f)}${my ? ` <span class="chip me" style="font-size:11px;padding:2px 8px;margin-left:4px">내 과일${my > 1 ? ` ×${my}` : ''}</span>` : ''}</span>
+        <span class="n" style="font-size:14px;color:var(--muted)">판매자 <b style="color:var(--text)">${n}</b>명</span>
+      </div>`;
+    }).join('');
+  } else {
+    // 종료 후: 누가 무엇을 팔았는지 공개
+    $('marketTitle').textContent = '공개 · 누가 무엇을 팔았나';
+    $('marketBody').innerHTML = fruits.map((f) => {
+      const sellers = state.holdings.filter((h) => h.fruit === f);
+      const counts = {};
+      sellers.forEach((h) => { counts[h.user_id] = (counts[h.user_id] || 0) + 1; });
+      const chips = Object.entries(counts).map(([uid, c]) =>
+        `<span class="chip${uid === state.me ? ' me' : ''}">${escapeHtml(nickOf(uid))}${c > 1 ? ` ×${c}` : ''}</span>`).join('');
+      return `<div class="market-row">
+        <div class="market-head"><span class="f">${fe(f)} ${escapeHtml(f)}</span><span class="n">판매자 ${sellers.length}명</span></div>
+        <div class="players">${chips || '<span class="small-note" style="margin:0">판매자 없음</span>'}</div>
+      </div>`;
+    }).join('');
+  }
 
   const changes = state.events.filter((e) => e.kind === 'change');
   $('changeLog').classList.toggle('hidden', changes.length === 0);
@@ -1046,6 +1143,35 @@ function leaveRoom() {
   show('viewHome');
 }
 
+function resetGameState() {
+  Object.assign(state, {
+    holdings: [], counts: {}, results: [], events: [], bids: [], ability: null, income: [],
+    bidStatus: [], viewRound: null, lastRound: null,
+  });
+  if (state.statusTimer) { clearInterval(state.statusTimer); state.statusTimer = null; }
+}
+
+$('playerList').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-kick]');
+  if (!b) return;
+  const uid = b.dataset.kick;
+  if (!confirm(`${nickOf(uid)}님을 내보낼까요?`)) return;
+  try {
+    await rpc('fs_kick_player', { p_room: state.roomId, p_user: uid });
+    scheduleRefresh();
+  } catch (err) { toast(errMsg(err)); }
+});
+
+async function kicked() {
+  if (!state.roomId) return;
+  // 방 삭제로 참가자 행이 같이 지워진 경우와 구분
+  const { data } = await sb.from('fs_rooms').select('id').eq('id', state.roomId).maybeSingle();
+  if (!state.roomId) return;
+  if (!data) return roomGone();
+  leaveRoom();
+  toast('방장이 대기실에서 내보냈어요');
+}
+
 function roomGone() {
   if (!state.roomId) return;
   const wasHost = state.room && state.room.host_id === state.me;
@@ -1068,8 +1194,10 @@ $('btnDelete').onclick = async () => {
   }
 };
 
-$('btnLeave').onclick = () => {
-  if (confirm('대기실에서 나갈까요? 같은 방 번호로 다시 들어올 수 있어요.')) leaveRoom();
+$('btnLeave').onclick = async () => {
+  if (!confirm('대기실에서 나갈까요? 같은 방 번호로 다시 들어올 수 있어요.')) return;
+  try { await rpc('fs_leave_room', { p_room: state.roomId }); } catch (e) { console.error(e); }
+  leaveRoom();
 };
 $('btnHome').onclick = leaveRoom;
 
