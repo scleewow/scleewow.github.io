@@ -167,6 +167,7 @@ function clearQuery() {
 // 첫 화면: 방 만들기 / 입장
 // ---------------------------------------------------------------------
 function showHome(prefillCode = '') {
+  app.classList.remove('game-mode');
   S.sig = null;
   S.viewingResult = false;
   leaveChannel();
@@ -359,6 +360,7 @@ function tick() {
 // ---------------------------------------------------------------------
 function render() {
   const { room } = S.data;
+  if (room.status !== 'playing') app.classList.remove('game-mode');
   if (room.status === 'playing') return renderGame();
 
   const seen = Number(localStorage.getItem(seenKey(room.id)) || 0);
@@ -540,7 +542,12 @@ function renderGame() {
       </div>`;
   }).join('');
 
+  // 플레이어 목록만 스크롤되므로, 다시 그릴 때 스크롤 위치를 유지
+  const prevScroll = document.getElementById('gameList')?.scrollTop || 0;
+  app.classList.add('game-mode');
+
   app.innerHTML = `
+    <div class="game-head">
     <div class="game-top">
       <span>방 <b>${esc(room.code)}</b></span>
       <span>남은 카드 <b>${room.deck_count}</b>장 · 제외 <b>${s.exclude_count}</b>장</span>
@@ -572,15 +579,17 @@ function renderGame() {
       </div>
     </section>
 
-    <section>
-      <h2 class="section-title">순서</h2>
-      ${seats}
-    </section>
+    <h2 class="section-title">순서</h2>
+    </div>
 
-    ${room.host_id === me ? `
-      <div class="spacer"></div>
-      <button id="forceEndBtn" class="danger block">게임 강제 종료</button>` : ''}
+    <div class="game-list" id="gameList">
+      ${seats}
+      ${room.host_id === me ? `
+        <div class="spacer"></div>
+        <button id="forceEndBtn" class="danger block">게임 강제 종료</button>` : ''}
+    </div>
   `;
+  document.getElementById('gameList').scrollTop = prevScroll;
 
   const forceBtn = document.getElementById('forceEndBtn');
   if (forceBtn) {
