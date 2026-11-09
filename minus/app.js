@@ -320,7 +320,9 @@ function applyState(st) {
   S.skew = Date.parse(st.server_now) - Date.now();
   // 바뀐 게 없으면 화면을 다시 그리지 않음 (선택 상자 등이 닫히지 않도록)
   const sig = JSON.stringify([st.room, st.my_chips, st.players.map((p) => [p.user_id, p.nickname, p.seat, p.cards, p.chips])]);
+  const taken = detectTake(S.data, st);
   S.data = st;
+  if (taken) showStamp(taken);
   if (sig !== S.sig) {
     S.sig = sig;
     render();
@@ -659,6 +661,54 @@ function renderResult() {
     renderLobby();
   };
 }
+
+// ---------------------------------------------------------------------
+// 낙찰 연출: 누군가 카드를 가져가면 "낙찰" 도장을 찍는 애니메이션
+// ---------------------------------------------------------------------
+// 이전 상태와 비교해서 방금 공개돼 있던 카드를 누가 가져갔는지 찾음
+function detectTake(prev, next) {
+  if (!prev || !next?.member) return null;
+  const pr = prev.room, nr = next.room;
+  if (pr.id !== nr.id || pr.status !== 'playing' || pr.current_card == null) return null;
+  const card = pr.current_card;
+  const pot = pr.pot;
+  let list = null;
+
+  if (nr.status === 'playing' && nr.game_no === pr.game_no) {
+    if (nr.current_card === card) return null; // 아직 같은 카드
+    list = next.players;
+  } else if (nr.status === 'lobby' && nr.result && nr.result.game_no === pr.game_no && !nr.result.aborted) {
+    list = nr.result.players; // 마지막 카드를 가져가서 게임이 끝난 경우
+  } else {
+    return null;
+  }
+
+  const before = new Map(prev.players.map((p) => [p.user_id, p.cards || []]));
+  const winner = (list || []).find((p) =>
+    (p.cards || []).map(Number).includes(card) && !(before.get(p.user_id) || []).map(Number).includes(card));
+  if (!winner) return null;
+  return { card, pot, nickname: winner.nickname, mine: winner.user_id === next.me };
+}
+
+function showStamp({ card, nickname, mine }) {
+  document.getElementById('stampFx')?.remove();
+  const el = document.createElement('div');
+  el.id = 'stampFx';
+  el.className = 'stamp-fx';
+  el.innerHTML = `
+    <div class="stamp-stage">
+      <div class="stamp-card">-${card}
+        <div class="stamp">낙찰</div>
+      </div>
+      <div class="stamp-who">${mine ? '내가' : `<b>${esc(nickname)}</b> 님이`} 낙찰!</div>
+    </div>`;
+  el.addEventListener('click', () => el.remove());
+  document.body.appendChild(el);
+  try { navigator.vibrate?.(60); } catch { /* 지원 안 하는 기기 */ }
+  setTimeout(() => el.classList.add('out'), 1500);
+  setTimeout(() => el.remove(), 1900);
+}
+
 
 // ---------------------------------------------------------------------
 // 게임 설명 팝업 (어느 화면에서든 data-help 버튼으로 열기)
