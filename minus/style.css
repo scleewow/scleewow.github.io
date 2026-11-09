@@ -400,19 +400,24 @@ button.primary { box-shadow: 0 2px 0 #7d1729; }
 .game-top .help-btn { padding: 4px 10px; }
 .modal {
   position: fixed;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
   z-index: 100;
 }
 .modal-box {
   position: relative;
   width: 100%;
   max-width: 520px;
+  /* 아이폰 사파리는 100vh가 실제 보이는 높이보다 커서 위아래가 잘림 → 보이는 높이(dvh) 기준으로 */
   max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   background: var(--panel);
@@ -420,7 +425,18 @@ button.primary { box-shadow: 0 2px 0 #7d1729; }
   border-radius: var(--radius);
   padding: 20px 16px 16px;
 }
-.modal-body { overflow-y: auto; padding-right: 4px; margin-bottom: 14px; font-size: 14px; word-break: keep-all; }
+.modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding-right: 4px;
+  margin-bottom: 14px;
+  font-size: 14px;
+  word-break: keep-all;
+}
+.modal-ok { flex: 0 0 auto; }
 .modal-body h2 { margin: 0 32px 8px 0; font-size: 19px; }
 .modal-body h3 { margin: 18px 0 6px; font-size: 15px; color: var(--gold); }
 .modal-body .lead { color: var(--muted); margin: 0; }
@@ -445,6 +461,10 @@ button.primary { box-shadow: 0 2px 0 #7d1729; }
   padding: 0;
   border-radius: 50%;
   background: var(--panel-2);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 32px;
+  z-index: 1;
 }
 
 /* 게임 화면: 위쪽(경매 카드·버튼)은 고정, 플레이어 목록만 스크롤 */
