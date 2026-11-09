@@ -669,6 +669,7 @@
             <div class="tab-buttons">
                 <button class="tab-btn" id="result-tab-btn-roles" onclick="switchResultTab('roles')">📋 직업 공개</button>
                 <button class="tab-btn" id="result-tab-btn-timeline" onclick="switchResultTab('timeline')">📜 사건의 전말</button>
+                <button class="tab-btn" id="result-tab-btn-audit" onclick="switchResultTab('audit')">🔎 상세 처리 기록</button>
             </div>
 
             <div id="result-tab-roles" class="tab-body" style="max-height: 38vh;">
@@ -676,6 +677,9 @@
             </div>
             <div id="result-tab-timeline" class="tab-body hidden" style="max-height: 38vh;">
                 <div id="result-timeline-list"></div>
+            </div>
+            <div id="result-tab-audit" class="tab-body hidden" style="max-height: 38vh;">
+                <div id="result-audit-list"></div>
             </div>
 
             <button style="margin-top:1.2rem; background:#0284c7;" onclick="confirmGameEnd()">확인 (대기실 이동)</button>
@@ -1435,6 +1439,8 @@
             // 결과 화면은 데이터가 갱신될 때마다 다시 그려지므로, 처음 열릴 때만 '직업 공개' 탭으로 맞춘다.
             const wasHidden = resultModal.classList.contains('hidden');
             resultModal.classList.remove('hidden');
+            const auditBox = document.getElementById('result-audit-list');
+            if (auditBox) auditBox.innerHTML = '<h4>📜 밤별 상세 처리 기록</h4>' + buildAuditHtml(data.nightAuditLog);
             if (wasHidden) switchResultTab('roles');
         }
 
@@ -1478,12 +1484,24 @@
             });
         }
 
+        // 밤별 상세 처리 기록 (옵저버 방장 패널 / 결과 화면 공용)
+        function buildAuditHtml(history) {
+            history = history || {};
+            const nightKeys = Object.keys(history).sort((a,b) => Number(a.replace('night_','')) - Number(b.replace('night_','')));
+            if (!nightKeys.length) return '<div class="role-desc-item">아직 완료된 밤 기록이 없습니다. 밤 종료 후 기록이 추가됩니다.</div>';
+            return nightKeys.slice().reverse().map(key => {
+                const night = history[key] || {};
+                const lines = [...(night.actions || []).map(x => `행동: ${x}`), ...(night.results || []).map(x => `결과: ${x}`), ...(night.summary || []).map(x => `상황: ${x}`)];
+                return `<details class="role-desc-item"><summary><b>${night.label || key.replace('night_','제 ' ) + '일 밤'}</b> — 기록 ${lines.length}건</summary>${lines.length ? lines.map(x => `<div style="padding:0.2rem 0;">${x}</div>`).join('') : '<div>상세 기록 없음</div>'}</details>`;
+            }).join('');
+        }
+
         function switchResultTab(tabType) {
-            const isTimeline = tabType === 'timeline';
-            document.getElementById('result-tab-btn-roles').classList.toggle('active', !isTimeline);
-            document.getElementById('result-tab-btn-timeline').classList.toggle('active', isTimeline);
-            document.getElementById('result-tab-roles').classList.toggle('hidden', isTimeline);
-            document.getElementById('result-tab-timeline').classList.toggle('hidden', !isTimeline);
+            const tabs = ['roles', 'timeline', 'audit'];
+            tabs.forEach(t => {
+                document.getElementById('result-tab-btn-' + t).classList.toggle('active', t === tabType);
+                document.getElementById('result-tab-' + t).classList.toggle('hidden', t !== tabType);
+            });
         }
 
         function confirmGameEnd() {
@@ -1726,13 +1744,7 @@
                     return `<div class="role-desc-item"><b>${p.name}</b> — ${roleName} / ${p.isDead ? '사망' : '생존'}</div>`;
                 }).join('');
                 const historyEl = document.getElementById('observer-history-content');
-                const history = data.nightAuditLog || {};
-                const nightKeys = Object.keys(history).sort((a,b) => Number(a.replace('night_','')) - Number(b.replace('night_','')));
-                historyEl.innerHTML = '<h4>📜 밤별 상세 처리 기록</h4>' + (nightKeys.length ? nightKeys.slice().reverse().map(key => {
-                    const night = history[key] || {};
-                    const lines = [...(night.actions || []).map(x => `행동: ${x}`), ...(night.results || []).map(x => `결과: ${x}`), ...(night.summary || []).map(x => `상황: ${x}`)];
-                    return `<details class="role-desc-item"><summary><b>${night.label || key.replace('night_','제 ' ) + '일 밤'}</b> — 기록 ${lines.length}건</summary>${lines.length ? lines.map(x => `<div style="padding:0.2rem 0;">${x}</div>`).join('') : '<div>상세 기록 없음</div>'}</details>`;
-                }).join('') : '<div class="role-desc-item">아직 완료된 밤 기록이 없습니다. 밤 종료 후 기록이 추가됩니다.</div>');
+                historyEl.innerHTML = '<h4>📜 밤별 상세 처리 기록</h4>' + buildAuditHtml(data.nightAuditLog);
             }
 
             if (data.state === 'NIGHT') {
