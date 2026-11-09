@@ -446,3 +446,29 @@ button.primary { box-shadow: 0 2px 0 #7d1729; }
   border-radius: 50%;
   background: var(--panel-2);
 }
+
+/* 게임 화면: 위쪽(경매 카드·버튼)은 고정, 플레이어 목록만 스크롤 */
+.app.game-mode {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.game-head { flex: 0 0 auto; }
+.game-head .section-title { margin: 12px 0 8px; }
+.game-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 16px;
+  margin: 0 -4px;
+  padding-left: 4px;
+  padding-right: 4px;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+.game-list::-webkit-scrollbar { width: 6px; }
+.game-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
