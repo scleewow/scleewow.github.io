@@ -72,6 +72,8 @@
   .btn-gold { background: var(--gold); color: #1a1408; }
   .btn-red  { background: var(--red);  color: #fff; }
   .btn-dark { background: var(--input); color: var(--text); border: 1px solid var(--input-border); }
+  .btn-danger { background: transparent; color: var(--red); border: 1px solid var(--red); }
+  .btn-danger:active { background: rgba(214, 41, 75, 0.12); }
 
   .link-btn {
     display: block; margin: 4px auto 0; background: none; border: none;
@@ -105,7 +107,8 @@
     font: 700 14px 'Pretendard', sans-serif; margin-left: 6px; padding: 0 2px; line-height: 1;
   }
   .chip .kick:hover { color: var(--red); }
-  .host-sub { display: block; margin-top: 12px; color: var(--red); }
+  .host-sub { margin-top: 10px; height: 44px; font-size: 15px; }
+  #btnDelete { margin-top: 10px; }
   .notice { font-size: 13px; color: var(--muted); text-align: center; margin-top: 12px; line-height: 1.5; }
 
   /* 게임 상단 */
@@ -325,7 +328,7 @@
 
     <button class="btn btn-gold hidden" id="btnStart">게임 시작</button>
     <button class="link-btn" id="btnLeave">나가기</button>
-    <button class="link-btn hidden" id="btnDelete" style="color:var(--red)">방 삭제</button>
+    <button class="btn btn-danger hidden" id="btnDelete">방 삭제</button>
   </section>
 
   <!-- ===== 게임 ===== -->
@@ -984,7 +987,7 @@ function renderHost() {
     html = `<p class="host-status">결과를 확인했으면 다음 라운드를 여세요.</p>
       <button class="btn btn-gold" id="hostNext">${room.round + 1}라운드 시작</button>`;
   }
-  html += '<button class="link-btn host-sub" id="hostForceEnd">게임 강제 종료</button>';
+  html += '<button class="btn btn-danger host-sub" id="hostForceEnd">게임 강제 종료</button>';
   $('hostBody').innerHTML = html;
 
   $('hostForceEnd').onclick = () => {
