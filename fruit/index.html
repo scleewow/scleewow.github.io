@@ -6,8 +6,7 @@
 <title>과일가게 - THE GENIUS</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script><style>
   :root {
     --bg: #0b0d12;
     --card: #141820;
@@ -420,12 +419,11 @@
   </div>
 </div>
 
-<script>
-// ▼ 언데드 마피아와 같은 Supabase 프로젝트 정보를 넣어주세요
-const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+<script type="module">
+// Supabase 접속 정보는 마이너스 경매와 같은 config.js 를 사용
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '../minus/config.js';
 
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const STORE_KEY = 'fruitshop_room';
 const $ = (id) => document.getElementById(id);
 
