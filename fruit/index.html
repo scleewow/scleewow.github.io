@@ -307,6 +307,7 @@
 
     <button class="btn btn-gold hidden" id="btnStart">게임 시작</button>
     <button class="link-btn" id="btnLeave">나가기</button>
+    <button class="link-btn hidden" id="btnDelete" style="color:var(--red)">방 삭제</button>
   </section>
 
   <!-- ===== 게임 ===== -->
@@ -620,6 +621,9 @@ function subscribe() {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'fs_income', filter: f }, scheduleRefresh)
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'fs_events', filter: f },
       (p) => { onEvent(p.new); scheduleRefresh(); })
+    // 삭제 이벤트는 필터가 적용되지 않아서 id를 직접 비교
+    .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'fs_rooms' },
+      (p) => { if (p.old && p.old.id === id) roomGone(); })
     .subscribe((status) => {
       // 재연결되면 놓친 변경을 다시 불러옴
       if (status === 'SUBSCRIBED') scheduleRefresh();
@@ -634,6 +638,9 @@ function scheduleRefresh() {
 async function refresh() {
   if (!state.roomId) return;
   try {
+    const { data: rm, error } = await sb.from('fs_rooms').select('*').eq('id', state.roomId).maybeSingle();
+    if (!error && !rm) return roomGone();
+    if (rm) state.room = rm;
     await loadPlayers();
     if (state.room && state.room.status !== 'lobby') await loadGame();
     render();
@@ -688,6 +695,8 @@ function renderLobby() {
 
   $('btnStart').classList.toggle('hidden', !isHost);
   $('btnStart').disabled = n < 4 || n > 15;
+  $('btnDelete').classList.toggle('hidden', !isHost);
+  $('btnLeave').classList.toggle('hidden', isHost);
 
   if (isHost) {
     $('lobbyNotice').textContent = n < 4
@@ -1036,6 +1045,28 @@ function leaveRoom() {
   state = freshState(state.me);
   show('viewHome');
 }
+
+function roomGone() {
+  if (!state.roomId) return;
+  const wasHost = state.room && state.room.host_id === state.me;
+  leaveRoom();
+  if (!wasHost) toast('방장이 방을 삭제했어요');
+}
+
+$('btnDelete').onclick = async () => {
+  if (!confirm('방을 삭제할까요? 들어와 있는 참가자들도 모두 첫 화면으로 돌아가요.')) return;
+  const btn = $('btnDelete');
+  btn.disabled = true;
+  try {
+    await rpc('fs_delete_room', { p_room: state.roomId });
+    leaveRoom();
+    toast('방을 삭제했어요', true);
+  } catch (e) {
+    toast(errMsg(e));
+  } finally {
+    btn.disabled = false;
+  }
+};
 
 $('btnLeave').onclick = () => {
   if (confirm('대기실에서 나갈까요? 같은 방 번호로 다시 들어올 수 있어요.')) leaveRoom();
