@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>과일가게 - THE GENIUS</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --card: #141820;
+    --card-border: #262c38;
+    --input: #1b202b;
+    --input-border: #2c3341;
+    --text: #e9ecf2;
+    --muted: #8d95a5;
+    --gold: #e8b65a;
+    --red: #d6294b;
+    --green: #3fbf7f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { min-height: 100%; }
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(ellipse 70% 40% at 50% 0%, rgba(150, 30, 50, 0.28), transparent 70%),
+      var(--bg);
+    background-attachment: fixed;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wrap { max-width: 520px; margin: 0 auto; padding: 16px 16px 40px; }
+
+  .topbar { display: flex; justify-content: flex-end; min-height: 34px; }
+  .btn-ghost {
+    background: transparent; color: var(--gold);
+    border: 1px solid var(--gold); border-radius: 10px;
+    padding: 7px 12px; font: 600 13px 'Pretendard', sans-serif; cursor: pointer;
+  }
+
+  header { text-align: center; margin: 22px 0 26px; }
+  .eyebrow { color: var(--gold); font-weight: 800; letter-spacing: 0.28em; font-size: 12px; }
+  h1 { font-size: 34px; font-weight: 900; margin: 8px 0 10px; letter-spacing: -0.02em; }
+  h1 .accent { color: var(--red); }
+  .subtitle { color: var(--muted); font-size: 14px; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 14px; padding: 18px 16px; margin-bottom: 16px;
+  }
+  .card-title { font-weight: 700; font-size: 14px; color: #c8cdd8; margin-bottom: 14px; }
+  label { display: block; font-size: 13px; color: #b3bac7; margin: 0 0 7px; }
+  .field { margin-bottom: 14px; }
+  input {
+    width: 100%; height: 48px; padding: 0 14px;
+    background: var(--input); border: 1px solid var(--input-border); border-radius: 10px;
+    color: var(--text); font: 16px 'Pretendard', sans-serif; outline: none;
+  }
+  input::placeholder { color: #6b7385; }
+  input:focus { border-color: #4a5468; }
+  input.code { text-align: center; font-size: 22px; letter-spacing: 0.4em; }
+
+  .btn {
+    width: 100%; height: 48px; border: none; border-radius: 10px; cursor: pointer;
+    font: 700 16px 'Pretendard', sans-serif;
+  }
+  .btn:disabled { opacity: 0.45; cursor: default; }
+  .btn-gold { background: var(--gold); color: #1a1408; }
+  .btn-red  { background: var(--red);  color: #fff; }
+  .btn-dark { background: var(--input); color: var(--text); border: 1px solid var(--input-border); }
+
+  .link-btn {
+    display: block; margin: 4px auto 0; background: none; border: none;
+    color: var(--muted); font: 13px 'Pretendard', sans-serif; text-decoration: underline; cursor: pointer;
+  }
+  .hidden { display: none !important; }
+
+  /* 대기실 */
+  .room-code { text-align: center; }
+  .room-code .label { font-size: 13px; color: var(--muted); }
+  .room-code .num { font-size: 44px; font-weight: 900; letter-spacing: 0.25em; margin: 4px 0 12px; padding-left: 0.25em; }
+  .qr-box {
+    width: 216px; height: 216px; margin: 0 auto 10px; padding: 8px;
+    background: #fff; border-radius: 12px;
+  }
+  .qr-box img, .qr-box canvas { width: 200px !important; height: 200px !important; }
+  .qr-hint { font-size: 13px; color: var(--muted); text-align: center; }
+
+  .players-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .count { font-size: 13px; color: var(--muted); }
+  .count b { color: var(--text); }
+  .players { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    padding: 8px 12px; border-radius: 999px; font-size: 14px;
+    background: var(--input); border: 1px solid var(--input-border);
+  }
+  .chip.me { border-color: var(--gold); }
+  .chip .host { color: var(--gold); font-size: 11px; font-weight: 700; margin-left: 4px; }
+  .notice { font-size: 13px; color: var(--muted); text-align: center; margin-top: 12px; line-height: 1.5; }
+
+  /* 모달 */
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7);
+    display: flex; align-items: flex-end; justify-content: center; z-index: 50;
+  }
+  .modal {
+    width: 100%; max-width: 520px; max-height: 86vh; overflow-y: auto;
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 18px 18px 0 0; padding: 22px 18px 28px;
+  }
+  @media (min-width: 560px) {
+    .modal-bg { align-items: center; }
+    .modal { border-radius: 18px; }
+  }
+  .modal h2 { font-size: 20px; margin-bottom: 4px; }
+  .modal .sub { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
+  .modal h3 { font-size: 15px; color: var(--gold); margin: 18px 0 8px; }
+  .modal p, .modal li { font-size: 14px; line-height: 1.65; color: #cfd4de; }
+  .modal ul { padding-left: 18px; }
+  .modal table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13px; }
+  .modal th, .modal td { border: 1px solid var(--card-border); padding: 7px 6px; text-align: center; }
+  .modal th { background: var(--input); color: #b3bac7; font-weight: 600; }
+  .modal .close { margin-top: 20px; }
+
+  /* 토스트 */
+  .toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
+    background: #2a1218; border: 1px solid var(--red); color: #ffd7de;
+    padding: 12px 16px; border-radius: 10px; font-size: 14px; z-index: 60;
+    max-width: calc(100% - 32px); text-align: center;
+  }
+  .toast.ok { background: #10241a; border-color: var(--green); color: #c9f2db; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <button class="btn-ghost" id="btnRules">게임 설명</button>
+  </div>
+
+  <header>
+    <div class="eyebrow">THE GENIUS</div>
+    <h1><span class="accent">과일</span>가게</h1>
+    <p class="subtitle">과일을 팔아 가장 많은 수익을 올린 사람이 승리합니다</p>
+  </header>
+
+  <!-- ===== 첫 화면 ===== -->
+  <section id="viewHome">
+    <div class="card" id="cardCreate">
+      <div class="card-title">방 만들기 (방장)</div>
+      <div class="field">
+        <label for="createKey">방 생성 인증키</label>
+        <input id="createKey" type="password" placeholder="방 생성 인증키 입력" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="createNick">닉네임</label>
+        <input id="createNick" maxlength="12" placeholder="사용할 닉네임 (1~12자)">
+      </div>
+      <button class="btn btn-gold" id="btnCreate">새 방 만들기</button>
+    </div>
+
+    <div class="card" id="cardJoin">
+      <div class="card-title">게임 참가하기</div>
+      <div class="field">
+        <label for="joinNick">닉네임</label>
+        <input id="joinNick" maxlength="12" placeholder="사용할 닉네임 (1~12자)">
+      </div>
+      <div class="field">
+        <label for="joinCode">방 번호</label>
+        <input id="joinCode" class="code" maxlength="4" inputmode="numeric" placeholder="방 번호">
+      </div>
+      <button class="btn btn-red" id="btnJoin">입장하기</button>
+    </div>
+
+    <button class="link-btn hidden" id="btnShowCreate">방장이신가요? 방 만들기</button>
+  </section>
+
+  <!-- ===== 대기실 ===== -->
+  <section id="viewLobby" class="hidden">
+    <div class="card room-code">
+      <div class="label">방 번호</div>
+      <div class="num" id="lobbyCode">----</div>
+      <div class="qr-box" id="qr"></div>
+      <p class="qr-hint">카메라로 QR을 찍으면 바로 참가할 수 있어요</p>
+    </div>
+
+    <div class="card">
+      <div class="players-head">
+        <div class="card-title" style="margin:0">참가자</div>
+        <div class="count"><b id="playerCount">0</b> / 15명</div>
+      </div>
+      <div class="players" id="playerList"></div>
+      <p class="notice" id="lobbyNotice"></p>
+    </div>
+
+    <button class="btn btn-gold hidden" id="btnStart">게임 시작</button>
+    <button class="link-btn" id="btnLeave">나가기</button>
+  </section>
+
+  <!-- ===== 게임 (다음 단계에서 구현) ===== -->
+  <section id="viewGame" class="hidden">
+    <div class="card">
+      <div class="card-title">게임이 시작되었어요</div>
+      <p class="notice">게임 화면은 준비 중이에요.</p>
+    </div>
+  </section>
+</div>
+
+<!-- ===== 게임 설명 ===== -->
+<div class="modal-bg hidden" id="modalRules">
+  <div class="modal">
+    <h2>과일가게 게임 설명</h2>
+    <p class="sub">더 지니어스 시즌3 블랙가넷 1화 메인매치</p>
+
+    <h3>목표</h3>
+    <p>내가 가진 과일을 팔아 4라운드 동안 가장 많은 수익을 올리세요.</p>
+
+    <h3>내 과일</h3>
+    <p>게임이 시작되면 각자 과일 2개를 무작위로 받아요. 받은 과일만 팔 수 있고, 같은 과일을 2개 받을 수도 있어요. 누가 어떤 과일을 가졌는지는 모두에게 공개돼요.</p>
+
+    <h3>라운드 진행</h3>
+    <ul>
+      <li><b>협상</b> — 자유롭게 돌아다니며 이야기하세요. 담합도, 거짓말도 자유예요.</li>
+      <li><b>희망가 제시</b> — 내 과일마다 1천~5천 원 중 하나를 몰래 제출해요.</li>
+      <li><b>결과 발표</b> — 과일별 판매가와 판매 수입이 공개돼요. 각자의 누적 수입은 끝날 때까지 비공개예요.</li>
+    </ul>
+
+    <h3>판매 규칙</h3>
+    <p>과일마다 <b>가장 낮은 가격을 낸 사람만</b> 팔 수 있어요. 판매 개수는 그 과일을 가진 사람 수와 같아요. 최저가를 낸 사람이 여럿이면 수입을 똑같이 나눠요.</p>
+    <table>
+      <tr><th>사과 판매자 4명</th><th>결과</th></tr>
+      <tr><td>모두 5천 원</td><td>각자 5천 원</td></tr>
+      <tr><td>한 명만 4천 원</td><td>그 사람이 1만 6천 원 독식</td></tr>
+      <tr><td>두 명이 3천 원</td><td>두 사람이 6천 원씩</td></tr>
+    </table>
+
+    <h3>특수 능력 (게임 중 단 한 번, 둘 중 하나만)</h3>
+    <ul>
+      <li><b>비밀</b> — 이번 라운드에 원하는 과일 하나의 판매가와 수입을 가려요. 내 과일이 아니어도 되고, 누가 썼는지는 공개되지 않아요.</li>
+      <li><b>교체</b> — 내 과일 하나를 다른 과일로 바꿔요. 희망가 제시 전에만 쓸 수 있고, 바꾸는 즉시 모두에게 공개돼요.</li>
+    </ul>
+
+    <h3>승패</h3>
+    <p>4라운드가 끝나면 누적 수입이 공개돼요. 가장 많이 번 사람이 우승, 가장 적게 번 사람이 꼴찌예요.</p>
+
+    <button class="btn btn-dark close" id="btnCloseRules">닫기</button>
+  </div>
+</div>
+
+<script>
+// ▼ 언데드 마피아와 같은 Supabase 프로젝트 정보를 넣어주세요
+const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const STORE_KEY = 'fruitshop_room';
+const $ = (id) => document.getElementById(id);
+
+let state = { roomId: null, room: null, players: [], me: null, channel: null };
+
+// ---------- 공통 ----------
+function toast(msg, ok = false) {
+  const el = document.createElement('div');
+  el.className = 'toast' + (ok ? ' ok' : '');
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2600);
+}
+
+function errMsg(e) {
+  return (e && (e.message || e.error_description)) || '오류가 발생했어요';
+}
+
+function show(view) {
+  ['viewHome', 'viewLobby', 'viewGame'].forEach((v) => $(v).classList.toggle('hidden', v !== view));
+}
+
+async function ensureAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) return session.user.id;
+  const { data, error } = await sb.auth.signInAnonymously();
+  if (error) throw error;
+  return data.user.id;
+}
+
+function validNick(v) {
+  const n = v.trim();
+  if (n.length < 1 || n.length > 12) { toast('닉네임은 1~12자로 입력해 주세요'); return null; }
+  return n;
+}
+
+function joinUrl(code) {
+  return `${location.origin}${location.pathname}?room=${code}`;
+}
+
+// ---------- 방 만들기 ----------
+$('btnCreate').onclick = async () => {
+  const key = $('createKey').value;
+  const nick = validNick($('createNick').value);
+  if (!key) return toast('방 생성 인증키를 입력해 주세요');
+  if (!nick) return;
+
+  const btn = $('btnCreate');
+  btn.disabled = true;
+  try {
+    await ensureAuth();
+    const { data, error } = await sb.rpc('fs_create_room', { p_nickname: nick, p_key: key });
+    if (error) throw error;
+    localStorage.setItem(STORE_KEY, data.room_id);
+    $('createKey').value = '';
+    await enterLobby(data.room_id);
+  } catch (e) {
+    toast(errMsg(e));
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+// ---------- 참가 ----------
+$('joinCode').addEventListener('input', (e) => {
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+});
+
+$('btnJoin').onclick = async () => {
+  const nick = validNick($('joinNick').value);
+  const code = $('joinCode').value.trim();
+  if (!nick) return;
+  if (code.length !== 4) return toast('방 번호 4자리를 입력해 주세요');
+
+  const btn = $('btnJoin');
+  btn.disabled = true;
+  try {
+    await ensureAuth();
+    const { data: roomId, error } = await sb.rpc('fs_join_room', { p_code: code, p_nickname: nick });
+    if (error) throw error;
+    localStorage.setItem(STORE_KEY, roomId);
+    localStorage.setItem('fruitshop_nick', nick);
+    history.replaceState(null, '', location.pathname);
+    await enterLobby(roomId);
+  } catch (e) {
+    toast(errMsg(e));
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+// ---------- 대기실 ----------
+async function enterLobby(roomId) {
+  state.me = await ensureAuth();
+  state.roomId = roomId;
+
+  const { data: room, error } = await sb.from('fs_rooms').select('*').eq('id', roomId).single();
+  if (error || !room) throw error || new Error('방을 찾을 수 없어요');
+  state.room = room;
+
+  await loadPlayers();
+  if (!state.players.some((p) => p.user_id === state.me)) {
+    localStorage.removeItem(STORE_KEY);
+    throw new Error('이 방의 참가자가 아니에요');
+  }
+
+  $('lobbyCode').textContent = room.code;
+  $('qr').innerHTML = '';
+  new QRCode($('qr'), {
+    text: joinUrl(room.code), width: 200, height: 200,
+    colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M,
+  });
+
+  subscribe();
+  render();
+}
+
+async function loadPlayers() {
+  const { data, error } = await sb.from('fs_players')
+    .select('user_id, nickname, joined_at')
+    .eq('room_id', state.roomId)
+    .order('joined_at');
+  if (error) throw error;
+  state.players = data || [];
+}
+
+function subscribe() {
+  if (state.channel) sb.removeChannel(state.channel);
+  state.channel = sb.channel(`fs-room-${state.roomId}`)
+    .on('postgres_changes',
+      { event: '*', schema: 'public', table: 'fs_players', filter: `room_id=eq.${state.roomId}` },
+      async () => { await loadPlayers(); render(); })
+    .on('postgres_changes',
+      { event: 'UPDATE', schema: 'public', table: 'fs_rooms', filter: `id=eq.${state.roomId}` },
+      (payload) => { state.room = payload.new; render(); })
+    .subscribe();
+}
+
+function render() {
+  const room = state.room;
+  if (!room) return show('viewHome');
+  if (room.status !== 'lobby') return show('viewGame');
+
+  show('viewLobby');
+  const isHost = room.host_id === state.me;
+  const n = state.players.length;
+
+  $('playerCount').textContent = n;
+  $('playerList').innerHTML = state.players.map((p) => {
+    const cls = 'chip' + (p.user_id === state.me ? ' me' : '');
+    const host = p.user_id === room.host_id ? '<span class="host">방장</span>' : '';
+    return `<span class="${cls}">${escapeHtml(p.nickname)}${host}</span>`;
+  }).join('');
+
+  $('btnStart').classList.toggle('hidden', !isHost);
+  $('btnStart').disabled = n < 4 || n > 15;
+
+  if (isHost) {
+    $('lobbyNotice').textContent = n < 4
+      ? `4명 이상 모이면 시작할 수 있어요 (지금 ${n}명)`
+      : '모두 들어왔으면 게임을 시작하세요';
+  } else {
+    $('lobbyNotice').textContent = '방장이 게임을 시작할 때까지 기다려 주세요';
+  }
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+$('btnStart').onclick = async () => {
+  if (!confirm(`${state.players.length}명으로 게임을 시작할까요? 시작 후에는 더 들어올 수 없어요.`)) return;
+  const btn = $('btnStart');
+  btn.disabled = true;
+  try {
+    const { error } = await sb.rpc('fs_start_game', { p_room: state.roomId });
+    if (error) throw error;
+  } catch (e) {
+    toast(errMsg(e));
+    btn.disabled = false;
+  }
+};
+
+$('btnLeave').onclick = () => {
+  if (!confirm('대기실에서 나갈까요? 같은 방 번호로 다시 들어올 수 있어요.')) return;
+  if (state.channel) sb.removeChannel(state.channel);
+  localStorage.removeItem(STORE_KEY);
+  state = { roomId: null, room: null, players: [], me: state.me, channel: null };
+  show('viewHome');
+};
+
+// ---------- 게임 설명 ----------
+$('btnRules').onclick = () => $('modalRules').classList.remove('hidden');
+$('btnCloseRules').onclick = () => $('modalRules').classList.add('hidden');
+$('modalRules').onclick = (e) => { if (e.target.id === 'modalRules') $('modalRules').classList.add('hidden'); };
+
+// ---------- 시작 ----------
+(async function init() {
+  const params = new URLSearchParams(location.search);
+  const qrCode = (params.get('room') || '').replace(/\D/g, '').slice(0, 4);
+  const savedNick = localStorage.getItem('fruitshop_nick');
+  if (savedNick) $('joinNick').value = savedNick;
+
+  // QR로 들어온 경우: 참가 카드만 보이게
+  if (qrCode) {
+    $('joinCode').value = qrCode;
+    $('cardCreate').classList.add('hidden');
+    $('btnShowCreate').classList.remove('hidden');
+    setTimeout(() => $('joinNick').focus(), 100);
+  }
+
+  // 새로고침/재접속 시 기존 방으로 복귀
+  const saved = localStorage.getItem(STORE_KEY);
+  if (saved && !qrCode) {
+    try { await enterLobby(saved); return; }
+    catch { localStorage.removeItem(STORE_KEY); }
+  }
+  show('viewHome');
+})();
+
+$('btnShowCreate').onclick = () => {
+  $('cardCreate').classList.remove('hidden');
+  $('btnShowCreate').classList.add('hidden');
+};
+</script>
+</body>
+</html>
