@@ -492,3 +492,84 @@ button.primary { box-shadow: 0 2px 0 #7d1729; }
 }
 .game-list::-webkit-scrollbar { width: 6px; }
 .game-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+/* 낙찰 도장 연출 */
+.stamp-fx {
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 6, 10, 0.55);
+  animation: fx-in 0.15s ease-out;
+  transition: opacity 0.4s;
+}
+.stamp-fx.out { opacity: 0; }
+.stamp-stage { text-align: center; }
+.stamp-card {
+  position: relative;
+  width: 140px;
+  height: 196px;
+  margin: 0 auto;
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--card-ink);
+  display: flex;
+  align-items: flex-start;
+  padding-top: 30px;
+  box-sizing: border-box;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-size: 58px;
+  font-weight: 700;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6), inset 0 0 0 6px #fff, inset 0 0 0 7px rgba(179, 19, 47, 0.25);
+  animation: card-thud 0.18s ease-out 0.32s both;
+}
+.stamp {
+  position: absolute;
+  left: 50%;
+  top: 70%;
+  padding: 2px 16px 4px;
+  border: 5px double #d12a4a;
+  border-radius: 12px;
+  color: #d12a4a;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  background: rgba(246, 241, 231, 0.55);
+  mix-blend-mode: multiply;
+  transform: translate(-50%, -50%) rotate(-14deg);
+  animation: stamp-in 0.38s cubic-bezier(.2, .9, .3, 1.2) both;
+}
+.stamp-who {
+  margin-top: 18px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  animation: rise 0.3s ease-out 0.35s both;
+}
+.stamp-who b { color: var(--gold); }
+.stamp-pot {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--muted);
+  animation: rise 0.3s ease-out 0.45s both;
+}
+@keyframes fx-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes stamp-in {
+  0%   { opacity: 0; transform: translate(-50%, -50%) rotate(-28deg) scale(2.8); }
+  70%  { opacity: 1; transform: translate(-50%, -50%) rotate(-12deg) scale(0.92); }
+  100% { opacity: 1; transform: translate(-50%, -50%) rotate(-14deg) scale(1); }
+}
+@keyframes card-thud {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(0.95) translateY(3px); }
+  100% { transform: scale(1); }
+}
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .stamp, .stamp-card, .stamp-who, .stamp-pot { animation: none; }
+}
