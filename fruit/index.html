@@ -119,6 +119,18 @@
   .pill.bid { color: var(--gold); }
   .pill.result { color: var(--green); }
   .pill.finished { color: var(--red); }
+  .timer {
+    text-align: center; margin-bottom: 12px; padding: 14px 12px;
+    background: var(--card); border: 1px solid var(--card-border); border-radius: 14px;
+  }
+  .timer .lbl { font-size: 12px; color: var(--muted); letter-spacing: 0.08em; }
+  .timer .t {
+    font-size: 44px; font-weight: 900; font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em; margin-top: 2px; color: #7fb4ff;
+  }
+  .timer.urgent { border-color: rgba(214, 41, 75, 0.6); }
+  .timer.urgent .t { color: var(--red); }
+  .timer.over .t { font-size: 26px; color: var(--muted); }
   .banner {
     font-size: 14px; line-height: 1.55; color: #cfd4de;
     background: var(--input); border: 1px solid var(--input-border);
@@ -321,6 +333,10 @@
     <div class="gamebar">
       <div class="round" id="gRound"></div>
       <div class="pill" id="gPhase"></div>
+    </div>
+    <div class="timer hidden" id="gTimer">
+      <div class="lbl">협상 남은 시간</div>
+      <div class="t">05:00</div>
     </div>
     <div class="banner" id="gBanner"></div>
 
@@ -696,6 +712,42 @@ function onEvent(ev) {
   }
 }
 
+// ---------- 협상 타이머 ----------
+// 각 폰이 협상 단계를 처음 본 시각부터 따로 카운트 (안내용, 자동 진행 없음)
+// 시작 시각을 이 폰에 저장해 두어 새로고침해도 처음부터 다시 세지 않음
+const NEGOTIATE_SECONDS = 300;
+
+function negotiateStartedAt(room) {
+  // 대기실 복귀 후 새 판과 섞이지 않도록 게임 시작 이벤트 id를 키에 포함
+  const startEv = state.events.find((e) => e.kind === 'start');
+  const key = `fruitshop_neg_${state.roomId}_${startEv ? startEv.id : 0}_${room.round}`;
+  let t = 0;
+  try { t = Number(localStorage.getItem(key)) || 0; } catch { /* 저장소 사용 불가 */ }
+  if (!t) {
+    t = Date.now();
+    try { localStorage.setItem(key, String(t)); } catch { /* 저장소 사용 불가 */ }
+  }
+  return t;
+}
+
+function tickTimer() {
+  const room = state.room;
+  const el = $('gTimer');
+  const active = room && room.status === 'playing' && room.phase === 'negotiate' && state.events.length > 0;
+  el.classList.toggle('hidden', !active);
+  if (!active) return;
+
+  const endsAt = negotiateStartedAt(room) + NEGOTIATE_SECONDS * 1000;
+  const left = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
+  const mm = String(Math.floor(left / 60)).padStart(2, '0');
+  const ss = String(left % 60).padStart(2, '0');
+  el.querySelector('.t').textContent = left > 0 ? `${mm}:${ss}` : '협상 시간 종료';
+  el.classList.toggle('urgent', left > 0 && left <= 30);
+  el.classList.toggle('over', left === 0);
+  // 시간 정보만 표시. 희망가 제시는 방장이 직접 시작
+}
+setInterval(tickTimer, 250);
+
 // 앱이 백그라운드에서 돌아오면 최신 상태로
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) scheduleRefresh();
@@ -769,6 +821,7 @@ function renderGame() {
   renderIncome();
   renderMarket();
   manageStatusPoll();
+  tickTimer();
 
   $('cardAbility').classList.toggle('hidden', finished);
   $('btnHome').classList.toggle('hidden', !finished);
@@ -918,7 +971,7 @@ function renderHost() {
   const n = state.players.length;
   let html = '';
   if (room.phase === 'negotiate') {
-    html = `<p class="host-status">협상이 끝나면 희망가 제시를 시작하세요.</p>
+    html = `<p class="host-status">타이머는 안내용이에요. 협상이 끝나면 희망가 제시를 시작하세요.</p>
       <button class="btn btn-gold" id="hostOpen">희망가 제시 시작</button>`;
   } else if (room.phase === 'bid') {
     const done = state.bidStatus.filter((s) => s.submitted >= s.total).length;
