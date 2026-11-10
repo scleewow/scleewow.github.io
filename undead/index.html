@@ -474,6 +474,23 @@
             overflow-wrap: anywhere;
         }
 
+        /* 결과 화면 '사건의 전말' 타임라인 */
+        .timeline-item {
+            padding: 0.4rem 0.6rem;
+            margin-bottom: 0.35rem;
+            border-left: 3px solid #94a3b8;
+            background: #f1f5f9;
+            border-radius: 4px;
+            line-height: 1.4;
+        }
+        .timeline-item.death, .timeline-item.execute { border-left-color: #ef4444; }
+        .timeline-item.revive { border-left-color: #16a34a; }
+        .timeline-item.reject { border-left-color: #0284c7; }
+        .timeline-item.swap { border-left-color: #9333ea; }
+        .timeline-cause { display: block; font-size: 0.75rem; color: #64748b; margin-top: 0.1rem; overflow-wrap: anywhere; }
+        body.night-mode .timeline-item { background: #020617; }
+        body.night-mode .timeline-cause { color: #94a3b8; }
+
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
@@ -648,13 +665,20 @@
     <div id="result-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <h2 id="result-winner-title" style="text-align:center; margin-bottom:0.5rem; font-size:1.5rem;">🏆 게임 종료</h2>
-            <div id="result-reason-text" style="font-size:0.9rem; color:#64748b; text-align:center; margin-bottom:1rem;"></div>
+            <div id="result-reason-text" style="font-size:0.9rem; color:#64748b; text-align:center; margin-bottom:1rem; word-break:keep-all; overflow-wrap:anywhere;"></div>
             
-            <div class="tab-body" style="max-height: 250px;">
-                <h4 style="margin-bottom:0.5rem;">📋 전체 직업 공개</h4>
+            <div class="tab-buttons">
+                <button class="tab-btn" id="result-tab-btn-roles" onclick="switchResultTab('roles')">📋 직업 공개</button>
+                <button class="tab-btn" id="result-tab-btn-timeline" onclick="switchResultTab('timeline')">📜 사건의 전말</button>
+            </div>
+
+            <div id="result-tab-roles" class="tab-body" style="max-height: 38vh;">
                 <div id="result-roles-list" class="player-list"></div>
             </div>
-            
+            <div id="result-tab-timeline" class="tab-body hidden" style="max-height: 38vh;">
+                <div id="result-timeline-list"></div>
+            </div>
+
             <button style="margin-top:1.2rem; background:#0284c7;" onclick="confirmGameEnd()">확인 (대기실 이동)</button>
         </div>
     </div>
@@ -1229,7 +1253,60 @@
                 rolesList.appendChild(item);
             });
 
+            renderResultTimeline(data.eventLog);
+
+            // 결과 화면은 데이터가 갱신될 때마다 다시 그려지므로, 처음 열릴 때만 '직업 공개' 탭으로 맞춘다.
+            const wasHidden = resultModal.classList.contains('hidden');
             resultModal.classList.remove('hidden');
+            if (wasHidden) switchResultTab('roles');
+        }
+
+        // 사건의 전말: 낮/밤 단위로 묶어서 사망·처형·부활 등을 시간순으로 보여준다.
+        function renderResultTimeline(rawEventLog) {
+            const box = document.getElementById('result-timeline-list');
+            if (!box) return;
+            box.replaceChildren();
+            const events = normalizeEventLog(rawEventLog);
+
+            if (!events.length) {
+                const empty = document.createElement('div');
+                empty.className = 'timeline-item';
+                empty.textContent = '기록된 사건이 없습니다.';
+                box.appendChild(empty);
+                return;
+            }
+
+            const icons = { death: '💀', execute: '⚖️', reject: '🛡️', revive: '✨', swap: '🎭' };
+            let lastLabel = null;
+            events.forEach(ev => {
+                const label = `${ev.phase === 'NIGHT' ? '🌙' : '☀️'} 제 ${ev.day}일 ${ev.phase === 'NIGHT' ? '밤' : '낮'}`;
+                if (label !== lastLabel) {
+                    const h = document.createElement('h4');
+                    h.textContent = label;
+                    box.appendChild(h);
+                    lastLabel = label;
+                }
+                const item = document.createElement('div');
+                item.className = `timeline-item ${ev.kind || ''}`;
+                const title = document.createElement('b');
+                title.textContent = `${icons[ev.kind] || '•'} ${ev.text || ''}`;
+                item.appendChild(title);
+                if (ev.cause) {
+                    const cause = document.createElement('span');
+                    cause.className = 'timeline-cause';
+                    cause.textContent = ev.cause;
+                    item.appendChild(cause);
+                }
+                box.appendChild(item);
+            });
+        }
+
+        function switchResultTab(tabType) {
+            const isTimeline = tabType === 'timeline';
+            document.getElementById('result-tab-btn-roles').classList.toggle('active', !isTimeline);
+            document.getElementById('result-tab-btn-timeline').classList.toggle('active', isTimeline);
+            document.getElementById('result-tab-roles').classList.toggle('hidden', isTimeline);
+            document.getElementById('result-tab-timeline').classList.toggle('hidden', !isTimeline);
         }
 
         function confirmGameEnd() {
@@ -1279,6 +1356,7 @@
                 updates['lastExecutedPlayerId'] = null;
                 updates['winnerTeam'] = null;
                 updates['winReason'] = null;
+                updates['eventLog'] = null; // 이전 판의 사건 기록 초기화
                 updates['logs'] = [`🔄 대기실로 이동하였습니다. 새로 게임을 시작할 수 있습니다.`];
 
                 roomRef.update(updates);
@@ -1508,6 +1586,7 @@
                 updates['phaseStartTime'] = Date.now(); // 타이머용
                 updates['winnerTeam'] = null;
                 updates['winReason'] = null;
+                updates['eventLog'] = null; // 이전 판의 사건 기록 초기화
                 updates['moderatorResults'] = null;
                 updates['nightAuditLog'] = null;
                 updates['logs'] = ['🌙 제 1일 밤이 되었습니다. 생존자는 비밀리에 능력을 지정하세요.'];
@@ -1988,30 +2067,88 @@
                 }
             });
 
+            // kind는 승리 사유를 구체적으로 풀어 쓰기 위한 구분값이다. (enrichWinReason 참고)
             if (!aliveGodfather) {
-                return { winner: 'CITIZEN', reason: '시민팀이 승리 조건을 충족했습니다!' };
+                return { winner: 'CITIZEN', kind: 'GODFATHER_DEAD', reason: '시민팀이 승리 조건을 충족했습니다!' };
             }
 
             // 선택 옵션: 생존 마피아 수가 생존 시민 수보다 많아지면 마피아팀 승리 (동수는 승리 아님)
             // 내부 키 이름(mafiaWinsOnParity)은 기존 방과의 호환을 위해 유지한다.
             if (mafiaWinsOnParity && aliveGodfather && aliveMafia > aliveCitizens) {
-                return { winner: 'MAFIA', reason: `생존 마피아 수(${aliveMafia}명)가 생존 시민 수(${aliveCitizens}명)보다 많아져 마피아팀이 승리했습니다!` };
+                return { winner: 'MAFIA', kind: 'PARITY', reason: `생존 마피아 수(${aliveMafia}명)가 생존 시민 수(${aliveCitizens}명)보다 많아져 마피아팀이 승리했습니다!` };
             }
 
             if (aliveGodfather && totalAlive <= 2) {
-                return { winner: 'MAFIA', reason: '마피아팀이 최후 2인까지 생존하여 승리했습니다!' };
+                return { winner: 'MAFIA', kind: 'LAST_TWO', reason: '마피아팀이 최후 2인까지 생존하여 승리했습니다!' };
             }
             if (aliveCitizens === 0) {
-                return { winner: 'MAFIA', reason: '모든 시민이 전멸하여 마피아팀이 승리했습니다!' };
+                return { winner: 'MAFIA', kind: 'NO_CITIZEN', reason: '모든 시민이 전멸하여 마피아팀이 승리했습니다!' };
             }
 
             return null;
         }
 
-        function triggerGameEnd(winnerInfo, updates, logs) {
+        // ===== 사건 기록(사건의 전말) 보조 함수 =====
+        // eventLog 항목: { day, phase: 'DAY'|'NIGHT', kind: 'death'|'revive'|'execute'|'reject'|'swap',
+        //                 name, roleName, roleId, team, text, cause }
+        function normalizeEventLog(raw) {
+            if (!raw) return [];
+            return Array.isArray(raw) ? raw.filter(Boolean) : Object.values(raw).filter(Boolean);
+        }
+
+        function roleNameById(roleId) {
+            const all = [ROLE_GODFATHER, ...OTHER_MAFIA_ROLES, ...ALL_CITIZEN_ROLES];
+            const found = all.find(r => r.id === roleId);
+            return found ? found.name : (roleId || '직업 미상');
+        }
+
+        function roleLabelOf(player) {
+            if (!player || !player.role) return '직업 미상';
+            return player.role.id === 'FOOL' ? '광대' : player.role.name;
+        }
+
+        function eventWhen(ev) {
+            return `${ev.day}일차 ${ev.phase === 'NIGHT' ? '밤' : '낮'}`;
+        }
+
+        // 승리 사유를 "무엇 때문에 이겼는지" 알 수 있게 풀어 쓴다.
+        // 첫 줄은 기존 승리 사유, 둘째 줄(▶)은 사건 기록에서 찾은 구체적인 전말이다.
+        function enrichWinReason(win, players, eventLog) {
+            const evs = normalizeEventLog(eventLog);
+            // 처형(execute)도 사망의 한 종류로 취급한다.
+            const lastDeath = (pred) => [...evs].reverse().find(e => (e.kind === 'death' || e.kind === 'execute') && (!pred || pred(e)));
+            const fmtDeath = (e) => e.kind === 'execute'
+                ? `${eventWhen(e)} — ${e.name}(${e.roleName}) 처형 (${e.cause})`
+                : `${eventWhen(e)} — ${e.name}(${e.roleName}) 사망 (${e.cause})`;
+            let detail = '';
+
+            if (win.kind === 'GODFATHER_DEAD') {
+                const e = lastDeath(ev => ev.roleId === 'GODFATHER');
+                if (e) {
+                    win = { ...win, reason: '대부가 사망하여 시민팀이 승리했습니다!' };
+                    detail = fmtDeath(e);
+                }
+            } else if (win.kind === 'PRESIDENT_EXECUTED') {
+                const e = [...evs].reverse().find(x => x.kind === 'execute' && x.roleId === 'PRESIDENT');
+                if (e) detail = fmtDeath(e);
+            } else if (win.kind === 'LAST_TWO') {
+                const alive = Object.values(players || {})
+                    .filter(p => p && !p.isDead && p.role)
+                    .map(p => `${p.name}(${roleLabelOf(p)})`);
+                if (alive.length) detail = `최후 생존자: ${alive.join(', ')}`;
+            } else if (win.kind === 'NO_CITIZEN' || win.kind === 'PARITY') {
+                const e = lastDeath();
+                if (e) detail = `마지막 사망: ${fmtDeath(e)}`;
+            }
+
+            return detail ? `${win.reason}\n▶ ${detail}` : win.reason;
+        }
+
+        function triggerGameEnd(winnerInfo, updates, logs, players) {
             updates['state'] = 'ENDED';
             updates['winnerTeam'] = winnerInfo.winner;
-            updates['winReason'] = winnerInfo.reason;
+            // 로그에는 짧은 사유를 남기고, 결과 화면용 승리 사유에는 구체적인 전말까지 풀어 쓴다.
+            updates['winReason'] = enrichWinReason(winnerInfo, players, updates['eventLog']);
             logs.push(`🎉 [게임 종료] ${winnerInfo.winner === 'MAFIA' ? '🔴 마피아팀 승리!' : '🔵 시민팀 승리!'} (${winnerInfo.reason})`);
             updates['logs'] = logs;
             roomRef.update(updates);
@@ -2025,6 +2162,8 @@
                 // 현재 페이즈 처리 전 로그 길이: data.logs와 logs가 같은 배열을 참조하므로 숫자로 고정한다.
                 const initialLogCount = logs.length;
                 const players = data.players;
+                // 사건의 전말 기록: 사망·부활·처형 결과를 시간순으로 쌓아 결과 화면의 타임라인에 쓴다.
+                const eventLog = normalizeEventLog(data.eventLog);
 
                 if (data.state === 'DAY') {
                     // 1차 지목 투표 집계 및 최후 변론으로 이동
@@ -2094,6 +2233,7 @@
                     });
 
                     let updates = {};
+                    updates['eventLog'] = eventLog; // 같은 배열 참조이므로 이후에 쌓는 기록도 함께 저장된다.
 
                     if (approveCount > rejectCount && candidate) {
                         updates[`players/${candidateId}/isDead`] = true;
@@ -2101,19 +2241,35 @@
                         updates['lastExecutedPlayerName'] = candidate.name;
                         updates['lastExecutedPlayerId'] = candidateId;
                         logs.push(`☠ [처형 확정] 찬성 ${approveCount}표 / 반대 ${rejectCount}표로 ${candidate.name}님이 처형되었습니다.`);
+                        eventLog.push({
+                            day: Number(data.dayCount || 1), phase: 'DAY', kind: 'execute',
+                            name: candidate.name, roleName: roleLabelOf(candidate), roleId: candidate.role ? candidate.role.id : null,
+                            team: candidate.role ? candidate.role.team : null,
+                            text: `${candidate.name}(${roleLabelOf(candidate)}) 처형`,
+                            cause: `낮 투표 처형: 찬성 ${approveCount}표 / 반대 ${rejectCount}표`
+                        });
 
                         if (candidate.role && candidate.role.id === 'PRESIDENT') {
                             logs.push(`🚨 낮 투표로 특수 패배 조건이 발동했습니다.`);
-                            triggerGameEnd({ winner: 'MAFIA', reason: '낮 투표로 마피아팀 승리 조건이 충족되었습니다.' }, updates, logs);
+                            triggerGameEnd({ winner: 'MAFIA', kind: 'PRESIDENT_EXECUTED', reason: '낮 투표로 마피아팀 승리 조건이 충족되었습니다.' }, updates, logs, players);
                             return;
                         }
                     } else {
                         logs.push(`🛡️ [처형 부결] 찬성 ${approveCount}표 / 반대 ${rejectCount}표로 ${candidate ? candidate.name : ''}님의 처형이 부결되었습니다.`);
+                        if (candidate) {
+                            eventLog.push({
+                                day: Number(data.dayCount || 1), phase: 'DAY', kind: 'reject',
+                                name: candidate.name, roleName: roleLabelOf(candidate), roleId: candidate.role ? candidate.role.id : null,
+                                team: candidate.role ? candidate.role.team : null,
+                                text: `${candidate.name}(${roleLabelOf(candidate)}) 처형 부결`,
+                                cause: `찬성 ${approveCount}표 / 반대 ${rejectCount}표`
+                            });
+                        }
                     }
 
                     const winResult = checkWinCondition(players, !!data.mafiaWinsOnParity);
                     if (winResult) {
-                        triggerGameEnd(winResult, updates, logs);
+                        triggerGameEnd(winResult, updates, logs, players);
                         return;
                     }
 
@@ -2151,6 +2307,31 @@
                     // 이 값은 능력 발동 여부를 막는 데 사용하지 않는다.
                     let diedDuringNightSet = new Set();
                     let attackedTargetId = null;
+                    let attackerId = null; // 대부 공격의 실행자 (사건 기록용)
+
+                    // ===== 사건의 전말 기록 (결과 화면 타임라인) =====
+                    const eventDay = Number(data.dayCount || 1);
+                    updates['eventLog'] = eventLog; // 같은 배열 참조이므로 이후에 쌓는 기록도 함께 저장된다.
+                    const actorTag = (pid, roleId) => `${roleNameById(roleId)} [${players[pid] ? players[pid].name : pid}]`;
+                    const personEvent = (kind, id, verb, cause) => {
+                        const p = players[id];
+                        return {
+                            day: eventDay, phase: 'NIGHT', kind,
+                            name: p.name, roleName: roleLabelOf(p), roleId: p.role ? p.role.id : null,
+                            team: p.role ? p.role.team : null,
+                            text: `${p.name}(${roleLabelOf(p)}) ${verb}`, cause
+                        };
+                    };
+                    // 반드시 isDead를 true로 바꾸기 전에 호출한다. 이미 사망한 사람은 중복 기록하지 않는다.
+                    const logNightDeath = (victimId, cause) => {
+                        const v = players[victimId];
+                        if (!v || v.isDead) return;
+                        eventLog.push(personEvent('death', victimId, '사망', cause));
+                    };
+                    const logNightRevive = (targetId, cause) => {
+                        if (!players[targetId]) return;
+                        eventLog.push(personEvent('revive', targetId, '부활', cause));
+                    };
 
                     // 0단계: 환각 여부를 먼저 계산한다.
                     // 폭력배의 능력 박탈은 환각 상태에서 실패해야 하므로, 환각 -> 박탈 -> 환각 재계산의 2단계로 처리한다.
@@ -2264,6 +2445,7 @@
                             if (target && revivePlayer(act.targetId)) {
                                 logs.push(`✨ ${target.name}님이 부활했습니다.`);
                                 auditEvents.push(`[성직자] ${target.name} 부활 처리 완료. 1회성 능력 기록 초기화.`);
+                                logNightRevive(act.targetId, `${actorTag(pId, 'CLERGY')}의 부활`);
                             }
                             updates[`players/${pId}/usedOnceAbility`] = true;
                             players[pId].usedOnceAbility = true;
@@ -2278,6 +2460,7 @@
                             const target = act.targetId && players[act.targetId];
                             if (target && revivePlayer(act.targetId)) {
                                 logs.push(`✨ ${target.name}님이 부활했습니다.`);
+                                logNightRevive(act.targetId, `${actorTag(pId, 'SPIRITIST')}의 부활`);
                                 updates[`players/${pId}/privateResult`] = `🔮 [심령술사] ${target.name}님을 부활시켰습니다.`;
                             } else {
                                 updates[`players/${pId}/privateResult`] = '🔮 [심령술사] 선택한 대상은 부활할 수 없었습니다.';
@@ -2313,6 +2496,7 @@
                             const targetIsMafia = target.role.team === 'mafia'; // 마술사는 실제 소속팀 기준. RULER_BULLY는 실제 시민팀.
 
                             if (targetIsMafia) {
+                                logNightDeath(pId, `마술 실패 — 마피아팀 대상: [${target.name}]`);
                                 updates[`players/${pId}/isDead`] = true;
                                 magician.isDead = true;
                                 diedDuringNightSet.add(pId);
@@ -2327,6 +2511,12 @@
                                 // 직업만 서로 교환한다. 생사 상태 등 플레이어 자체 정보는 유지한다.
                                 magician.role = targetRole;
                                 target.role = magicianRole;
+                                eventLog.push({
+                                    day: eventDay, phase: 'NIGHT', kind: 'swap',
+                                    name: magician.name, roleName: '마술사', roleId: 'MAGICIAN', team: 'human',
+                                    text: `직업 교환: [${magician.name}] ↔ [${target.name}]`,
+                                    cause: `마술사 [${magician.name}]의 마술 — ${magician.name}: 마술사 → ${roleLabelOf(magician)} / ${target.name}: ${roleLabelOf(magician)} → 마술사`
+                                });
 
                                 updates[`players/${pId}/role`] = magician.role;
                                 updates[`players/${act.targetId}/role`] = target.role;
@@ -2362,6 +2552,7 @@
                         
                         if (act.actorRoleId === 'HITMAN' && !hallucinatedActorSet.has(pId)) {
                             if (act.targetId && players[act.targetId]) {
+                                logNightDeath(act.targetId, `${actorTag(pId, 'HITMAN')}의 암살`);
                                 updates[`players/${act.targetId}/isDead`] = true;
                                 players[act.targetId].isDead = true;
                                 diedDuringNightSet.add(act.targetId);
@@ -2379,12 +2570,14 @@
                                 if (isHallucinated) isTargetMafia = !isTargetMafia;
 
                                 if (isTargetMafia) {
+                                    logNightDeath(act.targetId, `${actorTag(pId, 'SNIPER')}의 저격${isHallucinated ? ' (환각 영향)' : ''}`);
                                     updates[`players/${act.targetId}/isDead`] = true;
                                     players[act.targetId].isDead = true;
                                     diedDuringNightSet.add(act.targetId);
                                     logs.push(`💀 밤 사이 ${target.name}님이 사망했습니다.`);
                                     updates[`players/${pId}/privateResult`] = `🎯 [저격 성공] ${target.name}님을 성공적으로 저격했습니다.`;
                                 } else {
+                                    logNightDeath(pId, `저격 실패 — 대상: [${target.name}]${isHallucinated ? ' (환각 영향)' : ''}`);
                                     updates[`players/${pId}/isDead`] = true;
                                     players[pId].isDead = true;
                                     diedDuringNightSet.add(pId);
@@ -2406,6 +2599,7 @@
                         const act = actions[pId];
                         if (act.actorRoleId === 'GODFATHER' && !hallucinatedActorSet.has(pId)) {
                             attackedTargetId = act.targetId;
+                            attackerId = pId;
                         }
                     });
 
@@ -2421,6 +2615,7 @@
                                 victim.soldierDefenseUsed = true;
                                 auditEvents.push(`[대부 공격] ${victim.name} 공격이 군인의 1회 방어 효과로 막혔습니다.`);
                             } else {
+                                logNightDeath(attackedTargetId, `${actorTag(attackerId, 'GODFATHER')}의 공격`);
                                 updates[`players/${attackedTargetId}/isDead`] = true;
                                 players[attackedTargetId].isDead = true;
                                 diedDuringNightSet.add(attackedTargetId);
@@ -2446,6 +2641,15 @@
                         });
 
                         if (wasTargetedByValidAbility) {
+                            // 겁쟁이는 "누가 죽였는가"가 아니라 "지목당한 것 자체"가 원인이므로, 지목한 사람들을 모두 기록한다.
+                            const targeters = Object.keys(actions)
+                                .filter(actorId => {
+                                    if (actorId === targetId) return false;
+                                    const a = actions[actorId];
+                                    return a && (a.targetId === targetId || (Array.isArray(a.targetIds) && a.targetIds.includes(targetId)));
+                                })
+                                .map(actorId => actorTag(actorId, actions[actorId].actorRoleId));
+                            logNightDeath(targetId, `밤 능력의 대상으로 지목됨 — ${targeters.join(', ')}`);
                             auditEvents.push(`[겁쟁이] ${target.name}은 밤 능력의 대상으로 지목되어 사망 처리되었습니다.`);
                             updates[`players/${targetId}/isDead`] = true;
                             target.isDead = true;
@@ -2625,7 +2829,7 @@
 
                     const winResult = checkWinCondition(players, !!data.mafiaWinsOnParity);
                     if (winResult) {
-                        triggerGameEnd(winResult, updates, logs);
+                        triggerGameEnd(winResult, updates, logs, players);
                         return;
                     }
 
