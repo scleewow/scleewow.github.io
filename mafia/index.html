@@ -528,12 +528,12 @@
             <div id="host-role-setting-card" class="card hidden">
                 <h4 style="text-align:left;">🎭 역할 배정 설정</h4>
                 <select id="role-mode-select" onchange="toggleRoleSelectMode()">
-                    <option value="DEFAULT">기본 추천 구성 (대부 필수 + 자동 밸런스)</option>
-                    <option value="CUSTOM">방장 직접 지정 (추가 희망 직업 선택)</option>
-                    <option value="RANDOM">완전 랜덤 구성 (대부 필수 + 팀 비율)</option>
+                    <option value="DEFAULT">자동 (대부·수사관 필수 + 나머지 랜덤)</option>
+                    <option value="CUSTOM">수동 (방장 지정 추가 + 나머지 랜덤)</option>
                 </select>
 
                 <div id="custom-role-options" class="checkbox-group hidden">
+                    <p style="grid-column: 1/-1; font-size:0.75rem; color:#64748b;">대부와 수사관은 항상 포함됩니다(변경 불가). 체크한 직업은 반드시 들어가고, 남는 자리는 랜덤으로 채워집니다.</p>
                     <p style="grid-column: 1/-1; font-weight:bold; color:#f43f5e;">🔴 추가할 마피아 직업</p>
                     <div id="custom-mafia-list" style="grid-column: 1/-1;" class="checkbox-group"></div>
                     <p style="grid-column: 1/-1; font-weight:bold; color:#0284c7; margin-top:0.3rem;">🔵 추가할 시민 직업</p>
@@ -552,10 +552,6 @@
                         </select>
                         <p style="font-size:0.75rem; color:#64748b; margin-top:0.25rem;">옵저버인 방장은 게임에 참여하지 않습니다. 참가자를 선택하면 그 참가자가 대부가 되고, 선택하지 않으면 대부가 랜덤으로 지정됩니다.</p>
                     </div>
-                    <label style="display:flex; align-items:center; gap:0.3rem; cursor:pointer;">
-                        <input type="checkbox" id="show-roles-in-game-check" style="width:auto; margin:0;">
-                        <span>게임 화면 상단에 이번 판 역할 목록 공개</span>
-                    </label>
                     <label style="display:flex; align-items:center; gap:0.3rem; cursor:pointer;">
                         <input type="checkbox" id="mafia-parity-win-check" style="width:auto; margin:0;" onchange="setMafiaParityWin(this.checked)">
                         <span>생존 마피아 수가 생존 시민 수보다 많아지면 마피아팀 승리</span>
@@ -594,11 +590,6 @@
             <div id="personal-invest-card" class="invest-hold-card hidden" aria-label="개인 조사 결과. 누르고 있는 동안에만 표시됩니다.">
                 <div id="invest-prompt-text" style="font-weight:bold; color:#854d0e;">🔒 조사 결과 확인 — 누르고 있는 동안에만 표시됩니다.</div>
                 <div id="invest-history-content" class="invest-history-box hidden" aria-live="polite"></div>
-            </div>
-
-            <div id="active-roles-card" class="card hidden">
-                <h4 style="font-size:0.85rem; color:#64748b;">📋 이번 판 등장 역할 (<span id="active-roles-count">0</span>개)</h4>
-                <div id="active-roles-tags" class="role-tag-list"></div>
             </div>
 
             <div class="card">
@@ -869,7 +860,6 @@
             }
             d.nightActions = view.nightActions || (me && me.nightAction ? { [myPlayerId]: me.nightAction } : {});
             if (view.audit) d.nightAuditLog = view.audit;
-            if (view.activeRoles) d.activeRoles = view.activeRoles.map(roleObj).filter(Boolean);
             if (view.unusedCitizens) d.unusedCitizens = view.unusedCitizens;
             if (view.godfatherChoice) d.godfatherPlayerId = view.godfatherChoice;
             return d;
@@ -1074,12 +1064,13 @@
             const mList = document.getElementById('custom-mafia-list');
             const cList = document.getElementById('custom-citizen-list');
 
-            mList.innerHTML = OTHER_MAFIA_ROLES.map(r => 
+            mList.innerHTML = `<label><input type="checkbox" checked disabled> ${ROLE_GODFATHER.name} (필수)</label>` + OTHER_MAFIA_ROLES.map(r => 
                 `<label><input type="checkbox" value="${r.id}" class="custom-mafia-cb"> ${r.name}</label>`
             ).join('');
 
-            cList.innerHTML = ALL_CITIZEN_ROLES.map(r => 
-                `<label><input type="checkbox" value="${r.id}" class="custom-citizen-cb"> ${r.name}</label>`
+            cList.innerHTML = [...ALL_CITIZEN_ROLES].sort((x, y) => (y.id === 'INVESTIGATOR') - (x.id === 'INVESTIGATOR')).map(r => r.id === 'INVESTIGATOR'
+                ? `<label><input type="checkbox" checked disabled> ${r.name} (필수)</label>`
+                : `<label><input type="checkbox" value="${r.id}" class="custom-citizen-cb"> ${r.name}</label>`
             ).join('');
         }
 
@@ -1613,7 +1604,6 @@
         function startGame() {
             const cfg = {
                 mode: document.getElementById('role-mode-select').value,
-                showRolesInGame: document.getElementById('show-roles-in-game-check').checked,
                 mafiaWinsOnParity: document.getElementById('mafia-parity-win-check').checked,
                 customMafia: Array.from(document.querySelectorAll('.custom-mafia-cb:checked')).map(cb => cb.value),
                 customCitizen: Array.from(document.querySelectorAll('.custom-citizen-cb:checked')).map(cb => cb.value),
@@ -1704,21 +1694,6 @@
             } else if (roleDisplayBox.classList.contains('hidden')) {
                 rolePromptText.classList.remove('hidden');
                 rolePromptText.innerText = '🌙 밤에 이곳을 누르고 있는 동안에만 내 역할을 확인할 수 있습니다.';
-            }
-
-            const activeRolesCard = document.getElementById('active-roles-card');
-            if (data.showRolesInGame) {
-                activeRolesCard.classList.remove('hidden');
-                const activeRoles = data.activeRoles || [];
-                document.getElementById('active-roles-count').innerText = activeRoles.length;
-                const activeTagsEl = document.getElementById('active-roles-tags');
-                activeTagsEl.innerHTML = activeRoles.map(r => {
-                    const isMafia = r.team === 'mafia';
-                    const tagName = r.id === 'FOOL' ? '양조사' : r.name;
-                    return `<span class="role-tag ${isMafia ? 'mafia' : 'citizen'}">${isMafia ? '🔴' : '🔵'} ${tagName}</span>`;
-                }).join('');
-            } else {
-                activeRolesCard.classList.add('hidden');
             }
 
             const executeBox = document.getElementById('execute-vote-box');
