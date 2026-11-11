@@ -2,7 +2,7 @@
 // 충신과 역적 (/loyal)
 // 서버: loyal/schema.sql (Supabase RPC) · 채팅: shared/team-chat.js
 // =====================================================================
-import { mountTeamChat, mountLocalNotes } from '../shared/team-chat.js';
+import { mountTeamChat, mountLocalNotes } from '../shared/team-chat.js?v=20261111d';
 
 const SUPABASE_JS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
@@ -445,11 +445,20 @@ function renderLobby() {
       <label class="field"><span>숫자 제출</span>${sel('sTurn', TURN_OPTIONS, s.turn_seconds)}</label>
       <label class="field"><span>왕 투표</span>${sel('sVote', VOTE_OPTIONS, s.vote_seconds)}</label>
       <label class="field"><span>감옥 지정</span>${sel('sJail', JAIL_OPTIONS, s.jail_seconds)}</label>
-    </div>` : `
+    </div>
+    <label class="field"><span>가장 작은 수 안내 (내 차례 화면)</span>
+      <select id="sMin">
+        <option value="false" ${s.show_min ? '' : 'selected'}>숨기기 · 각자 직접 판단</option>
+        <option value="true" ${s.show_min ? 'selected' : ''}>보이기 · 처음 하는 사람이 많을 때</option>
+      </select>
+    </label>` : `
     <div class="settings-view">
       <div><small>숫자 제출</small><b>${timeLabel(s.turn_seconds)}</b></div>
       <div><small>왕 투표</small><b>${timeLabel(s.vote_seconds)}</b></div>
       <div><small>감옥 지정</small><b>${timeLabel(s.jail_seconds)}</b></div>
+    </div>
+    <div class="settings-view" style="grid-template-columns:1fr">
+      <div><small>가장 작은 수 안내</small><b>${s.show_min ? '보이기' : '숨기기'}</b></div>
     </div>`;
 
   app.innerHTML = `
@@ -476,7 +485,7 @@ function renderLobby() {
     </section>
 
     <section class="panel">
-      <h2>제한 시간${isHost ? '' : ' (방장이 설정)'}</h2>
+      <h2>게임 설정${isHost ? '' : ' (방장이 설정)'}</h2>
       ${settings}
       <p class="note">시간이 지나면 숫자는 가장 작은 수로 자동 제출, 투표는 기권, 감옥은 랜덤 2명으로 처리돼요.</p>
     </section>
@@ -513,11 +522,12 @@ function renderLobby() {
           turn_seconds: Number(document.getElementById('sTurn').value),
           vote_seconds: Number(document.getElementById('sVote').value),
           jail_seconds: Number(document.getElementById('sJail').value),
+          show_min: document.getElementById('sMin').value === 'true',
         },
       });
       await refresh();
     });
-    ['sTurn', 'sVote', 'sJail'].forEach((id) => { document.getElementById(id).onchange = save; });
+    ['sTurn', 'sVote', 'sJail', 'sMin'].forEach((id) => { document.getElementById(id).onchange = save; });
 
     document.getElementById('startBtn').onclick = guard(async () => {
       await rpc('lr_start_game', { p_room: room.id });
@@ -860,6 +870,7 @@ function helpHtml() {
         <li>앞자리에 0은 쓸 수 없어요.</li>
         <li>낸 숫자는 모두에게 공개되지만, 받은 숫자 4개는 본인만 알아요.</li>
         <li>시간이 지나면 낼 수 있는 가장 작은 수가, 결과가 더 작아지는 열에 자동으로 들어가요.</li>
+        <li>방장이 대기실에서 <b>가장 작은 수 안내</b>를 켜면, 내 차례 화면에 각 열에 낼 수 있는 가장 작은 수가 보여요. 기본은 꺼져 있어요.</li>
       </ol>
       <h3>왕과 감옥</h3>
       <ol>
@@ -978,10 +989,12 @@ function turnHtml() {
     </div>
     <span class="label">넣을 열 선택</span>
     <div class="colpick">${colBtn('A', A, ra)}${colBtn('B', B, rb)}</div>
-    <div class="hint">
-      가장 작게 낼 수 있는 수: ${minLine || '없음'}
-      ${timed && autoCol ? `<br/>시간이 지나면 ${autoCol}열에 ${autoNum}이(가) 자동 제출돼요` : ''}
-    </div>
+    ${room.settings.show_min ? `
+      <div class="hint">
+        가장 작게 낼 수 있는 수: ${minLine || '없음'}
+        ${timed && autoCol ? `<br/>시간이 지나면 ${autoCol}열에 ${autoNum}이(가) 자동 제출돼요` : ''}
+      </div>` : timed ? `
+      <div class="hint">시간이 지나면 낼 수 있는 가장 작은 수가 자동으로 제출돼요</div>` : ''}
     <button class="btn primary block" data-submit ${c.col && numStr ? '' : 'disabled'}>
       ${c.col && numStr ? `${c.col}열에 ${numStr} 제출` : '숫자와 열을 골라 주세요'}
     </button>
