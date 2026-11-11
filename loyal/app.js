@@ -783,9 +783,14 @@ const closeBtn = '<button class="icon-btn" data-close aria-label="닫기">' + IC
 function renderSheet() {
   if (!S.sheet || !S.data && S.sheet.type !== 'help') {
     sheetRoot.innerHTML = '';
+    delete sheetRoot.dataset.type;
     return;
   }
   const t = S.sheet.type;
+  // 같은 창을 다시 그릴 때(숫자 누름, 상태 갱신)는 올라오는 효과와 스크롤 이동 없이 그대로 유지
+  const same = sheetRoot.dataset.type === t && !!sheetRoot.querySelector('.sheet');
+  const prevScroll = same ? sheetRoot.querySelector('.sheet').scrollTop : 0;
+  const openDetails = same ? [...sheetRoot.querySelectorAll('details')].map((d) => d.open) : [];
   if (t === 'help') sheetRoot.innerHTML = sheetFrame(helpHtml());
   else if (t === 'role') sheetRoot.innerHTML = sheetFrame(roleHtml(), { compact: true });
   else if (t === 'log') sheetRoot.innerHTML = sheetFrame(logHtml());
@@ -794,6 +799,14 @@ function renderSheet() {
   else if (t === 'jail') sheetRoot.innerHTML = sheetFrame(jailHtml(), { dark: true, full: true });
   else if (t === 'voteResult') sheetRoot.innerHTML = sheetFrame(voteResultHtml());
   else sheetRoot.innerHTML = '';
+
+  sheetRoot.dataset.type = t;
+  const sheetEl = sheetRoot.querySelector('.sheet');
+  if (sheetEl && same) {
+    sheetEl.classList.add('still');
+    sheetEl.scrollTop = prevScroll;
+    sheetRoot.querySelectorAll('details').forEach((d, i) => { if (openDetails[i]) d.open = true; });
+  }
 
   sheetRoot.querySelectorAll('[data-close]').forEach((el) => { el.onclick = closeSheet; });
   if (t === 'turn') bindTurn();
