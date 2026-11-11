@@ -2,7 +2,7 @@
 // 충신과 역적 (/loyal)
 // 서버: loyal/schema.sql (Supabase RPC) · 채팅: shared/team-chat.js
 // =====================================================================
-import { mountTeamChat } from '../shared/team-chat.js';
+import { mountTeamChat, mountLocalNotes } from '../shared/team-chat.js';
 
 const SUPABASE_JS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
@@ -632,7 +632,6 @@ function renderGame() {
   const B = room.cols.B || [];
   const kingName = room.king ? nickOf(room.king) : '없음';
   const jailNames = room.jailed.length ? room.jailed.map(nickOf).join(' · ') : '없음';
-  const isRebel = my.role === 'rebel';
   const showNext = room.phase === 'turn';
   const sub = room.is_final || room.phase === 'final_discuss' ? '마지막 투표' : `${room.round}라운드`;
 
@@ -640,13 +639,7 @@ function renderGame() {
   app.classList.add('game-mode');
   app.classList.toggle('in-jail', inJail);
   app.innerHTML = `
-    ${inJail ? `
-      <div class="jail-bars" aria-hidden="true"></div>
-      <div class="jail-plate" role="status">
-        <span class="k">PRISON</span>
-        <b>감옥에 갇혔어요</b>
-        <span>이번 라운드에는 숫자를 낼 수 없고<br/>왕 투표와 왕 후보에서도 빠져요</span>
-      </div>` : ''}
+    ${inJail ? '<div class="jail-bars" aria-hidden="true"></div>' : ''}
     <div class="g-head">
       <div>
         <div class="g-title">충신과 역적</div>
@@ -655,9 +648,15 @@ function renderGame() {
       <div class="g-head-right">
         ${timerPill(room)}
         <button class="pill-btn" data-help>설명</button>
-        ${isHost ? '<button class="pill-btn" data-act="restart">재시작</button>' : ''}
       </div>
     </div>
+
+    ${isHost ? `
+      <div class="host-bar">
+        <span class="hb-k">방장</span>
+        <button class="btn hb-next" data-act="next">다음 단계 진행<small>${esc(nextStepLabel(room))}</small></button>
+        <button class="btn hb-restart" data-act="restart">재시작</button>
+      </div>` : ''}
 
     <div class="status-row">
       <div class="status-chip"><span style="color:var(--accent)">${ICON.crown}</span><span class="k">왕</span><b>${esc(kingName)}</b></div>
@@ -665,6 +664,11 @@ function renderGame() {
     </div>
 
     ${bannerHtml()}
+    ${inJail ? `
+      <div class="jail-band" role="status">
+        <span class="jb-k">${ICON.jail}</span>
+        <span><b>감옥에 갇혔어요</b> · 이번 라운드 숫자 제출, 왕 투표, 왕 후보에서 빠져요</span>
+      </div>` : ''}
 
     <div class="board">
       <div class="col">
@@ -686,12 +690,24 @@ function renderGame() {
     <div class="bottom-bar">
       <button class="btn ghost" data-open="role">내 역할</button>
       <button class="btn dark" data-open="log">제출 기록</button>
-      ${isRebel ? `<button class="btn primary" data-act="chat">밀담${S.chatUnseen ? `<span class="badge">${S.chatUnseen}</span>` : ''}</button>` : ''}
+      <button class="btn primary" data-act="chat">메모</button>
     </div>
   `;
 
   bindGameActions(app);
   tick();
+}
+
+// 방장의 '다음 단계 진행'을 누르면 일어나는 일
+function nextStepLabel(room) {
+  switch (room.phase) {
+    case 'turn': return '지금 차례 사람의 가장 작은 수를 자동 제출';
+    case 'discuss': return '왕 투표 시작';
+    case 'final_discuss': return '마지막 왕 투표 시작';
+    case 'vote': return '지금까지 들어온 표로 결정';
+    case 'jail': return '왕 대신 랜덤 2명을 감옥에';
+    default: return '';
+  }
 }
 
 function bindGameActions(root) {
@@ -703,6 +719,13 @@ function bindGameActions(root) {
     if (act === 'startVote') {
       b.onclick = guard(async () => {
         await rpc('lr_start_vote', { p_room: S.roomId });
+        await refresh();
+      });
+    } else if (act === 'next') {
+      b.onclick = guard(async () => {
+        const room = S.data.room;
+        if (!confirm(`다음 단계로 넘어갈까요?\n${nextStepLabel(room)}`)) return;
+        await rpc('lr_force_next', { p_room: S.roomId });
         await refresh();
       });
     } else if (act === 'restart') {
@@ -825,7 +848,7 @@ function helpHtml() {
       <ul>
         <li>7~12명이 참가하고, 인원의 1/3(내림)이 역적이 돼요. 9명이면 역적 3명.</li>
         <li>충신은 누가 역적인지 모르고, 역적끼리는 서로를 알아요.</li>
-        <li>역적은 화면의 <b>밀담</b>으로 몰래 이야기할 수 있어요. 게임이 끝나면 모두에게 공개돼요.</li>
+        <li>모두에게 <b>메모</b> 버튼이 있어요. 역적에게는 역적끼리 대화하는 창, 충신에게는 나만 보는 메모장이에요. 겉모습이 똑같아서 버튼으로는 들키지 않아요. 역적 대화는 게임이 끝나면 모두에게 공개돼요.</li>
         <li>보드는 A열, B열 각 15칸, 총 30칸이에요.</li>
       </ul>
       <h3>숫자 내기</h3>
@@ -841,6 +864,7 @@ function helpHtml() {
       <h3>왕과 감옥</h3>
       <ol>
         <li>모두 한 번씩 내면 라운드가 끝나고 토론 시간이 돼요. 방장이 <b>투표 시작</b>을 누르면 왕 투표를 해요.</li>
+        <li>방장은 언제든 <b>다음 단계 진행</b>으로 넘길 수 있어요. 그때까지 제출된 것만으로 판단해요(숫자는 가장 작은 수 자동 제출, 투표는 들어온 표만으로 결정, 감옥은 랜덤 2명).</li>
         <li>자기 자신에게는 투표할 수 없고, 누가 누구를 찍었는지는 공개되지 않아요. 동률이면 동률 후보끼리 한 번 더 투표하고, 그래도 동률이면 랜덤이에요.</li>
         <li>왕은 역적으로 의심되는 <b>2명을 감옥</b>에 보내요. 감옥에 간 사람은 다음 라운드에 숫자를 낼 수 없고, 왕 투표권과 피선거권도 없어요.</li>
       </ol>
@@ -868,6 +892,7 @@ function roleHtml() {
         ? '숫자가 1000을 넘게 만드세요. 들키지 않는 게 중요해요.'
         : '숫자가 1000을 넘지 않게 지키고, 역적을 찾아내세요.'}</p>
       ${rebel ? `<div class="mates">함께하는 역적: ${mates || '없음'}</div>` : ''}
+      <p>${rebel ? '메모 버튼으로 역적끼리 대화할 수 있어요.' : '메모 버튼에 의심 가는 점을 적어 두세요.'}</p>
     </div>
     <button class="btn dark block" data-close style="height:42px;font-size:15px">확인</button>`;
 }
@@ -1120,35 +1145,38 @@ function bindJail() {
 // ---------------------------------------------------------------------
 // 역적 밀담 (게임 중)
 // ---------------------------------------------------------------------
+// 모두에게 같은 '메모' 버튼: 역적은 역적끼리 대화, 충신은 나만 보는 메모 (겉모습은 똑같음, 새 메시지 표시 없음)
 function syncChat() {
   const { room, my, me } = S.data;
-  const want = room.status === 'playing' && my.role === 'rebel';
-  const key = want ? `${room.id}:${room.game_no}` : null;
+  const want = room.status === 'playing' && !!my.role;
+  const key = want ? `${room.id}:${room.game_no}:${my.role}` : null;
   if (key === S.chatKey) return;
   closeChat(true);
   if (!want) return;
   S.chatKey = key;
-  S.chatUnseen = 0;
-  S.chat = mountTeamChat({
-    sb, game: 'loyal', roomId: room.id, team: 'rebel', me,
-    el: document.getElementById('chatBody'),
-    emptyText: '역적끼리만 보이는 대화예요.<br/>작전을 세워 보세요.',
-    onNew: (n) => {
-      S.chatUnseen = chatRoot.hidden ? n : 0;
-      const btn = app.querySelector('[data-act="chat"]');
-      if (btn) btn.innerHTML = `밀담${S.chatUnseen ? `<span class="badge">${S.chatUnseen}</span>` : ''}`;
-    },
-    onError: (m) => toast(m, true),
-  });
+  const el = document.getElementById('chatBody');
+  const sub = document.getElementById('chatSub');
+  if (my.role === 'rebel') {
+    sub.textContent = '역적끼리만 보여요 · 끝나면 공개돼요';
+    S.chat = mountTeamChat({
+      sb, game: 'loyal', roomId: room.id, team: 'rebel', me, el,
+      emptyText: '아직 메시지가 없어요',
+      onError: (m) => toast(m, true),
+    });
+  } else {
+    sub.textContent = '나만 볼 수 있어요 · 이 폰에만 저장돼요';
+    S.chat = mountLocalNotes({
+      el, storageKey: `lr_memo_${room.id}_${room.game_no}`,
+      emptyText: '아직 메시지가 없어요',
+      onError: (m) => toast(m, true),
+    });
+  }
 }
 
 function openChat() {
   if (!S.chat) return;
   chatRoot.hidden = false;
   S.chat.clearUnseen();
-  S.chatUnseen = 0;
-  const btn = app.querySelector('[data-act="chat"]');
-  if (btn) btn.innerHTML = '밀담';
 }
 
 function closeChat(destroy = false) {
@@ -1157,7 +1185,6 @@ function closeChat(destroy = false) {
     S.chat.destroy();
     S.chat = null;
     S.chatKey = null;
-    S.chatUnseen = 0;
   }
 }
 chatRoot.querySelectorAll('[data-close-chat]').forEach((el) => { el.onclick = () => closeChat(false); });
