@@ -11,9 +11,9 @@ const LS_NICK = 'lr_nickname';
 const roleSeenKey = (roomId, gameNo) => `lr_role_seen_${roomId}_${gameNo}`;
 
 const POLL_MS = 4000;
-const TURN_OPTIONS = [0, 30, 45, 60, 90, 120];
-const VOTE_OPTIONS = [0, 30, 60, 90, 120];
-const JAIL_OPTIONS = [0, 60, 90, 120, 180];
+const TURN_OPTIONS = [0, 10, 20, 30, 45, 60, 90, 120];
+const VOTE_OPTIONS = [0, 10, 20, 30, 60, 90, 120];
+const JAIL_OPTIONS = [0, 10, 20, 30, 60, 90, 120, 180];
 const MIN_PLAYERS = 7;
 const MAX_PLAYERS = 12;
 const CELLS = 15;
@@ -216,7 +216,7 @@ function clearQuery() {
 // 첫 화면
 // ---------------------------------------------------------------------
 function showHome(prefillCode = '') {
-  app.classList.remove('game-mode');
+  app.classList.remove('game-mode', 'in-jail');
   leaveRoom();
   const nick = localStorage.getItem(LS_NICK) || localStorage.getItem('ma_nickname') || '';
   const fromQr = !!prefillCode;
@@ -409,7 +409,7 @@ const timerPill = (room) => (room.deadline
 function render() {
   const { room } = S.data;
   if (room.status === 'playing') return renderGame();
-  app.classList.remove('game-mode');
+  app.classList.remove('game-mode', 'in-jail');
   if (room.status === 'ended') return renderResult(false);
   if (S.viewingResult && room.result) return renderResult(true);
   destroyResultChat();
@@ -636,8 +636,17 @@ function renderGame() {
   const showNext = room.phase === 'turn';
   const sub = room.is_final || room.phase === 'final_discuss' ? '마지막 투표' : `${room.round}라운드`;
 
+  const inJail = room.jailed.includes(me);
   app.classList.add('game-mode');
+  app.classList.toggle('in-jail', inJail);
   app.innerHTML = `
+    ${inJail ? `
+      <div class="jail-bars" aria-hidden="true"></div>
+      <div class="jail-plate" role="status">
+        <span class="k">PRISON</span>
+        <b>감옥에 갇혔어요</b>
+        <span>이번 라운드에는 숫자를 낼 수 없고<br/>왕 투표와 왕 후보에서도 빠져요</span>
+      </div>` : ''}
     <div class="g-head">
       <div>
         <div class="g-title">충신과 역적</div>
@@ -761,10 +770,10 @@ function autoSheets() {
   }
 }
 
-function sheetFrame(inner, { dark = false, full = false, closable = true } = {}) {
+function sheetFrame(inner, { dark = false, full = false, compact = false, closable = true } = {}) {
   return `
     <div class="sheet-backdrop" ${closable ? 'data-close' : ''}></div>
-    <section class="sheet ${dark ? 'dark' : ''} ${full ? 'full' : ''}" role="dialog">
+    <section class="sheet ${dark ? 'dark' : ''} ${full ? 'full' : ''} ${compact ? 'compact' : ''}" role="dialog">
       ${inner}
     </section>`;
 }
@@ -778,7 +787,7 @@ function renderSheet() {
   }
   const t = S.sheet.type;
   if (t === 'help') sheetRoot.innerHTML = sheetFrame(helpHtml());
-  else if (t === 'role') sheetRoot.innerHTML = sheetFrame(roleHtml());
+  else if (t === 'role') sheetRoot.innerHTML = sheetFrame(roleHtml(), { compact: true });
   else if (t === 'log') sheetRoot.innerHTML = sheetFrame(logHtml());
   else if (t === 'turn') sheetRoot.innerHTML = sheetFrame(turnHtml(), { dark: true, full: true });
   else if (t === 'vote') sheetRoot.innerHTML = sheetFrame(voteHtml());
@@ -837,18 +846,17 @@ function roleHtml() {
   const { my, room } = S.data;
   if (!my.role) return `<div class="sheet-head"><h2>내 역할</h2>${closeBtn}</div><div class="empty">게임이 시작되면 역할이 정해져요</div>`;
   const rebel = my.role === 'rebel';
-  const mates = (my.teammates || []).filter((u) => u !== S.data.me).map((u) => `<span>${esc(nickOf(u))}</span>`).join('');
+  const mates = (my.teammates || []).filter((u) => u !== S.data.me).map((u) => `<b>${esc(nickOf(u))}</b>`).join(', ');
   return `
-    <div class="sheet-head"><div><h2>내 역할</h2><p class="sub">다른 사람에게 화면이 보이지 않게 하세요</p></div>${closeBtn}</div>
-    <div class="role-card ${rebel ? 'rebel' : 'loyal'}">
-      <span class="k">GAME ${room.game_no}</span>
-      <span class="r">${rebel ? '역적' : '충신'}</span>
+    <div class="sheet-head"><h2 style="font-size:16px">내 역할 · GAME ${room.game_no}</h2>${closeBtn}</div>
+    <div class="role-card">
+      <span class="r ${rebel ? 'rebel' : ''}">${rebel ? '역적' : '충신'}</span>
       <p>${rebel
         ? '숫자가 1000을 넘게 만드세요. 들키지 않는 게 중요해요.'
         : '숫자가 1000을 넘지 않게 지키고, 역적을 찾아내세요.'}</p>
-      ${rebel ? `<p style="margin-top:6px">함께하는 역적</p><div class="mates">${mates || '<span>없음</span>'}</div>` : ''}
+      ${rebel ? `<div class="mates">함께하는 역적: ${mates || '없음'}</div>` : ''}
     </div>
-    <button class="btn dark block" data-close>확인</button>`;
+    <button class="btn dark block" data-close style="height:42px;font-size:15px">확인</button>`;
 }
 
 // ----- 제출 기록 -----
@@ -895,8 +903,7 @@ function turnHtml() {
   const digitBtns = digits.map((d, i) => {
     const used = c.picks.includes(i);
     const order = used ? c.picks.indexOf(i) + 1 : '';
-    const blocked = !used && c.picks.length === 0 && d === 0;
-    return `<button class="digit ${used ? 'used' : ''}" data-digit="${i}" ${blocked ? 'disabled' : ''}
+    return `<button class="digit ${used ? 'used' : ''}" data-digit="${i}"
       aria-label="${d}${used ? ' 사용됨' : ''}">${d}${order ? `<span class="ord">${order}</span>` : ''}</button>`;
   }).join('');
 
@@ -948,6 +955,11 @@ function bindTurn() {
   sheetRoot.querySelectorAll('[data-digit]').forEach((b) => {
     b.onclick = () => {
       const i = Number(b.dataset.digit);
+      const digits = S.data.my.digits || [];
+      if (!c.picks.includes(i) && c.picks.length === 0 && digits[i] === 0) {
+        toast('0으로 시작할 수 없어요', true);
+        return;
+      }
       if (c.picks.includes(i)) {
         // 마지막에 고른 숫자를 다시 누르면 취소
         if (c.picks[c.picks.length - 1] === i) c.picks.pop();
