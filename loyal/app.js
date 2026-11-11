@@ -109,6 +109,8 @@ const ICON = {
 // 숫자 규칙 (서버 lr_candidates 와 동일)
 // ---------------------------------------------------------------------
 const lastOf = (col) => (col.length ? Number(col[col.length - 1].n) : 0);
+// 1000을 넘은 것으로 보는 수: 1000 초과, 또는 15번째 칸이 아닌 곳의 1000 (서버 lr_is_over 와 동일)
+const isOver = (n, cell) => n > 1000 || (n === 1000 && cell < CELLS);
 const maxLenAfter = (last) => (last === 0 ? 1 : String(last).length + 1);
 
 function candidates(digits, last) {
@@ -552,7 +554,7 @@ function cellsHtml(col, isNextCol) {
     const e = col[i];
     if (e) {
       const n = Number(e.n);
-      const cls = n > 1000 ? 'over' : n >= 100 ? 'big' : '';
+      const cls = isOver(n, i + 1) ? 'over' : n >= 100 ? 'big' : '';
       html += `<div class="cell filled ${cls}"><span class="i">${i + 1}</span><span class="n">${n}</span><span class="w">${esc(e.nick)}</span></div>`;
     } else if (i === col.length && isNextCol) {
       html += `<div class="cell next"><span class="i">${i + 1}</span><span class="w">다음</span></div>`;
@@ -583,7 +585,7 @@ function bannerHtml() {
       return `<div class="banner calm"><span><b>${room.round}라운드 끝 · 토론 시간</b><span class="sub">누가 역적인지, 누구를 왕으로 뽑을지 이야기해 보세요</span></span>
         ${isHost ? '<button class="btn" data-act="startVote">투표 시작</button>' : ''}</div>`;
     case 'final_discuss':
-      return `<div class="banner"><span><b>1000을 넘었어요!</b><span class="sub">마지막 왕이 역적 2명을 정확히 감옥에 보내면 충신 역전승</span></span>
+      return `<div class="banner"><span><b>${overTitle(room)}</b><span class="sub">마지막 왕이 역적 2명을 정확히 감옥에 보내면 충신 역전승</span></span>
         ${isHost ? '<button class="btn" data-act="startVote">마지막 투표</button>' : ''}</div>`;
     case 'vote': {
       const total = room.vote_voters.length;
@@ -615,6 +617,12 @@ function bannerHtml() {
     default:
       return '';
   }
+}
+
+// 마지막 투표로 넘어간 이유: 1000 초과, 또는 15번째 칸이 아닌 곳의 1000
+function overTitle(room) {
+  const last = room.log[room.log.length - 1];
+  return last && Number(last.n) === 1000 ? '1000이 나왔어요! 남은 칸은 1000을 넘을 수밖에 없어요' : '1000을 넘었어요!';
 }
 
 function renderGame() {
@@ -801,6 +809,7 @@ function helpHtml() {
       <h3>숫자 내기</h3>
       <ol>
         <li>순서대로 한 명씩, 자기 폰으로만 보이는 <b>랜덤 숫자 4개</b>를 받아요.</li>
+        <li>숫자 30조합은 게임 시작 때 미리 정해져요. 잘 계획하면 30칸을 끝까지 채울 수 있는 조합만 나와요. 몇 번째 칸이냐에 따라 숫자가 정해지고, 누가 받는지는 차례에 따라 달라져요.</li>
         <li>그중 원하는 숫자를 골라 한 자리~네 자리 수를 만들어, A열이나 B열의 다음 칸에 넣어요. 각 숫자는 한 번씩만 쓸 수 있어요.</li>
         <li>같은 열의 직전 칸보다 <b>커야</b> 하고, 자릿수는 직전보다 <b>한 단계까지만</b> 올릴 수 있어요. 첫 칸은 한 자리만 가능해요.</li>
         <li>앞자리에 0은 쓸 수 없어요.</li>
@@ -816,7 +825,8 @@ function helpHtml() {
       <h3>승리 조건</h3>
       <ul>
         <li>30칸을 모두 채울 때까지 1000을 넘지 않으면 <b>충신 승리</b>.</li>
-        <li>한 열이라도 <b>1000을 넘으면</b>(정확히 1000은 넘은 게 아님) 역적이 이긴 상태로 마지막 투표를 해요.</li>
+        <li>한 열이라도 <b>1000을 넘으면</b> 역적이 이긴 상태로 마지막 투표를 해요.</li>
+        <li><b>1000</b>은 그 열의 <b>15번째 칸</b>일 때만 괜찮아요. 그 앞 칸에 1000이 들어가면 남은 칸은 반드시 1000을 넘으니 바로 1000을 넘은 것으로 처리해요.</li>
         <li>감옥 밖 사람들이 비밀투표로 <b>마지막 왕</b>을 뽑고, 마지막 왕이 감옥에 보낸 2명이 <b>모두 역적</b>이면 충신 역전승, 아니면 역적 승리예요.</li>
       </ul>
     </div>`;
@@ -893,10 +903,12 @@ function turnHtml() {
   const colBtn = (name, col, reason) => {
     const last = lastOf(col);
     const ok = !reason;
+    const over = ok && isOver(Number(numStr), col.length + 1);
     return `<button class="colbtn ${c.col === name ? 'sel' : ''}" data-col="${name}" ${ok ? '' : 'disabled'}>
       <span class="cn">${name}열</span>
       <span class="cv">직전 ${col.length ? last : '없음'} → ${numStr ? `<b>${numStr}</b>` : '?'}</span>
-      <span class="cs ${ok ? 'ok' : numStr || col.length >= CELLS ? 'no' : ''}">${ok ? '제출 가능'
+      <span class="cs ${over ? 'no' : ok ? 'ok' : numStr || col.length >= CELLS ? 'no' : ''}">${over ? '가능 · 내면 역적 승리 조건'
+        : ok ? '제출 가능'
         : numStr || col.length >= CELLS ? `불가 · ${reason}` : '숫자를 먼저 골라 주세요'}</span>
     </button>`;
   };
@@ -1149,9 +1161,9 @@ function renderResult(fromLobby) {
       <span class="tag ${p.role === 'rebel' ? 'rebel' : ''}">${p.role === 'rebel' ? '역적' : '충신'}</span>
     </li>`).join('');
 
-  const mini = (name, col) => `<div class="mini-col"><span class="h">${name}열</span>${col.map((e) => {
+  const mini = (name, col) => `<div class="mini-col"><span class="h">${name}열</span>${col.map((e, i) => {
     const n = Number(e.n);
-    return `<span class="${n > 1000 ? 'over' : n >= 100 ? 'big' : ''}">${n}</span>`;
+    return `<span class="${isOver(n, i + 1) ? 'over' : n >= 100 ? 'big' : ''}">${n}</span>`;
   }).join('') || '<span>없음</span>'}</div>`;
 
   const finalLine = r.went_over
