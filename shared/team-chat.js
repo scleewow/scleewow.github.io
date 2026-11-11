@@ -177,3 +177,78 @@ export function mountTeamChat({ sb, game, roomId, team, me, el, readOnly = false
     },
   };
 }
+
+// =====================================================================
+// 개인 메모 (서버에 저장하지 않고 이 브라우저에만 저장)
+// ---------------------------------------------------------------------
+// 팀 채팅과 화면 모양이 똑같아서, 옆에서 봐도 채팅인지 메모인지 구분되지 않음.
+//   const memo = mountLocalNotes({ el, storageKey: 'my_memo_key', emptyText, onError });
+//   memo.destroy();
+// =====================================================================
+export function mountLocalNotes({ el, storageKey, emptyText, onError }) {
+  injectStyle();
+  const read = () => {
+    try { return JSON.parse(localStorage.getItem(storageKey) || '[]'); } catch { return []; }
+  };
+  const write = (list) => {
+    try { localStorage.setItem(storageKey, JSON.stringify(list)); } catch { onError?.('메모를 저장하지 못했어요'); }
+  };
+
+  el.innerHTML = `
+    <div class="tc">
+      <div class="tc-list" role="log"></div>
+      <div class="tc-count"><span class="tc-n">0</span>/${MAX_LEN}</div>
+      <form class="tc-form">
+        <input class="tc-input" maxlength="${MAX_LEN}" placeholder="메시지 입력" autocomplete="off" aria-label="메시지" />
+        <button class="tc-send" type="submit">보내기</button>
+      </form>
+    </div>`;
+  const $list = el.querySelector('.tc-list');
+  const $form = el.querySelector('.tc-form');
+  const $input = el.querySelector('.tc-input');
+  const $send = el.querySelector('.tc-send');
+  const $n = el.querySelector('.tc-n');
+  const $count = el.querySelector('.tc-count');
+
+  function render() {
+    const list = read();
+    if (list.length === 0) {
+      $list.innerHTML = `<div class="tc-empty">${emptyText || '아직 메모가 없어요'}</div>`;
+      return;
+    }
+    $list.innerHTML = list.map((m) => `<div class="tc-msg mine">
+        <span class="tc-who">나 · ${timeLabel(m.created_at)}</span>
+        <span class="tc-body">${esc(m.body)}</span>
+      </div>`).join('');
+    $list.scrollTop = $list.scrollHeight;
+  }
+  const updateCount = () => {
+    const len = $input.value.length;
+    $n.textContent = len;
+    $count.classList.toggle('full', len >= MAX_LEN);
+    $send.disabled = $input.value.trim().length === 0;
+  };
+  $input.addEventListener('input', updateCount);
+  $form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const body = $input.value.trim().slice(0, MAX_LEN);
+    if (!body) return;
+    const list = read();
+    if (list.length >= 500) { onError?.('메모 한도(500개)에 도달했어요'); return; }
+    list.push({ body, created_at: new Date().toISOString() });
+    write(list);
+    $input.value = '';
+    updateCount();
+    render();
+    $input.focus();
+  });
+  updateCount();
+  render();
+
+  return {
+    refresh: render,
+    clearUnseen: () => { $list.scrollTop = $list.scrollHeight; },
+    focus: () => $input.focus(),
+    destroy: () => { el.innerHTML = ''; },
+  };
+}
