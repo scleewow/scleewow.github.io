@@ -521,7 +521,12 @@
                 <button data-first="2" onclick="setFirst(2)">🔵 파랑</button>
                 <button data-first="0" onclick="setFirst(0)">🎲 랜덤</button>
             </div>
-            <button class="pvp" style="margin-top:14px" onclick="startMode('pvp')">👥 둘이 하기<small>한 기기로 번갈아 두기</small></button>
+            <div class="group-title">👥 둘이 하기 · 보는 방식</div>
+            <div class="seg" id="view-seg">
+                <button data-view="same" class="on" onclick="setView('same')">⬆️ 같은 방향 보기</button>
+                <button data-view="face" onclick="setView('face')">🔄 마주 보며 하기</button>
+            </div>
+            <button class="pvp" style="margin-top:6px" onclick="startMode('pvp')">👥 둘이 하기<small id="pvp-desc">한 기기를 같은 방향에서 보며 번갈아 두기</small></button>
             <div class="group-title">🤖 컴퓨터와 하기 (나는 빨강 · 컴퓨터는 파랑)</div>
             <button class="ai-easy" onclick="startMode('easy')">쉬움<small>가끔 실수하는 컴퓨터</small></button>
             <button class="ai-normal" onclick="startMode('normal')">보통<small>몇 수 앞을 내다봐요</small></button>
@@ -583,6 +588,7 @@
     let aiTimer = null;
     let lastMove = null;       // 컴퓨터가 마지막으로 둔 칸 {r, c}
     let firstSetting = 1;      // 먼저 두는 쪽: 1 빨강, 2 파랑, 0 랜덤
+    let viewSetting = 'same';  // 둘이 하기 보는 방식: 'same' 같은 방향, 'face' 마주 보며(파랑 글씨 뒤집기)
     let firstTurn = 1;         // 이번 판에 실제로 먼저 둔 쪽
     const MODE_NAMES = { easy: '쉬움', normal: '보통', hard: '어려움' };
     const isAI = () => playMode !== 'pvp';
@@ -786,7 +792,7 @@
             labelEl.style.color = '#fbbf24';
         } else {
             const firstText = isAI() ? (firstTurn === 1 ? '내가 선공' : '컴퓨터 선공') : (firstTurn === 1 ? '빨강 선공' : '파랑 선공');
-            labelEl.innerText = (isAI() ? `🤖 컴퓨터 대전 · ${MODE_NAMES[playMode]}` : '👥 둘이 하기') + ` · ${firstText}`;
+            labelEl.innerText = (isAI() ? `🤖 컴퓨터 대전 · ${MODE_NAMES[playMode]}` : (viewSetting === 'face' ? '👥 둘이 하기(마주 보기)' : '👥 둘이 하기')) + ` · ${firstText}`;
             labelEl.style.color = '';
         }
     }
@@ -1086,6 +1092,14 @@
         fillResult();
     }
 
+    function setView(v) {
+        viewSetting = v;
+        document.querySelectorAll('#view-seg button').forEach(b => b.classList.toggle('on', b.dataset.view === v));
+        document.getElementById('pvp-desc').innerText = v === 'face'
+            ? '기기를 가운데 두고 마주 앉아서, 파랑 말 글씨를 뒤집어 보기'
+            : '한 기기를 같은 방향에서 보며 번갈아 두기';
+    }
+
     function setFirst(v) {
         firstSetting = v;
         document.querySelectorAll('#first-seg button').forEach(b => b.classList.toggle('on', +b.dataset.first === v));
@@ -1106,7 +1120,7 @@
     }
     function startMode(mode) {
         playMode = mode;
-        document.body.classList.toggle('face2face', mode === 'pvp');
+        document.body.classList.toggle('face2face', mode === 'pvp' && viewSetting === 'face');
         document.getElementById('mode-modal').classList.remove('show');
         resetGameData();
     }
