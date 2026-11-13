@@ -118,6 +118,44 @@
   .modal h4{margin:14px 0 4px;font-size:15px}
   .modal .row2{display:flex;gap:10px;margin-top:18px}
   .modal .row2 .btn{padding:14px;font-size:16px}
+  /* ---------- 애니메이션 ---------- */
+  @keyframes pop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.12);opacity:1}100%{transform:scale(1)}}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  @keyframes rise{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+  @keyframes flipIn{0%{transform:perspective(900px) rotateY(-90deg);opacity:.2}100%{transform:perspective(900px) rotateY(0);opacity:1}}
+  @keyframes shake{0%,100%{transform:translateX(0)}15%{transform:translateX(-10px)}30%{transform:translateX(10px)}45%{transform:translateX(-7px)}60%{transform:translateX(7px)}75%{transform:translateX(-3px)}}
+  @keyframes glowRed{0%,100%{box-shadow:0 0 0 rgba(255,107,107,0)}50%{box-shadow:0 0 32px rgba(255,107,107,.55)}}
+  @keyframes glowBlue{0%,100%{box-shadow:0 0 0 rgba(122,168,255,0)}50%{box-shadow:0 0 32px rgba(122,168,255,.55)}}
+  @keyframes heart{0%,100%{transform:scale(1)}12%{transform:scale(1.18)}24%{transform:scale(1)}36%{transform:scale(1.12)}}
+  @keyframes stamp{0%{transform:scale(2.6) rotate(-10deg);opacity:0}55%{transform:scale(.9) rotate(2deg);opacity:1}75%{transform:scale(1.05) rotate(-1deg)}100%{transform:scale(1) rotate(0)}}
+  @keyframes tick{0%{transform:translateY(-14px) scale(.9);opacity:.3}100%{transform:none;opacity:1}}
+  @keyframes land{0%{transform:scale(1)}40%{transform:scale(1.35)}70%{transform:scale(.95)}100%{transform:scale(1)}}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+  @keyframes fall{to{transform:translate(var(--dx),110vh) rotate(var(--rot))}}
+
+  #s-setup.on h1{animation:pop .6s cubic-bezier(.2,.9,.3,1.3) both}
+  .mode.sel{animation:pop .35s cubic-bezier(.2,.9,.3,1.3)}
+  #s-pass.on .bignum{animation:pop .5s cubic-bezier(.2,.9,.3,1.3) both, bob 2.4s ease-in-out .6s infinite}
+  #s-pass.on .hint{animation:rise .5s .2s both}
+  #s-role.on .card{animation:flipIn .55s cubic-bezier(.2,.8,.3,1.1) both}
+  #s-role.on .card .word,#s-role.on .card .role{animation:pop .5s .35s cubic-bezier(.2,.9,.3,1.3) both}
+  #s-role.on .card.liar{animation:flipIn .55s cubic-bezier(.2,.8,.3,1.1) both, shake .5s .7s, glowRed 1.8s 1.2s ease-in-out infinite}
+  #s-role.on .card.spy{animation:flipIn .55s cubic-bezier(.2,.8,.3,1.1) both, glowBlue 1.8s .8s ease-in-out infinite}
+  #s-talk.on .start-box{animation:pop .45s cubic-bezier(.2,.9,.3,1.3) both}
+  #s-talk.on .tips{animation:rise .5s .25s both}
+  .anim-tick{animation:tick .12s ease-out}
+  .anim-land{animation:land .55s cubic-bezier(.2,.9,.3,1.3)}
+  .rise{animation:rise .4s both}
+  .pbtn.sel,.gbtn.sel{animation:pop .3s cubic-bezier(.2,.9,.3,1.3)}
+  .anim-heart{animation:heart .8s ease-in-out infinite}
+  .anim-stamp{animation:stamp .6s cubic-bezier(.2,.9,.3,1.2) both}
+  .anim-shake{animation:shake .5s}
+  .anim-pulse{animation:pulse .9s ease-in-out 3}
+  .confetti{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+  .confetti i{position:absolute;top:-20px;width:8px;height:14px;border-radius:2px;animation:fall linear forwards}
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important}
+  }
 </style>
 </head>
 <body>
@@ -183,7 +221,7 @@
     </div>
     <div class="start-box">
       <div class="subtitle" style="margin:0">설명 시작</div>
-      <div class="bignum"><span id="startNum">1</span><small>번</small></div>
+      <div class="bignum" id="startBig"><span id="startNum">1</span><small>번</small></div>
       <div class="subtitle">부터 번호 순서대로 한 마디씩 설명하세요</div>
     </div>
     <div class="tips">
@@ -286,6 +324,27 @@
   const CATS = Object.keys(WORDS);
 
   const $ = id => document.getElementById(id);
+  const REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // 애니메이션 다시 재생
+  function replay(el, cls) { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+  // 색종이
+  function confetti(colors, count = 70) {
+    if (REDUCED) return;
+    const layer = document.createElement("div"); layer.className = "confetti";
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement("i");
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.background = colors[Math.floor(Math.random() * colors.length)];
+      p.style.setProperty("--dx", (Math.random() * 160 - 80) + "px");
+      p.style.setProperty("--rot", (Math.random() * 900 - 450) + "deg");
+      p.style.animationDuration = (1.6 + Math.random() * 1.6) + "s";
+      p.style.animationDelay = (Math.random() * 0.35) + "s";
+      const sz = 6 + Math.random() * 6; p.style.width = sz + "px"; p.style.height = sz * 1.6 + "px";
+      layer.appendChild(p);
+    }
+    document.body.appendChild(layer);
+    setTimeout(() => layer.remove(), 3800);
+  }
   const rand = n => Math.floor(Math.random() * n);
   const pick = arr => arr[rand(arr.length)];
   const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rand(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -355,6 +414,7 @@
     const min = MODES[S.mode].min;
     if (S.players < min) S.players = min;
     if (S.players > MAX) S.players = MAX;
+    if ($("pcount").textContent != S.players) replay($("pcount"), "anim-tick");
     $("pcount").textContent = S.players;
     $("minus").disabled = S.players <= min;
     $("plus").disabled = S.players >= MAX;
@@ -460,17 +520,33 @@
   };
 
   // ---------- 토론 ----------
+  let talkTimer = null;
   function showTalk() {
     $("talkCat").textContent = G.cat;
-    $("startNum").textContent = G.start;
     show("s-talk"); saveGame("talk");
+    clearTimeout(talkTimer);
+    const num = $("startNum"), big = $("startBig"), btn = $("toVoteBtn");
+    if (REDUCED || G.n < 2) { num.textContent = G.start; btn.disabled = false; return; }
+    // 슬롯머신처럼 번호가 돌다가 점점 느려지며 멈춤
+    btn.disabled = true;
+    let delay = 45;
+    const spin = () => {
+      if (delay > 280) {
+        num.textContent = G.start; replay(big, "anim-land"); btn.disabled = false; return;
+      }
+      let r; do { r = rand(G.n) + 1; } while (r === +num.textContent);
+      num.textContent = r; replay(num, "anim-tick");
+      delay *= 1.16;
+      talkTimer = setTimeout(spin, delay);
+    };
+    setTimeout(spin, 350);
   }
   $("toVoteBtn").onclick = showVote;
 
   // ---------- 투표 ----------
   function showVote() {
     G.voted = null;
-    $("voteGrid").innerHTML = Array.from({ length: G.n }, (_, k) => `<button class="pbtn" data-p="${k + 1}">${k + 1}</button>`).join("");
+    $("voteGrid").innerHTML = Array.from({ length: G.n }, (_, k) => `<button class="pbtn rise" style="animation-delay:${k * 35}ms" data-p="${k + 1}">${k + 1}</button>`).join("");
     $("voteBtn").disabled = true;
     $("voteBtn").textContent = "지목하기";
     show("s-vote"); saveGame("vote");
@@ -478,7 +554,7 @@
   $("voteGrid").addEventListener("click", e => {
     const b = e.target.closest(".pbtn"); if (!b) return;
     G.voted = +b.dataset.p;
-    document.querySelectorAll("#voteGrid .pbtn").forEach(x => x.classList.toggle("sel", x === b));
+    document.querySelectorAll("#voteGrid .pbtn").forEach(x => { x.classList.remove("rise"); x.classList.toggle("sel", x === b); });
     $("voteBtn").disabled = false;
     $("voteBtn").textContent = `${G.voted}번 지목하기`;
   });
@@ -496,27 +572,38 @@
     act.innerHTML = `<button class="btn primary" id="doReveal">정체 공개</button>`;
     show("s-reveal"); saveGame("reveal");
     $("doReveal").onclick = () => {
+      const btn = $("doReveal"); btn.disabled = true; btn.textContent = "두구두구두구…";
+      box.querySelector(".bignum").classList.add("anim-heart");
+      box.querySelector(".hint").textContent = "두구두구두구…";
+      setTimeout(reveal, REDUCED ? 0 : 1700);
+    };
+    const reveal = () => {
       if (v === G.liar) {
         const isFool = G.mode === "fool";
         box.innerHTML = `<div class="bignum"><span>${v}</span><small>번</small></div>
-          <div class="verdict green">${isFool ? "바보였습니다!" : "라이어 검거!"}</div>
+          <div class="verdict green anim-stamp">${isFool ? "바보였습니다!" : "라이어 검거!"}</div>
           <p class="hint">${isFool ? `${v}번이 받은 단어는 <b>'${G.foolWord}'</b>였어요.<br>` : ""}
           하지만 아직 끝나지 않았어요.<br>라이어가 진짜 제시어를 맞히면 <b>역전승</b>이에요.</p>`;
         act.innerHTML = `<button class="btn primary" id="goGuess">${v}번, 제시어 맞히기</button>`;
         $("goGuess").onclick = showGuess;
+        confetti(["#5bd6a0", "#ffb84d", "#f2effa"], 50);
       } else if (v === G.spy) {
         box.innerHTML = `<div class="bignum"><span>${v}</span><small>번</small></div>
-          <div class="verdict blue">스파이였습니다!</div>
+          <div class="verdict blue anim-stamp">스파이였습니다!</div>
           <p class="hint">라이어를 놓쳤어요.<br>진짜 라이어는 <b>${G.liar}번</b>이었습니다.</p>`;
         act.innerHTML = `<button class="btn primary" id="goResult">결과 보기</button>`;
         $("goResult").onclick = () => showResult("liar", "spy");
+        setTimeout(() => replay(box, "anim-shake"), 350);
       } else {
         box.innerHTML = `<div class="bignum"><span>${v}</span><small>번</small></div>
-          <div class="verdict red">시민이었습니다</div>
+          <div class="verdict red anim-stamp">시민이었습니다</div>
           <p class="hint">억울한 시민을 지목했어요.<br>진짜 라이어는 <b>${G.liar}번</b>이었습니다.</p>`;
         act.innerHTML = `<button class="btn primary" id="goResult">결과 보기</button>`;
         $("goResult").onclick = () => showResult("liar", "miss");
+        setTimeout(() => replay(box, "anim-shake"), 350);
       }
+      box.querySelector(".hint").classList.add("rise"); box.querySelector(".hint").style.animationDelay = ".45s";
+      act.firstElementChild.classList.add("rise"); act.firstElementChild.style.animationDelay = ".7s";
     };
   }
 
@@ -543,14 +630,14 @@
     G.guess = null;
     $("guessTitle").textContent = `${G.liar}번, 제시어를 맞혀보세요`;
     $("guessSub").textContent = `분야: ${G.cat} · 기회는 한 번뿐이에요`;
-    $("guessGrid").innerHTML = G.options.map(w => `<button class="gbtn" data-w="${w}">${w}</button>`).join("");
+    $("guessGrid").innerHTML = G.options.map((w, k) => `<button class="gbtn rise" style="animation-delay:${k * 45}ms" data-w="${w}">${w}</button>`).join("");
     $("guessBtn").disabled = true;
     show("s-guess"); saveGame("guess");
   }
   $("guessGrid").addEventListener("click", e => {
     const b = e.target.closest(".gbtn"); if (!b) return;
     G.guess = b.dataset.w;
-    document.querySelectorAll("#guessGrid .gbtn").forEach(x => x.classList.toggle("sel", x === b));
+    document.querySelectorAll("#guessGrid .gbtn").forEach(x => { x.classList.remove("rise"); x.classList.toggle("sel", x === b); });
     $("guessBtn").disabled = false;
   });
   $("guessBtn").onclick = () => {
@@ -573,7 +660,7 @@
 
     if (how === "guess") {
       $("resultGuess").innerHTML = G.options.map(w => {
-        const cls = w === G.word ? "right" : (w === G.guess ? "wrong" : "");
+        const cls = w === G.word ? "right anim-pulse" : (w === G.guess ? "wrong anim-shake" : "");
         return `<button class="gbtn ${cls}" style="min-height:48px;font-size:15px" disabled>${w}</button>`;
       }).join("");
       $("resultGuess").style.display = "";
@@ -588,8 +675,10 @@
     if (G.mode === "spy") rows.push(["스파이", `${G.spy}번`]);
     rows.push(["지목된 사람", `${G.voted}번`]);
     if (how === "guess") rows.push(["라이어의 답", G.guess]);
-    $("resultSummary").innerHTML = rows.map(([a, b]) => `<div class="row"><span>${a}</span><span>${b}</span></div>`).join("");
+    $("resultSummary").innerHTML = rows.map(([a, b], i) => `<div class="row rise" style="animation-delay:${0.35 + i * 0.07}s"><span>${a}</span><span>${b}</span></div>`).join("");
     show("s-result"); clearGame();
+    replay(banner, "anim-stamp");
+    setTimeout(() => confetti(winner === "citizen" ? ["#5bd6a0", "#ffb84d", "#f2effa", "#7aa8ff"] : ["#ff6b6b", "#ffb84d", "#f2effa", "#c084fc"]), 250);
   }
   $("againBtn").onclick = newGame;
   $("setupBtn").onclick = goSetup;
