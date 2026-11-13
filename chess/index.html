@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>십이장기 (Mobile Fit Edition)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&display=swap" rel="stylesheet" />
     <style>
         * { box-sizing: border-box; }
         body {
@@ -61,17 +64,23 @@
         }
         
         .captured-piece {
-            background-color: #3f3f46;
-            color: #fff;
-            padding: 3px 6px;
-            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(145deg, #fffaf0, #ead6ae);
+            padding: 2px 8px 2px 4px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: bold;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            border: 2px solid transparent;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.35);
+            transition: transform 0.15s;
         }
-        .captured-piece:hover { background-color: #52525b; }
-        .captured-piece.selected { background: #fde047; color: #000; border: 1.5px solid #ca8a04; }
+        .captured-piece .hj { font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif; font-weight: 900; font-size: 1.25rem; line-height: 1; }
+        .captured-piece .kn { font-size: 0.7rem; font-weight: bold; color: #57534e; }
+        .captured-piece.p1 { border-color: #c2410c33; } .captured-piece.p1 .hj { color: #b91c1c; }
+        .captured-piece.p2 { border-color: #1d4ed833; } .captured-piece.p2 .hj { color: #1d4ed8; }
+        .captured-piece:hover { transform: translateY(-1px); }
+        .captured-piece.selected { border-color: #eab308; box-shadow: 0 0 0 2px #fde047, 0 0 12px rgba(253,224,71,0.7); transform: translateY(-2px); }
 
         .game-container {
             display: flex;
@@ -85,15 +94,18 @@
 
         /* 화면에 맞춰 자동 축소/확대되는 보드판 */
         .board {
+            container-type: inline-size;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(4, 1fr);
-            gap: 5px;
-            background-color: #5c2c16;
-            padding: 6px;
-            border-radius: 10px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-            border: 4px solid #3d1c0e;
+            gap: 4px;
+            background:
+                repeating-linear-gradient(92deg, rgba(0,0,0,0.05) 0 2px, transparent 2px 9px),
+                linear-gradient(160deg, #7a3e1d, #4e2410);
+            padding: 7px;
+            border-radius: 12px;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.15);
+            border: 3px solid #3a1a0a;
             width: 100%;
             max-width: 320px;
             aspect-ratio: 3 / 4;
@@ -120,60 +132,109 @@
         .ultra-shake { animation: ultra-shake 0.8s ease-in-out; }
 
         .cell {
-            background-color: #dcb386;
+            background:
+                repeating-linear-gradient(88deg, rgba(120,70,20,0.06) 0 3px, transparent 3px 11px),
+                linear-gradient(150deg, #f0cf9c, #ddb078);
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 5px;
             user-select: none;
-            transition: background-color 0.2s, transform 0.1s;
+            transition: background-color 0.2s;
             position: relative;
+            box-shadow: inset 0 0 0 1px rgba(90,50,20,0.25), inset 0 -3px 6px rgba(90,50,20,0.12);
         }
-        .cell:hover { background-color: #e6c59c; }
-        
-        .cell.selected { background-color: #fde047 !important; border: 2.5px dashed #ca8a04; }
-        .cell.highlight { background-color: #5eead4 !important; }
+        /* 각 진영 끝줄 살짝 물들이기 */
+        .cell.camp-top::before, .cell.camp-bottom::before {
+            content: ''; position: absolute; inset: 0; border-radius: 5px; pointer-events: none;
+        }
+        .cell.camp-top::before { background: rgba(37,99,235,0.10); }
+        .cell.camp-bottom::before { background: rgba(220,38,38,0.10); }
+        .cell:hover { filter: brightness(1.04); }
+
+        .cell.selected { background: linear-gradient(150deg, #fbe39a, #f2c94c) !important; }
+        .cell.highlight { background: linear-gradient(150deg, #b9f0dc, #86dcc0) !important; }
         .cell.highlight::after {
             content: '';
             position: absolute;
-            width: 18%;
-            height: 18%;
+            width: 20%;
+            height: 15%;
             background-color: #0d9488;
             border-radius: 50%;
-            box-shadow: 0 0 6px #0d9488;
+            box-shadow: 0 0 8px #0d9488;
+            opacity: 0.8;
         }
+        .cell.highlight.capture { background: linear-gradient(150deg, #fecaca, #f87171) !important; }
+        .cell.highlight.capture::after { display: none; }
 
-        .player1-piece {
-            background: linear-gradient(135deg, #fee2e2, #fecaca);
-            color: #991b1b;
-            border: 2px.5 solid #dc2626;
-            width: 88%;
-            height: 88%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        } 
-        .player2-piece {
-            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-            color: #1e40af;
-            border: 2.5px solid #2563eb;
-            width: 88%;
-            height: 88%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        /* ===== 장기알 (팔각형) ===== */
+        .pw {
+            width: 86%;
+            height: 80%;
+            filter: drop-shadow(0 3px 2px rgba(0,0,0,0.45));
+            transition: transform 0.15s, filter 0.15s;
         }
-        .piece-name { font-size: clamp(0.9rem, 2.5vw, 1.1rem); font-weight: 900; }
-        .piece-sub { font-size: clamp(0.45rem, 1.2vw, 0.6rem); color: #4b5563; font-weight: bold; }
+        .cell.selected .pw { transform: translateY(-4px) scale(1.06); filter: drop-shadow(0 0 6px #fde047) drop-shadow(0 7px 5px rgba(0,0,0,0.45)); }
+        .piece {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(28% 0, 72% 0, 100% 24%, 100% 76%, 72% 100%, 28% 100%, 0 76%, 0 24%);
+            background: linear-gradient(160deg, #c99a5c, #8a5a2b);
+        }
+        .piece .face {
+            position: absolute;
+            inset: 4.5%;
+            clip-path: polygon(28% 0, 72% 0, 100% 24%, 100% 76%, 72% 100%, 28% 100%, 0 76%, 0 24%);
+            background: radial-gradient(circle at 35% 25%, #fffdf6, #f3e3c3 60%, #e4cc9f);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: 3.5cqw;
+        }
+        .piece .ring {
+            position: absolute;
+            inset: 8%;
+            clip-path: polygon(28% 0, 72% 0, 100% 24%, 100% 76%, 72% 100%, 28% 100%, 0 76%, 0 24%);
+            pointer-events: none;
+        }
+        .piece.p1 .ring { box-shadow: inset 0 0 0 2px rgba(185,28,28,0.55); }
+        .piece.p2 .ring { box-shadow: inset 0 0 0 2px rgba(29,78,216,0.55); }
+        .piece .hj {
+            font-family: 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', serif;
+            font-weight: 900;
+            font-size: 13cqw;
+            line-height: 1;
+            margin-top: 1cqw;
+        }
+        .piece .kn {
+            font-size: 3.4cqw;
+            font-weight: 800;
+            color: #78716c;
+            margin-top: 0.6cqw;
+            letter-spacing: 0.05em;
+        }
+        .piece.p1 .hj { color: #b91c1c; text-shadow: 0 1px 0 rgba(255,255,255,0.6); }
+        .piece.p2 .hj { color: #1d4ed8; text-shadow: 0 1px 0 rgba(255,255,255,0.6); }
+        .piece.tK .face { background: radial-gradient(circle at 35% 25%, #fffbe8, #f6e2a8 60%, #e8c56f); }
+        .piece.tK .hj { font-size: 14.5cqw; }
+
+        /* 움직일 수 있는 방향 표시 점 */
+        .piece .dir {
+            position: absolute;
+            width: 2.2cqw;
+            height: 2.2cqw;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .piece.p1 .dir { background: #dc2626; }
+        .piece.p2 .dir { background: #2563eb; }
+
+        /* 장기알이 놓일 때 */
+        @keyframes place { 0% { transform: translateY(-10px) scale(1.12); } 60% { transform: translateY(1px) scale(0.97); } 100% { transform: none; } }
+        .cell.drop .pw { animation: place 0.35s ease-out; }
 
         .btn-container {
             display: flex;
@@ -234,6 +295,39 @@
             background-color: rgba(239, 68, 68, 0.4);
         }
 
+        /* 컴퓨터가 마지막으로 둔 칸 */
+        .cell.last { box-shadow: inset 0 0 0 3px #60a5fa, 0 0 10px rgba(96,165,250,0.6); }
+        #mode-label { font-size: 0.75rem; color: #a1a1aa; text-align: center; margin: -4px 0 4px; min-height: 1em; }
+        .thinking { animation: blink 1s ease-in-out infinite; }
+        @keyframes blink { 50% { opacity: 0.45; } }
+
+        /* 모드 선택 창 */
+        #mode-modal {
+            position: fixed; inset: 0; z-index: 2000;
+            background: rgba(10,10,14,0.78);
+            display: none; align-items: center; justify-content: center; padding: 16px;
+        }
+        #mode-modal.show { display: flex; }
+        .mode-card {
+            background: #1f1f23; border: 1.5px solid #3f3f46; border-radius: 14px;
+            width: 100%; max-width: 340px; padding: 20px 18px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+            animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes pop-in { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .mode-card h2 { margin: 0 0 4px; text-align: center; font-size: 1.3rem; }
+        .mode-card p { margin: 0 0 14px; text-align: center; color: #a1a1aa; font-size: 0.85rem; }
+        .mode-card .group-title { font-size: 0.8rem; color: #a1a1aa; font-weight: bold; margin: 14px 0 6px; }
+        .mode-card button { display: block; width: 100%; flex: none; padding: 12px; font-size: 0.95rem; margin-bottom: 6px; text-align: left; }
+        .mode-card button small { display: block; font-weight: normal; color: #d4d4d8; font-size: 0.75rem; margin-top: 2px; }
+        .mode-card .pvp { background: #3f3f46; }
+        .mode-card .ai-easy { background: #15803d; }
+        .mode-card .ai-normal { background: #b45309; }
+        .mode-card .ai-hard { background: #b91c1c; }
+        .mode-card .ai-easy:hover { background: #166534; }
+        .mode-card .ai-normal:hover { background: #92400e; }
+        .mode-card .ai-hard:hover { background: #991b1b; }
+
         /* PC 화면(850px 이상)에서는 기존처럼 좌우 포로함 배치 유지 */
         @media (min-width: 850px) {
             body { height: 100vh; overflow: auto; padding: 20px; }
@@ -246,7 +340,9 @@
             }
             .sidebar { width: 160px; }
             .captured-box { flex-direction: column; min-height: 180px; max-height: none; align-items: center; }
-            .captured-piece { width: 100%; text-align: center; font-size: 0.95rem; padding: 8px 12px; }
+            .captured-piece { width: 100%; justify-content: center; padding: 6px 12px; }
+            .captured-piece .hj { font-size: 1.6rem; }
+            .captured-piece .kn { font-size: 0.85rem; }
             .board { max-width: 420px; }
             .btn-container { max-width: 420px; }
             h1 { font-size: 1.8rem; }
@@ -260,6 +356,19 @@
     <div id="flash-overlay"></div>
     <div id="action-popup">CAPTURE!</div>
 
+    <!-- 모드 선택 -->
+    <div id="mode-modal" class="show">
+        <div class="mode-card">
+            <h2>십이장기</h2>
+            <p>어떻게 플레이할까요?</p>
+            <button class="pvp" onclick="startMode('pvp')">👥 둘이 하기<small>한 기기로 번갈아 두기</small></button>
+            <div class="group-title">🤖 컴퓨터와 하기 (나는 빨강 · 선공)</div>
+            <button class="ai-easy" onclick="startMode('easy')">쉬움<small>가끔 실수하는 컴퓨터</small></button>
+            <button class="ai-normal" onclick="startMode('normal')">보통<small>몇 수 앞을 내다봐요</small></button>
+            <button class="ai-hard" onclick="startMode('hard')">어려움<small>최대한 깊게 계산해요</small></button>
+        </div>
+    </div>
+
     <div class="main-layout">
         <!-- 플레이어 2 포로 존 (상단) -->
         <div class="sidebar">
@@ -271,11 +380,13 @@
         <div class="game-container">
             <h1>십이장기</h1>
             <div id="status">플레이어 1 (빨강)의 턴</div>
+            <div id="mode-label"></div>
             <div class="board" id="board"></div>
             <div class="btn-container">
                 <button class="undo-btn" onclick="undoMove()">↩ 무르기</button>
                 <button class="skip-btn" onclick="skipTurn()">⏭ 턴 패스</button>
                 <button onclick="resetGameData()">초기화</button>
+                <button onclick="openModeModal()">⚙ 모드</button>
             </div>
         </div>
 
@@ -302,6 +413,45 @@
 
     let historyStack = [];
 
+    // ===== 모드 / 컴퓨터 대전 상태 =====
+    let playMode = 'pvp';      // 'pvp' | 'easy' | 'normal' | 'hard'
+    let gameOver = false;
+    let aiTimer = null;
+    let lastMove = null;       // 컴퓨터가 마지막으로 둔 칸 {r, c}
+    const MODE_NAMES = { easy: '쉬움', normal: '보통', hard: '어려움' };
+    const isAI = () => playMode !== 'pvp';
+    const isLocked = () => gameOver || (isAI() && gameData.turn === 2);
+
+    const HANJA = { K: '王', G: '將', S: '相', P: '子', H: '侯' };
+    const KNAME = { K: '왕', G: '장', S: '상', P: '자', H: '후' };
+
+    // 말이 갈 수 있는 방향 (방향 점 표시용) — isValidMove 규칙과 같음
+    function pieceDirs(type, player) {
+        const fwd = player === 1 ? -1 : 1, out = [];
+        for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+            if (!dr && !dc) continue;
+            let ok = false;
+            if (type === 'K') ok = true;
+            else if (type === 'G') ok = !dr || !dc;
+            else if (type === 'S') ok = !!(dr && dc);
+            else if (type === 'P') ok = dr === fwd && !dc;
+            else if (type === 'H') ok = !(dr === -fwd && dc !== 0);
+            if (ok) out.push([dr, dc]);
+        }
+        return out;
+    }
+    function pieceHTML(type, player) {
+        // 팔각형 가장자리 근처에 방향 점 배치 (위치는 % 기준)
+        const pos = { '-1': 6.5, '0': 50, '1': 93.5 };
+        const diag = { '-1': 15, '1': 85 };
+        const dots = pieceDirs(type, player).map(([dr, dc]) => {
+            const top = dr && dc ? diag[dr] : pos[dr];
+            const left = dr && dc ? diag[dc] : pos[dc];
+            return `<i class="dir" style="top:${top}%;left:${left}%"></i>`;
+        }).join('');
+        return `<div class="piece p${player} t${type}"><div class="face">${dots}<span class="hj">${HANJA[type]}</span><span class="kn">${KNAME[type]}</span></div><div class="ring"></div></div>`;
+    }
+
     const pieceNames = {
         'K': '왕(王)',
         'G': '장(將)',
@@ -310,7 +460,7 @@
         'H': '후(侯)'
     };
 
-    function triggerActionEffect(effectType = 'capture') {
+    function triggerActionEffect(effectType = 'capture', reason = '') {
         const boardEl = document.getElementById('board');
         const popup = document.getElementById('action-popup');
         const flash = document.getElementById('flash-overlay');
@@ -320,7 +470,9 @@
             boardEl.classList.add('ultra-shake');
             flash.classList.add('flash');
 
-            popup.innerHTML = `👑 CHECKMATE!<br><span style="font-size: 2rem; color: #fde047;">플레이어 ${gameData.turn} 승리!</span>`;
+            const winText = isAI() ? (gameData.turn === 1 ? '내가 이겼어요!' : '컴퓨터 승리!') : `플레이어 ${gameData.turn} 승리!`;
+            const title = reason === 'camp' ? '👑 입성 성공!' : '👑 CHECKMATE!';
+            popup.innerHTML = `${title}<br><span style="font-size: 2rem; color: #fde047;">${winText}</span>`;
             popup.style.textShadow = "0 0 30px #facc15, 0 0 60px #eab308, 0 4px 15px rgba(0,0,0,0.9)";
             popup.classList.add('show');
 
@@ -329,6 +481,11 @@
                 flash.classList.remove('flash');
                 popup.classList.remove('show');
             }, 2500);
+        } else if (effectType === 'camp') {
+            popup.innerHTML = '🏯 왕 입성!<br><span style="font-size: 1.1rem; color: #fde047;">한 턴 버티면 승리</span>';
+            popup.style.textShadow = "0 0 20px #f59e0b, 0 4px 10px rgba(0,0,0,0.9)";
+            popup.classList.add('show');
+            setTimeout(() => popup.classList.remove('show'), 1100);
         } else {
             boardEl.classList.remove('shake');
             void boardEl.offsetWidth;
@@ -356,19 +513,31 @@
     }
 
     function undoMove() {
+        if (gameOver) return;
         if (historyStack.length === 0) {
             alert("더 이상 무를 수 없습니다! (초기 상태입니다)");
             return;
         }
+        cancelAI();
+        lastMove = null;
         gameData = historyStack.pop();
+        // 컴퓨터 대전: 내 차례가 될 때까지 되돌림 (컴퓨터 수 + 내 수)
+        if (isAI()) {
+            while (gameData.turn !== 1 && historyStack.length) gameData = historyStack.pop();
+        }
+        gameData.selectedPiece = null;
         render();
+        maybeAITurn();
     }
 
     function skipTurn() {
+        if (isLocked()) return;
         saveState();
         gameData.selectedPiece = null;
         gameData.turn = gameData.turn === 1 ? 2 : 1;
         render();
+        if (checkCampWin()) return;
+        maybeAITurn();
     }
 
     function render() {
@@ -391,23 +560,13 @@
         for (let r = 0; r < 4; r++) {
             for (let c = 0; c < 3; c++) {
                 const cellDiv = document.createElement('div');
-                cellDiv.className = 'cell';
+                cellDiv.className = 'cell' + (r === 0 ? ' camp-top' : r === 3 ? ' camp-bottom' : '');
                 
                 const piece = gameData.board[r][c];
                 if (piece) {
                     const wrap = document.createElement('div');
-                    wrap.className = piece.player === 1 ? 'player1-piece' : 'player2-piece';
-                    
-                    const nameSpan = document.createElement('div');
-                    nameSpan.className = 'piece-name';
-                    nameSpan.innerText = pieceNames[piece.type];
-                    wrap.appendChild(nameSpan);
-                    
-                    const subSpan = document.createElement('div');
-                    subSpan.className = 'piece-sub';
-                    subSpan.innerText = `P${piece.player}`;
-                    wrap.appendChild(subSpan);
-
+                    wrap.className = 'pw';
+                    wrap.innerHTML = pieceHTML(piece.type, piece.player);
                     cellDiv.appendChild(wrap);
                 }
 
@@ -416,8 +575,14 @@
                     cellDiv.classList.add('selected');
                 }
 
+                if (lastMove && lastMove.r === r && lastMove.c === c) {
+                    cellDiv.classList.add('last');
+                    if (lastMove.fresh) cellDiv.classList.add('drop');
+                }
+
                 if (validMoves.includes(`${r},${c}`)) {
                     cellDiv.classList.add('highlight');
+                    if (piece) cellDiv.classList.add('capture');
                 }
 
                 cellDiv.onclick = () => handleCellClick(r, c);
@@ -425,12 +590,35 @@
             }
         }
 
+        if (lastMove) lastMove.fresh = false;
+
         renderCaptured('captured-1', gameData.captured1, 1);
         renderCaptured('captured-2', gameData.captured2, 2);
 
         const statusEl = document.getElementById('status');
-        statusEl.innerText = `플레이어 ${gameData.turn} (${gameData.turn === 1 ? '빨강' : '파랑'})의 턴`;
+        statusEl.classList.remove('thinking');
+        if (isAI()) {
+            if (gameData.turn === 1) {
+                statusEl.innerText = '내 차례 (빨강)';
+            } else {
+                statusEl.innerText = '🤖 컴퓨터가 생각 중…';
+                statusEl.classList.add('thinking');
+            }
+        } else {
+            statusEl.innerText = `플레이어 ${gameData.turn} (${gameData.turn === 1 ? '빨강' : '파랑'})의 턴`;
+        }
         statusEl.style.color = gameData.turn === 1 ? '#f87171' : '#60a5fa';
+        const labelEl = document.getElementById('mode-label');
+        const other = gameData.turn === 1 ? 2 : 1;
+        if (!gameOver && kingInCamp(other)) {
+            // 상대 왕이 내 진영에 들어와 있음 → 이번 턴에 잡아야 함
+            const who = isAI() ? (other === 1 ? '내 왕' : '컴퓨터 왕') : `플레이어 ${other} 왕`;
+            labelEl.innerText = `⚠️ ${who} 입성! 이번 턴에 잡지 못하면 패배`;
+            labelEl.style.color = '#fbbf24';
+        } else {
+            labelEl.innerText = isAI() ? `🤖 컴퓨터 대전 · ${MODE_NAMES[playMode]}` : '👥 둘이 하기';
+            labelEl.style.color = '';
+        }
     }
 
     function renderCaptured(elementId, capturedList, playerNum) {
@@ -438,8 +626,8 @@
         box.innerHTML = '';
         capturedList.forEach((type, idx) => {
             const item = document.createElement('div');
-            item.className = 'captured-piece';
-            item.innerText = pieceNames[type] || type;
+            item.className = 'captured-piece p' + playerNum;
+            item.innerHTML = `<span class="hj">${HANJA[type] || type}</span><span class="kn">${KNAME[type] || ''}</span>`;
             
             if (gameData.selectedPiece && gameData.selectedPiece.fromCaptured &&
                 gameData.selectedPiece.player === playerNum && gameData.selectedPiece.index === idx) {
@@ -448,7 +636,7 @@
 
             item.onclick = (e) => {
                 e.stopPropagation();
-                if (gameData.turn === playerNum) {
+                if (gameData.turn === playerNum && !isLocked()) {
                     if (gameData.selectedPiece && 
                         gameData.selectedPiece.fromCaptured && 
                         gameData.selectedPiece.player === playerNum && 
@@ -465,6 +653,7 @@
     }
 
     function handleCellClick(r, c) {
+        if (isLocked()) return;
         const target = gameData.board[r][c];
 
         if (gameData.selectedPiece && gameData.selectedPiece.fromCaptured) {
@@ -541,8 +730,8 @@
             case 'G': return (absDr === 0 && absDc === 1) || (absDr === 1 && absDc === 0);
             case 'S': return absDr === 1 && absDc === 1;
             case 'P': return (dr === forwardDir && absDc === 0);
-            case 'H': 
-                if (dr === -forwardDir && absDc === 0) return false;
+            case 'H': // 후: 뒤 대각선 2방향만 못 감 (바로 뒤는 가능)
+                if (dr === -forwardDir && absDc === 1) return false;
                 return true;
         }
         return false;
@@ -554,6 +743,12 @@
 
         if (targetPiece !== 0) {
             if (targetPiece.type === 'K') {
+                gameOver = true;
+                // 왕을 잡은 모습이 보이도록 말을 옮긴 뒤 승리 연출
+                gameData.board[tr][tc] = movingPiece;
+                gameData.board[sr][sc] = 0;
+                gameData.selectedPiece = null;
+                render();
                 triggerActionEffect('victory');
                 setTimeout(() => {
                     resetGameData();
@@ -579,26 +774,36 @@
             }
         }
 
-        if (movingPiece.type === 'K') {
-            const isOpponentCamp = (movingPiece.player === 1 && tr === 0) || (movingPiece.player === 2 && tr === 3);
-            if (isOpponentCamp) {
-                triggerActionItem = true;
-                triggerActionEffect('victory');
-                setTimeout(() => {
-                    resetGameData();
-                }, 2400);
-                return;
-            }
+        // 왕 입성: 바로 이기지 않고, 상대 턴을 한 번 버티면 승리 (endTouch → checkCampWin 에서 판정)
+        if (movingPiece.type === 'K' && kingInCamp(movingPiece.player) && targetPiece === 0) {
+            triggerActionEffect('camp');
         }
 
         endTouch();
     }
 
     function endTouch() {
+        if (gameData.turn === 1) lastMove = null;
         gameData.selectedPiece = null;
-        render();
         gameData.turn = gameData.turn === 1 ? 2 : 1;
         render();
+        if (checkCampWin()) return;
+        maybeAITurn();
+    }
+
+    // 해당 플레이어의 왕이 상대 진영 끝줄에 있는지
+    function kingInCamp(player) {
+        const row = player === 1 ? 0 : 3;
+        return gameData.board[row].some(x => x && x.type === 'K' && x.player === player);
+    }
+    // 내 차례가 시작됐는데 내 왕이 아직 상대 진영에 살아 있으면 승리
+    function checkCampWin() {
+        if (gameOver || !kingInCamp(gameData.turn)) return false;
+        gameOver = true;
+        render();
+        triggerActionEffect('victory', 'camp');
+        setTimeout(() => { resetGameData(); }, 2400);
+        return true;
     }
 
     function resetGameData() {
@@ -615,8 +820,238 @@
             selectedPiece: null
         };
         historyStack = [];
+        gameOver = false;
+        lastMove = null;
+        cancelAI();
         render();
     }
+
+    // ===== 모드 선택 =====
+    function openModeModal() {
+        document.getElementById('mode-modal').classList.add('show');
+    }
+    function startMode(mode) {
+        playMode = mode;
+        document.getElementById('mode-modal').classList.remove('show');
+        resetGameData();
+    }
+
+    // ===== 컴퓨터 차례 =====
+    function cancelAI() {
+        if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
+    }
+    function maybeAITurn() {
+        if (!isAI() || gameOver || gameData.turn !== 2) return;
+        cancelAI();
+        // "생각 중" 표시가 먼저 그려지도록 약간 기다린 뒤 계산
+        aiTimer = setTimeout(() => {
+            aiTimer = null;
+            if (!isAI() || gameOver || gameData.turn !== 2) return;
+            const started = performance.now();
+            const move = AI.pickMove(gameData, playMode);
+            // 너무 빨리 두면 어색하니 최소 0.6초는 기다림
+            const wait = Math.max(0, 600 - (performance.now() - started));
+            aiTimer = setTimeout(() => {
+                aiTimer = null;
+                if (!isAI() || gameOver || gameData.turn !== 2) return;
+                playAIMove(move);
+            }, wait);
+        }, 80);
+    }
+    function playAIMove(m) {
+        if (!m) { // 둘 수가 없으면 패스
+            saveState();
+            gameData.turn = 1;
+            render();
+            checkCampWin();
+            return;
+        }
+        gameData.selectedPiece = null;
+        saveState();
+        lastMove = { r: m.to[0], c: m.to[1], fresh: true };
+        if (m.drop) {
+            const idx = gameData.captured2.indexOf(m.drop);
+            gameData.board[m.to[0]][m.to[1]] = { type: m.drop, player: 2 };
+            gameData.captured2.splice(idx, 1);
+            endTouch();
+        } else {
+            executeMove(m.from[0], m.from[1], m.to[0], m.to[1]);
+        }
+    }
+
+    // ===== 컴퓨터 두뇌 (알파-베타 탐색) =====
+    // 규칙은 위 isValidMove / executeMove 와 똑같이 맞춤:
+    //  - 왕을 잡으면 승리, 왕이 상대 진영 끝줄에 들어가면 승리
+    //  - 자가 끝줄에 닿으면 후로 승격, 잡은 후는 자로 돌아옴
+    //  - 포로는 빈칸에 내려놓을 수 있지만 상대 진영 끝줄은 안 됨
+    const AI = (() => {
+        const K = 1, G = 2, S = 3, P = 4, H = 5;
+        const LETTER = ['', 'K', 'G', 'S', 'P', 'H'];
+        const VAL = [0, 0, 5, 4, 2, 5];
+        const HAND = [0, 0, 4.8, 3.8, 1.9, 0];
+        const WIN = 100000;
+        const LEVELS = {
+            easy:   { maxDepth: 2,  ms: 300,  noise: 3.5 },
+            normal: { maxDepth: 4,  ms: 700,  noise: 0.8 },
+            hard:   { maxDepth: 12, ms: 1500, noise: 0 },
+        };
+        let deadline = 0, aborted = false, nodes = 0;
+
+        function fromGame(gd) {
+            const b = new Int8Array(12);
+            for (let r = 0; r < 4; r++) for (let c = 0; c < 3; c++) {
+                const x = gd.board[r][c];
+                if (x) b[r * 3 + c] = x.player * 10 + LETTER.indexOf(x.type);
+            }
+            const h = [null, [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]];
+            gd.captured1.forEach(t => h[1][LETTER.indexOf(t)]++);
+            gd.captured2.forEach(t => h[2][LETTER.indexOf(t)]++);
+            return { b, h };
+        }
+
+        function gen(st, p) {
+            const { b, h } = st, mv = [], fwd = p === 1 ? -1 : 1, lastRow = p === 1 ? 0 : 3;
+            for (let i = 0; i < 12; i++) {
+                const x = b[i];
+                if (!x || ((x / 10) | 0) !== p) continue;
+                const t = x % 10, r = (i / 3) | 0, c = i % 3;
+                for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+                    if (!dr && !dc) continue;
+                    const tr = r + dr, tc = c + dc;
+                    if (tr < 0 || tr > 3 || tc < 0 || tc > 2) continue;
+                    const j = tr * 3 + tc, y = b[j];
+                    if (y && ((y / 10) | 0) === p) continue;
+                    let ok = false;
+                    if (t === K) ok = true;
+                    else if (t === G) ok = !dr || !dc;
+                    else if (t === S) ok = !!(dr && dc);
+                    else if (t === P) ok = dr === fwd && !dc;
+                    else if (t === H) ok = !(dr === -fwd && dc !== 0); // 뒤 대각선만 불가
+                    if (!ok) continue;
+                    const ct = y ? y % 10 : 0;
+                    let s = ct ? (ct === K ? 1000 : 10 + VAL[ct]) : 0;
+                    if (t === K && tr === lastRow) s += 30; // 입성 시도는 먼저 살펴봄
+                    mv.push({ f: i, t: j, d: 0, s });
+                }
+            }
+            for (const t of [G, S, P]) {
+                if (!h[p][t]) continue;
+                for (let j = 0; j < 12; j++) {
+                    if (b[j] || ((j / 3) | 0) === lastRow) continue;
+                    mv.push({ f: -1, t: j, d: t, s: -1 });
+                }
+            }
+            mv.sort((a, z) => z.s - a.s);
+            return mv;
+        }
+
+        function make(st, p, m) {
+            const { b, h } = st;
+            if (m.d) { b[m.t] = p * 10 + m.d; h[p][m.d]--; return { win: false }; }
+            const x = b[m.f], y = b[m.t], t = x % 10, lastRow = p === 1 ? 0 : 3, row = (m.t / 3) | 0;
+            let win = false, cap = 0;
+            if (y) {
+                const ct = y % 10;
+                if (ct === K) win = true;
+                else { cap = ct === H ? P : ct; h[p][cap]++; }
+            }
+            b[m.t] = x; b[m.f] = 0;
+            if (t === P && row === lastRow) b[m.t] = p * 10 + H;
+            return { x, y, cap, win };
+        }
+        function unmake(st, p, m, u) {
+            const { b, h } = st;
+            if (m.d) { b[m.t] = 0; h[p][m.d]++; return; }
+            b[m.f] = u.x; b[m.t] = u.y;
+            if (u.cap) h[p][u.cap]--;
+        }
+
+        function evaluate(st, p) {
+            const { b, h } = st;
+            let s = 0;
+            for (let i = 0; i < 12; i++) {
+                const x = b[i]; if (!x) continue;
+                const q = (x / 10) | 0, t = x % 10;
+                let v = VAL[t];
+                if (t === K) { const row = (i / 3) | 0; v = 0.6 * (q === 1 ? 3 - row : row); }
+                s += q === p ? v : -v;
+            }
+            for (const t of [G, S, P]) s += (h[p][t] - h[3 - p][t]) * HAND[t];
+            return s;
+        }
+
+        // p의 왕이 상대 진영 끝줄에 있는지
+        function kingInCamp(b, p) {
+            const base = p === 1 ? 0 : 9, k = p * 10 + K;
+            return b[base] === k || b[base + 1] === k || b[base + 2] === k;
+        }
+
+        function search(st, p, depth, alpha, beta, ply) {
+            if ((++nodes & 1023) === 0 && performance.now() > deadline) aborted = true;
+            if (aborted) return 0;
+            // 내 차례가 시작됐는데 내 왕이 상대 진영에서 버텼으면 승리
+            if (kingInCamp(st.b, p)) return WIN - ply;
+            const mv = gen(st, p);
+            if (mv.length && mv[0].s >= 1000) return WIN - ply - 1; // 상대 왕을 바로 잡을 수 있음
+            // 상대 왕이 내 진영에 있는데 잡을 수 없으면 다음 턴에 짐
+            if (kingInCamp(st.b, 3 - p)) return -(WIN - ply - 2);
+            if (!mv.length) return evaluate(st, p);
+            if (depth <= 0) return evaluate(st, p);
+            let best = -Infinity;
+            for (const m of mv) {
+                const u = make(st, p, m);
+                const sc = u.win ? WIN - ply : -search(st, 3 - p, depth - 1, -beta, -alpha, ply + 1);
+                unmake(st, p, m, u);
+                if (aborted) return 0;
+                if (sc > best) best = sc;
+                if (sc > alpha) alpha = sc;
+                if (alpha >= beta) break;
+            }
+            return best;
+        }
+
+        function shuffle(a) {
+            for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+            return a;
+        }
+
+        function toMove(m) {
+            const to = [(m.t / 3) | 0, m.t % 3];
+            return m.d ? { drop: LETTER[m.d], to } : { from: [(m.f / 3) | 0, m.f % 3], to };
+        }
+
+        function pickMove(gd, level) {
+            const cfg = LEVELS[level] || LEVELS.normal;
+            const st = fromGame(gd), p = 2;
+            // 같은 점수의 수 중에서는 매번 다르게 고르도록 섞은 뒤 정렬
+            let moves = shuffle(gen(st, p)).sort((a, z) => z.s - a.s);
+            if (!moves.length) return null;
+            let best = moves[0];
+            deadline = performance.now() + cfg.ms; aborted = false; nodes = 0;
+            for (let d = 1; d <= cfg.maxDepth; d++) {
+                let alpha = -Infinity, bestSc = -Infinity, bm = null;
+                const scored = [];
+                for (const m of moves) {
+                    const u = make(st, p, m);
+                    // 실수 요소가 있는 난이도는 모든 수를 정확히 평가해야 하므로 전체 창으로 탐색
+                    let sc = u.win ? WIN : -search(st, 1, d - 1, -Infinity, cfg.noise ? Infinity : -alpha, 1);
+                    unmake(st, p, m, u);
+                    if (aborted) break;
+                    if (cfg.noise && Math.abs(sc) < WIN / 2) sc += (Math.random() * 2 - 1) * cfg.noise;
+                    scored.push([sc, m]);
+                    if (sc > bestSc) { bestSc = sc; bm = m; }
+                    if (sc > alpha) alpha = sc;
+                }
+                if (aborted) break;
+                best = bm;
+                moves = scored.sort((a, z) => z[0] - a[0]).map(x => x[1]);
+                if (bestSc >= WIN / 2 || bestSc <= -WIN / 2) break; // 승패가 이미 보임
+            }
+            return toMove(best);
+        }
+
+        return { pickMove };
+    })();
 
     render();
 </script>
