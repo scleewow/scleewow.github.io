@@ -741,6 +741,12 @@
         const target = gameData.board[r][c];
 
         if (gameData.selectedPiece && gameData.selectedPiece.fromCaptured) {
+            // 포로를 고른 상태에서 내 말을 누르면 → 포로 선택을 풀고 그 말을 선택
+            if (target !== 0 && target.player === gameData.turn) {
+                gameData.selectedPiece = { row: r, col: c };
+                render();
+                return;
+            }
             const isOpponentCamp = (gameData.selectedPiece.player === 1 && r === 0) || 
                                    (gameData.selectedPiece.player === 2 && r === 3);
             
