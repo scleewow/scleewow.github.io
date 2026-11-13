@@ -342,6 +342,44 @@
         .mode-card .ai-normal:hover { background: #92400e; }
         .mode-card .ai-hard:hover { background: #991b1b; }
 
+        /* ===== 결과 창 ===== */
+        #result-sheet {
+            position: fixed; left: 50%; bottom: 0; z-index: 1500;
+            width: 100%; max-width: 420px;
+            transform: translate(-50%, 110%);
+            transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+            background: #1f1f23; border: 1.5px solid #3f3f46; border-bottom: none;
+            border-radius: 18px 18px 0 0;
+            padding: 18px 18px calc(18px + env(safe-area-inset-bottom));
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.6);
+            text-align: center;
+        }
+        #result-sheet.show { transform: translate(-50%, 0); }
+        #result-sheet .r-win { font-size: 1.6rem; font-weight: 900; }
+        #result-sheet .r-sub { color: #a1a1aa; font-size: 0.85rem; margin-top: 4px; }
+        #result-sheet .r-score {
+            margin: 14px 0; padding: 10px; border-radius: 10px; background: #18181b;
+            display: flex; align-items: center; justify-content: center; gap: 14px;
+        }
+        #result-sheet .r-score .side { font-size: 0.8rem; color: #a1a1aa; }
+        #result-sheet .r-score .num { font-size: 1.8rem; font-weight: 900; }
+        #result-sheet .r-score .vs { color: #71717a; font-weight: 900; }
+        #result-sheet .r-score .tag { font-size: 0.7rem; color: #71717a; display: block; margin-top: 2px; }
+        #result-sheet .r-btns { display: flex; gap: 8px; }
+        #result-sheet .r-btns button { padding: 12px 6px; font-size: 0.95rem; }
+        #result-sheet .r-btns .again { background: #eab308; color: #1c1917; flex: 1.4; }
+        #result-sheet .r-btns .again:hover { background: #ca8a04; }
+        #result-sheet .r-links { display: flex; justify-content: space-between; margin-top: 10px; }
+        #result-sheet .r-links button { flex: none; background: none; box-shadow: none; color: #a1a1aa; font-size: 0.8rem; padding: 4px; text-decoration: underline; }
+        #result-pill {
+            position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 1500;
+            transform: translateX(-50%);
+            display: none; gap: 6px;
+        }
+        #result-pill.show { display: flex; }
+        #result-pill button { flex: none; padding: 10px 16px; border-radius: 999px; font-size: 0.9rem; box-shadow: 0 6px 16px rgba(0,0,0,0.5); }
+        #result-pill .again { background: #eab308; color: #1c1917; }
+
         /* PC 화면(850px 이상)에서는 기존처럼 좌우 포로함 배치 유지 */
         @media (min-width: 850px) {
             body { height: 100vh; overflow: auto; padding: 20px; }
@@ -369,6 +407,26 @@
 
     <div id="flash-overlay"></div>
     <div id="action-popup">CAPTURE!</div>
+
+    <!-- 결과 창 -->
+    <div id="result-sheet">
+        <div class="r-win" id="r-win"></div>
+        <div class="r-sub" id="r-sub"></div>
+        <div id="r-tag" style="font-size:0.75rem;color:#71717a;margin-top:12px"></div>
+        <div class="r-score" id="r-score" style="margin-top:6px"></div>
+        <div class="r-btns">
+            <button class="again" onclick="resetGameData()">🔄 한 판 더</button>
+            <button onclick="openModeModal()">⚙ 모드 바꾸기</button>
+        </div>
+        <div class="r-links">
+            <button onclick="peekBoard()">🔍 판 보기</button>
+            <button onclick="clearRecord()">전적 초기화</button>
+        </div>
+    </div>
+    <div id="result-pill">
+        <button onclick="showResultSheet()">📋 결과</button>
+        <button class="again" onclick="resetGameData()">🔄 한 판 더</button>
+    </div>
 
     <!-- 모드 선택 -->
     <div id="mode-modal" class="show">
@@ -619,7 +677,10 @@
 
         const statusEl = document.getElementById('status');
         statusEl.classList.remove('thinking');
-        if (isAI()) {
+        if (gameOver && lastResult) {
+            const w = lastResult.winner;
+            statusEl.innerText = isAI() ? (w === 1 ? '🏆 내가 이겼어요!' : '🤖 컴퓨터 승리') : `🏆 ${w === 1 ? '빨강' : '파랑'} 승리!`;
+        } else if (isAI()) {
             if (gameData.turn === 1) {
                 statusEl.innerText = '내 차례 (빨강)';
             } else {
@@ -773,9 +834,7 @@
                 gameData.selectedPiece = null;
                 render();
                 triggerActionEffect('victory');
-                setTimeout(() => {
-                    resetGameData();
-                }, 2400);
+                finishGame(gameData.turn, 'capture');
                 return;
             }
             
@@ -825,7 +884,7 @@
         gameOver = true;
         render();
         triggerActionEffect('victory', 'camp');
-        setTimeout(() => { resetGameData(); }, 2400);
+        finishGame(gameData.turn, 'camp');
         return true;
     }
 
@@ -842,6 +901,8 @@
             captured2: [],
             selectedPiece: null
         };
+        hideResult();
+        lastResult = null;
         // 먼저 두는 쪽 (랜덤이면 판마다 새로 뽑음)
         firstTurn = firstSetting || (Math.random() < 0.5 ? 1 : 2);
         gameData.turn = firstTurn;
@@ -852,6 +913,66 @@
         render();
         if (firstSetting === 0) announceFirst();
         maybeAITurn();
+    }
+
+    // ===== 결과 & 전적 =====
+    let lastResult = null;
+    function loadRecord() {
+        try { return JSON.parse(localStorage.getItem('janggi_record')) || {}; } catch (e) { return {}; }
+    }
+    function saveRecord(rec) {
+        try { localStorage.setItem('janggi_record', JSON.stringify(rec)); } catch (e) {}
+    }
+    function finishGame(winner, reason) {
+        lastResult = { winner, reason, moves: historyStack.length };
+        const rec = loadRecord();
+        const r = rec[playMode] || { 1: 0, 2: 0 };
+        r[winner] = (r[winner] || 0) + 1;
+        rec[playMode] = r; saveRecord(rec);
+        render();
+        // 승리 연출을 본 다음 결과 창
+        setTimeout(() => { if (gameOver) showResultSheet(); }, 2300);
+    }
+    function fillResult() {
+        if (!lastResult) return;
+        const { winner, reason, moves } = lastResult;
+        const winEl = document.getElementById('r-win');
+        if (isAI()) {
+            winEl.innerText = winner === 1 ? '🎉 내가 이겼어요!' : '🤖 컴퓨터 승리';
+        } else {
+            winEl.innerText = winner === 1 ? '🔴 빨강 승리!' : '🔵 파랑 승리!';
+        }
+        winEl.style.color = winner === 1 ? '#f87171' : '#60a5fa';
+        const how = reason === 'camp' ? '입성 성공' : '왕 잡기';
+        document.getElementById('r-sub').innerText = `${how} · ${moves}수 만에 끝남`;
+
+        // 누적 전적 (모드별로 따로 저장)
+        const r = loadRecord()[playMode] || { 1: 0, 2: 0 };
+        const left = isAI() ? '나' : '🔴 빨강', right = isAI() ? '컴퓨터' : '파랑 🔵';
+        const tag = isAI() ? `컴퓨터 대전 · ${MODE_NAMES[playMode]} 누적 전적` : '둘이 하기 누적 전적';
+        document.getElementById('r-score').innerHTML =
+            `<div><div class="side">${left}</div><div class="num" style="color:#f87171">${r[1] || 0}</div></div>
+             <div class="vs">:</div>
+             <div><div class="side">${right}</div><div class="num" style="color:#60a5fa">${r[2] || 0}</div></div>`;
+        document.getElementById('r-tag').innerText = tag;
+    }
+    function showResultSheet() {
+        fillResult();
+        document.getElementById('result-pill').classList.remove('show');
+        document.getElementById('result-sheet').classList.add('show');
+    }
+    function hideResult() {
+        document.getElementById('result-sheet').classList.remove('show');
+        document.getElementById('result-pill').classList.remove('show');
+    }
+    function peekBoard() {
+        document.getElementById('result-sheet').classList.remove('show');
+        document.getElementById('result-pill').classList.add('show');
+    }
+    function clearRecord() {
+        if (!confirm(isAI() ? `컴퓨터 대전(${MODE_NAMES[playMode]}) 전적을 초기화할까요?` : '둘이 하기 전적을 초기화할까요?')) return;
+        const rec = loadRecord(); delete rec[playMode]; saveRecord(rec);
+        fillResult();
     }
 
     function setFirst(v) {
@@ -869,6 +990,7 @@
 
     // ===== 모드 선택 =====
     function openModeModal() {
+        hideResult();
         document.getElementById('mode-modal').classList.add('show');
     }
     function startMode(mode) {
