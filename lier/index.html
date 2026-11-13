@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#14121f">
+<title>라이어 게임</title>
+<style>
+  :root{
+    --bg:#14121f; --panel:#1f1c30; --panel2:#2a2640; --line:#3a3556;
+    --text:#f2effa; --sub:#a9a3c4; --accent:#ffb84d; --accent2:#ff6b6b;
+    --good:#5bd6a0; --spy:#7aa8ff; --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--text);font-family:"Pretendard","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+    -webkit-user-select:none;user-select:none;overscroll-behavior:none}
+  .app{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding:16px 18px 28px}
+  header{display:flex;align-items:center;justify-content:space-between;min-height:40px;margin-bottom:8px}
+  header a,header button.link{color:var(--sub);font-size:14px;text-decoration:none;background:none;border:none;cursor:pointer;font-family:inherit}
+  .screen{display:none;flex:1;flex-direction:column}
+  .screen.on{display:flex;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  h1{font-size:34px;font-weight:900;letter-spacing:-1px;text-align:center;margin:10px 0 2px}
+  h1 span{color:var(--accent)}
+  .tagline{text-align:center;color:var(--sub);font-size:14px;margin-bottom:22px}
+  h2{font-size:15px;color:var(--sub);font-weight:700;margin:20px 0 10px;display:flex;justify-content:space-between;align-items:center}
+  h2 .mini{font-size:13px;color:var(--accent);background:none;border:none;font-family:inherit;cursor:pointer;font-weight:700}
+
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .mode{background:var(--panel);border:2px solid transparent;border-radius:var(--radius);padding:14px 6px;text-align:center;cursor:pointer;transition:.15s}
+  .mode .ic{font-size:26px}
+  .mode .nm{font-weight:800;font-size:16px;margin-top:4px}
+  .mode .mn{font-size:12px;color:var(--sub);margin-top:2px}
+  .mode.sel{border-color:var(--accent);background:var(--panel2)}
+  .mode-desc{background:var(--panel);border-radius:12px;padding:12px 14px;margin-top:8px;font-size:14px;color:var(--sub);line-height:1.55}
+
+  .stepper{display:flex;align-items:center;justify-content:center;gap:22px;background:var(--panel);border-radius:var(--radius);padding:12px}
+  .stepper button{width:48px;height:48px;border-radius:50%;border:none;background:var(--panel2);color:var(--text);font-size:26px;cursor:pointer}
+  .stepper button:disabled{opacity:.3}
+  .stepper .val{font-size:34px;font-weight:900;min-width:90px;text-align:center}
+  .stepper .val small{font-size:16px;color:var(--sub);font-weight:600}
+
+  .cats{display:flex;flex-wrap:wrap;gap:8px}
+  .cat{padding:9px 13px;border-radius:999px;background:var(--panel);border:1.5px solid var(--line);color:var(--sub);font-size:14px;cursor:pointer;font-weight:600}
+  .cat.sel{background:rgba(255,184,77,.14);border-color:var(--accent);color:var(--accent)}
+
+  .btn{display:block;width:100%;border:none;border-radius:var(--radius);padding:17px;font-size:18px;font-weight:800;cursor:pointer;font-family:inherit;transition:transform .08s}
+  .btn:active{transform:scale(.98)}
+  .btn.primary{background:var(--accent);color:#2a1a00}
+  .btn.ghost{background:var(--panel);color:var(--text)}
+  .btn.danger{background:var(--accent2);color:#fff}
+  .btn:disabled{opacity:.4}
+  .gap{flex:1;min-height:20px}
+  .stack{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+  .warn{color:var(--accent2);font-size:13px;text-align:center;margin-top:8px;min-height:18px}
+
+  /* pass & role */
+  .center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .progress{color:var(--sub);font-size:14px;margin-bottom:14px}
+  .bignum{font-size:96px;font-weight:900;line-height:1;color:var(--accent)}
+  .bignum small{font-size:34px;color:var(--text)}
+  .hint{color:var(--sub);font-size:15px;line-height:1.6;margin-top:14px}
+  .card{width:100%;background:var(--panel);border-radius:22px;padding:30px 20px;text-align:center;border:2px solid var(--line)}
+  .card .lbl{color:var(--sub);font-size:14px;font-weight:700}
+  .card .cat-name{display:inline-block;margin-top:6px;background:var(--panel2);padding:6px 14px;border-radius:999px;font-weight:700;font-size:15px}
+  .card .word{font-size:44px;font-weight:900;margin:22px 0 6px;word-break:keep-all;line-height:1.2}
+  .card .role{font-size:30px;font-weight:900;margin:22px 0 8px}
+  .card .desc{color:var(--sub);font-size:14px;line-height:1.6;margin-top:10px;word-break:keep-all}
+  .card.liar{border-color:var(--accent2)} .card.liar .role{color:var(--accent2)}
+  .card.spy{border-color:var(--spy)} .card.spy .role{color:var(--spy)}
+
+  /* discussion */
+  .chip{display:inline-block;background:var(--panel2);padding:7px 16px;border-radius:999px;font-weight:700}
+  .start-box{background:var(--panel);border-radius:22px;padding:26px 16px;text-align:center;margin-top:14px}
+  .start-box .bignum{font-size:72px}
+  .tips{background:var(--panel);border-radius:var(--radius);padding:14px 16px;margin-top:14px;font-size:14px;color:var(--sub);line-height:1.7}
+  .tips b{color:var(--text)}
+  .tips li{margin-left:18px}
+
+  /* grids */
+  .pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+  .pbtn{aspect-ratio:1;border-radius:18px;border:2px solid var(--line);background:var(--panel);color:var(--text);font-size:28px;font-weight:900;cursor:pointer;font-family:inherit}
+  .pbtn.sel{border-color:var(--accent);background:rgba(255,184,77,.14);color:var(--accent)}
+  .ggrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .gbtn{min-height:64px;border-radius:14px;border:2px solid var(--line);background:var(--panel);color:var(--text);font-size:18px;font-weight:800;cursor:pointer;padding:8px;word-break:keep-all;font-family:inherit}
+  .gbtn.sel{border-color:var(--accent);color:var(--accent)}
+  .gbtn.right{border-color:var(--good);background:rgba(91,214,160,.15);color:var(--good)}
+  .gbtn.wrong{border-color:var(--accent2);background:rgba(255,107,107,.15);color:var(--accent2)}
+  .title{font-size:24px;font-weight:900;text-align:center;margin-top:6px;word-break:keep-all}
+  .subtitle{color:var(--sub);text-align:center;font-size:14px;margin-top:6px;line-height:1.6;word-break:keep-all}
+
+  /* reveal & result */
+  .verdict{font-size:40px;font-weight:900;margin:14px 0 6px;word-break:keep-all}
+  .verdict.red{color:var(--accent2)} .verdict.green{color:var(--good)} .verdict.blue{color:var(--spy)}
+  .summary{width:100%;background:var(--panel);border-radius:var(--radius);padding:6px 16px;margin-top:18px;text-align:left}
+  .summary .row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px}
+  .summary .row:last-child{border-bottom:none}
+  .summary .row span:first-child{color:var(--sub)}
+  .summary .row span:last-child{font-weight:800;text-align:right}
+  .banner{width:100%;border-radius:22px;padding:24px 16px;text-align:center}
+  .banner.citizen{background:linear-gradient(135deg,#1f5a46,#164034)}
+  .banner.liar{background:linear-gradient(135deg,#6b2330,#461924)}
+  .banner .w{font-size:14px;opacity:.85;font-weight:700}
+  .banner .t{font-size:36px;font-weight:900;margin-top:4px}
+
+  /* modal */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center;z-index:50}
+  .modal-bg.on{display:flex}
+  .modal{background:var(--panel);width:100%;max-width:480px;border-radius:22px 22px 0 0;padding:22px 20px 26px;max-height:86vh;overflow:auto}
+  .modal h3{font-size:20px;margin-bottom:12px}
+  .modal p,.modal li{color:var(--sub);font-size:14px;line-height:1.7}
+  .modal ul,.modal ol{margin:4px 0 10px 18px}
+  .modal h4{margin:14px 0 4px;font-size:15px}
+  .modal .row2{display:flex;gap:10px;margin-top:18px}
+  .modal .row2 .btn{padding:14px;font-size:16px}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <a href="/" id="homeLink">← 게임 라운지</a>
+    <button class="link" id="quitBtn" style="display:none">그만하기</button>
+    <button class="link" id="rulesBtn">게임 설명</button>
+  </header>
+
+  <!-- 1. 설정 -->
+  <section class="screen on" id="s-setup">
+    <h1>라이어 <span>게임</span></h1>
+    <p class="tagline">폰 한 대로 돌려보는 라이어 찾기</p>
+
+    <h2>모드</h2>
+    <div class="modes" id="modes"></div>
+    <div class="mode-desc" id="modeDesc"></div>
+
+    <h2>인원</h2>
+    <div class="stepper">
+      <button id="minus">−</button>
+      <div class="val"><span id="pcount">5</span><small>명</small></div>
+      <button id="plus">+</button>
+    </div>
+
+    <h2>분야 <button class="mini" id="toggleAll">전체 선택</button></h2>
+    <div class="cats" id="cats"></div>
+    <div class="warn" id="setupWarn"></div>
+
+    <div class="gap"></div>
+    <button class="btn primary" id="startBtn">게임 시작</button>
+  </section>
+
+  <!-- 2. 폰 넘기기 -->
+  <section class="screen" id="s-pass">
+    <div class="center">
+      <div class="progress" id="passProgress"></div>
+      <div class="bignum"><span id="passNum">1</span><small>번</small></div>
+      <p class="hint">다른 사람이 화면을 보지 않게<br><b id="passNum2">1번</b> 플레이어에게 폰을 넘겨주세요.</p>
+    </div>
+    <button class="btn primary" id="showRoleBtn">제가 1번이에요 · 확인하기</button>
+  </section>
+
+  <!-- 3. 역할 확인 -->
+  <section class="screen" id="s-role">
+    <div class="center">
+      <div class="progress" id="roleProgress"></div>
+      <div class="card" id="roleCard"></div>
+    </div>
+    <button class="btn ghost" id="hideRoleBtn" style="margin-top:18px">확인 완료 · 가리기</button>
+  </section>
+
+  <!-- 4. 토론 -->
+  <section class="screen" id="s-talk">
+    <div style="text-align:center;margin-top:6px">
+      <div class="subtitle" style="margin:0 0 8px">이번 분야</div>
+      <span class="chip" id="talkCat"></span>
+    </div>
+    <div class="start-box">
+      <div class="subtitle" style="margin:0">설명 시작</div>
+      <div class="bignum"><span id="startNum">1</span><small>번</small></div>
+      <div class="subtitle">부터 번호 순서대로 한 마디씩 설명하세요</div>
+    </div>
+    <div class="tips">
+      <ul>
+        <li>시민은 라이어가 눈치채지 못하게, 하지만 동료 시민은 알아볼 수 있게 설명해요.</li>
+        <li><b>두 바퀴째</b>는 반대 순서로 돌면 첫 순서의 불리함이 사라져요.</li>
+        <li>원하면 한 사람당 <b>패스 1회</b>를 허용해도 좋아요.</li>
+      </ul>
+    </div>
+    <div class="gap"></div>
+    <button class="btn primary" id="toVoteBtn">투표하러 가기</button>
+  </section>
+
+  <!-- 5. 투표 -->
+  <section class="screen" id="s-vote">
+    <div class="title">누가 라이어일까요?</div>
+    <p class="subtitle">"하나, 둘, 셋!" 하고 동시에 손가락으로 지목하세요.<br>가장 많이 지목된 사람을 고르세요. 동점이면 동점자끼리 다시 투표해요.</p>
+    <div class="pgrid" id="voteGrid"></div>
+    <div class="gap"></div>
+    <button class="btn primary" id="voteBtn" disabled>지목하기</button>
+  </section>
+
+  <!-- 6. 정체 공개 -->
+  <section class="screen" id="s-reveal">
+    <div class="center" id="revealBox"></div>
+    <div class="stack" id="revealActions"></div>
+  </section>
+
+  <!-- 7. 라이어 정답 맞히기 -->
+  <section class="screen" id="s-guess">
+    <div class="title" id="guessTitle">제시어를 맞혀보세요</div>
+    <p class="subtitle" id="guessSub"></p>
+    <div class="ggrid" id="guessGrid"></div>
+    <div class="gap"></div>
+    <button class="btn primary" id="guessBtn" disabled>이걸로 할게요</button>
+  </section>
+
+  <!-- 8. 결과 -->
+  <section class="screen" id="s-result">
+    <div class="center" style="justify-content:flex-start">
+      <div class="banner" id="resultBanner"></div>
+      <div class="ggrid" id="resultGuess" style="width:100%"></div>
+      <div class="summary" id="resultSummary"></div>
+    </div>
+    <div class="stack">
+      <button class="btn primary" id="againBtn">같은 설정으로 한 판 더</button>
+      <button class="btn ghost" id="setupBtn">설정 바꾸기</button>
+    </div>
+  </section>
+</div>
+
+<!-- 확인 모달 -->
+<div class="modal-bg" id="confirmBg">
+  <div class="modal">
+    <h3 id="confirmTitle"></h3>
+    <p id="confirmText"></p>
+    <div class="row2">
+      <button class="btn ghost" id="confirmNo">취소</button>
+      <button class="btn primary" id="confirmYes">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 게임 설명 모달 -->
+<div class="modal-bg" id="rulesBg">
+  <div class="modal">
+    <h3>게임 설명</h3>
+    <h4>진행 순서</h4>
+    <ol>
+      <li>모드, 인원, 분야를 고르고 시작해요.</li>
+      <li>1번부터 차례로 폰을 넘겨받아 자기 제시어를 몰래 확인해요.</li>
+      <li>화면에 나온 사람부터 번호 순서대로 제시어를 한 마디씩 설명해요.</li>
+      <li>토론한 뒤 동시에 라이어를 지목하고, 가장 많이 지목된 사람을 앱에서 골라요.</li>
+      <li>라이어를 잡으면 라이어에게 마지막 기회! 보기 10개 중에서 제시어를 맞히면 라이어가 역전승해요.</li>
+    </ol>
+    <h4>🕵️ 기본 모드 (3명 이상)</h4>
+    <p>라이어는 분야만 알고 제시어는 몰라요. 다른 사람 설명을 듣고 들키지 않게 따라가야 해요.</p>
+    <h4>🤪 바보 모드 (4명 이상)</h4>
+    <p>라이어(바보)는 자기가 라이어인 줄 모르고, 비슷하지만 다른 제시어를 받아요. 화면은 시민과 똑같아서 본인도 눈치채기 어려워요.</p>
+    <h4>🕶️ 스파이 모드 (6명 이상)</h4>
+    <p>스파이는 제시어를 알지만 라이어 편이에요. 누가 라이어인지는 모르니, 모두에게 들리게 몰래 힌트를 흘려야 해요. 시민이 스파이를 지목하면 라이어 팀이 이겨요.</p>
+    <h4>승리 조건</h4>
+    <ul>
+      <li><b>시민 승리</b>: 라이어를 지목하고, 라이어가 제시어를 못 맞힘</li>
+      <li><b>라이어(팀) 승리</b>: 라이어가 아닌 사람이 지목되거나, 지목된 라이어가 제시어를 맞힘</li>
+    </ul>
+    <div class="row2"><button class="btn primary" id="rulesClose">알겠어요</button></div>
+  </div>
+</div>
+
+<script src="words.js"></script>
+<script>
+(() => {
+  const MODES = {
+    basic: { name: "기본", icon: "🕵️", min: 3, desc: "라이어는 분야만 알고 제시어는 몰라요. 들키지 않게 설명을 따라가세요." },
+    fool:  { name: "바보", icon: "🤪", min: 4, desc: "라이어는 자기가 라이어인 줄 모른 채 비슷한 다른 제시어를 받아요." },
+    spy:   { name: "스파이", icon: "🕶️", min: 6, desc: "제시어를 아는 스파이가 라이어를 몰래 도와요. 스파이와 라이어는 서로를 몰라요." }
+  };
+  const MAX = 12;
+  const CATS = Object.keys(WORDS);
+
+  const $ = id => document.getElementById(id);
+  const rand = n => Math.floor(Math.random() * n);
+  const pick = arr => arr[rand(arr.length)];
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rand(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+  // ---------- 저장 (설정 / 이미 나온 제시어) ----------
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem("liar_" + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem("liar_" + k, JSON.stringify(v)); } catch (e) {} }
+  };
+
+  const saved = store.get("settings", null);
+  const S = {
+    mode: saved && MODES[saved.mode] ? saved.mode : "basic",
+    players: saved && saved.players ? saved.players : 5,
+    cats: new Set(saved && Array.isArray(saved.cats) ? saved.cats.filter(c => WORDS[c]) : CATS.filter(c => !DEFAULT_OFF.includes(c)))
+  };
+  if (!S.cats.size) CATS.forEach(c => S.cats.add(c));
+  let used = store.get("used", {}); // { 분야: [단어, ...] }
+
+  let G = null; // 현재 판
+
+  // ---------- 화면 전환 ----------
+  function show(id) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("on"));
+    $(id).classList.add("on");
+    const inGame = id !== "s-setup" && id !== "s-result";
+    $("quitBtn").style.display = inGame ? "" : "none";
+    $("homeLink").style.display = inGame ? "none" : "";
+    window.scrollTo(0, 0);
+  }
+
+  // ---------- 설정 화면 ----------
+  function renderModes() {
+    $("modes").innerHTML = Object.entries(MODES).map(([k, m]) =>
+      `<div class="mode ${S.mode === k ? "sel" : ""}" data-mode="${k}">
+         <div class="ic">${m.icon}</div><div class="nm">${m.name}</div><div class="mn">${m.min}명 이상</div>
+       </div>`).join("");
+    $("modeDesc").textContent = MODES[S.mode].desc;
+  }
+  function renderCount() {
+    const min = MODES[S.mode].min;
+    if (S.players < min) S.players = min;
+    if (S.players > MAX) S.players = MAX;
+    $("pcount").textContent = S.players;
+    $("minus").disabled = S.players <= min;
+    $("plus").disabled = S.players >= MAX;
+  }
+  function renderCats() {
+    $("cats").innerHTML = CATS.map(c => `<div class="cat ${S.cats.has(c) ? "sel" : ""}" data-cat="${c}">${c}</div>`).join("");
+    $("toggleAll").textContent = S.cats.size === CATS.length ? "전체 해제" : "전체 선택";
+    $("setupWarn").textContent = S.cats.size ? "" : "분야를 하나 이상 골라주세요.";
+    $("startBtn").disabled = !S.cats.size;
+  }
+  function saveSettings() { store.set("settings", { mode: S.mode, players: S.players, cats: [...S.cats] }); }
+
+  $("modes").addEventListener("click", e => {
+    const el = e.target.closest(".mode"); if (!el) return;
+    S.mode = el.dataset.mode; renderModes(); renderCount(); saveSettings();
+  });
+  $("minus").onclick = () => { S.players--; renderCount(); saveSettings(); };
+  $("plus").onclick = () => { S.players++; renderCount(); saveSettings(); };
+  $("cats").addEventListener("click", e => {
+    const el = e.target.closest(".cat"); if (!el) return;
+    const c = el.dataset.cat; S.cats.has(c) ? S.cats.delete(c) : S.cats.add(c);
+    renderCats(); saveSettings();
+  });
+  $("toggleAll").onclick = () => {
+    if (S.cats.size === CATS.length) S.cats.clear(); else CATS.forEach(c => S.cats.add(c));
+    renderCats(); saveSettings();
+  };
+
+  // ---------- 제시어 뽑기 ----------
+  function usedSet(cat) { return new Set(used[cat] || []); }
+  function markUsed(cat, w) { (used[cat] = used[cat] || []).push(w); store.set("used", used); }
+
+  function drawWord(cat) {
+    let pool = WORDS[cat].filter(w => !usedSet(cat).has(w));
+    if (!pool.length) { used[cat] = []; pool = WORDS[cat].slice(); }
+    const w = pick(pool); markUsed(cat, w); return w;
+  }
+  function drawPair(cat) {
+    const u = usedSet(cat);
+    // 양쪽 방향 후보 [진짜, 바보]
+    let cands = [];
+    (FOOL_PAIRS[cat] || []).forEach(([a, b]) => { cands.push([a, b], [b, a]); });
+    let fresh = cands.filter(([real]) => !u.has(real));
+    if (!fresh.length) { used[cat] = []; fresh = cands; }
+    const [real, fool] = pick(fresh); markUsed(cat, real); return { real, fool };
+  }
+
+  // ---------- 새 판 ----------
+  function newGame() {
+    const n = S.players;
+    let cats = [...S.cats];
+    if (S.mode === "fool") cats = cats.filter(c => (FOOL_PAIRS[c] || []).length);
+    const cat = pick(cats);
+    let word, foolWord = null;
+    if (S.mode === "fool") { const p = drawPair(cat); word = p.real; foolWord = p.fool; }
+    else word = drawWord(cat);
+
+    const liar = rand(n) + 1;
+    let spy = null;
+    if (S.mode === "spy") { const others = []; for (let i = 1; i <= n; i++) if (i !== liar) others.push(i); spy = pick(others); }
+
+    G = { mode: S.mode, n, cat, word, foolWord, liar, spy, start: rand(n) + 1, cur: 1, voted: null, guess: null, options: [] };
+    showPass();
+  }
+
+  // ---------- 폰 넘기기 / 역할 확인 ----------
+  function showPass() {
+    const i = G.cur;
+    $("passProgress").textContent = `제시어 확인 ${i} / ${G.n}`;
+    $("passNum").textContent = i;
+    $("passNum2").textContent = `${i}번`;
+    $("showRoleBtn").textContent = `제가 ${i}번이에요 · 확인하기`;
+    show("s-pass");
+  }
+  function showRole() {
+    const i = G.cur, card = $("roleCard");
+    $("roleProgress").textContent = `${i}번 플레이어`;
+    card.className = "card";
+    const catHtml = `<div class="lbl">분야</div><div class="cat-name">${G.cat}</div>`;
+    if (i === G.liar && G.mode !== "fool") {
+      card.classList.add("liar");
+      card.innerHTML = `${catHtml}<div class="role">당신은 라이어입니다</div>
+        <div class="desc">제시어를 모릅니다. 다른 사람의 설명을 잘 듣고<br>들키지 않게 따라가세요. 잡혀도 제시어를 맞히면 역전승!</div>`;
+    } else if (i === G.spy) {
+      card.classList.add("spy");
+      card.innerHTML = `${catHtml}<div class="role">당신은 스파이입니다</div>
+        <div class="lbl" style="margin-top:6px">제시어</div><div class="word" style="margin-top:6px">${G.word}</div>
+        <div class="desc">라이어가 누구인지는 모릅니다.<br>라이어가 제시어를 알아챌 수 있게 몰래 힌트를 흘리세요.<br>너무 티 나면 의심받아요.</div>`;
+    } else {
+      // 시민 & 바보: 화면이 완전히 같아야 함
+      const w = (i === G.liar && G.mode === "fool") ? G.foolWord : G.word;
+      card.innerHTML = `${catHtml}<div class="lbl" style="margin-top:22px">제시어</div><div class="word" style="margin-top:6px">${w}</div>
+        <div class="desc">라이어가 눈치채지 못하게 설명하세요.</div>`;
+    }
+    show("s-role");
+  }
+  $("showRoleBtn").onclick = showRole;
+  $("hideRoleBtn").onclick = () => {
+    $("roleCard").innerHTML = "";
+    if (G.cur < G.n) { G.cur++; showPass(); } else showTalk();
+  };
+
+  // ---------- 토론 ----------
+  function showTalk() {
+    $("talkCat").textContent = G.cat;
+    $("startNum").textContent = G.start;
+    show("s-talk");
+  }
+  $("toVoteBtn").onclick = showVote;
+
+  // ---------- 투표 ----------
+  function showVote() {
+    G.voted = null;
+    $("voteGrid").innerHTML = Array.from({ length: G.n }, (_, k) => `<button class="pbtn" data-p="${k + 1}">${k + 1}</button>`).join("");
+    $("voteBtn").disabled = true;
+    $("voteBtn").textContent = "지목하기";
+    show("s-vote");
+  }
+  $("voteGrid").addEventListener("click", e => {
+    const b = e.target.closest(".pbtn"); if (!b) return;
+    G.voted = +b.dataset.p;
+    document.querySelectorAll("#voteGrid .pbtn").forEach(x => x.classList.toggle("sel", x === b));
+    $("voteBtn").disabled = false;
+    $("voteBtn").textContent = `${G.voted}번 지목하기`;
+  });
+  $("voteBtn").onclick = () => {
+    if (!G.voted) return;
+    confirmBox(`${G.voted}번을 지목할까요?`, "지목하면 바로 정체가 공개돼요.", showReveal);
+  };
+
+  // ---------- 정체 공개 ----------
+  function showReveal() {
+    const v = G.voted, box = $("revealBox"), act = $("revealActions");
+    box.innerHTML = `<div class="subtitle" style="margin:0">지목된 사람</div>
+      <div class="bignum"><span>${v}</span><small>번</small></div>
+      <p class="hint">두근두근… 정체를 공개할게요.</p>`;
+    act.innerHTML = `<button class="btn primary" id="doReveal">정체 공개</button>`;
+    show("s-reveal");
+    $("doReveal").onclick = () => {
+      if (v === G.liar) {
+        const isFool = G.mode === "fool";
+        box.innerHTML = `<div class="bignum"><span>${v}</span><small>번</small></div>
+          <div class="verdict green">${isFool ? "바보였습니다!" : "라이어 검거!"}</div>
+          <p class="hint">${isFool ? `${v}번이 받은 단어는 <b>'${G.foolWord}'</b>였어요.<br>` : ""}
+          하지만 아직 끝나지 않았어요.<br>라이어가 진짜 제시어를 맞히면 <b>역전승</b>이에요.</p>`;
+        act.innerHTML = `<button class="btn primary" id="goGuess">${v}번, 제시어 맞히기</button>`;
+        $("goGuess").onclick = showGuess;
+      } else if (v === G.spy) {
+        box.innerHTML = `<div class="bignum"><span>${v}</span><small>번</small></div>
+          <div class="verdict blue">스파이였습니다!</div>
+          <p class="hint">라이어를 놓쳤어요.<br>진짜 라이어는 <b>${G.liar}번</b>이었습니다.</p>`;
+        act.innerHTML = `<button class="btn primary" id="goResult">결과 보기</button>`;
+        $("goResult").onclick = () => showResult("liar", "spy");
+      } else {
+        box.innerHTML = `<div class="bignum"><span>${v}</span><small>번</small></div>
+          <div class="verdict red">시민이었습니다</div>
+          <p class="hint">억울한 시민을 지목했어요.<br>진짜 라이어는 <b>${G.liar}번</b>이었습니다.</p>`;
+        act.innerHTML = `<button class="btn primary" id="goResult">결과 보기</button>`;
+        $("goResult").onclick = () => showResult("liar", "miss");
+      }
+    };
+  }
+
+  // ---------- 라이어 정답 맞히기 (보기 10개) ----------
+  function buildOptions() {
+    const ans = G.word, exclude = new Set([ans]);
+    if (G.foolWord) exclude.add(G.foolWord);
+    const opts = [ans];
+    if (G.mode === "fool") {
+      // 정답과 비슷한 단어를 몇 개 섞어 헷갈리게 (바보가 받은 단어는 제외)
+      const near = [];
+      (FOOL_PAIRS[G.cat] || []).forEach(([a, b]) => {
+        if (a === ans && !exclude.has(b)) near.push(b);
+        if (b === ans && !exclude.has(a)) near.push(a);
+      });
+      shuffle([...new Set(near)]).slice(0, 3).forEach(w => { opts.push(w); exclude.add(w); });
+    }
+    const rest = shuffle(WORDS[G.cat].filter(w => !exclude.has(w)));
+    while (opts.length < 10 && rest.length) opts.push(rest.pop());
+    return shuffle(opts);
+  }
+  function showGuess() {
+    G.options = buildOptions(); G.guess = null;
+    $("guessTitle").textContent = `${G.liar}번, 제시어를 맞혀보세요`;
+    $("guessSub").textContent = `분야: ${G.cat} · 기회는 한 번뿐이에요`;
+    $("guessGrid").innerHTML = G.options.map(w => `<button class="gbtn" data-w="${w}">${w}</button>`).join("");
+    $("guessBtn").disabled = true;
+    show("s-guess");
+  }
+  $("guessGrid").addEventListener("click", e => {
+    const b = e.target.closest(".gbtn"); if (!b) return;
+    G.guess = b.dataset.w;
+    document.querySelectorAll("#guessGrid .gbtn").forEach(x => x.classList.toggle("sel", x === b));
+    $("guessBtn").disabled = false;
+  });
+  $("guessBtn").onclick = () => {
+    if (!G.guess) return;
+    confirmBox(`'${G.guess}'(으)로 할까요?`, "선택하면 바꿀 수 없어요.", () => {
+      showResult(G.guess === G.word ? "liar" : "citizen", "guess");
+    });
+  };
+
+  // ---------- 결과 ----------
+  function showResult(winner, how) {
+    const liarTeam = G.mode === "spy" ? "라이어 팀" : "라이어";
+    const banner = $("resultBanner");
+    banner.className = "banner " + (winner === "citizen" ? "citizen" : "liar");
+    let reason = "";
+    if (how === "guess") reason = winner === "liar" ? "라이어가 제시어를 맞혔어요" : "라이어가 제시어를 못 맞혔어요";
+    else if (how === "spy") reason = "스파이를 라이어로 착각했어요";
+    else reason = "라이어를 찾지 못했어요";
+    banner.innerHTML = `<div class="w">${reason}</div><div class="t">${winner === "citizen" ? "시민 승리" : liarTeam + " 승리"}</div>`;
+
+    if (how === "guess") {
+      $("resultGuess").innerHTML = G.options.map(w => {
+        const cls = w === G.word ? "right" : (w === G.guess ? "wrong" : "");
+        return `<button class="gbtn ${cls}" style="min-height:48px;font-size:15px" disabled>${w}</button>`;
+      }).join("");
+      $("resultGuess").style.display = "";
+    } else { $("resultGuess").innerHTML = ""; $("resultGuess").style.display = "none"; }
+
+    const rows = [
+      ["분야", G.cat],
+      ["제시어", G.word],
+      [G.mode === "fool" ? "바보" : "라이어", `${G.liar}번`]
+    ];
+    if (G.mode === "fool") rows.push(["바보가 받은 단어", G.foolWord]);
+    if (G.mode === "spy") rows.push(["스파이", `${G.spy}번`]);
+    rows.push(["지목된 사람", `${G.voted}번`]);
+    if (how === "guess") rows.push(["라이어의 답", G.guess]);
+    $("resultSummary").innerHTML = rows.map(([a, b]) => `<div class="row"><span>${a}</span><span>${b}</span></div>`).join("");
+    show("s-result");
+  }
+  $("againBtn").onclick = newGame;
+  $("setupBtn").onclick = goSetup;
+
+  // ---------- 공통 ----------
+  function goSetup() { G = null; renderModes(); renderCount(); renderCats(); show("s-setup"); }
+  $("startBtn").onclick = () => { if (S.cats.size) newGame(); };
+  $("quitBtn").onclick = () => confirmBox("게임을 그만할까요?", "지금 판은 사라지고 설정 화면으로 돌아가요.", goSetup);
+
+  let confirmCb = null;
+  function confirmBox(title, text, cb) {
+    $("confirmTitle").textContent = title; $("confirmText").textContent = text;
+    confirmCb = cb; $("confirmBg").classList.add("on");
+  }
+  $("confirmNo").onclick = () => { $("confirmBg").classList.remove("on"); confirmCb = null; };
+  $("confirmYes").onclick = () => { $("confirmBg").classList.remove("on"); const cb = confirmCb; confirmCb = null; cb && cb(); };
+  $("confirmBg").addEventListener("click", e => { if (e.target.id === "confirmBg") $("confirmNo").onclick(); });
+
+  $("rulesBtn").onclick = () => $("rulesBg").classList.add("on");
+  $("rulesClose").onclick = () => $("rulesBg").classList.remove("on");
+  $("rulesBg").addEventListener("click", e => { if (e.target.id === "rulesBg") $("rulesBg").classList.remove("on"); });
+
+  goSetup();
+})();
+</script>
+</body>
+</html>
