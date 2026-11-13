@@ -673,7 +673,7 @@
                 <div id="result-audit-list"></div>
             </div>
 
-            <button style="margin-top:1.2rem; background:#0284c7;" onclick="confirmGameEnd()">확인 (대기실 이동)</button>
+            <button id="result-confirm-btn" style="margin-top:1.2rem; background:#0284c7;" onclick="confirmGameEnd()">확인 (대기실 이동)</button>
         </div>
     </div>
 
@@ -1237,15 +1237,20 @@
                 }
 
                 if (data.state === 'ENDED') {
-                    showResultModal(data);
+                    if (!resultDismissed) showResultModal(data);
                 } else if (data.state === 'LOBBY') {
-                    document.getElementById('result-modal').classList.add('hidden');
+                    // 방장이 대기실로 이동해도, 결과(사건의 전말)를 보고 있는 다른 플레이어는 닫기 전까지 그대로 볼 수 있다.
+                    if (isHost || document.getElementById('result-modal').classList.contains('hidden')) {
+                        document.getElementById('result-modal').classList.add('hidden');
+                    }
+                    resultDismissed = false;
                     document.body.classList.add('night-mode');
                     document.getElementById('game-title').innerText = '🧟‍♂️ 언데드 마피아 (Undead Mafia)';
                     document.getElementById('screen-game').classList.add('hidden');
                     document.getElementById('screen-lobby').classList.remove('hidden');
                     renderLobby(data);
                 } else {
+                    resultDismissed = false;
                     document.getElementById('result-modal').classList.add('hidden');
                     document.getElementById('screen-lobby').classList.add('hidden');
                     document.getElementById('screen-game').classList.remove('hidden');
@@ -1388,6 +1393,8 @@
             const reasonText = document.getElementById('result-reason-text');
             const rolesList = document.getElementById('result-roles-list');
 
+            const confirmBtn = document.getElementById('result-confirm-btn');
+            if (confirmBtn) confirmBtn.innerText = isHost ? '확인 (대기실 이동)' : '닫기';
             const isMafiaWin = data.winnerTeam === 'MAFIA';
             winnerTitle.innerText = isMafiaWin ? '🔴 마피아팀 승리!' : '🔵 시민팀 승리!';
             winnerTitle.style.color = isMafiaWin ? '#f43f5e' : '#0284c7';
@@ -1495,8 +1502,10 @@
             });
         }
 
+        let resultDismissed = false;
         function confirmGameEnd() {
             document.getElementById('result-modal').classList.add('hidden');
+            if (!isHost) resultDismissed = true;
             if (isHost) {
                 forceRestartSilent();
             }
