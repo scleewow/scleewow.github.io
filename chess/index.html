@@ -221,6 +221,17 @@
         .piece.tK .face { background: radial-gradient(circle at 35% 25%, #fffbe8, #f6e2a8 60%, #e8c56f); }
         .piece.tK .hj { font-size: 14.5cqw; }
 
+        .piece .txt { display: flex; flex-direction: column; align-items: center; }
+
+        /* 둘이 하기: 마주 앉은 파랑 쪽에서 바로 읽히도록 파랑 말 글씨를 뒤집음
+           (방향 점은 판 기준 방향이라 그대로 둠) */
+        body.face2face .piece.p2 .face { padding-bottom: 0; padding-top: 3.5cqw; }
+        body.face2face .piece.p2 .txt { transform: rotate(180deg); }
+        body.face2face #captured-2 .captured-piece { transform: rotate(180deg); }
+        body.face2face #captured-2 .captured-piece:hover { transform: rotate(180deg) translateY(1px); }
+        body.face2face #captured-2 .captured-piece.selected { transform: rotate(180deg) translateY(2px); }
+        body.face2face #title-2 { transform: rotate(180deg); text-align: right; }
+
         /* 움직일 수 있는 방향 표시 점 */
         .piece .dir {
             position: absolute;
@@ -372,7 +383,7 @@
     <div class="main-layout">
         <!-- 플레이어 2 포로 존 (상단) -->
         <div class="sidebar">
-            <div class="captured-title">플레이어 2 포로 (파랑)</div>
+            <div class="captured-title" id="title-2">플레이어 2 포로 (파랑)</div>
             <div class="captured-box" id="captured-2"></div>
         </div>
 
@@ -449,7 +460,7 @@
             const left = dr && dc ? diag[dc] : pos[dc];
             return `<i class="dir" style="top:${top}%;left:${left}%"></i>`;
         }).join('');
-        return `<div class="piece p${player} t${type}"><div class="face">${dots}<span class="hj">${HANJA[type]}</span><span class="kn">${KNAME[type]}</span></div><div class="ring"></div></div>`;
+        return `<div class="piece p${player} t${type}"><div class="face">${dots}<span class="txt"><span class="hj">${HANJA[type]}</span><span class="kn">${KNAME[type]}</span></span></div><div class="ring"></div></div>`;
     }
 
     const pieceNames = {
@@ -832,6 +843,7 @@
     }
     function startMode(mode) {
         playMode = mode;
+        document.body.classList.toggle('face2face', mode === 'pvp');
         document.getElementById('mode-modal').classList.remove('show');
         resetGameData();
     }
