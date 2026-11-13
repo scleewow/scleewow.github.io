@@ -328,6 +328,9 @@
         @keyframes pop-in { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .mode-card h2 { margin: 0 0 4px; text-align: center; font-size: 1.3rem; }
         .mode-card p { margin: 0 0 14px; text-align: center; color: #a1a1aa; font-size: 0.85rem; }
+        .mode-card .seg { display: flex; gap: 6px; }
+        .mode-card .seg button { flex: 1; text-align: center; margin-bottom: 0; padding: 10px 4px; font-size: 0.9rem; background: #3f3f46; border: 2px solid transparent; }
+        .mode-card .seg button.on { background: #422006; border-color: #eab308; color: #fde047; }
         .mode-card .group-title { font-size: 0.8rem; color: #a1a1aa; font-weight: bold; margin: 14px 0 6px; }
         .mode-card button { display: block; width: 100%; flex: none; padding: 12px; font-size: 0.95rem; margin-bottom: 6px; text-align: left; }
         .mode-card button small { display: block; font-weight: normal; color: #d4d4d8; font-size: 0.75rem; margin-top: 2px; }
@@ -372,8 +375,14 @@
         <div class="mode-card">
             <h2>십이장기</h2>
             <p>어떻게 플레이할까요?</p>
-            <button class="pvp" onclick="startMode('pvp')">👥 둘이 하기<small>한 기기로 번갈아 두기</small></button>
-            <div class="group-title">🤖 컴퓨터와 하기 (나는 빨강 · 선공)</div>
+            <div class="group-title" style="margin-top:0">먼저 두는 쪽</div>
+            <div class="seg" id="first-seg">
+                <button data-first="1" class="on" onclick="setFirst(1)">🔴 빨강</button>
+                <button data-first="2" onclick="setFirst(2)">🔵 파랑</button>
+                <button data-first="0" onclick="setFirst(0)">🎲 랜덤</button>
+            </div>
+            <button class="pvp" style="margin-top:14px" onclick="startMode('pvp')">👥 둘이 하기<small>한 기기로 번갈아 두기</small></button>
+            <div class="group-title">🤖 컴퓨터와 하기 (나는 빨강 · 컴퓨터는 파랑)</div>
             <button class="ai-easy" onclick="startMode('easy')">쉬움<small>가끔 실수하는 컴퓨터</small></button>
             <button class="ai-normal" onclick="startMode('normal')">보통<small>몇 수 앞을 내다봐요</small></button>
             <button class="ai-hard" onclick="startMode('hard')">어려움<small>최대한 깊게 계산해요</small></button>
@@ -429,6 +438,8 @@
     let gameOver = false;
     let aiTimer = null;
     let lastMove = null;       // 컴퓨터가 마지막으로 둔 칸 {r, c}
+    let firstSetting = 1;      // 먼저 두는 쪽: 1 빨강, 2 파랑, 0 랜덤
+    let firstTurn = 1;         // 이번 판에 실제로 먼저 둔 쪽
     const MODE_NAMES = { easy: '쉬움', normal: '보통', hard: '어려움' };
     const isAI = () => playMode !== 'pvp';
     const isLocked = () => gameOver || (isAI() && gameData.turn === 2);
@@ -525,7 +536,7 @@
 
     function undoMove() {
         if (gameOver) return;
-        if (historyStack.length === 0) {
+        if (historyStack.length === 0 || (isAI() && !historyStack.some(st => st.turn === 1))) {
             alert("더 이상 무를 수 없습니다! (초기 상태입니다)");
             return;
         }
@@ -627,7 +638,8 @@
             labelEl.innerText = `⚠️ ${who} 입성! 이번 턴에 잡지 못하면 패배`;
             labelEl.style.color = '#fbbf24';
         } else {
-            labelEl.innerText = isAI() ? `🤖 컴퓨터 대전 · ${MODE_NAMES[playMode]}` : '👥 둘이 하기';
+            const firstText = isAI() ? (firstTurn === 1 ? '내가 선공' : '컴퓨터 선공') : (firstTurn === 1 ? '빨강 선공' : '파랑 선공');
+            labelEl.innerText = (isAI() ? `🤖 컴퓨터 대전 · ${MODE_NAMES[playMode]}` : '👥 둘이 하기') + ` · ${firstText}`;
             labelEl.style.color = '';
         }
     }
@@ -830,11 +842,29 @@
             captured2: [],
             selectedPiece: null
         };
+        // 먼저 두는 쪽 (랜덤이면 판마다 새로 뽑음)
+        firstTurn = firstSetting || (Math.random() < 0.5 ? 1 : 2);
+        gameData.turn = firstTurn;
         historyStack = [];
         gameOver = false;
         lastMove = null;
         cancelAI();
         render();
+        if (firstSetting === 0) announceFirst();
+        maybeAITurn();
+    }
+
+    function setFirst(v) {
+        firstSetting = v;
+        document.querySelectorAll('#first-seg button').forEach(b => b.classList.toggle('on', +b.dataset.first === v));
+    }
+    function announceFirst() {
+        const popup = document.getElementById('action-popup');
+        const who = isAI() ? (firstTurn === 1 ? '내가 선공!' : '컴퓨터 선공!') : (firstTurn === 1 ? '빨강 선공!' : '파랑 선공!');
+        popup.innerHTML = `🎲<br><span style="font-size: 2rem;">${who}</span>`;
+        popup.style.textShadow = firstTurn === 1 ? "0 0 20px #ef4444, 0 4px 10px rgba(0,0,0,0.9)" : "0 0 20px #3b82f6, 0 4px 10px rgba(0,0,0,0.9)";
+        popup.classList.add('show');
+        setTimeout(() => popup.classList.remove('show'), 1100);
     }
 
     // ===== 모드 선택 =====
