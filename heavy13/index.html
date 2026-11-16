@@ -9,8 +9,6 @@
     <link rel="apple-touch-icon" href="icon.png">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- 공용 Supabase 접속 정보 (SUPABASE_URL, SUPABASE_ANON_KEY) -->
-    <script src="../minus/config.js"></script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
@@ -424,22 +422,54 @@
     </div>
 
     <script>
-        // ===== Supabase 설정 (../minus/config.js 공용) =====
-        const H13_URL = (typeof SUPABASE_URL !== 'undefined') ? SUPABASE_URL : (window.SUPABASE_URL || '');
-        const H13_KEY = (typeof SUPABASE_ANON_KEY !== 'undefined') ? SUPABASE_ANON_KEY : (window.SUPABASE_ANON_KEY || '');
-        const GAME_BUILD = 'heavy13-v1.0';
-        const H13_READY = !!(H13_URL && H13_KEY && window.supabase);
+        // ===== Supabase 설정 (/minus/config.js 공용) =====
+        // config.js 의 작성 형식(const / var / window.X / 설정 객체 / export)과 변수 이름에 관계없이
+        // "https://....supabase.co" 주소와 publishable(anon) 키를 찾아 쓴다.
+        // 그래도 못 찾으면 언데드 마피아와 같은 프로젝트 값을 쓴다. (publishable 키는 공개되어도 되는 키)
+        const CONFIG_PATH = '/minus/config.js';
+        const FALLBACK_URL = 'https://efjndencakarbucwxfie.supabase.co';
+        const FALLBACK_KEY = 'sb_publishable_Lt3gzMPGZTIi4n4GuQZn2g_T3gzTT8c';
+        const GAME_BUILD = 'heavy13-v1.2';
+        let H13_URL = '', H13_KEY = '', H13_CONFIG_SOURCE = '';
+        let sb = null;
 
-        if (!H13_READY) {
-            setTimeout(() => alert(!window.supabase
-                ? `Supabase 라이브러리를 불러오지 못했습니다.\n네트워크 연결과 광고/콘텐츠 차단 설정을 확인해 주세요.\n\n(빌드: ${GAME_BUILD})`
-                : `접속 정보(../minus/config.js)를 불러오지 못했습니다.\nSUPABASE_URL, SUPABASE_ANON_KEY 가 들어 있는지 확인해 주세요.\n\n(빌드: ${GAME_BUILD})`), 0);
+        async function loadSupabaseConfig() {
+            const found = { url: '', key: '' };
+            const isUrl = v => typeof v === 'string' && /^https?:\/\/[^\s"']+\.supabase\.(co|in)\/?$/i.test(v.trim());
+            const isKey = v => typeof v === 'string' && (/^sb_publishable_[\w-]{10,}$/.test(v.trim()) || /^eyJ[\w-]+\.[\w-]+\.[\w-]+$/.test(v.trim()));
+            const walk = (v, d) => {
+                if (v == null || d > 3 || (found.url && found.key)) return;
+                if (typeof v === 'string') {
+                    if (!found.url && isUrl(v)) found.url = v.trim().replace(/\/+$/, '');
+                    else if (!found.key && isKey(v)) found.key = v.trim();
+                    return;
+                }
+                if (typeof v === 'object' && v !== window && !(v instanceof Node)) {
+                    try { Object.keys(v).forEach(k => walk(v[k], d + 1)); } catch (e) {}
+                }
+            };
+            // /minus/config.js 는 export 형식(모듈)이므로 import 로 불러온다.
+            try { walk(await import(CONFIG_PATH), 0); } catch (e) { console.warn('[config] config.js 를 불러오지 못했습니다.', e); }
+            if (found.url && found.key) { H13_CONFIG_SOURCE = 'config.js'; return found; }
+            console.warn('[config] config.js 에서 접속 정보를 찾지 못해 기본값을 사용합니다.', found);
+            H13_CONFIG_SOURCE = 'fallback';
+            return { url: found.url || FALLBACK_URL, key: found.key || FALLBACK_KEY };
         }
 
-        const sb = H13_READY ? window.supabase.createClient(H13_URL, H13_KEY, {
-            auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
-            realtime: { params: { eventsPerSecond: 20 } }
-        }) : null;
+        const sbReady = (async () => {
+            if (!window.supabase) {
+                alert(`Supabase 라이브러리를 불러오지 못했습니다.\n네트워크 연결과 광고/콘텐츠 차단 설정을 확인해 주세요.\n\n(빌드: ${GAME_BUILD})`);
+                return false;
+            }
+            const cfg = await loadSupabaseConfig();
+            H13_URL = cfg.url; H13_KEY = cfg.key;
+            sb = window.supabase.createClient(H13_URL, H13_KEY, {
+                auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+                realtime: { params: { eventsPerSecond: 20 } }
+            });
+            console.info(`[Supabase] 접속 정보: ${H13_CONFIG_SOURCE} (${GAME_BUILD})`);
+            return true;
+        })();
 
         async function sbSelfCheck() {
             const tail = `\n\n(빌드: ${GAME_BUILD})`;
@@ -486,6 +516,7 @@
         const myPlayerKey = loadPlayerKey();
 
         async function sbCall(name, args) {
+            await sbReady;
             if (!sb) return { data: null, error: { message: 'not configured', code: 'NETWORK' } };
             try { return await sb.rpc(name, args); }
             catch (e) { return { data: null, error: { message: (e && e.message) || String(e), code: 'NETWORK' } }; }
@@ -548,7 +579,7 @@
         let roomSync = null;
         const refreshRoom = () => { if (roomSync) roomSync.refresh(); };
 
-        if (H13_READY) sbSelfCheck();
+        sbReady.then(ok => { if (ok) sbSelfCheck(); });
 
         async function hashPassword(message) {
             const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(message));
@@ -606,7 +637,7 @@
                 roomCode = saved.toUpperCase();
             }
 
-            if (roomCode && H13_READY) {
+            if (roomCode) {
                 sbCall('h13_view', { p_code: roomCode, p_pid: myPlayerId, p_key: myPlayerKey }).then(res => {
                     const v = res && res.data;
                     if (v && v.me && v.pub && v.pub.players && v.pub.players[myPlayerId]) {
