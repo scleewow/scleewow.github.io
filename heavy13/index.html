@@ -123,31 +123,38 @@
         .timer-warning { color: #dc2626 !important; border-color: #dc2626 !important; animation: pulse 1s infinite; }
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.45; } }
 
-        /* 받침대 */
+        /* 받침대: 검은 적재 공간 + 두꺼운 색 막대 (글자 없이 색으로 구분) */
         .stands { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.45rem; margin-bottom: 0.9rem; }
-        .stand {
-            border-radius: 12px; border: 2px solid; padding: 0 0 0.5rem; text-align: center; overflow: hidden;
-            display: flex; flex-direction: column; min-height: 168px; background: #fff;
+        .stand { display: flex; flex-direction: column; text-align: center; position: relative; }
+        .stack {
+            background: #111; border-radius: 8px 8px 0 0; min-height: 178px; padding: 6px 4px;
+            display: flex; flex-wrap: wrap-reverse; align-content: flex-start; justify-content: center; gap: 5px;
+            position: relative; z-index: 2;
         }
-        .stand-head { color: #fff; font-weight: 900; font-size: 0.9rem; padding: 0.3rem 0; letter-spacing: 0.05em; }
-        .stand-sum { font-size: 1.9rem; font-weight: 900; line-height: 1.1; margin-top: 0.25rem; }
-        .stand-sum small { font-size: 0.8rem; color: var(--muted); font-weight: bold; }
-        .gauge { height: 7px; margin: 0.2rem 0.5rem 0.25rem; background: #e7e5e4; border-radius: 99px; overflow: hidden; }
-        .gauge > div { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
-        .stand-meta { font-size: 0.68rem; color: var(--muted); line-height: 1.35; }
-        .stand-meta b { color: var(--ink); }
+        .stack .cube { flex: 0 0 calc(50% - 5px); max-width: 44px; }
+        .stand-bar { height: 14px; border-radius: 0 0 6px 6px; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.22); }
+        .stand-R .stand-bar { background: var(--R); }
+        .stand-G .stand-bar { background: var(--G); }
+        .stand-B .stand-bar { background: var(--B); }
+        .stand-meta { font-size: 0.72rem; color: var(--muted); line-height: 1.35; margin-top: 0.3rem; }
+        .stand-meta b { color: var(--ink); font-size: 0.95rem; }
         .stand-meta .danger { color: #dc2626; font-weight: bold; }
-        .cubes { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; padding: 0.35rem 0.3rem 0; margin-top: auto; }
         .cube {
-            width: 24px; height: 24px; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center;
-            font-size: 0.8rem; font-weight: 900; color: #fff; background: #57534e;
-            box-shadow: inset 0 -3px 0 rgba(0,0,0,0.25), inset 0 2px 0 rgba(255,255,255,0.18);
+            height: 38px; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center;
+            font-size: 1.25rem; font-weight: 900; color: #111; background: #fff; border: 2px solid #d6d3d1;
+            box-shadow: inset 0 -3px 0 rgba(0,0,0,0.12);
         }
-        .cube.pop { animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); outline: 2px solid #f59e0b; }
-        .stand-R { border-color: var(--R); } .stand-R .stand-head { background: var(--R); } .stand-R .gauge > div { background: var(--R); } .stand-R .stand-sum { color: var(--R); }
-        .stand-G { border-color: var(--G); } .stand-G .stand-head { background: var(--G); } .stand-G .gauge > div { background: var(--G); } .stand-G .stand-sum { color: var(--G); }
-        .stand-B { border-color: var(--B); } .stand-B .stand-head { background: var(--B); } .stand-B .gauge > div { background: var(--B); } .stand-B .stand-sum { color: var(--B); }
-        .stand.hot { animation: shake 0.5s; }
+        .cube.new { border-color: #f59e0b; box-shadow: 0 0 0 2px #f59e0b; }
+        .cube.drop { animation: dropIn 0.45s cubic-bezier(0.34, 1.4, 0.64, 1); }
+        @keyframes dropIn { 0% { transform: translateY(-70px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        /* 13 이상: 기존 바위가 무너져 떨어진다 */
+        .cube.fall { animation: tumble 1.05s ease-in forwards; animation-delay: var(--d, 0s); position: relative; z-index: 5; }
+        @keyframes tumble {
+            0% { transform: translate(0, 0) rotate(0); opacity: 1; }
+            25% { transform: translate(calc(var(--x) * 0.15), -8px) rotate(calc(var(--r) * 0.2)); opacity: 1; }
+            100% { transform: translate(var(--x), 230px) rotate(var(--r)); opacity: 0; }
+        }
+        .stand.hot .stack { animation: shake 0.45s; }
         @keyframes shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-5px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(3px); } }
 
         /* 칩 표시 */
@@ -210,11 +217,6 @@
         .place-btn.bg-B { background: var(--B); } .place-btn.bg-B:hover { background: #1d4ed8; }
         .place-btn.boom { outline: 3px dashed #fde047; }
 
-        .log-box {
-            background: #fff; padding: 0.65rem; border-radius: 8px; height: 140px; overflow-y: auto;
-            font-size: 0.8rem; color: #44403c; text-align: left; margin-bottom: 0.9rem; border: 1px solid var(--line); line-height: 1.45;
-        }
-        .log-box div { padding: 0.08rem 0; }
 
         /* 모달 */
         .modal-overlay {
@@ -331,8 +333,6 @@
 
             <div id="my-area"></div>
 
-            <div class="log-box" id="game-log"></div>
-
             <div class="card">
                 <h4 style="text-align:left;">플레이어 <span class="small">(자리 순서 · 시계 방향, 🚩 선 플레이어)</span></h4>
                 <div id="game-player-list" class="player-list"></div>
@@ -429,7 +429,7 @@
         const CONFIG_PATH = '/minus/config.js';
         const FALLBACK_URL = 'https://efjndencakarbucwxfie.supabase.co';
         const FALLBACK_KEY = 'sb_publishable_Lt3gzMPGZTIi4n4GuQZn2g_T3gzTT8c';
-        const GAME_BUILD = 'heavy13-v1.2';
+        const GAME_BUILD = 'heavy13-v1.3';
         let H13_URL = '', H13_KEY = '', H13_CONFIG_SOURCE = '';
         let sb = null;
 
@@ -728,7 +728,9 @@
                 if (ev && ev.seq !== lastEvSeq) {
                     if (lastEvSeq !== null) {
                         freshSeq = ev.seq; freshAt = Date.now();
-                        if (ev.kind === 'place' && ev.removed > 0) showPenaltyBanner(ev);
+                        setTimeout(() => { if (pub && pub.state !== 'LOBBY') renderStands(); }, COLLAPSE_MS + 20);
+                        setTimeout(() => { if (pub && pub.state !== 'LOBBY') renderStands(); }, 1520);
+                        if (ev.kind === 'place' && ev.removed > 0) setTimeout(() => showPenaltyBanner(ev), COLLAPSE_MS);
                     }
                     lastEvSeq = ev.seq;
                 } else if (!ev) {
@@ -814,37 +816,51 @@
             renderMyArea(stage);
             renderPlayers(stage);
 
-            const logBox = document.getElementById('game-log');
-            const nearBottom = logBox.scrollHeight - logBox.scrollTop - logBox.clientHeight < 40;
-            logBox.innerHTML = (pub.logs || []).map(l => `<div>${esc(l)}</div>`).join('');
-            if (nearBottom || !logBox.dataset.init) { logBox.scrollTop = logBox.scrollHeight; logBox.dataset.init = '1'; }
 
             document.getElementById('host-controls').classList.toggle('hidden', !isHost);
             document.getElementById('force-btn').classList.toggle('hidden', !(pub.state === 'SUBMIT' || pub.state === 'PLACE'));
             updateTimer();
         }
 
+        const COLLAPSE_MS = 1300;
+        let lastStandsHtml = '';
         function renderStands() {
             const ev = pub.lastEvent;
-            const fresh = ev && ev.seq === freshSeq && Date.now() - freshAt < 1500 && ev.kind === 'place';
-            document.getElementById('stands').innerHTML = COLORS.map(c => {
+            const age = Date.now() - freshAt;
+            const fresh = ev && ev.seq === freshSeq && ev.kind === 'place' && age < 1500;
+            const collapsing = fresh && ev.removed > 0 && age < COLLAPSE_MS;
+            const cubeHtml = (x, cls, style) => `<span class="cube ${cls || ''}" ${style ? `style="${style}"` : ''} title="${esc(pname(x.p))}">${esc(x.v)}</span>`;
+
+            const html = COLORS.map(c => {
                 const arr = (pub.stands || {})[c] || [];
+                let cubes, hot = false;
+                if (collapsing && ev.color === c) {
+                    // 무너지기 직전 모습: 기존 바위 위에 방금 놓은 바위가 올라간 뒤, 기존 바위가 쏟아진다.
+                    hot = true;
+                    const old = Array.isArray(ev.removedCubes) && ev.removedCubes.length
+                        ? ev.removedCubes : Array.from({ length: ev.removed }, () => ({ v: '?', p: '' }));
+                    cubes = old.map((x, i) => {
+                        const dir = (i % 2 === 0 ? -1 : 1) * (30 + ((i * 37) % 50));
+                        const rot = (i % 2 === 0 ? -1 : 1) * (90 + ((i * 53) % 180));
+                        return cubeHtml(x, 'fall', `--x:${dir}px; --r:${rot}deg; --d:${(0.25 + (old.length - 1 - i) * 0.06).toFixed(2)}s`);
+                    }).join('') + cubeHtml({ v: ev.v, p: ev.pid }, 'new drop');
+                } else {
+                    cubes = arr.map((x, i) => {
+                        const isNew = fresh && ev.color === c && i === arr.length - 1;
+                        return cubeHtml(x, isNew ? 'new drop' : '');
+                    }).join('');
+                }
                 const sum = sumOf(arr);
                 const safe = 12 - sum;
-                const pct = Math.min(100, sum / 13 * 100);
-                const hot = fresh && ev.color === c && ev.removed > 0;
-                const cubes = arr.map((x, i) => {
-                    const pop = fresh && ev.color === c && i === arr.length - 1;
-                    return `<span class="cube ${pop ? 'pop' : ''}" title="${esc(pname(x.p))}">${x.v}</span>`;
-                }).join('');
                 return `<div class="stand stand-${c} ${hot ? 'hot' : ''}">
-                    <div class="stand-head">${CN[c]}</div>
-                    <div class="stand-sum">${sum}<small> /13</small></div>
-                    <div class="gauge"><div style="width:${pct}%"></div></div>
-                    <div class="stand-meta">바위 <b>${arr.length}</b>개<br>${safe >= 6 ? '안전 (+6까지 OK)' : `<span class="danger">+${safe}까지 안전</span>`}</div>
-                    <div class="cubes">${cubes}</div>
+                    <div class="stack">${cubes}</div>
+                    <div class="stand-bar"></div>
+                    <div class="stand-meta">합 <b>${sum}</b> / 13<br>${safe >= 6 ? '안전' : `<span class="danger">+${safe}까지 안전</span>`}</div>
                 </div>`;
             }).join('');
+            if (html === lastStandsHtml) return;        // 같은 내용이면 다시 그리지 않아 애니메이션이 끊기지 않게 한다.
+            lastStandsHtml = html;
+            document.getElementById('stands').innerHTML = html;
         }
 
         function renderPhase(stage) {
