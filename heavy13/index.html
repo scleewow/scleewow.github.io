@@ -994,16 +994,12 @@
             const rows = st.map((pid, i) => {
                 const p = (pub.players || {})[pid];
                 const pen = (score[pid] && score[pid].pen) || 0;
-                const cards = remainCards(pid);
-                const chips = remainChips(pid);
                 let tag = '';
                 if (pub.state === 'SUBMIT') tag = (pub.submitted || {})[pid] ? '<span class="tag ok">제출 완료</span>' : '<span class="tag no">미제출</span>';
-                const chipTxt = CHIP_TYPES.filter(c => chips[c] > 0).map(c => `${CN[c][0]}${c === 'W' ? '' : chips[c]}`).join(' ');
                 const isActor = pub.state === 'PLACE' && stage === 3 && pid === pub.actor;
                 return `<div class="player-item ${pid === myPlayerId ? 'me' : ''} ${isActor ? 'actor' : ''}">
                     <span>
                         <b>${i + 1}. ${esc(p ? p.name : '(나간 플레이어)')}</b>${pid === pub.firstPid ? ' 🚩' : ''}${p && p.isHost ? ' 👑' : ''}${tag}
-                        <span class="sub">남은 카드 ${cards.join(' ') || '-'} · 칩 ${chipTxt || '-'}</span>
                     </span>
                     <span class="pen-badge">벌점 ${pen}</span>
                 </div>`;
