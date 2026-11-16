@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>무거운 13</title>
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- 공용 Supabase 접속 정보 (SUPABASE_URL, SUPABASE_ANON_KEY) -->
+    <script src="../minus/config.js"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+        :root {
+            --bg: #e9dfcc;
+            --panel: #fffaf1;
+            --soft: #f6eedf;
+            --line: #d6c3a3;
+            --ink: #2b2118;
+            --muted: #7a6a55;
+            --accent: #8b5e34;
+            --accent-d: #6c4523;
+            --R: #dc2626; --R-soft: #fee2e2;
+            --G: #16a34a; --G-soft: #dcfce7;
+            --B: #2563eb; --B-soft: #dbeafe;
+            --rainbow: linear-gradient(135deg, #ef4444, #f59e0b, #22c55e, #3b82f6, #a855f7);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            background-image: radial-gradient(circle at 20% 10%, rgba(255,255,255,0.45), transparent 40%),
+                              radial-gradient(circle at 80% 90%, rgba(139,94,52,0.10), transparent 45%);
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--panel);
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: 0 10px 25px rgba(60, 40, 20, 0.15);
+            border: 2px solid var(--line);
+            position: relative;
+        }
+
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1rem; padding-bottom: 0.7rem;
+            border-bottom: 2px solid var(--line);
+        }
+        h1 { font-size: 1.35rem; color: var(--accent-d); letter-spacing: -0.02em; display: flex; align-items: center; gap: 0.45rem; }
+        .title-icon { width: 2.3rem; height: 2.3rem; border-radius: 9px; box-shadow: 0 2px 6px rgba(60,40,20,0.2); }
+
+        .guide-btn {
+            color: var(--accent-d); background: var(--soft); border: 1px solid var(--accent);
+            padding: 0.35rem 0.7rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer;
+            width: auto; margin: 0; font-weight: bold;
+        }
+        .guide-btn:hover { background: #efe2cb; }
+
+        .card {
+            background: var(--soft); border: 1px solid var(--line); border-radius: 10px;
+            padding: 0.9rem; margin-bottom: 0.9rem; text-align: center;
+        }
+        .card h3, .card h4 { margin-bottom: 0.2rem; }
+
+        input, button, select {
+            width: 100%; padding: 0.75rem; margin-top: 0.5rem; border-radius: 8px;
+            border: 1px solid #b9a685; background: #fff; color: var(--ink); font-size: 1rem;
+        }
+        button {
+            background: var(--accent); color: #fff; font-weight: bold; border: none; cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+        }
+        button:hover { background: var(--accent-d); }
+        button:active { transform: scale(0.98); }
+        button:disabled { background: #b8ab98 !important; cursor: not-allowed; opacity: 0.65; transform: none; }
+        button.secondary { background: #78716c; }
+        button.secondary:hover { background: #57534e; }
+        button.danger { background: #b91c1c; }
+        button.danger:hover { background: #991b1b; }
+        button.kick-btn { width: auto; padding: 0.25rem 0.5rem; font-size: 0.75rem; background: #ef4444; margin: 0; }
+
+        .hidden { display: none !important; }
+        .small { font-size: 0.78rem; color: var(--muted); }
+
+        #qrcode { display: flex; justify-content: center; margin: 0.6rem 0; padding: 0.5rem; background: #fff; border-radius: 8px; }
+
+        .player-list { display: grid; gap: 0.4rem; margin-top: 0.5rem; text-align: left; }
+        .player-item {
+            display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
+            background: #fff; padding: 0.55rem 0.7rem; border-radius: 8px; border: 1px solid var(--line);
+        }
+        .player-item.me { border: 2px solid var(--accent); }
+        .player-item.actor { box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.55); }
+        .player-item .sub { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+        .pen-badge {
+            white-space: nowrap; font-weight: 900; font-size: 0.85rem; padding: 0.2rem 0.5rem;
+            border-radius: 999px; background: #fef3c7; color: #92400e; border: 1px solid #f59e0b;
+        }
+        .tag { font-size: 0.68rem; padding: 0.1rem 0.35rem; border-radius: 4px; margin-left: 0.25rem; color: #fff; white-space: nowrap; }
+        .tag.ok { background: #0284c7; }
+        .tag.no { background: #a8a29e; }
+
+        /* 상단 라운드/타이머 */
+        .top-row { display: flex; gap: 0.5rem; align-items: stretch; margin-bottom: 0.8rem; }
+        .round-badge, .timer-badge {
+            flex: 1; text-align: center; font-weight: 900; border-radius: 12px; padding: 0.45rem 0.4rem;
+            border: 2px solid var(--line); background: #fff;
+        }
+        .round-badge { color: var(--accent-d); font-size: 1rem; }
+        .round-badge small { display: block; font-size: 0.68rem; color: var(--muted); font-weight: bold; }
+        .timer-badge { font-size: 1.15rem; letter-spacing: 0.03em; }
+        .timer-warning { color: #dc2626 !important; border-color: #dc2626 !important; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+        /* 받침대 */
+        .stands { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.45rem; margin-bottom: 0.9rem; }
+        .stand {
+            border-radius: 12px; border: 2px solid; padding: 0 0 0.5rem; text-align: center; overflow: hidden;
+            display: flex; flex-direction: column; min-height: 168px; background: #fff;
+        }
+        .stand-head { color: #fff; font-weight: 900; font-size: 0.9rem; padding: 0.3rem 0; letter-spacing: 0.05em; }
+        .stand-sum { font-size: 1.9rem; font-weight: 900; line-height: 1.1; margin-top: 0.25rem; }
+        .stand-sum small { font-size: 0.8rem; color: var(--muted); font-weight: bold; }
+        .gauge { height: 7px; margin: 0.2rem 0.5rem 0.25rem; background: #e7e5e4; border-radius: 99px; overflow: hidden; }
+        .gauge > div { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+        .stand-meta { font-size: 0.68rem; color: var(--muted); line-height: 1.35; }
+        .stand-meta b { color: var(--ink); }
+        .stand-meta .danger { color: #dc2626; font-weight: bold; }
+        .cubes { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; padding: 0.35rem 0.3rem 0; margin-top: auto; }
+        .cube {
+            width: 24px; height: 24px; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 900; color: #fff; background: #57534e;
+            box-shadow: inset 0 -3px 0 rgba(0,0,0,0.25), inset 0 2px 0 rgba(255,255,255,0.18);
+        }
+        .cube.pop { animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); outline: 2px solid #f59e0b; }
+        .stand-R { border-color: var(--R); } .stand-R .stand-head { background: var(--R); } .stand-R .gauge > div { background: var(--R); } .stand-R .stand-sum { color: var(--R); }
+        .stand-G { border-color: var(--G); } .stand-G .stand-head { background: var(--G); } .stand-G .gauge > div { background: var(--G); } .stand-G .stand-sum { color: var(--G); }
+        .stand-B { border-color: var(--B); } .stand-B .stand-head { background: var(--B); } .stand-B .gauge > div { background: var(--B); } .stand-B .stand-sum { color: var(--B); }
+        .stand.hot { animation: shake 0.5s; }
+        @keyframes shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-5px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(3px); } }
+
+        /* 칩 표시 */
+        .chip {
+            display: inline-flex; align-items: center; justify-content: center; min-width: 1.6rem; height: 1.6rem;
+            padding: 0 0.35rem; border-radius: 999px; color: #fff; font-size: 0.72rem; font-weight: 900;
+            border: 2px solid rgba(255,255,255,0.75); box-shadow: 0 1px 3px rgba(0,0,0,0.25); white-space: nowrap;
+        }
+        .chip-R { background: var(--R); } .chip-G { background: var(--G); } .chip-B { background: var(--B); }
+        .chip-W { background: var(--rainbow); }
+        .chip-X { background: #a8a29e; }
+        .rock {
+            display: inline-flex; align-items: center; justify-content: center; width: 1.9rem; height: 1.9rem;
+            border-radius: 7px; background: #57534e; color: #fff; font-weight: 900; font-size: 1rem;
+            box-shadow: inset 0 -3px 0 rgba(0,0,0,0.25);
+        }
+        .rock.hidden-card { background: #d6d3d1; color: #78716c; }
+        .flip { animation: flipIn 0.5s ease; }
+        @keyframes flipIn { 0% { transform: rotateY(90deg); } 100% { transform: rotateY(0); } }
+
+        /* 공개/배치 순서 표 */
+        .reveal-list { display: grid; gap: 0.35rem; margin-top: 0.6rem; text-align: left; }
+        .reveal-row {
+            display: grid; grid-template-columns: 1.8rem 1fr auto auto; gap: 0.45rem; align-items: center;
+            background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 0.35rem 0.5rem; font-size: 0.85rem;
+        }
+        .reveal-row.actor { border: 2px solid #f59e0b; background: #fffbeb; }
+        .reveal-row.done { opacity: 0.6; }
+        .reveal-row .ord { font-weight: 900; color: var(--accent-d); text-align: center; }
+        .reveal-row .st { font-size: 0.72rem; color: var(--muted); text-align: right; white-space: nowrap; }
+        .reveal-row .nm { overflow-wrap: anywhere; font-weight: bold; }
+
+        /* 제출 영역 */
+        .pick-row { display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: center; margin-top: 0.45rem; }
+        .rock-btn {
+            width: 2.3rem; height: 2.5rem; margin: 0; padding: 0; border-radius: 8px; font-size: 1.15rem; font-weight: 900;
+            background: #57534e; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.25); border: 3px solid transparent;
+        }
+        .rock-btn:hover { background: #44403c; }
+        .rock-btn.sel { border-color: #f59e0b; transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.25); }
+        .chip-btn {
+            width: auto; flex: 1 1 22%; margin: 0; padding: 0.55rem 0.3rem; border-radius: 999px; font-size: 0.85rem;
+            border: 3px solid transparent; position: relative;
+        }
+        .chip-btn.chip-R, .chip-btn.chip-R:hover { background: var(--R); }
+        .chip-btn.chip-G, .chip-btn.chip-G:hover { background: var(--G); }
+        .chip-btn.chip-B, .chip-btn.chip-B:hover { background: var(--B); }
+        .chip-btn.chip-W, .chip-btn.chip-W:hover { background: var(--rainbow); }
+        .chip-btn.sel { border-color: #111827; transform: translateY(-3px); box-shadow: 0 0 0 2px #fff, 0 4px 10px rgba(0,0,0,0.3); }
+        .chip-btn .cnt { font-size: 0.7rem; opacity: 0.9; margin-left: 0.2rem; }
+        .submit-state { margin-top: 0.5rem; font-size: 0.85rem; font-weight: bold; color: #0369a1; }
+
+        /* 내 차례 */
+        .turn-box { border: 2px solid #f59e0b; background: #fffbeb; }
+        .turn-box h3 { color: #b45309; }
+        .place-btn { line-height: 1.3; }
+        .place-btn small { display: block; font-weight: normal; font-size: 0.78rem; opacity: 0.95; }
+        .place-btn.bg-R { background: var(--R); } .place-btn.bg-R:hover { background: #b91c1c; }
+        .place-btn.bg-G { background: var(--G); } .place-btn.bg-G:hover { background: #15803d; }
+        .place-btn.bg-B { background: var(--B); } .place-btn.bg-B:hover { background: #1d4ed8; }
+        .place-btn.boom { outline: 3px dashed #fde047; }
+
+        .log-box {
+            background: #fff; padding: 0.65rem; border-radius: 8px; height: 140px; overflow-y: auto;
+            font-size: 0.8rem; color: #44403c; text-align: left; margin-bottom: 0.9rem; border: 1px solid var(--line); line-height: 1.45;
+        }
+        .log-box div { padding: 0.08rem 0; }
+
+        /* 모달 */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(28, 20, 12, 0.7);
+            display: flex; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background: var(--panel); color: var(--ink); width: 92%; max-width: 440px; border-radius: 12px;
+            padding: 1.1rem; border: 2px solid var(--line); max-height: 85vh; display: flex; flex-direction: column;
+        }
+        .tab-buttons { display: flex; gap: 0.4rem; margin-bottom: 0.8rem; }
+        .tab-btn { flex: 1; padding: 0.5rem; font-size: 0.85rem; background: #efe6d6; color: #44403c; border: 1px solid var(--line); margin: 0; }
+        .tab-btn:hover { background: #e6d9c1; }
+        .tab-btn.active { background: var(--accent) !important; color: #fff !important; border-color: var(--accent) !important; }
+        .tab-body { overflow-y: auto; font-size: 0.85rem; line-height: 1.55; text-align: left; padding-right: 0.3rem; }
+        .tab-body h4 { color: var(--accent-d); margin: 0.8rem 0 0.3rem; }
+        .tab-body h4:first-child { margin-top: 0; }
+        .tab-body p { margin-bottom: 0.3rem; }
+
+        .rank-row {
+            display: flex; justify-content: space-between; align-items: center; padding: 0.55rem 0.7rem;
+            background: #fff; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 0.35rem;
+        }
+        .rank-row.last { border-color: #dc2626; background: #fef2f2; }
+        .rank-row .rk { font-weight: 900; width: 3rem; }
+        .rank-row .nm { flex: 1; font-weight: bold; overflow-wrap: anywhere; }
+        .hist-round { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 0.5rem 0.6rem; margin-bottom: 0.5rem; }
+        .hist-round .subs { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.3rem 0; }
+        .hist-round .subs span { font-size: 0.75rem; background: var(--soft); border-radius: 6px; padding: 0.1rem 0.35rem; }
+        .hist-round .acts div { font-size: 0.78rem; color: #44403c; }
+
+        /* 벌점 연출 */
+        .banner-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 2000; animation: fadeIn 0.25s ease-out; pointer-events: none;
+        }
+        .banner-content { text-align: center; color: #fff; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 1rem; }
+        .banner-content .big { font-size: 3.5rem; }
+        .banner-content h2 { font-size: 1.7rem; margin: 0.3rem 0; text-shadow: 0 0 12px rgba(239,68,68,0.9); overflow-wrap: anywhere; }
+        .banner-content p { font-size: 1.05rem; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 id="game-title"><img src="icon.svg" alt="" class="title-icon">무거운 13</h1>
+            <button class="guide-btn" onclick="openGuideModal()">📖 게임 설명</button>
+        </header>
+
+        <!-- 1. 메인 화면 -->
+        <div id="screen-main">
+            <div class="card" id="card-create-room">
+                <h3>방 만들기 (방장)</h3>
+                <input type="password" id="create-key-input" placeholder="방 생성 인증키 입력">
+                <button onclick="createRoom()">새 방 만들기</button>
+                <p class="small" style="margin-top:0.4rem;">아래 닉네임 칸에 닉네임을 먼저 입력해 주세요.</p>
+            </div>
+            <div class="card" id="card-join-room">
+                <h3 id="join-card-title">게임 참가하기</h3>
+                <input type="text" id="nickname-input" maxlength="20" placeholder="사용할 닉네임을 입력하세요">
+                <input type="text" id="room-code-input" placeholder="방 코드 입력 (예: AB12)">
+                <button class="secondary" onclick="joinRoom()">입장하기</button>
+            </div>
+        </div>
+
+        <!-- 2. 대기실 -->
+        <div id="screen-lobby" class="hidden">
+            <div class="card">
+                <h3>방 코드: <span id="room-code-display" style="color:#b91c1c;"></span></h3>
+                <div id="qrcode"></div>
+                <p class="small">QR 코드를 스캔하여 접속 가능합니다.</p>
+            </div>
+
+            <div id="host-setting-card" class="card hidden" style="text-align:left;">
+                <h4>⚙️ 게임 설정</h4>
+                <label class="small" for="submit-sec-select" style="display:block; margin-top:0.4rem;">제출 제한 시간 (카드·칩 제출)</label>
+                <select id="submit-sec-select" onchange="setOption('submitSec', this.value)"></select>
+                <label class="small" for="place-sec-select" style="display:block; margin-top:0.6rem;">놓기/패스 제한 시간 (내 차례, 레인보우 색 선택 포함)</label>
+                <select id="place-sec-select" onchange="setOption('placeSec', this.value)"></select>
+                <p class="small" style="margin-top:0.5rem;">※ 시간이 지나면 제출은 랜덤, 배치는 자동 놓기로 처리됩니다. 무제한일 때 멈춘 사람이 있으면 게임 중 '강제 진행'을 누르세요.</p>
+            </div>
+            <div id="guest-setting-card" class="card hidden">
+                <p class="small" id="guest-setting-text"></p>
+            </div>
+
+            <div class="card">
+                <h4>현재 접속자 (<span id="player-count">0</span>명) <span class="small">· 3~10명</span></h4>
+                <div id="lobby-player-list" class="player-list"></div>
+            </div>
+
+            <div id="host-lobby-controls" class="hidden">
+                <button id="host-start-btn" onclick="startGame()">🎲 자리 배정 및 게임 시작</button>
+                <button class="danger" style="margin-top:0.5rem;" onclick="deleteRoomByHost()">🗑️ 현재 방 삭제 (방장)</button>
+            </div>
+        </div>
+
+        <!-- 3. 게임 화면 -->
+        <div id="screen-game" class="hidden">
+            <div class="top-row">
+                <div id="round-badge" class="round-badge"></div>
+                <div id="timer-display" class="timer-badge">⏱️ --:--</div>
+            </div>
+
+            <div id="stands" class="stands"></div>
+
+            <div class="card" id="phase-card">
+                <h3 id="phase-title"></h3>
+                <p id="phase-desc" class="small" style="margin-top:0.2rem;"></p>
+                <div id="phase-body"></div>
+            </div>
+
+            <div id="my-area"></div>
+
+            <div class="log-box" id="game-log"></div>
+
+            <div class="card">
+                <h4 style="text-align:left;">플레이어 <span class="small">(자리 순서 · 시계 방향, 🚩 선 플레이어)</span></h4>
+                <div id="game-player-list" class="player-list"></div>
+                <button class="secondary" style="margin-top:0.6rem;" onclick="openRecordModal()">📜 라운드 기록 보기</button>
+            </div>
+
+            <div id="host-controls" class="hidden">
+                <button id="force-btn" onclick="forceProceed()">⏩ 강제 진행 (멈춘 사람 자동 처리)</button>
+                <button class="danger" style="margin-top:0.5rem;" onclick="forceRestart()">🔄 게임 강제 재시작 (대기실 이동)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 벌점 연출 -->
+    <div id="event-banner" class="banner-overlay hidden">
+        <div class="banner-content">
+            <div class="big">💥</div>
+            <h2 id="banner-title"></h2>
+            <p id="banner-text"></p>
+        </div>
+    </div>
+
+    <!-- 결과 / 기록 모달 -->
+    <div id="result-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2 id="result-title" style="text-align:center; margin-bottom:0.6rem; font-size:1.4rem;">🏁 최종 순위</h2>
+            <div class="tab-buttons">
+                <button class="tab-btn" id="result-tab-btn-rank" onclick="switchResultTab('rank')">🏆 순위</button>
+                <button class="tab-btn" id="result-tab-btn-hist" onclick="switchResultTab('hist')">📜 라운드 기록</button>
+            </div>
+            <div id="result-tab-rank" class="tab-body" style="max-height:50vh;"></div>
+            <div id="result-tab-hist" class="tab-body hidden" style="max-height:50vh;"></div>
+            <button id="result-confirm-btn" style="margin-top:1rem;" onclick="confirmResult()">닫기</button>
+        </div>
+    </div>
+
+    <!-- 게임 설명 모달 -->
+    <div id="guide-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="tab-buttons">
+                <button class="tab-btn" id="tab-btn-rules" onclick="switchTab('rules')">🪨 게임 규칙</button>
+                <button class="tab-btn" id="tab-btn-play" onclick="switchTab('play')">🎮 진행 방법</button>
+            </div>
+            <div id="tab-rules" class="tab-body">
+                <h4>🎯 목표</h4>
+                <p>짐꾼 받침대의 숫자 합이 <b>13 이상</b>이 되지 않도록 바위를 올려 <b>벌점을 피하세요.</b> 14라운드 후 벌점이 가장 적은 사람이 1위입니다.</p>
+                <h4>🎒 지급 물품 (7라운드마다 다시 지급)</h4>
+                <p>• 바위 카드 7장: 0 · 1 · 2 · 3 · 4 · 5 · 6<br>
+                • 색깔 칩 7개: <span class="chip chip-R">빨강</span>×2 <span class="chip chip-G">초록</span>×2 <span class="chip chip-B">파랑</span>×2 <span class="chip chip-W">레인보우</span>×1</p>
+                <p>• 7라운드가 끝나면 같은 구성으로 새로 받지만, <b>받침대의 바위는 그대로 유지</b>됩니다.</p>
+                <h4>📤 제출</h4>
+                <p>• 매 라운드 바위 카드 1장과 색깔 칩 1개를 비공개로 제출합니다.<br>
+                • 칩 색 = 바위를 올릴 받침대, 카드 숫자 = 바위 무게.<br>
+                • 공개 전까지는 다시 제출해서 바꿀 수 있습니다.</p>
+                <h4>🔢 배치 순서</h4>
+                <p>1) <b>레인보우</b> 칩을 낸 사람이 가장 먼저<br>
+                2) 그다음 <b>숫자가 높은</b> 카드를 낸 사람 순 (레인보우끼리도 숫자 높은 순)<br>
+                3) 같으면 <b>🚩 선 플레이어부터 시계 방향</b> 순</p>
+                <h4>⏭️ 패스</h4>
+                <p>• 내 차례에 라운드당 1번 패스할 수 있습니다.<br>
+                • 패스한 사람은 다른 사람이 모두 놓은 뒤에 놓으며, <b>먼저 패스한 사람이 가장 늦게</b> 놓습니다.<br>
+                • 레인보우 칩을 냈다면 놓을 때 받침대 색을 직접 고릅니다.</p>
+                <h4>💥 벌점</h4>
+                <p>• 내 바위로 받침대 합이 13 이상이 되면, 원래 놓여 있던 바위가 모두 수거되고 <b>수거된 개수만큼 벌점</b>을 받습니다.<br>
+                • 방금 놓은 내 바위 1개는 받침대에 남습니다. (0 바위도 1개로 셉니다)<br>
+                • 라운드에서 마지막으로 벌점을 받은 사람이 다음 라운드 🚩 선 플레이어가 됩니다. (벌점이 없으면 유지)</p>
+                <h4>🏆 순위</h4>
+                <p>• 벌점이 적을수록 높은 순위.<br>
+                • 벌점이 같으면 <b>더 최근에 벌점을 받은 사람이 낮은 순위</b>. 둘 다 벌점이 없으면 공동 순위.</p>
+            </div>
+            <div id="tab-play" class="tab-body hidden">
+                <h4>🏠 대기실</h4>
+                <p>• 방장이 제출 / 놓기·패스 제한 시간을 정하고 게임을 시작합니다. (3~10명)<br>
+                • 자리 순서와 1라운드 선 플레이어는 랜덤으로 정해집니다.</p>
+                <h4>⏱️ 시간 초과</h4>
+                <p>• 제출 시간이 지나면 남은 카드와 칩 중에서 <b>랜덤 자동 제출</b>.<br>
+                • 내 차례 시간이 지나면 <b>자동으로 놓기</b>. (레인보우는 합이 가장 낮은 받침대)<br>
+                • 방장은 언제든 '강제 진행'으로 멈춘 사람을 자동 처리할 수 있습니다.</p>
+                <h4>🤖 자동 제출</h4>
+                <p>• 7라운드와 14라운드는 남은 카드·칩이 1개씩이라 자동으로 제출됩니다.</p>
+                <h4>🔄 새로고침 / 재접속</h4>
+                <p>• 같은 기기·같은 브라우저라면 새로고침해도 자리가 그대로 유지됩니다.<br>
+                • 게임 중에 들어온 사람은 구경만 하고, 다음 게임부터 참여합니다.</p>
+            </div>
+            <button class="secondary" style="margin-top:1rem;" onclick="closeGuideModal()">닫기</button>
+        </div>
+    </div>
+
+    <script>
+        // ===== Supabase 설정 (../minus/config.js 공용) =====
+        const H13_URL = (typeof SUPABASE_URL !== 'undefined') ? SUPABASE_URL : (window.SUPABASE_URL || '');
+        const H13_KEY = (typeof SUPABASE_ANON_KEY !== 'undefined') ? SUPABASE_ANON_KEY : (window.SUPABASE_ANON_KEY || '');
+        const GAME_BUILD = 'heavy13-v1.0';
+        const H13_READY = !!(H13_URL && H13_KEY && window.supabase);
+
+        if (!H13_READY) {
+            setTimeout(() => alert(!window.supabase
+                ? `Supabase 라이브러리를 불러오지 못했습니다.\n네트워크 연결과 광고/콘텐츠 차단 설정을 확인해 주세요.\n\n(빌드: ${GAME_BUILD})`
+                : `접속 정보(../minus/config.js)를 불러오지 못했습니다.\nSUPABASE_URL, SUPABASE_ANON_KEY 가 들어 있는지 확인해 주세요.\n\n(빌드: ${GAME_BUILD})`), 0);
+        }
+
+        const sb = H13_READY ? window.supabase.createClient(H13_URL, H13_KEY, {
+            auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+            realtime: { params: { eventsPerSecond: 20 } }
+        }) : null;
+
+        async function sbSelfCheck() {
+            const tail = `\n\n(빌드: ${GAME_BUILD})`;
+            try {
+                const { error } = await sb.from('heavy13_rooms').select('code').limit(1);
+                if (!error) {
+                    const probe = await sbCall('h13_view', { p_code: 'ZZZZ', p_pid: null, p_key: null });
+                    if (probe.error && (probe.error.code === 'PGRST202' || /could not find the function/i.test(probe.error.message || ''))) {
+                        alert(`DB 에 무거운 13 SQL 이 아직 적용되지 않았습니다.\nsupabase_schema_heavy13.sql 을 SQL Editor 에서 실행해 주세요.${tail}`);
+                    }
+                    return;
+                }
+                const msg = `${error.code || ''} ${error.message || ''}`.trim();
+                let hint;
+                if (/PGRST205|42P01|does not exist|could not find the table/i.test(msg)) hint = 'DB 테이블이 없습니다. supabase_schema_heavy13.sql 을 SQL Editor 에서 실행해 주세요.';
+                else if (/invalid api key|jwt|unauthorized|apikey|401/i.test(msg)) hint = 'SUPABASE_ANON_KEY 가 올바르지 않습니다.';
+                else hint = '서버에 연결하지 못했습니다. 네트워크와 SUPABASE_URL 을 확인해 주세요.';
+                alert(`Supabase 연결에 실패했습니다.\n${hint}\n\n오류: ${msg}${tail}`);
+            } catch (e) {
+                alert(`Supabase 에 연결하지 못했습니다.\n오류: ${e && e.message}${tail}`);
+            }
+        }
+
+        let sbLastNetAlert = 0;
+        function sbNotifyError(err) {
+            console.error('[Supabase]', err);
+            const now = Date.now();
+            if (now - sbLastNetAlert < 8000) return;
+            sbLastNetAlert = now;
+            alert('서버와 통신하지 못했습니다. 네트워크를 확인한 뒤 다시 시도해 주세요.');
+        }
+
+        function loadPlayerKey() {
+            let k = null;
+            try { k = localStorage.getItem('h13_playerKey'); } catch (e) {}
+            if (!k || k.length < 16) {
+                const bytes = new Uint8Array(16);
+                crypto.getRandomValues(bytes);
+                k = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+                try { localStorage.setItem('h13_playerKey', k); } catch (e) {}
+            }
+            return k;
+        }
+        const myPlayerKey = loadPlayerKey();
+
+        async function sbCall(name, args) {
+            if (!sb) return { data: null, error: { message: 'not configured', code: 'NETWORK' } };
+            try { return await sb.rpc(name, args); }
+            catch (e) { return { data: null, error: { message: (e && e.message) || String(e), code: 'NETWORK' } }; }
+        }
+
+        const GAME_FAIL = Symbol('game-fail');
+        async function gameRpc(name, extra) {
+            const res = await sbCall(name, Object.assign({ p_code: roomCode, p_pid: myPlayerId, p_key: myPlayerKey }, extra || {}));
+            if (!res.error) return res.data;
+            const code = res.error.code;
+            if (code === 'UD001') alert(res.error.message);
+            else if (code === 'UD003') alert('방장만 할 수 있는 동작입니다.');
+            else if (code === 'UD002') alert('인증에 실패했습니다. 퇴장되었거나 다른 브라우저에서 접속한 플레이어일 수 있습니다.');
+            else if (code === 'P0002') console.warn('[Supabase] 없는(삭제된) 방에 대한 요청을 무시했습니다:', name);
+            else if (code === 'PGRST202') alert('서버에 무거운 13 SQL(supabase_schema_heavy13.sql)이 아직 적용되지 않은 것 같습니다.');
+            else sbNotifyError(res.error);
+            return GAME_FAIL;
+        }
+
+        let clockOffset = 0;
+        const serverNow = () => Date.now() + clockOffset;
+
+        function startRoomSync(code, callback) {
+            let lastVersion = -1, lastSig = null, inflight = false, again = false, emittedOnce = false;
+            const apply = (view) => {
+                if (view === null) {
+                    if (emittedOnce && lastSig === 'null') return;
+                    lastSig = 'null'; emittedOnce = true;
+                    try { callback(null); } catch (e) { console.error(e); }
+                    return;
+                }
+                const version = Number(view.version);
+                if (version < lastVersion) return;
+                if (typeof view.now === 'number') clockOffset = view.now - Date.now();
+                const sig = JSON.stringify(Object.assign({}, view, { now: 0 }));
+                if (emittedOnce && sig === lastSig) return;
+                lastVersion = version; lastSig = sig; emittedOnce = true;
+                try { callback(view); } catch (e) { console.error(e); }
+            };
+            const fetchView = async () => {
+                if (inflight) { again = true; return; }
+                inflight = true;
+                try {
+                    const res = await sbCall('h13_view', { p_code: code, p_pid: myPlayerId, p_key: myPlayerKey });
+                    if (res.error) sbNotifyError(res.error);
+                    else apply(res.data);
+                } finally {
+                    inflight = false;
+                    if (again) { again = false; fetchView(); }
+                }
+            };
+            sb.channel(`h13-room-${code}-${Math.random().toString(36).slice(2, 8)}`)
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'heavy13_rooms', filter: `code=eq.${code}` }, () => fetchView())
+                .subscribe(status => { if (status === 'SUBSCRIBED') fetchView(); });
+            fetchView();
+            document.addEventListener('visibilitychange', () => { if (!document.hidden) fetchView(); });
+            setInterval(() => { if (!document.hidden) fetchView(); }, 10000);
+            return { refresh: fetchView };
+        }
+        let roomSync = null;
+        const refreshRoom = () => { if (roomSync) roomSync.refresh(); };
+
+        if (H13_READY) sbSelfCheck();
+
+        async function hashPassword(message) {
+            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(message));
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // ===== 상수 / 상태 =====
+        const COLORS = ['R', 'G', 'B'];
+        const CHIP_TYPES = ['R', 'G', 'B', 'W'];
+        const CN = { R: '빨강', G: '초록', B: '파랑', W: '레인보우' };
+        const FULL_CHIPS = { R: 2, G: 2, B: 2, W: 1 };
+        const TIME_OPTIONS = [0, 10, 20, 30, 40, 50, 60, 120, 180];
+        const REVEAL_CHIP_MS = 2000, REVEAL_CARD_MS = 4000;
+
+        let roomCode = '', myPlayerId = '', myNickname = '', isHost = false;
+        let lastView = null, pub = null;
+        let selCard = null, selChip = null, selRoundKey = null;
+        let lastEvSeq = null, freshSeq = null, freshAt = 0;
+        let lastStage = -1, lastTickAt = 0, busy = false;
+        let resultDismissed = false, recordMode = false;
+
+        const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const fmtSec = s => s <= 0 ? '무제한' : (s < 120 ? `${s}초` : `${s / 60}분`);
+        const chipHtml = (c, extra) => `<span class="chip chip-${c || 'X'} ${extra || ''}">${c ? CN[c] : '?'}</span>`;
+        const pname = pid => (pub && pub.players && pub.players[pid] && pub.players[pid].name) || '(나간 플레이어)';
+        const seats = () => (pub && Array.isArray(pub.seats)) ? pub.seats : [];
+        const sumOf = arr => (arr || []).reduce((a, x) => a + (Number(x.v) || 0), 0);
+
+        function remainCards(pid) {
+            const used = ((pub.used || {})[pid] || {}).cards || [];
+            return [0, 1, 2, 3, 4, 5, 6].filter(n => !used.includes(n));
+        }
+        function remainChips(pid) {
+            const used = ((pub.used || {})[pid] || {}).chips || [];
+            const r = Object.assign({}, FULL_CHIPS);
+            used.forEach(c => { if (r[c] > 0) r[c]--; });
+            return r;
+        }
+
+        // ===== 시작 =====
+        window.onload = function () {
+            myPlayerId = localStorage.getItem('h13_playerId') || 'p_' + Math.random().toString(36).substring(2, 10);
+            localStorage.setItem('h13_playerId', myPlayerId);
+
+            const saved = localStorage.getItem('h13_roomCode');
+            const qr = new URLSearchParams(window.location.search).get('room');
+            if (qr) {
+                document.getElementById('card-create-room').classList.add('hidden');
+                document.getElementById('room-code-input').classList.add('hidden');
+                document.getElementById('join-card-title').innerText = `방 코드 [${qr.toUpperCase()}] 참가`;
+                document.getElementById('room-code-input').value = qr.toUpperCase();
+                roomCode = qr.toUpperCase();
+            } else if (saved) {
+                document.getElementById('room-code-input').value = saved.toUpperCase();
+                roomCode = saved.toUpperCase();
+            }
+
+            if (roomCode && H13_READY) {
+                sbCall('h13_view', { p_code: roomCode, p_pid: myPlayerId, p_key: myPlayerKey }).then(res => {
+                    const v = res && res.data;
+                    if (v && v.me && v.pub && v.pub.players && v.pub.players[myPlayerId]) {
+                        myNickname = v.pub.players[myPlayerId].name;
+                        joinRoomData();
+                    }
+                });
+            }
+
+            const opts = TIME_OPTIONS.map(s => `<option value="${s}">${fmtSec(s)}</option>`).join('');
+            document.getElementById('submit-sec-select').innerHTML = opts;
+            document.getElementById('place-sec-select').innerHTML = opts;
+
+            setInterval(uiLoop, 250);
+        };
+
+        function goHome() {
+            localStorage.removeItem('h13_roomCode');
+            location.href = window.location.pathname;
+        }
+
+        async function createRoom() {
+            myNickname = document.getElementById('nickname-input').value.trim();
+            const inputKey = document.getElementById('create-key-input').value.trim();
+            if (!myNickname) return alert('아래 참가하기 칸에 사용할 닉네임을 먼저 입력해 주세요.');
+            if (!inputKey) return alert('방 생성 인증키를 입력하세요.');
+            const inputHash = await hashPassword(inputKey);
+            for (let attempt = 0; attempt < 5; attempt++) {
+                const candidate = Math.random().toString(36).substring(2, 6).toUpperCase();
+                const res = await sbCall('h13_create', { p_code: candidate, p_create_hash: inputHash, p_pid: myPlayerId, p_key: myPlayerKey, p_name: myNickname });
+                if (res.error) {
+                    const c = res.error.code;
+                    if (c === 'UD004') return alert('Supabase에 방 생성 인증키 설정이 존재하지 않습니다. (undead_admin 테이블의 createKey)');
+                    if (c === 'UD005') return alert('올바르지 않은 방 생성 키입니다.');
+                    if (c === 'UD001') return alert(res.error.message);
+                    if (c === 'PGRST202') return alert('서버에 무거운 13 SQL(supabase_schema_heavy13.sql)이 아직 적용되지 않은 것 같습니다.');
+                    return sbNotifyError(res.error);
+                }
+                if (res.data === false) continue;
+                roomCode = candidate;
+                isHost = true;
+                localStorage.setItem('h13_roomCode', roomCode);
+                joinRoomData();
+                return;
+            }
+            alert('방 코드를 만들지 못했습니다. 잠시 후 다시 시도해 주세요.');
+        }
+
+        async function joinRoom() {
+            myNickname = document.getElementById('nickname-input').value.trim();
+            roomCode = document.getElementById('room-code-input').value.trim().toUpperCase();
+            if (!myNickname) return alert('사용할 닉네임을 입력해 주세요.');
+            if (!roomCode) return alert('방 코드를 입력해 주세요.');
+            const res = await sbCall('h13_view', { p_code: roomCode, p_pid: myPlayerId, p_key: myPlayerKey });
+            if (res.error) return sbNotifyError(res.error);
+            if (!res.data) return alert('존재하지 않는 방입니다.');
+            localStorage.setItem('h13_roomCode', roomCode);
+            joinRoomData();
+        }
+
+        function joinRoomData() {
+            const registered = gameRpc('h13_join', { p_name: myNickname });
+            document.getElementById('screen-main').classList.add('hidden');
+            document.getElementById('screen-lobby').classList.remove('hidden');
+            document.getElementById('room-code-display').innerText = roomCode;
+            const joinUrl = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
+            document.getElementById('qrcode').innerHTML = '';
+            new QRCode(document.getElementById('qrcode'), { text: joinUrl, width: 120, height: 120 });
+            registered.then(result => {
+                if (result === GAME_FAIL) { goHome(); return; }
+                listenRoom();
+            });
+        }
+
+        function listenRoom() {
+            roomSync = startRoomSync(roomCode, view => {
+                if (!view) { alert('방이 삭제되었습니다.'); goHome(); return; }
+                const p = view.pub || {};
+                if (!view.me || !p.players || !p.players[myPlayerId]) {
+                    alert('퇴장 되었거나 접속이 끊겼습니다.'); goHome(); return;
+                }
+                lastView = view;
+                pub = p;
+                isHost = (p.hostId === myPlayerId);
+
+                // 배치 이벤트 감지 (벌점 연출)
+                const ev = p.lastEvent;
+                if (ev && ev.seq !== lastEvSeq) {
+                    if (lastEvSeq !== null) {
+                        freshSeq = ev.seq; freshAt = Date.now();
+                        if (ev.kind === 'place' && ev.removed > 0) showPenaltyBanner(ev);
+                    }
+                    lastEvSeq = ev.seq;
+                } else if (!ev) {
+                    lastEvSeq = 0;
+                }
+
+                if (p.state === 'LOBBY') {
+                    if (isHost || document.getElementById('result-modal').classList.contains('hidden') || recordMode) {
+                        document.getElementById('result-modal').classList.add('hidden');
+                    }
+                    resultDismissed = false;
+                    document.getElementById('screen-game').classList.add('hidden');
+                    document.getElementById('screen-lobby').classList.remove('hidden');
+                    renderLobby();
+                } else {
+                    document.getElementById('screen-lobby').classList.add('hidden');
+                    document.getElementById('screen-game').classList.remove('hidden');
+                    renderGame();
+                    if (p.state === 'ENDED' && !resultDismissed) showResultModal(false);
+                    else if (!document.getElementById('result-modal').classList.contains('hidden')) showResultModal(recordMode);
+                }
+            });
+        }
+
+        // ===== 대기실 =====
+        function renderLobby() {
+            const players = pub.players || {};
+            const keys = Object.keys(players);
+            document.getElementById('player-count').innerText = keys.length;
+
+            const st = pub.settings || { submitSec: 180, placeSec: 30 };
+            document.getElementById('host-setting-card').classList.toggle('hidden', !isHost);
+            document.getElementById('guest-setting-card').classList.toggle('hidden', isHost);
+            document.getElementById('submit-sec-select').value = String(st.submitSec);
+            document.getElementById('place-sec-select').value = String(st.placeSec);
+            document.getElementById('guest-setting-text').innerHTML =
+                `⚙️ 제출 제한 시간: <b>${fmtSec(st.submitSec)}</b> · 놓기/패스 제한 시간: <b>${fmtSec(st.placeSec)}</b>`;
+
+            const listEl = document.getElementById('lobby-player-list');
+            listEl.innerHTML = keys.map(pid => {
+                const p = players[pid];
+                const kick = (isHost && pid !== myPlayerId) ? `<button class="kick-btn" onclick="kickPlayer('${esc(pid)}')">강퇴</button>` : '';
+                return `<div class="player-item ${pid === myPlayerId ? 'me' : ''}"><span>${esc(p.name)} ${p.isHost ? '👑' : ''}</span><div>${kick}</div></div>`;
+            }).join('');
+
+            document.getElementById('host-lobby-controls').classList.toggle('hidden', !isHost);
+            const startBtn = document.getElementById('host-start-btn');
+            startBtn.disabled = keys.length < 3 || keys.length > 10;
+            startBtn.innerText = keys.length < 3 ? `🎲 3명 이상 모이면 시작할 수 있어요 (${keys.length}명)`
+                : keys.length > 10 ? `🎲 최대 10명까지 가능합니다 (${keys.length}명)` : '🎲 자리 배정 및 게임 시작';
+        }
+
+        function setOption(opt, val) { gameRpc('h13_set_option', { p_opt: opt, p_val: Number(val) }).then(refreshRoom); }
+        function kickPlayer(pid) { if (confirm('해당 플레이어를 강퇴하시겠습니까?')) gameRpc('h13_kick', { p_target: pid }).then(refreshRoom); }
+        function startGame() { gameRpc('h13_start').then(refreshRoom); }
+        function deleteRoomByHost() {
+            if (!confirm('현재 방을 정말 삭제하시겠습니까? (접속 중인 모든 플레이어가 처음 화면으로 이동합니다)')) return;
+            gameRpc('h13_delete').then(r => { if (r !== GAME_FAIL) goHome(); });
+        }
+
+        // ===== 게임 화면 =====
+        function revealStage() {
+            if (!pub || pub.state !== 'PLACE') return 3;
+            const el = serverNow() - Number(pub.revealAt || 0);
+            if (el < REVEAL_CHIP_MS) return 0;           // 칩만 공개
+            if (el < REVEAL_CARD_MS) return 1;           // 카드까지 공개
+            if (serverNow() < Number(pub.placeStartAt || 0)) return 2;   // 배치 순서 표시
+            return 3;                                    // 배치 진행
+        }
+
+        function renderGame() {
+            if (!pub) return;
+            const stage = revealStage();
+            lastStage = stage;
+            const round = Number(pub.round || 1);
+            const setNo = round <= 7 ? 1 : 2;
+            document.getElementById('round-badge').innerHTML = pub.state === 'ENDED'
+                ? '🏁 게임 종료<small>14 / 14 라운드</small>'
+                : `라운드 ${round} / 14<small>${setNo}세트 · ${setNo === 1 ? round : round - 7}/7</small>`;
+
+            renderStands();
+            renderPhase(stage);
+            renderMyArea(stage);
+            renderPlayers(stage);
+
+            const logBox = document.getElementById('game-log');
+            const nearBottom = logBox.scrollHeight - logBox.scrollTop - logBox.clientHeight < 40;
+            logBox.innerHTML = (pub.logs || []).map(l => `<div>${esc(l)}</div>`).join('');
+            if (nearBottom || !logBox.dataset.init) { logBox.scrollTop = logBox.scrollHeight; logBox.dataset.init = '1'; }
+
+            document.getElementById('host-controls').classList.toggle('hidden', !isHost);
+            document.getElementById('force-btn').classList.toggle('hidden', !(pub.state === 'SUBMIT' || pub.state === 'PLACE'));
+            updateTimer();
+        }
+
+        function renderStands() {
+            const ev = pub.lastEvent;
+            const fresh = ev && ev.seq === freshSeq && Date.now() - freshAt < 1500 && ev.kind === 'place';
+            document.getElementById('stands').innerHTML = COLORS.map(c => {
+                const arr = (pub.stands || {})[c] || [];
+                const sum = sumOf(arr);
+                const safe = 12 - sum;
+                const pct = Math.min(100, sum / 13 * 100);
+                const hot = fresh && ev.color === c && ev.removed > 0;
+                const cubes = arr.map((x, i) => {
+                    const pop = fresh && ev.color === c && i === arr.length - 1;
+                    return `<span class="cube ${pop ? 'pop' : ''}" title="${esc(pname(x.p))}">${x.v}</span>`;
+                }).join('');
+                return `<div class="stand stand-${c} ${hot ? 'hot' : ''}">
+                    <div class="stand-head">${CN[c]}</div>
+                    <div class="stand-sum">${sum}<small> /13</small></div>
+                    <div class="gauge"><div style="width:${pct}%"></div></div>
+                    <div class="stand-meta">바위 <b>${arr.length}</b>개<br>${safe >= 6 ? '안전 (+6까지 OK)' : `<span class="danger">+${safe}까지 안전</span>`}</div>
+                    <div class="cubes">${cubes}</div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderPhase(stage) {
+            const title = document.getElementById('phase-title');
+            const desc = document.getElementById('phase-desc');
+            const body = document.getElementById('phase-body');
+            const st = seats();
+
+            if (pub.state === 'SUBMIT') {
+                const cnt = st.filter(pid => (pub.submitted || {})[pid]).length;
+                title.innerText = `📤 라운드 ${pub.round} — 제출`;
+                desc.innerText = `바위 카드 1장과 색깔 칩 1개를 비공개로 제출하세요. (제출 ${cnt}/${st.length})`;
+                body.innerHTML = '';
+                return;
+            }
+            if (pub.state === 'ENDED') {
+                title.innerText = '🏁 게임 종료';
+                desc.innerText = '14라운드가 모두 끝났습니다.';
+                body.innerHTML = `<button onclick="showResultModal(false)">🏆 최종 순위 보기</button>`;
+                return;
+            }
+
+            // PLACE: 공개 → 순서 → 배치
+            const rv = pub.reveal || {};
+            const order = pub.order || [];
+            const ps = pub.passStack || [];
+            const placed = pub.placed || {};
+            title.innerText = `🎴 라운드 ${pub.round} — ${stage < 2 ? '공개' : stage === 2 ? '배치 순서' : '배치'}`;
+            desc.innerText = stage === 0 ? '색깔 칩을 공개합니다...' : stage === 1 ? '바위 카드를 공개합니다...'
+                : stage === 2 ? '배치 순서가 정해졌습니다. 곧 배치를 시작합니다.'
+                : pub.actor ? `▶ ${pname(pub.actor)}님의 차례${pub.actorMode === 'pass' ? ' (패스 후 배치)' : ''}` : '';
+
+            const list = stage < 2 ? st.filter(pid => rv[pid]) : order;
+            body.innerHTML = `<div class="reveal-list">${list.map((pid, i) => {
+                const s = rv[pid] || {};
+                const showCard = stage >= 1;
+                const card = showCard ? `<span class="rock ${stage === 1 ? 'flip' : ''}">${s.card}</span>` : `<span class="rock hidden-card">?</span>`;
+                let status = '', cls = '';
+                if (stage >= 2) {
+                    if (placed[pid]) { status = `✅ ${CN[placed[pid]]}`; cls = 'done'; }
+                    else if (stage === 3 && pid === pub.actor) { status = '▶ 차례'; cls = 'actor'; }
+                    else if (ps.includes(pid)) status = `⏭️ 패스 ${ps.indexOf(pid) + 1}번째`;
+                    else status = '대기';
+                }
+                const ord = stage >= 2 ? (i + 1) : (pid === pub.firstPid ? '🚩' : '');
+                return `<div class="reveal-row ${cls}">
+                    <span class="ord">${ord}</span>
+                    <span class="nm">${esc(pname(pid))}${pid === myPlayerId ? ' (나)' : ''}</span>
+                    <span>${chipHtml(s.chip)} ${card}</span>
+                    <span class="st">${status}</span>
+                </div>`;
+            }).join('')}</div>`;
+        }
+
+        function renderMyArea(stage) {
+            const area = document.getElementById('my-area');
+            const st = seats();
+            if (pub.state === 'ENDED') { area.innerHTML = ''; return; }
+            if (!st.includes(myPlayerId)) {
+                area.innerHTML = `<div class="card"><b>👀 게임이 진행 중입니다.</b><p class="small" style="margin-top:0.3rem;">이번 게임은 구경만 할 수 있어요. 다음 게임부터 참여합니다.</p></div>`;
+                return;
+            }
+
+            if (pub.state === 'SUBMIT') {
+                const roundKey = `${pub.round}`;
+                const mySub = lastView && lastView.me && lastView.me.sub;
+                if (selRoundKey !== roundKey) {
+                    selRoundKey = roundKey;
+                    selCard = mySub ? mySub.card : null;
+                    selChip = mySub ? mySub.chip : null;
+                }
+                const cards = remainCards(myPlayerId);
+                const chips = remainChips(myPlayerId);
+                if (selCard !== null && !cards.includes(selCard)) selCard = null;
+                if (selChip !== null && !(chips[selChip] > 0)) selChip = null;
+                const ready = selCard !== null && selChip !== null;
+                const changed = !mySub || mySub.card !== selCard || mySub.chip !== selChip;
+
+                area.innerHTML = `<div class="card">
+                    <h4>🪨 바위 카드</h4>
+                    <div class="pick-row">${[0, 1, 2, 3, 4, 5, 6].map(n => {
+                        const ok = cards.includes(n);
+                        return `<button class="rock-btn ${selCard === n ? 'sel' : ''}" ${ok ? '' : 'disabled'} onclick="pickCard(${n})">${n}</button>`;
+                    }).join('')}</div>
+                    <h4 style="margin-top:0.7rem;">🎨 색깔 칩</h4>
+                    <div class="pick-row">${CHIP_TYPES.map(c => {
+                        const n = chips[c] || 0;
+                        return `<button class="chip-btn chip-${c} ${selChip === c ? 'sel' : ''}" ${n > 0 ? '' : 'disabled'} onclick="pickChip('${c}')">${CN[c]}<span class="cnt">×${n}</span></button>`;
+                    }).join('')}</div>
+                    <button style="margin-top:0.8rem;" ${ready && changed ? '' : 'disabled'} onclick="submitPick()">
+                        ${!ready ? '카드와 칩을 하나씩 고르세요' : mySub ? (changed ? `🔁 ${CN[selChip]} ${selCard}(으)로 다시 제출` : '✅ 제출 완료') : `📤 ${CN[selChip]} ${selCard} 제출하기`}
+                    </button>
+                    ${mySub ? `<div class="submit-state">✅ 제출 완료: ${chipHtml(mySub.chip)} <span class="rock" style="width:1.5rem;height:1.5rem;font-size:0.85rem;">${mySub.card}</span> <span class="small">(공개 전까지 변경 가능)</span></div>` : ''}
+                </div>`;
+                return;
+            }
+
+            // PLACE
+            const rv = (pub.reveal || {})[myPlayerId] || {};
+            if (pub.actor === myPlayerId && stage === 3) {
+                const colors = rv.chip === 'W' ? COLORS : [rv.chip];
+                const btns = colors.map(c => {
+                    const s = sumOf((pub.stands || {})[c]);
+                    const cnt = ((pub.stands || {})[c] || []).length;
+                    const boom = s + rv.card >= 13;
+                    return `<button class="place-btn bg-${c} ${boom ? 'boom' : ''}" ${busy ? 'disabled' : ''} onclick="doPlace('${c}')">
+                        🪨 ${CN[c]} 받침대에 ${rv.card} 놓기
+                        <small>합 ${s} → ${s + rv.card}${boom ? ` 💥 벌점 ${cnt}점!` : ' (안전)'}</small>
+                    </button>`;
+                }).join('');
+                const passBtn = pub.actorMode === 'main'
+                    ? `<button class="secondary" ${busy ? 'disabled' : ''} onclick="doPass()">⏭️ 패스 (다른 사람이 다 놓은 뒤에 놓기)</button>`
+                    : `<p class="small" style="margin-top:0.5rem;">이미 패스했으므로 이번에는 반드시 놓아야 합니다.</p>`;
+                area.innerHTML = `<div class="card turn-box">
+                    <h3>▶ 내 차례!</h3>
+                    <p class="small">내 제출: ${chipHtml(rv.chip)} <b>${rv.card}</b>${rv.chip === 'W' ? ' — 놓을 받침대를 고르세요.' : ''}</p>
+                    ${btns}${passBtn}
+                </div>`;
+                return;
+            }
+            let msg;
+            if (pub.actor === myPlayerId) msg = '곧 내 차례입니다. 공개가 끝나면 놓기/패스를 선택하세요.';
+            else if ((pub.placed || {})[myPlayerId]) msg = `이번 라운드에 ${CN[pub.placed[myPlayerId]]} 받침대에 놓았습니다.`;
+            else if ((pub.passStack || []).includes(myPlayerId)) msg = '패스했습니다. 다른 사람이 모두 놓은 뒤에 놓게 됩니다.';
+            else msg = '내 차례를 기다리는 중입니다.';
+            area.innerHTML = `<div class="card"><p>내 제출: ${chipHtml(rv.chip)} <b>${stage >= 1 ? rv.card : '?'}</b></p><p class="small" style="margin-top:0.3rem;">${msg}</p></div>`;
+        }
+
+        function renderPlayers(stage) {
+            const st = seats();
+            const score = pub.score || {};
+            const rows = st.map((pid, i) => {
+                const p = (pub.players || {})[pid];
+                const pen = (score[pid] && score[pid].pen) || 0;
+                const cards = remainCards(pid);
+                const chips = remainChips(pid);
+                let tag = '';
+                if (pub.state === 'SUBMIT') tag = (pub.submitted || {})[pid] ? '<span class="tag ok">제출 완료</span>' : '<span class="tag no">미제출</span>';
+                const chipTxt = CHIP_TYPES.filter(c => chips[c] > 0).map(c => `${CN[c][0]}${c === 'W' ? '' : chips[c]}`).join(' ');
+                const isActor = pub.state === 'PLACE' && stage === 3 && pid === pub.actor;
+                return `<div class="player-item ${pid === myPlayerId ? 'me' : ''} ${isActor ? 'actor' : ''}">
+                    <span>
+                        <b>${i + 1}. ${esc(p ? p.name : '(나간 플레이어)')}</b>${pid === pub.firstPid ? ' 🚩' : ''}${p && p.isHost ? ' 👑' : ''}${tag}
+                        <span class="sub">남은 카드 ${cards.join(' ') || '-'} · 칩 ${chipTxt || '-'}</span>
+                    </span>
+                    <span class="pen-badge">벌점 ${pen}</span>
+                </div>`;
+            });
+            const watchers = Object.keys(pub.players || {}).filter(pid => !st.includes(pid));
+            if (watchers.length) {
+                rows.push(`<p class="small" style="margin-top:0.3rem;">👀 다음 게임 대기: ${watchers.map(pid => esc(pname(pid))).join(', ')}</p>`);
+            }
+            document.getElementById('game-player-list').innerHTML = rows.join('');
+        }
+
+        // ===== 조작 =====
+        function pickCard(n) { selCard = n; renderMyArea(revealStage()); }
+        function pickChip(c) { selChip = c; renderMyArea(revealStage()); }
+
+        function submitPick() {
+            if (selCard === null || selChip === null) return;
+            gameRpc('h13_submit', { p_card: selCard, p_chip: selChip }).then(refreshRoom);
+        }
+
+        function doPlace(color) {
+            if (busy) return;
+            busy = true; renderMyArea(revealStage());
+            gameRpc('h13_place', { p_color: color }).then(() => { busy = false; refreshRoom(); });
+        }
+
+        function doPass() {
+            if (busy) return;
+            busy = true; renderMyArea(revealStage());
+            gameRpc('h13_pass').then(() => { busy = false; refreshRoom(); });
+        }
+
+        function forceProceed() {
+            const who = pub.state === 'SUBMIT'
+                ? '아직 제출하지 않은 사람을 랜덤으로 자동 제출합니다.'
+                : `${pname(pub.actor)}님의 바위를 자동으로 놓습니다.`;
+            if (!confirm(`강제 진행할까요?\n${who}`)) return;
+            gameRpc('h13_tick', { p_force: true }).then(refreshRoom);
+        }
+
+        function forceRestart() {
+            if (!confirm('게임 진행 상태를 모두 초기화하고 대기실로 이동하시겠습니까?')) return;
+            gameRpc('h13_restart').then(refreshRoom);
+        }
+
+        // ===== 타이머 / 진행 루프 =====
+        function updateTimer() {
+            const el = document.getElementById('timer-display');
+            if (!pub || !(pub.state === 'SUBMIT' || pub.state === 'PLACE')) {
+                el.innerText = '⏱️ --:--'; el.classList.remove('timer-warning'); return;
+            }
+            if (pub.state === 'PLACE' && serverNow() < Number(pub.placeStartAt || 0)) {
+                el.innerText = '🎴 공개 중'; el.classList.remove('timer-warning'); return;
+            }
+            if (pub.deadline == null) {
+                el.innerText = '⏱️ 무제한'; el.classList.remove('timer-warning'); return;
+            }
+            const remain = Math.max(0, Math.ceil((Number(pub.deadline) - serverNow()) / 1000));
+            const m = String(Math.floor(remain / 60)).padStart(2, '0');
+            const s = String(remain % 60).padStart(2, '0');
+            el.innerText = remain === 0 ? '⏱️ 시간 초과' : `⏱️ ${m}:${s}`;
+            el.classList.toggle('timer-warning', remain <= 10);
+        }
+
+        function uiLoop() {
+            if (!pub || pub.state === 'LOBBY') return;
+            updateTimer();
+            if (pub.state === 'PLACE') {
+                const stg = revealStage();
+                if (stg !== lastStage) renderGame();
+            }
+            // 시간 초과 감지: 서버에 알리면 서버가 실제 시간을 확인한 뒤 자동 처리한다.
+            if ((pub.state === 'SUBMIT' || pub.state === 'PLACE') && pub.deadline != null
+                && serverNow() > Number(pub.deadline) + 400 && Date.now() - lastTickAt > 2500) {
+                lastTickAt = Date.now();
+                sbCall('h13_tick', { p_code: roomCode, p_pid: myPlayerId, p_key: myPlayerKey, p_force: false }).then(refreshRoom);
+            }
+        }
+
+        // ===== 연출 =====
+        let bannerTimer = null;
+        function showPenaltyBanner(ev) {
+            document.getElementById('banner-title').innerText = `${pname(ev.pid)} 벌점 +${ev.removed}!`;
+            document.getElementById('banner-text').innerText =
+                `${CN[ev.color]} 받침대 ${ev.before} + ${ev.v} = ${ev.before + ev.v} → 바위 ${ev.removed}개 수거`;
+            const b = document.getElementById('event-banner');
+            b.classList.remove('hidden');
+            if (bannerTimer) clearTimeout(bannerTimer);
+            bannerTimer = setTimeout(() => { b.classList.add('hidden'); bannerTimer = null; }, 2600);
+        }
+
+        // ===== 결과 / 기록 =====
+        function computeRanking() {
+            if (pub.state === 'ENDED' && Array.isArray(pub.ranking)) return pub.ranking;
+            const score = pub.score || {};
+            const arr = seats().map(pid => ({ pid, name: pname(pid), pen: (score[pid] && score[pid].pen) || 0, seq: (score[pid] && score[pid].seq) || 0 }));
+            arr.sort((a, b) => a.pen - b.pen || a.seq - b.seq);
+            arr.forEach((x, i) => {
+                const prev = arr[i - 1];
+                x.rank = (prev && prev.pen === x.pen && prev.seq === x.seq) ? prev.rank : i + 1;
+            });
+            return arr;
+        }
+
+        function showResultModal(isRecord) {
+            recordMode = !!isRecord;
+            const modal = document.getElementById('result-modal');
+            const wasHidden = modal.classList.contains('hidden');
+            document.getElementById('result-title').innerText = isRecord ? '📜 현재 기록' : '🏁 최종 순위';
+            document.getElementById('result-tab-btn-rank').innerText = isRecord ? '🏆 현재 벌점 순위' : '🏆 순위';
+
+            const rank = computeRanking();
+            const maxRank = Math.max(...rank.map(r => r.rank), 0);
+            const medal = r => r === 1 ? '🥇' : r === 2 ? '🥈' : r === 3 ? '🥉' : '';
+            document.getElementById('result-tab-rank').innerHTML = rank.map(r => `
+                <div class="rank-row ${!isRecord && r.rank === maxRank && rank.length > 1 && maxRank > 1 ? 'last' : ''}">
+                    <span class="rk">${medal(r.rank)} ${r.rank}위</span>
+                    <span class="nm">${esc(r.name)}${r.pid === myPlayerId ? ' (나)' : ''}</span>
+                    <span class="pen-badge">벌점 ${r.pen}</span>
+                </div>`).join('') +
+                `<p class="small" style="margin-top:0.4rem;">벌점이 같으면 더 최근에 벌점을 받은 사람이 낮은 순위, 둘 다 벌점이 없으면 공동 순위입니다.</p>`;
+
+            const hist = (pub.history || []).slice().reverse();
+            document.getElementById('result-tab-hist').innerHTML = hist.length ? hist.map(h => `
+                <div class="hist-round">
+                    <b>라운드 ${h.round}</b>
+                    <div class="subs">${(h.rows || []).map((r, i) => `<span>${i + 1}. ${esc(r.name)} ${CN[r.chip] || ''} ${r.card}</span>`).join('')}</div>
+                    <div class="acts">${(h.acts || []).map(a => `<div>${esc(a)}</div>`).join('')}</div>
+                </div>`).join('') : '<p class="small">아직 공개된 라운드가 없습니다.</p>';
+
+            const btn = document.getElementById('result-confirm-btn');
+            btn.innerText = (!isRecord && isHost) ? '🔄 대기실로 이동 (다시 하기)' : '닫기';
+            modal.classList.remove('hidden');
+            if (wasHidden) switchResultTab('rank');
+        }
+
+        function openRecordModal() { showResultModal(pub && pub.state !== 'ENDED'); }
+
+        function confirmResult() {
+            document.getElementById('result-modal').classList.add('hidden');
+            if (recordMode) { recordMode = false; return; }
+            resultDismissed = true;
+            if (isHost && pub && pub.state === 'ENDED') gameRpc('h13_restart').then(refreshRoom);
+        }
+
+        function switchResultTab(t) {
+            ['rank', 'hist'].forEach(x => {
+                document.getElementById('result-tab-btn-' + x).classList.toggle('active', x === t);
+                document.getElementById('result-tab-' + x).classList.toggle('hidden', x !== t);
+            });
+        }
+
+        function openGuideModal() { switchTab('rules'); document.getElementById('guide-modal').classList.remove('hidden'); }
+        function closeGuideModal() { document.getElementById('guide-modal').classList.add('hidden'); }
+        function switchTab(t) {
+            ['rules', 'play'].forEach(x => {
+                document.getElementById('tab-btn-' + x).classList.toggle('active', x === t);
+                document.getElementById('tab-' + x).classList.toggle('hidden', x !== t);
+            });
+        }
+    </script>
+</body>
+</html>
