@@ -573,3 +573,27 @@ button.primary { box-shadow: 0 2px 0 #7d1729; }
 @media (prefers-reduced-motion: reduce) {
   .stamp, .stamp-card, .stamp-who, .stamp-pot { animation: none; }
 }
+
+/* ---------- AI 플레이어 ---------- */
+.tag.bot { color: #9fb4ff; border-color: rgba(120, 150, 255, 0.4); }
+.tag.bot.lv-easy { color: #7fdcaa; border-color: rgba(63, 191, 127, 0.4); }
+.tag.bot.lv-hard { color: #ff8fa3; border-color: rgba(209, 42, 74, 0.5); }
+.bot-add {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+}
+.bot-add-head { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+.bot-add-head small { font-weight: 400; font-size: 12px; color: var(--muted); margin-left: 6px; }
+.bot-add-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.bot-btn { padding: 9px 6px; font-size: 13px; }
+.bot-btn.lv-easy { color: #7fdcaa; border-color: rgba(63, 191, 127, 0.45); }
+.bot-btn.lv-normal { color: #9fb4ff; border-color: rgba(120, 150, 255, 0.45); }
+.bot-btn.lv-hard { color: #ff8fa3; border-color: rgba(209, 42, 74, 0.55); }
+.turn-banner.bot-think { color: #9fb4ff; }
+.turn-banner .dots i { font-style: normal; animation: botDot 1.2s infinite; opacity: 0.2; }
+.turn-banner .dots i:nth-child(2) { animation-delay: 0.2s; }
+.turn-banner .dots i:nth-child(3) { animation-delay: 0.4s; }
+@keyframes botDot { 0%, 100% { opacity: 0.2; } 40% { opacity: 1; } }
