@@ -910,6 +910,8 @@
 
             sb.channel(`undead-room-${code}-${Math.random().toString(36).slice(2, 8)}`)
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'undead_rooms', filter: `code=eq.${code}` }, () => fetchView())
+                // 방이 완전히 삭제되면 삭제 이벤트는 필터를 쓸 수 없으므로, 필터 없이 받아서 확인한다.
+                .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'undead_rooms' }, () => fetchView())
                 .subscribe(status => { if (status === 'SUBSCRIBED') fetchView(); });
 
             fetchView();
