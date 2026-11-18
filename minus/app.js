@@ -28,7 +28,14 @@ const S = {
   busy: false,       // 버튼 연타 방지
   lastCardKey: null, // 카드 뒤집기 애니메이션용
   timeoutFor: null,  // 같은 마감 시간에 timeout 을 여러 번 부르지 않도록
+  botFor: null,      // 같은 AI 차례에 ma_bot_step 을 여러 번 부르지 않도록
 };
+
+// AI 플레이어
+const MAX_PLAYERS = 7;
+const BOT_LEVELS = { easy: '쉬움', normal: '보통', hard: '어려움' };
+const BOT_THINK_MS = 1300;   // 서버는 1.2초가 지나야 AI가 둠. 조금 여유를 두고 요청
+const botTag = (p) => (p && p.is_bot ? `<span class="tag bot lv-${esc(p.bot_level)}">AI · ${BOT_LEVELS[p.bot_level] || ''}</span>` : '');
 
 // ---------------------------------------------------------------------
 // 유틸
@@ -319,7 +326,7 @@ function applyState(st) {
   }
   S.skew = Date.parse(st.server_now) - Date.now();
   // 바뀐 게 없으면 화면을 다시 그리지 않음 (선택 상자 등이 닫히지 않도록)
-  const sig = JSON.stringify([st.room, st.my_chips, st.players.map((p) => [p.user_id, p.nickname, p.seat, p.cards, p.chips])]);
+  const sig = JSON.stringify([st.room, st.my_chips, st.players.map((p) => [p.user_id, p.nickname, p.seat, p.cards, p.chips, p.is_bot, p.bot_level])]);
   const taken = detectTake(S.data, st);
   S.data = st;
   if (taken) showStamp(taken);
@@ -336,7 +343,9 @@ document.addEventListener('visibilitychange', () => {
 // 타이머 표시 + 시간 초과 처리
 function tick() {
   const d = S.data;
-  if (!d || d.room.status !== 'playing' || !d.room.turn_deadline) return;
+  if (!d || d.room.status !== 'playing') return;
+  botTick(d);
+  if (!d.room.turn_deadline) return;
   const deadline = Date.parse(d.room.turn_deadline);
   const total = (d.room.settings.turn_seconds || 1) * 1000;
   const left = deadline - serverNow();
@@ -355,6 +364,24 @@ function tick() {
     S.timeoutFor = d.room.turn_deadline;
     sb.rpc('ma_timeout', { p_room: S.roomId }).then(() => refresh());
   }
+}
+
+// AI 차례면 생각 시간 뒤에 서버에 진행 요청 (접속한 아무 기기나 요청, 서버가 한 번만 처리)
+function botTick(d) {
+  const turnId = d.room.turn_order[d.room.turn_index];
+  const tp = d.players.find((p) => p.user_id === turnId);
+  if (!tp || !tp.is_bot) return;
+  const key = `${d.room.game_no}:${d.room.turn_index}:${d.room.updated_at}`;
+  if (S.botFor === key) return;
+  if (serverNow() < Date.parse(d.room.updated_at) + BOT_THINK_MS) return;
+  S.botFor = key;
+  // 여러 기기가 동시에 몰리지 않도록 살짝 흩어서 요청
+  setTimeout(() => {
+    sb.rpc('ma_bot_step', { p_room: S.roomId }).then(({ data, error }) => {
+      if (error || data === false) setTimeout(() => { if (S.botFor === key) S.botFor = null; }, 700);
+      refresh();
+    });
+  }, Math.random() * 250);
 }
 
 // ---------------------------------------------------------------------
@@ -385,9 +412,22 @@ function renderLobby() {
       <span class="name">${esc(p.nickname)}</span>
       ${p.user_id === room.host_id ? '<span class="tag host">방장</span>' : ''}
       ${p.user_id === me ? '<span class="tag me">나</span>' : ''}
-      ${isHost && p.user_id !== me
+      ${botTag(p)}
+      ${isHost && p.is_bot
+        ? `<button class="small ghost" data-remove-bot="${p.user_id}">빼기</button>`
+        : isHost && p.user_id !== me
         ? `<button class="small danger" data-kick="${p.user_id}" data-name="${esc(p.nickname)}">강퇴</button>` : ''}
     </li>`).join('');
+
+  const full = n >= MAX_PLAYERS;
+  const botHtml = isHost ? `
+      <div class="bot-add">
+        <div class="bot-add-head">🤖 AI 추가 <small>${full ? `최대 ${MAX_PLAYERS}명이에요` : '사람이 부족하면 AI를 넣어 보세요'}</small></div>
+        <div class="bot-add-btns">
+          ${Object.entries(BOT_LEVELS).map(([lv, label]) =>
+            `<button class="small bot-btn lv-${lv}" data-add-bot="${lv}" ${full ? 'disabled' : ''}>+ ${label}</button>`).join('')}
+        </div>
+      </div>` : '';
 
   const timeLabel = (t) => (t === 0 ? '제한 없음' : `${t}초`);
 
@@ -441,6 +481,7 @@ function renderLobby() {
     <section class="panel">
       <h2>참가자</h2>
       <ul class="players">${playerItems}</ul>
+      ${botHtml}
     </section>
 
     <section class="panel">
@@ -469,6 +510,19 @@ function renderLobby() {
     btn.onclick = guard(async () => {
       if (!confirm(`${btn.dataset.name} 님을 강퇴할까요?\n강퇴된 플레이어는 이 방에 다시 들어올 수 없습니다.`)) return;
       await rpc('ma_kick_player', { p_room: room.id, p_target: btn.dataset.kick });
+      await refresh();
+    });
+  });
+
+  app.querySelectorAll('[data-add-bot]').forEach((btn) => {
+    btn.onclick = guard(async () => {
+      await rpc('ma_add_bot', { p_room: room.id, p_level: btn.dataset.addBot });
+      await refresh();
+    });
+  });
+  app.querySelectorAll('[data-remove-bot]').forEach((btn) => {
+    btn.onclick = guard(async () => {
+      await rpc('ma_remove_bot', { p_room: room.id, p_bot: btn.dataset.removeBot });
       await refresh();
     });
   });
@@ -521,6 +575,7 @@ function renderGame() {
   const turnId = room.turn_order[room.turn_index];
   const turnPlayer = order.find((p) => p.user_id === turnId);
   const myTurn = turnId === me;
+  const botTurn = !!turnPlayer?.is_bot;
 
   // 카드가 바뀔 때만 뒤집기 애니메이션
   const cardKey = `${room.game_no}:${room.current_card}`;
@@ -536,6 +591,7 @@ function renderGame() {
         <div class="seat-head">
           <span class="order">${p.seat + 1}</span>
           <span class="name">${esc(p.nickname)}${isMe ? ' (나)' : ''}</span>
+          ${botTag(p)}
           <span class="stat chips"><span class="chip-dot small"></span><b>${chips}</b></span>
           <span class="stat">카드 <b>${score}</b></span>
           ${isMe ? `<span class="stat total">총점 <b>${score + myChips}</b></span>` : ''}
@@ -565,10 +621,12 @@ function renderGame() {
         </div>
       </div>
       <div class="stage-side">
-        <div class="turn-banner ${myTurn ? 'mine' : ''}">
-          ${myTurn ? '내 차례입니다' : `${esc(turnPlayer?.nickname ?? '')} 님 차례`}
+        <div class="turn-banner ${myTurn ? 'mine' : ''} ${botTurn ? 'bot-think' : ''}">
+          ${myTurn ? '내 차례입니다'
+            : botTurn ? `${esc(turnPlayer.nickname)} 생각 중<span class="dots"><i>.</i><i>.</i><i>.</i></span>`
+            : `${esc(turnPlayer?.nickname ?? '')} 님 차례`}
         </div>
-        ${room.turn_deadline ? `
+        ${room.turn_deadline && !botTurn ? `
           <div id="timerBar" class="timer"><i style="width:100%"></i></div>
           <div id="timerText" class="timer-text"></div>` : ''}
         ${myTurn ? `
@@ -625,7 +683,7 @@ function renderResult() {
     <div class="rank ${i === 0 ? 'first' : ''} ${i === list.length - 1 && list.length > 1 ? 'last' : ''}">
       <div class="pos">${i + 1}</div>
       <div class="body">
-        <div class="who">${esc(p.nickname)}${p.user_id === me ? ' (나)' : ''}
+        <div class="who">${esc(p.nickname)}${p.user_id === me ? ' (나)' : ''} ${botTag(p)}
           ${i === 0 && !r.aborted ? '<span class="tag host">승자</span>' : ''}
           ${i === list.length - 1 && list.length > 1 && !r.aborted ? '<span class="tag">패자</span>' : ''}</div>
         <div class="detail">카드 ${p.card_score} · 칩 +${p.chips}</div>
@@ -756,6 +814,14 @@ const HELP_HTML = `
   <ul>
     <li>최종 점수가 가장 높은(마이너스가 가장 적은) 사람이 <b>승자</b>, 가장 낮은 사람이 <b>패자</b>입니다.</li>
     <li>게임이 끝나면 순위와 히든 카드가 공개되고 대기실로 돌아갑니다.</li>
+  </ul>
+
+  <h3>🤖 AI 플레이어</h3>
+  <ul>
+    <li>사람이 부족하면 방장이 대기실에서 <b>AI를 추가</b>할 수 있습니다. AI를 포함해 최대 7명, 방장 혼자 AI와 연습 게임도 가능합니다.</li>
+    <li>난이도는 <b>쉬움 · 보통 · 어려움</b> 세 단계입니다. 쉬움은 실수를 자주 하고, 어려움은 칩 뽑아먹기까지 노립니다.</li>
+    <li>AI는 사람과 똑같이 공개된 정보와 자기 칩만 보고 판단합니다. 남은 카드 순서나 히든 카드는 보지 않습니다.</li>
+    <li>AI 차례에는 1~2초 생각한 뒤에 둡니다. 대기실에서 <b>빼기</b>로 언제든 뺄 수 있습니다.</li>
   </ul>
 
   <h3>화면 보는 법</h3>
