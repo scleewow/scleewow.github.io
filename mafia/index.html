@@ -557,6 +557,18 @@
                         <input type="checkbox" id="mafia-parity-win-check" style="width:auto; margin:0;" onchange="setMafiaParityWin(this.checked)">
                         <span>생존 마피아 수가 생존 시민 수보다 많아지면 마피아팀 승리</span>
                     </label>
+                    <div style="border-top:1px dashed #cbd5e1; padding-top:0.55rem;">
+                        <div style="display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;">
+                            <b>🤖 봇 (<span id="bot-count">0</span>/3)</b>
+                            <button id="bot-add-btn" onclick="addBot()" style="width:auto; padding:0.3rem 0.7rem; font-size:0.8rem;">봇 추가</button>
+                            <button id="bot-remove-btn" onclick="removeBot()" style="width:auto; padding:0.3rem 0.7rem; font-size:0.8rem; background:#94a3b8;">봇 제거</button>
+                        </div>
+                        <label style="display:flex; align-items:center; gap:0.3rem; cursor:pointer; margin-top:0.4rem;">
+                            <input type="checkbox" id="bot-godfather-check" checked style="width:auto; margin:0;" onchange="setBotGodfather(this.checked)">
+                            <span>봇이 대부가 될 수 있음</span>
+                        </label>
+                        <p style="font-size:0.75rem; color:#64748b; margin-top:0.25rem;">인원이 모자랄 때 봇을 최대 3명까지 추가할 수 있습니다. 봇은 밤 능력과 투표를 자동으로 하고, 토론은 하지 않습니다. 조사형 직업과 저격수, 마술사 등은 봇에게 배정되지 않습니다.</p>
+                    </div>
                 </div>
             </div>
 
@@ -1544,6 +1556,21 @@
             gameRpc('room_set_option', { p_opt: 'parity', p_val: !!checked }).then(refreshRoom);
         }
 
+        function addBot() {
+            if (!isHost || !roomCode) return;
+            gameRpc('room_bot_add').then(refreshRoom);
+        }
+
+        function removeBot(botId) {
+            if (!isHost || !roomCode) return;
+            gameRpc('room_bot_remove', { p_target: botId || null }).then(refreshRoom);
+        }
+
+        function setBotGodfather(checked) {
+            if (!isHost || !roomCode) return;
+            gameRpc('room_set_option', { p_opt: 'botGodfather', p_val: !!checked }).then(refreshRoom);
+        }
+
         function renderLobby(data) {
             const players = data.players || {};
             const playerKeys = Object.keys(players);
@@ -1571,6 +1598,15 @@
             }
             const parityCheck = document.getElementById('mafia-parity-win-check');
             if (parityCheck) { parityCheck.checked = !!data.mafiaWinsOnParity; parityCheck.disabled = !isHost; }
+            const botN = playerKeys.filter(id => players[id] && players[id].isBot).length;
+            const botCountEl = document.getElementById('bot-count');
+            if (botCountEl) botCountEl.innerText = botN;
+            const botAddBtn = document.getElementById('bot-add-btn');
+            if (botAddBtn) { botAddBtn.disabled = !isHost || botN >= 3; botAddBtn.style.opacity = botAddBtn.disabled ? '0.5' : '1'; }
+            const botRemoveBtn = document.getElementById('bot-remove-btn');
+            if (botRemoveBtn) { botRemoveBtn.disabled = !isHost || botN <= 0; botRemoveBtn.style.opacity = botRemoveBtn.disabled ? '0.5' : '1'; }
+            const botGfCheck = document.getElementById('bot-godfather-check');
+            if (botGfCheck) { botGfCheck.checked = data.botGodfather !== false; botGfCheck.disabled = !isHost; }
             const listEl = document.getElementById('lobby-player-list');
             listEl.innerHTML = '';
 
@@ -1581,7 +1617,9 @@
 
                 let kickBtnHtml = '';
                 if (isHost && pId !== myPlayerId) {
-                    kickBtnHtml = `<button class="kick-btn" onclick="kickPlayer('${pId}')">강퇴</button>`;
+                    kickBtnHtml = p.isBot
+                        ? `<button class="kick-btn" onclick="removeBot('${pId}')">제거</button>`
+                        : `<button class="kick-btn" onclick="kickPlayer('${pId}')">강퇴</button>`;
                 }
 
                 item.innerHTML = `
