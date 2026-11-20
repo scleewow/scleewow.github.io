@@ -689,7 +689,7 @@
                 <h4 style="color:#f43f5e;">🔴 마피아팀 캐릭터 (6종)</h4>
                 <div id="mafia-roles-guide"></div>
 
-                <h4 style="color:#38bdf8; margin-top:1rem;">🔵 시민팀 캐릭터 (17종)</h4>
+                <h4 style="color:#38bdf8; margin-top:1rem;">🔵 시민팀 캐릭터 (19종)</h4>
                 <div id="citizen-roles-guide"></div>
             </div>
             <div id="tab-rules" class="tab-body hidden">
@@ -962,7 +962,9 @@
             { id: 'PRESIDENT', name: '대통령', team: 'human', limitType: 'passive', desc: '환각에 면역이다. 낮 찬반 투표로 처형되면 즉시 마피아팀 승리로 게임이 종료된다. 밤에 사망하는 경우에는 이 특수 패배 조건이 발동하지 않는다.' },
             { id: 'RULER_BULLY', name: '불량배', team: 'human', limitType: 'passive', desc: '환각에 면역이다. 조사직의 마피아팀 판정에서 마피아로 취급된다. 승리 조건에서도 살아 있는 시민 수에 포함되지 않는다.' },
             { id: 'COWARD', name: '겁쟁이', team: 'human', limitType: 'passive', desc: '밤에 다른 플레이어의 능력 대상으로 지목되면 사망한다. 능력의 성공 여부와 관계없이 지목 자체가 조건이다. 지목한 사람이 같은 밤에 사망하더라도 그 능력은 발동되므로 겁쟁이는 사망한다. 자기 자신의 선택은 대상 지정으로 보지 않는다.' },
-            { id: 'FOOL', name: '광대', team: 'human', limitType: 'passive', desc: '환각에 면역이다. 자신은 양조사라고 믿고 있으며 게임 화면에서도 양조사처럼 보인다. 밤에는 양조사처럼 대상을 지정할 수 있지만 실제 환각 효과는 발생하지 않는다.' }
+            { id: 'FOOL', name: '광대', team: 'human', limitType: 'passive', desc: '환각에 면역이다. 자신은 양조사라고 믿고 있으며 게임 화면에서도 양조사처럼 보인다. 밤에는 양조사처럼 대상을 지정할 수 있지만 실제 환각 효과는 발생하지 않는다.' },
+            { id: 'CONGRESSMAN', name: '국회의원', team: 'human', limitType: 'passive', desc: '낮 지목 투표에서 한 표를 두 표로 계산한다. 찬반 투표에서는 한 표로 계산한다. 밤에 사용하는 능력은 없다.' },
+            { id: 'SHAMAN', name: '무당', team: 'human', limitType: 'once_game', desc: '게임 중 1회, 밤에 생존자 1명을 지목해 그 사람의 직업을 "A 또는 B 중 하나"로 알려준다. 가짜 후보는 대상과 같은 팀의 다른 직업이라 팀은 확실히 알 수 있다. 변호사·불량배의 조사상 위장은 적용되지 않는다. 환각 상태에서는 반대 팀의 직업 두 개를 알려준다. 자신은 지목할 수 없다.' }
         ];
 
         let roomCode = '';
