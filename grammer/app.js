@@ -246,22 +246,46 @@
     if (base.diagram || base.timeline || base.groups) {
       steps.push({ label: '그림으로 보기', html: renderDiagram(base) });
     }
-    if (base.examples && base.examples.length) {
+    const exHtml = list => (list || []).map(e => `<div class="example"><div class="en">${esc(e.en)}</div><div class="ko">${esc(e.ko)}</div></div>`).join('');
+    // 형태 표
+    if (base.form) {
       steps.push({
-        label: '예문',
-        html: base.examples.map(e => `<div class="example"><div class="en">${esc(e.en)}</div><div class="ko">${esc(e.ko)}</div></div>`).join('')
+        label: '형태',
+        html: `${base.form.note ? `<p>${esc(base.form.note)}</p>` : ''}
+          <div class="form-rows">${base.form.rows.map(r => `
+            <div class="form-row"><span class="badge level">${esc(r.label)}</span>
+              <div class="form-pattern">${esc(r.pattern)}</div>
+              <div class="form-ex">${esc(r.example)}</div></div>`).join('')}</div>
+          ${base.form.tip ? `<div class="point">${esc(base.form.tip)}</div>` : ''}`
       });
+    }
+    // 쓰임별 설명 (쓰임이 있으면 일반 예문 단계 대신)
+    if (base.uses && base.uses.length) {
+      base.uses.forEach((u, n) => {
+        steps.push({
+          label: `쓰임 ${n + 1}. ${u.name}`,
+          html: `<p class="core">${esc(u.meaning)}</p><p>${esc(u.desc)}</p>
+            <div class="chips">${u.signals.map(s => `<span class="chip">${esc(s)}</span>`).join('')}</div>
+            ${exHtml(u.examples)}`
+        });
+      });
+    } else if (base.examples && base.examples.length) {
+      steps.push({ label: '예문', html: exHtml(base.examples) });
     }
     const contrastStep = ct => ({
       label: '헷갈리는 것과 비교',
       html: `<div class="contrast">
         <div><div class="en">${esc(ct.a.en)}</div><div class="ko">${esc(ct.a.ko)}</div></div>
         <div><div class="en">${esc(ct.b.en)}</div><div class="ko">${esc(ct.b.ko)}</div></div>
-      </div><div class="point">${esc(ct.point)}</div>`
+      </div><div class="point">${esc(ct.point)}</div>
+      ${ct.signals ? `<div style="margin-top:14px">${renderGroups(ct.signals)}</div>` : ''}`
     });
     // 기본 단계의 대비와 추가 설명을 먼저
     if (base.contrast) steps.push(contrastStep(base.contrast));
     if (base.extra) steps.push({ label: '더 알아두기', html: `<p>${esc(base.extra)}</p>` });
+    (base.notes || []).forEach(nt => {
+      steps.push({ label: `더 알아두기: ${nt.title}`, html: `<p>${esc(nt.text)}</p>${exHtml(nt.examples)}` });
+    });
     // 학생 단계가 더 높으면 심화 내용과 그 단계의 대비를 이어서
     lv.keys.slice(1).forEach(k => {
       const more = concept.levels[k];
@@ -271,6 +295,14 @@
       if (h) steps.push({ label: `${LEVELS[k]} 심화`, html: h });
       if (more.contrast) steps.push(contrastStep(more.contrast));
     });
+    // 마지막: 자주 하는 실수 (오개념 데이터에서 자동으로)
+    if (concept.misconceptions.length) {
+      steps.push({
+        label: '자주 하는 실수',
+        html: `<ul class="mis-list">${concept.misconceptions.map(m => `<li>${esc(m.desc)}<div class="mis">
+          <span class="wrong-ex">${esc(m.wrong)}</span> → <span class="right-ex">${esc(m.right)}</span></div></li>`).join('')}</ul>`
+      });
+    }
     return { steps, lv, base };
   }
 
@@ -342,22 +374,71 @@
     const area = cache[areaOf(qid)];
     const q = area.questionMap[qid];
     const concept = area.conceptMap[q.concept];
-    const opts = shuffle(q.options);
     const title = session.mode === 'review' ? '오답 복습' : esc(concept.name);
+    const typeLabel = q.type === 'order' ? '<span class="badge">문장 만들기</span>' : '';
+
+    let body;
+    if (q.type === 'order') {
+      body = `<div class="order-answer" id="order-answer"><span class="order-hint">아래 단어를 눌러 순서대로 놓으세요</span></div>
+        <div class="order-bank">${shuffleOrder(q.tokens).map((t, n) => `<button class="token" data-n="${n}">${esc(t)}</button>`).join('')}</div>
+        <div class="btn-row"><button class="btn ghost" id="order-reset">다시 놓기</button><button class="btn" id="order-check" disabled>확인</button></div>`;
+    } else {
+      body = `<div class="options">${shuffle(q.options).map(o => `<button class="option" data-id="${esc(o.id)}">${esc(o.text)}</button>`).join('')}</div>`;
+    }
 
     app.innerHTML = `<a href="${session.mode === 'review' ? '#/' : '#/learn/' + esc(q.concept)}">← 그만하기</a>
       <h1>${title}</h1>
       <p class="sub">${session.idx + 1} / ${session.list.length}</p>
       <div class="card">
-        <div class="q-meta">${levelBadge(q.level)}<span class="badge">${esc(concept.name)}</span></div>
+        <div class="q-meta">${levelBadge(q.level)}<span class="badge">${esc(concept.name)}</span>${typeLabel}</div>
         <div class="question">${esc(q.question)}</div>
-        <div class="options">${opts.map(o => `<button class="option" data-id="${esc(o.id)}">${esc(o.text)}</button>`).join('')}</div>
+        ${body}
         <div id="fb"></div>
       </div>`;
 
-    app.querySelectorAll('.option').forEach(btn => {
-      btn.onclick = () => answer(q, area, btn.dataset.id);
+    if (q.type === 'order') bindOrder(q, area);
+    else app.querySelectorAll('.option').forEach(btn => { btn.onclick = () => answer(q, area, btn.dataset.id); });
+  }
+
+  // 단어 배열: 처음 보이는 순서가 정답과 같지 않도록 섞음
+  let orderTokens = [];
+  function shuffleOrder(tokens) {
+    let s = shuffle(tokens);
+    for (let k = 0; k < 5 && s.join(' ') === tokens.join(' '); k++) s = shuffle(tokens);
+    orderTokens = s;
+    return s;
+  }
+
+  function bindOrder(q, area) {
+    const picked = [];
+    const box = document.getElementById('order-answer');
+    const check = document.getElementById('order-check');
+    const draw = () => {
+      box.innerHTML = picked.length
+        ? picked.map((n, k) => `<button class="token placed" data-k="${k}">${esc(orderTokens[n])}</button>`).join('')
+        : '<span class="order-hint">아래 단어를 눌러 순서대로 놓으세요</span>';
+      app.querySelectorAll('.order-bank .token').forEach(b => { b.disabled = picked.includes(+b.dataset.n); });
+      box.querySelectorAll('.token').forEach(b => {
+        b.onclick = () => { picked.splice(+b.dataset.k, 1); draw(); };
+      });
+      check.disabled = picked.length !== orderTokens.length;
+    };
+    app.querySelectorAll('.order-bank .token').forEach(b => {
+      b.onclick = () => { picked.push(+b.dataset.n); draw(); };
     });
+    document.getElementById('order-reset').onclick = () => { picked.length = 0; draw(); };
+    check.onclick = () => {
+      const built = picked.map(n => orderTokens[n]);
+      const ok = built.join(' ') === q.answer.join(' ');
+      app.querySelectorAll('.token').forEach(b => { b.disabled = true; b.onclick = null; });
+      check.disabled = true;
+      document.getElementById('order-reset').disabled = true;
+      box.classList.add(ok ? 'correct' : 'wrong');
+      const mis = !ok && q.misconception ? findMis(q.misconception) : null;
+      const extra = ok ? '' : `<div class="mis">정답: <span class="right-ex">${esc(q.answer.join(' '))}</span></div>`;
+      finishAnswer(q, ok, mis, extra);
+    };
+    draw();
   }
 
   function answer(q, area, optId) {
@@ -369,14 +450,17 @@
       if (b.dataset.id === right.id) b.classList.add('correct');
       else if (b.dataset.id === optId) b.classList.add('wrong');
     });
-
     const mis = !ok && chosen.misconception ? area.misMap[chosen.misconception] || findMis(chosen.misconception) : null;
+    finishAnswer(q, ok, mis, '');
+  }
+
+  function finishAnswer(q, ok, mis, extraHtml) {
     session.answers.push({ qid: q.id, correct: ok, mis: mis ? mis.id : null });
     recordReview(q.id, ok);
     if (mis) state.mis[mis.id] = (state.mis[mis.id] || 0) + 1;
     save();
 
-    let fb = `<div class="feedback ${ok ? 'good' : 'bad'}"><strong>${ok ? '맞았어요!' : '아쉬워요.'}</strong> ${esc(q.explanation)}`;
+    let fb = `<div class="feedback ${ok ? 'good' : 'bad'}"><strong>${ok ? '맞았어요!' : '아쉬워요.'}</strong> ${esc(q.explanation)}${extraHtml}`;
     if (mis) {
       fb += `<div class="mis">헷갈린 부분: ${esc(mis.desc)}<br>
         <span class="wrong-ex">${esc(mis.wrong)}</span> → <span class="right-ex">${esc(mis.right)}</span></div>`;
