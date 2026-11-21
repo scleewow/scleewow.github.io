@@ -140,6 +140,102 @@
     app.innerHTML = html;
   }
 
+  // ---------- 그림 (시간선 / 묶음) ----------
+  // timeline 표시 종류
+  //   point: 한 시점의 일        { at, label, sub, row }
+  //   dots : 반복되는 일          { at: [..], label, sub, row }
+  //   wave : 진행 중인 일 (물결)   { from, to, arrow?, label, sub, row }
+  //   arrow: 이어짐·연결           { from, to, label?, sub?, row }
+  //   ref  : 기준 시점 (점선)      { at, label, sub }  → 라벨은 시간선 아래
+  // at/from/to: '지금'=0, 과거는 음수, 미래는 양수 (-3.5 ~ 3.5)
+  // row: 라벨 높이 (0 = 시간선 가까이, 1 = 위쪽)
+  const TL = { w: 360, h: 196, axisY: 128, unit: 44, cx: 180 };
+  const tx = at => TL.cx + at * TL.unit;
+  const rowY = row => (row ? 24 : 72);
+
+  function svgLabel(x, y, label, sub, color) {
+    // 가장자리에서 글자가 잘리지 않도록 정렬 기준을 바꿈
+    let anchor = 'middle';
+    let ax = x;
+    if (x < 90) { anchor = 'start'; ax = Math.max(6, x - 12); }
+    else if (x > TL.w - 90) { anchor = 'end'; ax = Math.min(TL.w - 6, x + 12); }
+    let s = '';
+    if (label) s += `<text x="${ax}" y="${y}" text-anchor="${anchor}" class="tl-en" fill="${color || '#1f2430'}">${esc(label)}</text>`;
+    if (sub) s += `<text x="${ax}" y="${y + 19}" text-anchor="${anchor}" class="tl-ko">${esc(sub)}</text>`;
+    return s;
+  }
+
+  function wavePath(x1, x2, y) {
+    const amp = 5, half = 7;
+    let d = `M ${x1} ${y}`;
+    let up = true;
+    for (let x = x1; x < x2; x += half) {
+      const nx = Math.min(x + half, x2);
+      d += ` Q ${(x + nx) / 2} ${up ? y - amp * 2 : y + amp * 2} ${nx} ${y}`;
+      up = !up;
+    }
+    return d;
+  }
+
+  function renderTimeline(marks) {
+    const y = TL.axisY;
+    let back = '', front = '', labels = '';
+    marks.forEach(m => {
+      if (m.type === 'ref') {
+        const x = tx(m.at);
+        back += `<line x1="${x}" y1="${y - 32}" x2="${x}" y2="${y + 10}" class="tl-ref"/>`;
+        labels += svgLabel(x, y + 34, m.label, m.sub, '#6b7280');
+      } else if (m.type === 'point') {
+        const x = tx(m.at);
+        front += `<circle cx="${x}" cy="${y}" r="7" class="tl-point"/>`;
+        labels += svgLabel(x, rowY(m.row), m.label, m.sub);
+      } else if (m.type === 'dots') {
+        m.at.forEach(a => { front += `<circle cx="${tx(a)}" cy="${y}" r="5" class="tl-point"/>`; });
+        labels += svgLabel(tx(0), rowY(m.row), m.label, m.sub);
+      } else if (m.type === 'wave') {
+        const x1 = tx(m.from), x2 = tx(m.to);
+        front += `<path d="${wavePath(x1, x2, y - 14)}" class="tl-wave" ${m.arrow ? 'marker-end="url(#tl-head-w)"' : ''}/>`;
+        labels += svgLabel((x1 + x2) / 2, rowY(m.row), m.label, m.sub);
+      } else if (m.type === 'arrow') {
+        const x1 = tx(m.from), x2 = tx(m.to);
+        front += `<line x1="${x1}" y1="${y - 16}" x2="${x2 - 6}" y2="${y - 16}" class="tl-arrow" marker-end="url(#tl-head)"/>`;
+        if (m.label || m.sub) labels += svgLabel((x1 + x2) / 2, rowY(m.row), m.label, m.sub);
+      }
+    });
+    const now = tx(0);
+    return `<svg class="timeline" viewBox="0 0 ${TL.w} ${TL.h}" role="img" aria-label="시간선 그림">
+      <defs>
+        <marker id="tl-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3b5bdb"/></marker>
+        <marker id="tl-head-w" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e8590c"/></marker>
+        <marker id="tl-axis" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#adb5bd"/></marker>
+      </defs>
+      ${back}
+      <line x1="8" y1="${y}" x2="${TL.w - 8}" y2="${y}" class="tl-axis" marker-end="url(#tl-axis)"/>
+      <line x1="${now}" y1="${y - 8}" x2="${now}" y2="${y + 8}" class="tl-now"/>
+      <text x="${now}" y="${y + 28}" text-anchor="middle" class="tl-now-text">지금</text>
+      <text x="10" y="${y + 28}" class="tl-side">과거</text>
+      <text x="${TL.w - 10}" y="${y + 28}" text-anchor="end" class="tl-side">미래</text>
+      ${front}${labels}
+    </svg>`;
+  }
+
+  function renderGroups(groups) {
+    return `<div class="groups" style="grid-template-columns: repeat(${groups.length}, 1fr)">${groups.map(g => `
+      <div class="group ${g.tone === 'good' ? 'good' : ''}">
+        <div class="group-title">${esc(g.title)}</div>
+        ${g.items.map(it => `<div class="group-item">${esc(it)}</div>`).join('')}
+        ${g.example ? `<div class="group-ex">${esc(g.example)}</div>` : ''}
+      </div>`).join('')}</div>`;
+  }
+
+  function renderDiagram(lv) {
+    let html = '';
+    if (lv.timeline) html += renderTimeline(lv.timeline);
+    if (lv.groups) html += renderGroups(lv.groups);
+    if (lv.diagram) html += `<p class="diagram-caption">${esc(lv.diagram)}</p>`;
+    return html;
+  }
+
   // ---------- 개념 학습 ----------
   function buildSteps(concept) {
     const lv = levelsFor(concept);
@@ -147,7 +243,9 @@
     const steps = [];
     if (base.why) steps.push({ label: '왜 필요할까?', html: `<p>${esc(base.why)}</p>` });
     if (base.core) steps.push({ label: '핵심 한 문장', html: `<p class="core">${esc(base.core)}</p>` });
-    if (base.diagram) steps.push({ label: '그림으로 보기', html: `<div class="diagram">${esc(base.diagram)}</div>` });
+    if (base.diagram || base.timeline || base.groups) {
+      steps.push({ label: '그림으로 보기', html: renderDiagram(base) });
+    }
     if (base.examples && base.examples.length) {
       steps.push({
         label: '예문',
