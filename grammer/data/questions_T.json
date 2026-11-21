@@ -3,7 +3,8 @@
   "types": {
     "concept": "개념 확인: 규칙이나 쓰임을 알고 있는지",
     "apply": "적용: 빈칸 채우기, 맞는 문장 고르기",
-    "reason": "이유 확인: 왜 그 답인지 이해했는지"
+    "reason": "이유 확인: 왜 그 답인지 이해했는지",
+    "order": "문장 만들기: 단어를 순서대로 배열"
   },
   "questions": [
     {
@@ -586,41 +587,89 @@
       "concept": "T.perfect",
       "level": "M",
       "type": "apply",
-      "question": "I ___ in Seoul since 2018.",
+      "question": "She ___ been to Japan twice.",
       "options": [
         {
           "id": "a",
-          "text": "have lived",
+          "text": "has",
           "correct": true
         },
         {
           "id": "b",
-          "text": "lived",
-          "misconception": "T.perfect.past_for_continuation"
+          "text": "have",
+          "misconception": "T.perfect.has_agree"
         },
         {
           "id": "c",
-          "text": "live",
+          "text": "is",
           "misconception": null
         }
       ],
-      "explanation": "since 2018(2018년부터)은 과거에 시작해 지금까지 이어지는 일이라 현재완료를 써요."
+      "explanation": "주어 She는 한 사람(3인칭 단수)이라 has를 써요. has been to는 '가 본 적이 있다'는 경험이에요."
     },
     {
       "id": "T.perfect.q2",
       "concept": "T.perfect",
       "level": "M",
       "type": "apply",
-      "question": "She has studied English ___ five years.",
+      "question": "I ___ finished my homework yet.",
       "options": [
         {
           "id": "a",
-          "text": "for",
+          "text": "haven't",
           "correct": true
         },
         {
           "id": "b",
+          "text": "don't",
+          "misconception": "T.perfect.neg_do"
+        },
+        {
+          "id": "c",
+          "text": "am not",
+          "misconception": null
+        }
+      ],
+      "explanation": "현재완료의 부정문은 have/has 뒤에 not을 붙여요. do/don't는 쓰지 않아요."
+    },
+    {
+      "id": "T.perfect.q3",
+      "concept": "T.perfect",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 너는 고래를 본 적이 있니?",
+      "tokens": [
+        "seen",
+        "you",
+        "Have",
+        "a whale?",
+        "ever"
+      ],
+      "answer": [
+        "Have",
+        "you",
+        "ever",
+        "seen",
+        "a whale?"
+      ],
+      "misconception": "T.perfect.question_order",
+      "explanation": "의문문은 Have/Has가 주어 앞으로 나가요. ever는 주어와 p.p. 사이에 와요."
+    },
+    {
+      "id": "T.perfect.q4",
+      "concept": "T.perfect",
+      "level": "M",
+      "type": "apply",
+      "question": "We have known each other ___ we were kids.",
+      "options": [
+        {
+          "id": "a",
           "text": "since",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "for",
           "misconception": "T.perfect.since_for"
         },
         {
@@ -629,10 +678,133 @@
           "misconception": "T.perfect.with_past_time"
         }
       ],
-      "explanation": "five years는 '기간'이라 for를 써요. since 뒤에는 시작 시점(since 2020)이 와요."
+      "explanation": "we were kids(우리가 어렸을 때)는 시작 시점이라 since를 써요. for 뒤에는 기간(for ten years)이 와요."
     },
     {
-      "id": "T.perfect.q3",
+      "id": "T.perfect.q5",
+      "concept": "T.perfect",
+      "level": "M",
+      "type": "concept",
+      "question": "I have just eaten lunch. 이 문장의 현재완료는 어떤 쓰임일까요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "완료 (방금 ~했다)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "경험 (~해 본 적이 있다)",
+          "misconception": "T.perfect.use_confusion"
+        },
+        {
+          "id": "c",
+          "text": "계속 (계속 ~해 왔다)",
+          "misconception": "T.perfect.use_confusion"
+        }
+      ],
+      "explanation": "just(방금)는 완료와 함께 쓰는 신호어예요. 방금 점심 먹는 일이 끝났다는 뜻이에요."
+    },
+    {
+      "id": "T.perfect.q6",
+      "concept": "T.perfect",
+      "level": "M",
+      "type": "reason",
+      "question": "Tom has gone to London. 이 문장의 뜻으로 알맞은 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "톰은 런던에 가서 지금 여기 없다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "톰은 런던에 가 본 적이 있다.",
+          "misconception": "T.perfect.gone_been"
+        },
+        {
+          "id": "c",
+          "text": "톰은 지금 런던으로 가는 중이다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "have gone to는 '가 버렸다'(결과)는 뜻이에요. '가 본 적이 있다'는 have been to예요."
+    },
+    {
+      "id": "T.perfect.q7",
+      "concept": "T.perfect",
+      "level": "M",
+      "type": "apply",
+      "question": "I have ___ finished my homework. (방금 끝냈다)",
+      "options": [
+        {
+          "id": "a",
+          "text": "just",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "yet",
+          "misconception": "T.perfect.yet_position"
+        },
+        {
+          "id": "c",
+          "text": "ago",
+          "misconception": "T.perfect.with_past_time"
+        }
+      ],
+      "explanation": "'방금'은 just이고, have와 p.p. 사이에 와요. yet은 부정문·의문문 끝에 쓰고, ago는 과거시제와 써요."
+    },
+    {
+      "id": "T.perfect.q8",
+      "concept": "T.perfect",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 그를 3년째 알고 지낸다.",
+      "tokens": [
+        "for three years.",
+        "him",
+        "known",
+        "have",
+        "I"
+      ],
+      "answer": [
+        "I",
+        "have",
+        "known",
+        "him",
+        "for three years."
+      ],
+      "misconception": null,
+      "explanation": "과거부터 지금까지 계속 알고 지내 온 것(계속)이라 have + p.p.를 쓰고, 기간은 for로 나타내요."
+    },
+    {
+      "id": "T.perfect.q9",
+      "concept": "T.perfect",
+      "level": "M",
+      "type": "apply",
+      "question": "I ___ him at the library yesterday.",
+      "options": [
+        {
+          "id": "a",
+          "text": "saw",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "have seen",
+          "misconception": "T.perfect.with_past_time"
+        },
+        {
+          "id": "c",
+          "text": "have saw",
+          "misconception": "T.pp_form.past_for_pp"
+        }
+      ],
+      "explanation": "yesterday는 과거의 한 시점을 콕 집는 말이라 현재완료와 쓸 수 없어요. 과거시제 saw를 써요."
+    },
+    {
+      "id": "T.perfect.q10",
       "concept": "T.perfect",
       "level": "H",
       "type": "apply",
@@ -640,46 +812,21 @@
       "options": [
         {
           "id": "a",
-          "text": "I have finished my homework.",
+          "text": "When did you lose your bag?",
           "correct": true
         },
         {
           "id": "b",
-          "text": "I have finished my homework yesterday.",
+          "text": "When have you lost your bag?",
+          "misconception": "T.perfect.when_question"
+        },
+        {
+          "id": "c",
+          "text": "I have lost my bag two days ago.",
           "misconception": "T.perfect.with_past_time"
-        },
-        {
-          "id": "c",
-          "text": "He have finished his homework.",
-          "misconception": "T.perfect.has_agree"
         }
       ],
-      "explanation": "yesterday처럼 과거 시점을 콕 집는 말은 현재완료와 함께 쓸 수 없어요. 주어 He에는 has를 써요."
-    },
-    {
-      "id": "T.perfect.q4",
-      "concept": "T.perfect",
-      "level": "M",
-      "type": "reason",
-      "question": "I have lost my phone. 이 문장이 말해 주는 것은?",
-      "options": [
-        {
-          "id": "a",
-          "text": "휴대폰을 잃어버렸고, 지금도 없다.",
-          "correct": true
-        },
-        {
-          "id": "b",
-          "text": "휴대폰을 잃어버렸다가 다시 찾았다.",
-          "misconception": "T.perfect.as_past"
-        },
-        {
-          "id": "c",
-          "text": "지금 휴대폰을 잃어버리는 중이다.",
-          "misconception": null
-        }
-      ],
-      "explanation": "현재완료는 과거의 일이 지금과 이어져 있다는 뜻이에요. 잃어버린 결과가 지금까지 남아 있어요."
+      "explanation": "When(언제?)은 과거의 한 시점을 묻는 말이고, two days ago도 과거의 한 시점이에요. 둘 다 과거시제와 써요."
     },
     {
       "id": "T.past_perfect.q1",
