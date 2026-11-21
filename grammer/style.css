@@ -106,6 +106,28 @@ h3 { font-size: 16px; margin: 0 0 8px; }
   background: var(--primary-soft); border-radius: 10px;
   padding: 14px 16px; color: #23336b;
 }
+/* 시간선 그림 */
+.timeline { width: 100%; max-width: 480px; margin: 0 auto; height: auto; display: block; background: #fbfcff; border: 1px solid var(--line); border-radius: 10px; }
+.tl-axis { stroke: var(--none); stroke-width: 2; }
+.tl-now { stroke: var(--primary); stroke-width: 3; }
+.tl-now-text { font-size: 14px; font-weight: 700; fill: var(--primary); }
+.tl-side { font-size: 13px; fill: var(--muted); }
+.tl-point { fill: var(--primary); }
+.tl-wave { fill: none; stroke: var(--warn); stroke-width: 3; stroke-linecap: round; }
+.tl-arrow { stroke: var(--primary); stroke-width: 2.5; }
+.tl-ref { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.tl-en { font-size: 16px; font-weight: 700; }
+.tl-ko { font-size: 13.5px; fill: var(--muted); }
+.diagram-caption { color: var(--muted); font-size: 14px; margin: 10px 0 0; }
+
+/* 묶음 그림 */
+.groups { display: grid; gap: 10px; }
+.group { background: var(--bg); border: 2px solid var(--line); border-radius: 12px; padding: 12px; text-align: center; }
+.group.good { border-color: var(--primary); background: var(--primary-soft); }
+.group-title { font-weight: 700; font-size: 15px; margin-bottom: 8px; }
+.group-item { font-size: 16px; padding: 3px 0; }
+.group-ex { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); font-weight: 600; color: var(--primary); }
+
 .example { padding: 10px 0; border-top: 1px dashed var(--line); }
 .example:first-child { border-top: none; }
 .en { font-size: 17px; font-weight: 600; }
