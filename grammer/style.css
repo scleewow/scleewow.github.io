@@ -1,0 +1,160 @@
+:root {
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --text: #1f2430;
+  --muted: #6b7280;
+  --line: #e3e6ee;
+  --primary: #3b5bdb;
+  --primary-soft: #e8edff;
+  --good: #2f9e44;
+  --good-soft: #e6f6ea;
+  --warn: #e8590c;
+  --warn-soft: #fff1e6;
+  --none: #adb5bd;
+  --bad: #c92a2a;
+  --bad-soft: #ffeaea;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+a { color: var(--primary); text-decoration: none; }
+
+.topbar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+  padding: 12px 20px;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+}
+.brand { font-weight: 700; color: var(--text); }
+.topbar nav { display: flex; gap: 16px; }
+.topbar nav a { color: var(--muted); font-size: 15px; }
+.topbar nav a:hover { color: var(--primary); }
+.count { background: var(--warn); color: #fff; border-radius: 10px; padding: 0 7px; font-size: 12px; margin-left: 4px; }
+
+main { max-width: 760px; margin: 0 auto; padding: 20px 16px 60px; }
+.loading { color: var(--muted); }
+
+h1 { font-size: 24px; margin: 8px 0 4px; }
+h2 { font-size: 19px; margin: 24px 0 10px; }
+h3 { font-size: 16px; margin: 0 0 8px; }
+.sub { color: var(--muted); margin: 0 0 16px; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+
+.btn {
+  display: inline-block;
+  border: none; border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer;
+  background: var(--primary); color: #fff;
+  font-family: inherit;
+}
+.btn:disabled { opacity: .4; cursor: default; }
+.btn.ghost { background: var(--primary-soft); color: var(--primary); }
+.btn-row { display: flex; gap: 10px; justify-content: space-between; margin-top: 18px; flex-wrap: wrap; }
+
+.badge {
+  display: inline-block; font-size: 12px; font-weight: 600;
+  padding: 2px 8px; border-radius: 8px;
+  background: var(--line); color: var(--muted);
+}
+.badge.good { background: var(--good-soft); color: var(--good); }
+.badge.warn { background: var(--warn-soft); color: var(--warn); }
+.badge.level { background: var(--primary-soft); color: var(--primary); }
+
+/* 홈: 개념 목록 */
+.area-head { display: flex; justify-content: space-between; align-items: baseline; }
+.legend { display: flex; gap: 12px; font-size: 13px; color: var(--muted); margin: 4px 0 14px; flex-wrap: wrap; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; background: var(--none); vertical-align: middle; }
+.dot.good { background: var(--good); }
+.dot.warn { background: var(--warn); }
+.concept-list { list-style: none; padding: 0; margin: 0; }
+.concept-list li { border-top: 1px solid var(--line); }
+.concept-list li:first-child { border-top: none; }
+.concept-list a {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 11px 4px; color: var(--text);
+}
+.concept-list a:hover { background: var(--bg); }
+.concept-list .name { flex: 1; }
+.locked { color: var(--muted); }
+.areas-soon { color: var(--muted); font-size: 14px; }
+
+/* 개념 학습 */
+.progress-steps { display: flex; gap: 4px; margin: 10px 0 16px; }
+.progress-steps span { flex: 1; height: 5px; border-radius: 3px; background: var(--line); }
+.progress-steps span.on { background: var(--primary); }
+.step-label { color: var(--primary); font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+.core { font-size: 19px; font-weight: 700; line-height: 1.5; }
+.diagram {
+  background: var(--primary-soft); border-radius: 10px;
+  padding: 14px 16px; color: #23336b;
+}
+.example { padding: 10px 0; border-top: 1px dashed var(--line); }
+.example:first-child { border-top: none; }
+.en { font-size: 17px; font-weight: 600; }
+.ko { color: var(--muted); font-size: 15px; }
+.contrast { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.contrast > div { background: var(--bg); border-radius: 10px; padding: 12px; }
+.point { margin-top: 12px; padding: 10px 14px; border-left: 4px solid var(--primary); background: var(--primary-soft); border-radius: 0 8px 8px 0; }
+.prereq { font-size: 14px; color: var(--muted); }
+.prereq a { margin-right: 8px; }
+.notice { background: var(--warn-soft); color: #8a3a00; border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; font-size: 14px; }
+textarea {
+  width: 100%; min-height: 90px; padding: 10px; font-size: 15px; font-family: inherit;
+  border: 1px solid var(--line); border-radius: 10px; resize: vertical;
+}
+.ai-box { margin-top: 12px; padding: 12px 14px; background: var(--bg); border-radius: 10px; white-space: pre-wrap; font-size: 15px; }
+
+/* 문제 */
+.q-meta { display: flex; gap: 6px; margin-bottom: 8px; }
+.question { font-size: 18px; font-weight: 600; margin-bottom: 14px; }
+.options { display: grid; gap: 8px; }
+.option {
+  text-align: left; padding: 12px 14px; font-size: 16px; font-family: inherit;
+  background: var(--card); border: 2px solid var(--line); border-radius: 10px; cursor: pointer;
+  color: var(--text);
+}
+.option:hover:not(:disabled) { border-color: var(--primary); }
+.option.correct { border-color: var(--good); background: var(--good-soft); }
+.option.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.option:disabled { cursor: default; }
+.feedback { margin-top: 14px; padding: 12px 14px; border-radius: 10px; }
+.feedback.good { background: var(--good-soft); }
+.feedback.bad { background: var(--bad-soft); }
+.mis { margin-top: 8px; font-size: 15px; }
+.mis .wrong-ex { color: var(--bad); text-decoration: line-through; }
+.mis .right-ex { color: var(--good); font-weight: 600; }
+
+.result-score { font-size: 32px; font-weight: 800; }
+.mis-list { padding-left: 18px; }
+.mis-list li { margin-bottom: 8px; }
+
+/* 설정 */
+label { display: block; font-weight: 600; margin: 14px 0 6px; }
+select, input[type=text] {
+  width: 100%; padding: 10px; font-size: 15px; font-family: inherit;
+  border: 1px solid var(--line); border-radius: 10px; background: #fff;
+}
+.hint { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+@media (max-width: 560px) {
+  .contrast { grid-template-columns: 1fr; }
+  .topbar nav { gap: 12px; }
+}
