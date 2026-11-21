@@ -164,6 +164,31 @@ textarea {
 .mis .wrong-ex { color: var(--bad); text-decoration: line-through; }
 .mis .right-ex { color: var(--good); font-weight: 600; }
 
+/* 형태 표 · 신호어 */
+.form-rows { display: grid; gap: 8px; margin: 12px 0; }
+.form-row { background: var(--bg); border-radius: 10px; padding: 10px 12px; }
+.form-pattern { font-weight: 700; margin-top: 4px; }
+.form-ex { color: var(--primary); font-size: 15px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 6px; }
+.chip { background: var(--primary-soft); color: var(--primary); border-radius: 14px; padding: 3px 10px; font-size: 14px; font-weight: 600; }
+
+/* 단어 배열 문제 */
+.order-answer {
+  min-height: 56px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  padding: 10px; border: 2px dashed var(--line); border-radius: 10px; margin-bottom: 12px;
+}
+.order-answer.correct { border: 2px solid var(--good); background: var(--good-soft); }
+.order-answer.wrong { border: 2px solid var(--bad); background: var(--bad-soft); }
+.order-hint { color: var(--muted); font-size: 14px; }
+.order-bank { display: flex; flex-wrap: wrap; gap: 8px; }
+.token {
+  padding: 8px 14px; font-size: 16px; font-family: inherit; cursor: pointer;
+  background: var(--card); border: 2px solid var(--line); border-radius: 10px; color: var(--text);
+}
+.token.placed { border-color: var(--primary); background: var(--primary-soft); }
+.token:disabled { opacity: .35; cursor: default; }
+.order-answer .token:disabled { opacity: 1; }
+
 .result-score { font-size: 32px; font-weight: 800; }
 .mis-list { padding-left: 18px; }
 .mis-list li { margin-bottom: 8px; }
