@@ -520,27 +520,9 @@
       ],
       "levels": {
         "M": {
-          "why": "과거에 있었던 일이 지금까지 이어지거나 지금에 영향을 줄 때, 과거시제만으로는 그 연결을 표현할 수 없어요.",
+          "why": "'열쇠를 잃어버렸어'라고 말할 때, '그래서 지금 문을 못 열어'라는 뜻까지 전하고 싶을 때가 있어요. 과거시제는 과거의 한 점만 말하기 때문에 지금과의 연결을 표현할 수 없어요. 현재완료는 과거의 일을 '지금'과 이어서 말하는 방법이에요.",
           "core": "have/has + p.p. = 과거에 일어난 일이 지금과 연결돼 있을 때 (경험·계속·완료·결과)",
           "diagram": "과거의 점에서 '지금'까지 화살표가 이어져 있어요. 과거시제는 점만 있지만, 현재완료는 지금까지 이어져요.",
-          "examples": [
-            {
-              "en": "I have been to Jeju twice.",
-              "ko": "나는 제주도에 두 번 가 봤어요. (경험)"
-            },
-            {
-              "en": "She has lived here since 2020.",
-              "ko": "그녀는 2020년부터 여기 살고 있어요. (계속)"
-            },
-            {
-              "en": "I have just finished my homework.",
-              "ko": "나는 방금 숙제를 끝냈어요. (완료)"
-            },
-            {
-              "en": "He has lost his key.",
-              "ko": "그는 열쇠를 잃어버렸어요. 지금도 없어요. (결과)"
-            }
-          ],
           "contrast": {
             "a": {
               "en": "I lost my key yesterday.",
@@ -550,7 +532,29 @@
               "en": "I have lost my key.",
               "ko": "열쇠를 잃어버렸다. (그래서 지금 없다)"
             },
-            "point": "과거시제는 과거의 한 점만, 현재완료는 그 일이 지금과 이어져 있음을 말해요."
+            "point": "과거시제는 과거의 한 점만, 현재완료는 그 일이 지금과 이어져 있음을 말해요. 함께 쓰는 말을 보면 쉽게 구분할 수 있어요.",
+            "signals": [
+              {
+                "title": "과거시제와 함께",
+                "items": [
+                  "yesterday",
+                  "~ ago",
+                  "last ~",
+                  "in 2020",
+                  "When ~?"
+                ]
+              },
+              {
+                "title": "현재완료와 함께",
+                "items": [
+                  "ever, never",
+                  "just, already, yet",
+                  "for, since",
+                  "How long ~?"
+                ],
+                "tone": "good"
+              }
+            ]
           },
           "summary_prompt": "현재완료가 과거시제와 어떻게 다른지 내 말로 써 보세요.",
           "timeline": [
@@ -569,25 +573,202 @@
               "sub": "그래서 지금도 없음",
               "row": 1
             }
+          ],
+          "form": {
+            "note": "have/has가 '현재'라는 시제를, 과거분사(p.p.)가 뜻을 담당해요. 주어가 he·she·it처럼 한 사람·한 개(3인칭 단수)면 has를 써요.",
+            "rows": [
+              {
+                "label": "긍정",
+                "pattern": "주어 + have/has + p.p.",
+                "example": "I have seen it. / She has seen it."
+              },
+              {
+                "label": "부정",
+                "pattern": "주어 + have/has + not + p.p.",
+                "example": "I haven't seen it. / She hasn't seen it."
+              },
+              {
+                "label": "의문",
+                "pattern": "Have/Has + 주어 + p.p. ~?",
+                "example": "Have you seen it? / Has she seen it?"
+              },
+              {
+                "label": "짧은 대답",
+                "pattern": "Yes, 주어 + have/has. / No, 주어 + haven't/hasn't.",
+                "example": "Yes, I have. / No, she hasn't."
+              },
+              {
+                "label": "줄임말",
+                "pattern": "I have → I've, she has → she's, have not → haven't, has not → hasn't",
+                "example": "I've finished. / He's gone. (여기서 's는 has)"
+              }
+            ],
+            "tip": "부정문과 의문문에 do/does/did를 쓰지 않아요. have/has가 직접 not을 붙이고, 주어 앞으로 나가요."
+          },
+          "uses": [
+            {
+              "name": "경험",
+              "meaning": "~해 본 적이 있다",
+              "desc": "지금까지 살면서 한 번이라도 해 본 일이에요. 언제 했는지는 중요하지 않고, '해 본 적이 있는지'가 중요해요.",
+              "signals": [
+                "ever (한 번이라도)",
+                "never (한 번도 ~않은)",
+                "before (전에)",
+                "once, twice, ~ times (~번)"
+              ],
+              "examples": [
+                {
+                  "en": "I have visited Jeju twice.",
+                  "ko": "나는 제주도에 두 번 가 봤어요."
+                },
+                {
+                  "en": "Have you ever seen a rainbow?",
+                  "ko": "너는 무지개를 본 적이 있니?"
+                },
+                {
+                  "en": "She has never ridden a horse.",
+                  "ko": "그녀는 말을 한 번도 타 본 적이 없어요."
+                }
+              ]
+            },
+            {
+              "name": "계속",
+              "meaning": "(지금까지) 계속 ~해 왔다",
+              "desc": "과거에 시작한 일이 지금까지 이어지고 있어요. 얼마 동안인지(for), 언제부터인지(since)를 자주 함께 써요.",
+              "signals": [
+                "for + 기간 (for five years)",
+                "since + 시작 시점 (since 2020)",
+                "How long ~? (얼마나 오래)"
+              ],
+              "examples": [
+                {
+                  "en": "I have lived here for five years.",
+                  "ko": "나는 여기서 5년째 살고 있어요. (지금도 살아요)"
+                },
+                {
+                  "en": "We have known each other since 2020.",
+                  "ko": "우리는 2020년부터 알고 지냈어요."
+                },
+                {
+                  "en": "How long have you studied English?",
+                  "ko": "영어를 공부한 지 얼마나 됐어?"
+                }
+              ]
+            },
+            {
+              "name": "완료",
+              "meaning": "(막, 이미) ~했다",
+              "desc": "어떤 일이 방금 또는 이미 끝났어요. 끝난 때가 지금과 가까워서, 지금 그 일이 끝난 상태라는 점이 중요해요.",
+              "signals": [
+                "just (방금)",
+                "already (이미, 벌써)",
+                "yet (부정문: 아직 / 의문문: 벌써)"
+              ],
+              "examples": [
+                {
+                  "en": "I have just finished my homework.",
+                  "ko": "나는 방금 숙제를 끝냈어요."
+                },
+                {
+                  "en": "The movie has already started.",
+                  "ko": "영화가 벌써 시작했어요."
+                },
+                {
+                  "en": "I haven't eaten lunch yet.",
+                  "ko": "나는 아직 점심을 안 먹었어요."
+                }
+              ]
+            },
+            {
+              "name": "결과",
+              "meaning": "~해 버렸다 (그래서 지금 ~하다)",
+              "desc": "과거에 한 일의 결과가 지금까지 남아 있어요. 특별한 신호어가 없어서 문맥으로 판단해요.",
+              "signals": [
+                "신호어 없음: 문맥으로 판단",
+                "자주 쓰는 동사: lose, go, break, leave"
+              ],
+              "examples": [
+                {
+                  "en": "He has lost his key.",
+                  "ko": "그는 열쇠를 잃어버렸어요. (그래서 지금 없어요)"
+                },
+                {
+                  "en": "She has gone to Busan.",
+                  "ko": "그녀는 부산에 가 버렸어요. (그래서 지금 여기 없어요)"
+                },
+                {
+                  "en": "I have broken my phone.",
+                  "ko": "나는 휴대폰을 망가뜨렸어요. (그래서 지금 못 써요)"
+                }
+              ]
+            }
+          ],
+          "notes": [
+            {
+              "title": "have been to와 have gone to",
+              "text": "have been to는 '가 본 적이 있다'(경험)는 뜻이고, 지금은 돌아와 있어요. have gone to는 '가 버렸다'(결과)는 뜻이라 지금 여기 없어요. 그래서 말하는 내가 여기 있는 I have gone to ~는 보통 쓰지 않아요.",
+              "examples": [
+                {
+                  "en": "I have been to Japan.",
+                  "ko": "나는 일본에 가 본 적이 있어요."
+                },
+                {
+                  "en": "He has gone to Japan.",
+                  "ko": "그는 일본에 가 버렸어요. (지금 여기 없어요)"
+                }
+              ]
+            },
+            {
+              "title": "신호어의 위치",
+              "text": "ever, never, just, already는 have와 p.p. 사이에 와요. yet은 부정문이나 의문문의 맨 끝에 와요.",
+              "examples": [
+                {
+                  "en": "I have already eaten.",
+                  "ko": "나는 이미 먹었어요."
+                },
+                {
+                  "en": "Have you finished it yet?",
+                  "ko": "그거 벌써 끝냈어?"
+                }
+              ]
+            }
           ]
         },
         "H": {
-          "core": "yesterday, ago, last ~, when(언제?)처럼 과거의 한 시점을 콕 집는 말과는 현재완료를 쓰지 않아요.",
-          "extra": "for + 기간(for three years), since + 시작 시점(since 2020)."
+          "core": "yesterday, ~ ago, last ~처럼 과거의 한 시점을 콕 집는 말, 그리고 '언제?'라고 묻는 When 의문문은 현재완료와 함께 쓰지 않아요.",
+          "extra": "When did you lose it? (O) / When have you lost it? (X). 언제냐고 물으면 과거의 한 점을 묻는 것이라 과거시제를 써요."
         }
       },
       "misconceptions": [
         {
           "id": "T.perfect.with_past_time",
           "desc": "분명한 과거 시점 표현과 함께 현재완료를 씀",
-          "wrong": "I have seen it yesterday.",
-          "right": "I saw it yesterday."
+          "wrong": "I have seen him yesterday.",
+          "right": "I saw him yesterday."
+        },
+        {
+          "id": "T.perfect.has_agree",
+          "desc": "주어에 맞지 않는 have/has를 씀",
+          "wrong": "She have been to Japan.",
+          "right": "She has been to Japan."
+        },
+        {
+          "id": "T.perfect.neg_do",
+          "desc": "현재완료 부정문·의문문에 do/does를 씀",
+          "wrong": "I don't have finished it.",
+          "right": "I haven't finished it."
+        },
+        {
+          "id": "T.perfect.question_order",
+          "desc": "의문문에서 have/has를 주어 앞으로 보내지 않음",
+          "wrong": "You have ever seen a whale?",
+          "right": "Have you ever seen a whale?"
         },
         {
           "id": "T.perfect.since_for",
           "desc": "since(시작 시점)와 for(기간)를 혼동",
-          "wrong": "I have lived here for 2020.",
-          "right": "I have lived here since 2020."
+          "wrong": "I have lived here since five years.",
+          "right": "I have lived here for five years."
         },
         {
           "id": "T.perfect.past_for_continuation",
@@ -596,10 +777,28 @@
           "right": "I have lived in Seoul since 2018."
         },
         {
-          "id": "T.perfect.has_agree",
-          "desc": "주어에 맞지 않는 have/has를 씀",
-          "wrong": "He have finished.",
-          "right": "He has finished."
+          "id": "T.perfect.use_confusion",
+          "desc": "현재완료의 네 가지 쓰임(경험·계속·완료·결과)을 구분하지 못함",
+          "wrong": "I have just eaten. = 먹어 본 적이 있다(경험)",
+          "right": "I have just eaten. = 방금 먹었다(완료)"
+        },
+        {
+          "id": "T.perfect.gone_been",
+          "desc": "have gone to(가 버렸다)와 have been to(가 본 적 있다)를 혼동",
+          "wrong": "He has gone to London. = 런던에 가 본 적이 있다",
+          "right": "He has gone to London. = 런던에 가서 지금 여기 없다"
+        },
+        {
+          "id": "T.perfect.yet_position",
+          "desc": "yet을 긍정문에 쓰거나 위치를 틀림",
+          "wrong": "I have yet finished it.",
+          "right": "I have just finished it. / I haven't finished it yet."
+        },
+        {
+          "id": "T.perfect.when_question",
+          "desc": "When(언제?) 의문문에 현재완료를 씀",
+          "wrong": "When have you lost your bag?",
+          "right": "When did you lose your bag?"
         },
         {
           "id": "T.perfect.as_past",
