@@ -1,0 +1,392 @@
+{
+  "area": "T",
+  "title": "동사의 시간",
+  "intro": "동사가 '언제'를 표현하는 방법이에요. 모든 시제는 하나의 시간선 위에 그려서 설명하고, 새 시제를 배울 때마다 같은 시간선에 더해요.",
+  "concepts": [
+    {
+      "id": "T.present",
+      "name": "현재시제",
+      "stages": "E",
+      "prerequisites": ["S.verb"],
+      "levels": {
+        "E": {
+          "why": "매일 하는 일, 늘 그런 사실, 지금의 마음이나 상태를 말할 때 필요해요.",
+          "core": "현재시제는 '지금 이 순간'이 아니라 반복되는 습관, 변하지 않는 사실, 지금의 상태를 말해요.",
+          "diagram": "시간선의 어제·오늘·내일 위에 점이 여러 개 찍힌 그림. '늘 그래요'라는 뜻이에요.",
+          "examples": [
+            { "en": "I walk to school every day.", "ko": "나는 매일 걸어서 학교에 가요. (습관)" },
+            { "en": "The sun rises in the east.", "ko": "해는 동쪽에서 떠요. (변하지 않는 사실)" },
+            { "en": "I like pizza.", "ko": "나는 피자를 좋아해요. (지금의 상태)" }
+          ],
+          "contrast": null,
+          "summary_prompt": "현재시제는 언제 쓰는지 내 말로 한 줄로 써 보세요."
+        }
+      },
+      "misconceptions": [
+        { "id": "T.present.now", "desc": "현재시제를 지금 하고 있는 중인 일에 씀", "wrong": "Look! He plays outside now.", "right": "Look! He is playing outside now." },
+        { "id": "T.present.prog_for_habit", "desc": "매일 하는 습관을 진행형으로 씀", "wrong": "I am drinking milk every morning.", "right": "I drink milk every morning." }
+      ]
+    },
+    {
+      "id": "T.3sg",
+      "name": "3인칭 단수 -s",
+      "stages": "E→M1",
+      "prerequisites": ["T.present", "N.pronoun"],
+      "levels": {
+        "E": {
+          "why": "문장의 주인공(주어)이 누구냐에 따라 동사 모양이 조금 바뀌어요. 그래야 그 사람이 하는 일을 바르게 말할 수 있어요.",
+          "core": "주어가 나(I)·너(you)가 아닌 한 사람 또는 한 개일 때, 현재시제 동사 끝에 -s를 붙여요.",
+          "diagram": "주어 상자 두 개. he·she·it·Tom·my dog 상자의 동사에는 -s 스티커, I·you·we·they 상자의 동사에는 스티커 없음.",
+          "examples": [
+            { "en": "She plays the piano.", "ko": "그녀는 피아노를 쳐요." },
+            { "en": "My dog runs fast.", "ko": "우리 개는 빨리 달려요." },
+            { "en": "Tom watches TV.", "ko": "톰은 TV를 봐요. (-es가 붙는 경우)" }
+          ],
+          "contrast": {
+            "a": { "en": "They play soccer.", "ko": "그들은 축구를 해요." },
+            "b": { "en": "He plays soccer.", "ko": "그는 축구를 해요." },
+            "point": "동사의 -s는 '여러 개'라는 표시가 아니에요. 오히려 주어가 '한 사람·한 개'일 때 붙어요."
+          },
+          "summary_prompt": "동사에 -s를 붙이는 때를 내 말로 써 보세요."
+        },
+        "M": {
+          "core": "부정문·의문문에서는 does가 -s를 가져가요. 그래서 뒤의 동사는 원형이에요. (He doesn't like it. / Does she play?)",
+          "extra": "철자 규칙: -s, -sh, -ch, -x, -o로 끝나면 -es (watches, goes), 자음+y는 y를 i로 바꾸고 -es (studies), have는 has."
+        }
+      },
+      "misconceptions": [
+        { "id": "T.3sg.plural_s", "desc": "-s를 '여러 개' 표시로 착각해 복수 주어에 붙임", "wrong": "They plays games.", "right": "They play games." },
+        { "id": "T.3sg.missing", "desc": "한 사람·한 개 주어인데 -s를 빠뜨림", "wrong": "She like music.", "right": "She likes music." },
+        { "id": "T.3sg.does_s", "desc": "does/doesn't 뒤의 동사에도 -s를 붙임", "wrong": "He doesn't likes milk.", "right": "He doesn't like milk." }
+      ]
+    },
+    {
+      "id": "T.progressive",
+      "name": "현재진행",
+      "stages": "E",
+      "prerequisites": ["S.be", "T.present"],
+      "levels": {
+        "E": {
+          "why": "말하는 바로 지금 무엇을 하고 있는지 말하려면 필요해요.",
+          "core": "be동사(am/are/is) + 동사-ing = 말하는 지금 하고 있는 중인 일",
+          "diagram": "시간선의 '지금' 지점 위에 길게 이어지는 물결선. '하는 중'이라는 뜻이에요.",
+          "examples": [
+            { "en": "I am reading a book.", "ko": "나는 책을 읽고 있어요." },
+            { "en": "They are playing outside.", "ko": "그들은 밖에서 놀고 있어요." }
+          ],
+          "contrast": {
+            "a": { "en": "I eat breakfast every day.", "ko": "나는 매일 아침을 먹어요. (습관)" },
+            "b": { "en": "I am eating breakfast now.", "ko": "나는 지금 아침을 먹고 있어요. (지금 하는 중)" },
+            "point": "매일 하는 일은 현재시제, 지금 하는 중인 일은 현재진행이에요."
+          },
+          "summary_prompt": "현재시제와 현재진행의 차이를 내 말로 써 보세요."
+        },
+        "M": {
+          "core": "know, like, want, have(가지고 있다)처럼 상태를 나타내는 동사는 보통 진행형으로 쓰지 않아요.",
+          "extra": "같은 have라도 '먹다'라는 동작이면 진행형이 가능해요. (I am having lunch.)"
+        }
+      },
+      "misconceptions": [
+        { "id": "T.progressive.no_be", "desc": "진행형에서 be동사를 빠뜨림", "wrong": "I eating lunch.", "right": "I am eating lunch." },
+        { "id": "T.progressive.stative", "desc": "상태동사를 진행형으로 씀", "wrong": "I am knowing the answer.", "right": "I know the answer." }
+      ]
+    },
+    {
+      "id": "T.past",
+      "name": "과거시제 (규칙·불규칙)",
+      "stages": "E→M1",
+      "prerequisites": ["T.present"],
+      "levels": {
+        "E": {
+          "why": "어제, 지난주처럼 이미 끝난 일을 말하려면 필요해요.",
+          "core": "과거시제는 이미 끝난 일이에요. 보통 동사에 -ed를 붙이지만, 모양이 완전히 바뀌는 동사도 있어요.",
+          "diagram": "시간선의 '지금'보다 왼쪽에 점 하나. 그 점은 '지금'과 이어져 있지 않아요.",
+          "examples": [
+            { "en": "I played soccer yesterday.", "ko": "나는 어제 축구를 했어요." },
+            { "en": "She went to Busan last week.", "ko": "그녀는 지난주에 부산에 갔어요. (go → went)" }
+          ],
+          "contrast": {
+            "a": { "en": "I play soccer every day.", "ko": "나는 매일 축구를 해요." },
+            "b": { "en": "I played soccer yesterday.", "ko": "나는 어제 축구를 했어요." },
+            "point": "yesterday, last week, ago 같은 말이 있으면 이미 끝난 일이라 과거시제를 써요."
+          },
+          "summary_prompt": "과거시제는 언제 쓰는지 내 말로 써 보세요."
+        },
+        "M": {
+          "core": "과거 부정문·의문문은 did가 과거를 가져가요. 그래서 뒤의 동사는 원형이에요. (I didn't go. / Did you see it?)",
+          "extra": "be동사의 과거는 was(I, he, she, it)와 were(you, we, they)예요."
+        }
+      },
+      "misconceptions": [
+        { "id": "T.past.irregular_ed", "desc": "불규칙동사에 -ed를 붙임", "wrong": "I goed to the park.", "right": "I went to the park." },
+        { "id": "T.past.no_change", "desc": "과거 시간 표현이 있는데 동사를 바꾸지 않음", "wrong": "I go to the zoo yesterday.", "right": "I went to the zoo yesterday." },
+        { "id": "T.past.did_past", "desc": "did/didn't 뒤의 동사도 과거형으로 씀", "wrong": "Did you went there?", "right": "Did you go there?" }
+      ]
+    },
+    {
+      "id": "T.future",
+      "name": "미래 (will / be going to)",
+      "stages": "M1",
+      "prerequisites": ["T.present"],
+      "levels": {
+        "M": {
+          "why": "앞으로 할 일이나 일어날 일을 말하려면 필요해요.",
+          "core": "will + 동사원형은 말하는 순간 정한 의지나 예측, be going to + 동사원형은 이미 정해 둔 계획이에요.",
+          "diagram": "시간선의 '지금' 오른쪽에 점 하나. will은 지금 막 떠오른 화살표, be going to는 미리 그려 둔 화살표.",
+          "examples": [
+            { "en": "It will rain tomorrow.", "ko": "내일 비가 올 거예요. (예측)" },
+            { "en": "A: The phone is ringing. B: I'll get it.", "ko": "A: 전화 온다. B: 내가 받을게. (지금 결정)" },
+            { "en": "I'm going to visit my grandma this weekend.", "ko": "이번 주말에 할머니 댁에 갈 거예요. (미리 세운 계획)" }
+          ],
+          "contrast": {
+            "a": { "en": "I'll help you.", "ko": "내가 도와줄게. (방금 결정)" },
+            "b": { "en": "I'm going to help my mom this afternoon.", "ko": "오늘 오후에 엄마를 도울 거예요. (미리 계획)" },
+            "point": "둘 다 미래지만, 결정한 때가 '지금'인지 '이미 전에'인지가 달라요."
+          },
+          "summary_prompt": "will과 be going to의 차이를 내 말로 써 보세요."
+        }
+      },
+      "misconceptions": [
+        { "id": "T.future.will_to", "desc": "will 뒤에 to를 붙임", "wrong": "I will to go.", "right": "I will go." },
+        { "id": "T.future.will_s", "desc": "will 뒤의 동사에 -s를 붙임", "wrong": "She will goes.", "right": "She will go." },
+        { "id": "T.future.choice", "desc": "will과 be going to의 쓰임(즉석 결정 vs 미리 계획)을 구분하지 못함", "wrong": "방금 결정한 일을 '오래전부터 계획한 일'로 이해", "right": "방금 결정한 일에는 will" }
+      ]
+    },
+    {
+      "id": "T.past_prog",
+      "name": "과거진행",
+      "stages": "M1",
+      "prerequisites": ["T.past", "T.progressive"],
+      "levels": {
+        "M": {
+          "why": "과거의 어느 순간에 하고 있던 일, 그리고 그때 일어난 사건을 함께 말하려면 필요해요.",
+          "core": "was/were + -ing = 과거의 한 시점에 하고 있던 중인 일. 다른 사건이 일어난 배경이 돼요.",
+          "diagram": "과거 쪽에 긴 물결선(배경, 과거진행)이 있고, 그 위에 점 하나(사건, 과거시제)가 꽂혀 있는 그림.",
+          "examples": [
+            { "en": "I was sleeping at 10 last night.", "ko": "어젯밤 10시에 나는 자고 있었어요." },
+            { "en": "When you called, I was taking a shower.", "ko": "네가 전화했을 때 나는 샤워하는 중이었어." }
+          ],
+          "contrast": {
+            "a": { "en": "When he arrived, I cooked dinner.", "ko": "그가 도착하자 나는 저녁을 했다. (도착한 다음에 요리 시작)" },
+            "b": { "en": "When he arrived, I was cooking dinner.", "ko": "그가 도착했을 때 나는 저녁을 하던 중이었다. (이미 요리 중)" },
+            "point": "배경으로 계속되던 일은 과거진행, 그 사이에 툭 일어난 일은 과거시제예요."
+          },
+          "summary_prompt": "과거진행과 과거시제를 한 문장에 함께 쓸 때 각각 어떤 역할인지 써 보세요."
+        }
+      },
+      "misconceptions": [
+        { "id": "T.past_prog.swap_bg", "desc": "배경(진행)과 사건(과거)의 시제를 바꿔 씀", "wrong": "When I was arriving, he cooked.", "right": "When I arrived, he was cooking." },
+        { "id": "T.past_prog.be_agree", "desc": "주어에 맞지 않는 was/were를 씀", "wrong": "They was playing.", "right": "They were playing." }
+      ]
+    },
+    {
+      "id": "T.pp_form",
+      "name": "과거분사 형태",
+      "stages": "M2",
+      "prerequisites": ["T.past"],
+      "levels": {
+        "M": {
+          "why": "현재완료와 수동태를 만들려면 동사의 세 번째 형태가 필요해요.",
+          "core": "과거분사(p.p.)는 동사의 세 번째 형태예요. 혼자서는 문장의 동사가 될 수 없고 have(완료)나 be(수동)와 함께 쓰여요.",
+          "diagram": "동사 카드 세 장을 나란히: go – went – gone / eat – ate – eaten / play – played – played",
+          "examples": [
+            { "en": "I have eaten lunch.", "ko": "나는 점심을 먹었어요. (have + p.p.)" },
+            { "en": "The window was broken.", "ko": "창문이 깨져 있었어요. (be + p.p.)" }
+          ],
+          "contrast": {
+            "a": { "en": "I ate lunch.", "ko": "과거형 ate는 혼자 동사가 돼요." },
+            "b": { "en": "I have eaten lunch.", "ko": "과거분사 eaten은 have와 함께 써요." },
+            "point": "과거형은 혼자, 과거분사는 have나 be와 함께예요."
+          },
+          "summary_prompt": "과거형과 과거분사의 차이를 내 말로 써 보세요."
+        }
+      },
+      "misconceptions": [
+        { "id": "T.pp_form.past_for_pp", "desc": "과거분사 자리에 과거형을 씀", "wrong": "I have went there.", "right": "I have gone there." },
+        { "id": "T.pp_form.pp_alone", "desc": "과거분사를 혼자 동사로 씀", "wrong": "I eaten lunch.", "right": "I ate lunch. / I have eaten lunch." }
+      ]
+    },
+    {
+      "id": "T.perfect",
+      "name": "현재완료",
+      "stages": "M2→M3",
+      "prerequisites": ["T.past", "T.pp_form"],
+      "levels": {
+        "M": {
+          "why": "과거에 있었던 일이 지금까지 이어지거나 지금에 영향을 줄 때, 과거시제만으로는 그 연결을 표현할 수 없어요.",
+          "core": "have/has + p.p. = 과거에 일어난 일이 지금과 연결돼 있을 때 (경험·계속·완료·결과)",
+          "diagram": "과거의 점에서 출발해 '지금'까지 이어진 화살표. 과거시제는 점만 있고 화살표가 없어요.",
+          "examples": [
+            { "en": "I have been to Jeju twice.", "ko": "나는 제주도에 두 번 가 봤어요. (경험)" },
+            { "en": "She has lived here since 2020.", "ko": "그녀는 2020년부터 여기 살고 있어요. (계속)" },
+            { "en": "I have just finished my homework.", "ko": "나는 방금 숙제를 끝냈어요. (완료)" },
+            { "en": "He has lost his key.", "ko": "그는 열쇠를 잃어버렸어요. 지금도 없어요. (결과)" }
+          ],
+          "contrast": {
+            "a": { "en": "I lost my key yesterday.", "ko": "어제 열쇠를 잃어버렸다. (지금은 찾았는지 알 수 없음)" },
+            "b": { "en": "I have lost my key.", "ko": "열쇠를 잃어버렸다. (그래서 지금 없다)" },
+            "point": "과거시제는 과거의 한 점만, 현재완료는 그 일이 지금과 이어져 있음을 말해요."
+          },
+          "summary_prompt": "현재완료가 과거시제와 어떻게 다른지 내 말로 써 보세요."
+        },
+        "H": {
+          "core": "yesterday, ago, last ~, when(언제?)처럼 과거의 한 시점을 콕 집는 말과는 현재완료를 쓰지 않아요.",
+          "extra": "for + 기간(for three years), since + 시작 시점(since 2020)."
+        }
+      },
+      "misconceptions": [
+        { "id": "T.perfect.with_past_time", "desc": "분명한 과거 시점 표현과 함께 현재완료를 씀", "wrong": "I have seen it yesterday.", "right": "I saw it yesterday." },
+        { "id": "T.perfect.since_for", "desc": "since(시작 시점)와 for(기간)를 혼동", "wrong": "I have lived here for 2020.", "right": "I have lived here since 2020." },
+        { "id": "T.perfect.past_for_continuation", "desc": "지금까지 계속되는 일을 과거시제로 씀", "wrong": "I lived in Seoul since 2018.", "right": "I have lived in Seoul since 2018." },
+        { "id": "T.perfect.has_agree", "desc": "주어에 맞지 않는 have/has를 씀", "wrong": "He have finished.", "right": "He has finished." },
+        { "id": "T.perfect.as_past", "desc": "현재완료를 단순한 과거처럼 이해해 지금과의 연결을 놓침", "wrong": "I have lost my phone. = 잃어버렸다가 찾았다", "right": "I have lost my phone. = 잃어버려서 지금도 없다" }
+      ]
+    },
+    {
+      "id": "T.past_perfect",
+      "name": "과거완료",
+      "stages": "M3→H",
+      "prerequisites": ["T.perfect"],
+      "levels": {
+        "M": {
+          "why": "과거에 일어난 두 가지 일 중 어느 쪽이 더 먼저인지 분명하게 하려면 필요해요.",
+          "core": "had + p.p. = 과거의 기준 시점보다 더 먼저 일어난 일",
+          "diagram": "과거 쪽에 점 두 개. 오른쪽 점이 기준 시점(과거시제), 그보다 왼쪽 점이 더 먼저 일어난 일(had p.p.).",
+          "examples": [
+            { "en": "When I arrived, the movie had already started.", "ko": "내가 도착했을 때 영화는 이미 시작한 뒤였어요." },
+            { "en": "I lost the pen that my dad had given me.", "ko": "나는 아빠가 (전에) 주신 펜을 잃어버렸어요." }
+          ],
+          "contrast": {
+            "a": { "en": "When I arrived, the movie started.", "ko": "내가 도착하자 영화가 시작했다." },
+            "b": { "en": "When I arrived, the movie had started.", "ko": "내가 도착하기 전에 영화가 이미 시작했다." },
+            "point": "had p.p.는 '기준이 되는 과거보다 더 먼저'라는 표시예요."
+          },
+          "summary_prompt": "과거완료를 쓰려면 무엇이 꼭 있어야 하는지 써 보세요."
+        },
+        "H": {
+          "core": "기준이 되는 과거 시점이 문장이나 문맥에 있어야 과거완료를 써요. 단순히 '아주 오래전'이라는 이유로 쓰지 않아요.",
+          "extra": "before, after처럼 순서가 분명하면 과거시제로 써도 되는 경우가 많아요."
+        }
+      },
+      "misconceptions": [
+        { "id": "T.past_perfect.no_reference", "desc": "기준 시점 없이 그냥 오래된 과거에 과거완료를 씀", "wrong": "I had visited Paris in 2010.", "right": "I visited Paris in 2010." },
+        { "id": "T.past_perfect.order", "desc": "두 사건의 순서를 거꾸로 이해함", "wrong": "had p.p.가 나중에 일어난 일이라고 생각", "right": "had p.p.가 더 먼저 일어난 일" },
+        { "id": "T.past_perfect.present_perfect", "desc": "과거 기준인데 현재완료를 씀", "wrong": "When we got there, the bus has left.", "right": "When we got there, the bus had left." }
+      ]
+    },
+    {
+      "id": "T.perf_prog",
+      "name": "완료진행",
+      "stages": "H",
+      "prerequisites": ["T.perfect", "T.progressive"],
+      "levels": {
+        "H": {
+          "why": "어떤 동작을 얼마나 오래 계속해 왔는지, 그 과정을 강조하려면 필요해요.",
+          "core": "have/has been + -ing = 과거부터 지금까지 계속해 오고 있는 동작(과정)을 강조",
+          "diagram": "과거부터 '지금'까지 이어진 물결 화살표. 현재완료의 화살표에 '진행 중' 물결을 더한 모양.",
+          "examples": [
+            { "en": "I have been waiting for an hour.", "ko": "나는 한 시간째 기다리고 있어요." },
+            { "en": "It has been raining since morning.", "ko": "아침부터 계속 비가 오고 있어요." }
+          ],
+          "contrast": {
+            "a": { "en": "I have read the book.", "ko": "그 책을 다 읽었다. (결과)" },
+            "b": { "en": "I have been reading the book.", "ko": "그 책을 계속 읽고 있다. (과정, 아직 다 안 읽었을 수 있음)" },
+            "point": "현재완료는 결과, 완료진행은 계속해 온 과정을 강조해요."
+          },
+          "summary_prompt": "현재완료와 완료진행이 강조하는 것을 비교해 써 보세요."
+        }
+      },
+      "misconceptions": [
+        { "id": "T.perf_prog.result_vs_process", "desc": "현재완료(결과)와 완료진행(과정)의 차이를 모름", "wrong": "I've been painting the wall. = 다 칠했다", "right": "I've been painting the wall. = 계속 칠하는 중이었다" },
+        { "id": "T.perf_prog.form", "desc": "been을 빠뜨리는 등 형태 오류", "wrong": "She has studying for two hours.", "right": "She has been studying for two hours." },
+        { "id": "T.perf_prog.progressive_for_duration", "desc": "for + 기간과 함께 현재진행을 씀", "wrong": "I am waiting for an hour.", "right": "I have been waiting for an hour." }
+      ]
+    },
+    {
+      "id": "T.future_perf",
+      "name": "미래완료",
+      "stages": "H",
+      "prerequisites": ["T.perfect", "T.future"],
+      "levels": {
+        "H": {
+          "why": "미래의 어느 시점에는 이미 끝나 있을 일을 말하려면 필요해요.",
+          "core": "will have + p.p. = 미래의 기준 시점까지 완료돼 있을 일",
+          "diagram": "'지금'과 미래의 기준 점 사이에서 끝나는 화살표. 기준 점에 도착하면 이미 끝나 있어요.",
+          "examples": [
+            { "en": "By next June, I will have graduated.", "ko": "내년 6월이면 나는 졸업해 있을 거예요." },
+            { "en": "I will have finished it by 6 p.m.", "ko": "오후 6시까지는 그걸 끝내 놓을 거예요." }
+          ],
+          "contrast": {
+            "a": { "en": "I will finish it at 6.", "ko": "6시에 끝낼 거야. (6시에 끝나는 순간)" },
+            "b": { "en": "I will have finished it by 6.", "ko": "6시면 이미 끝나 있을 거야." },
+            "point": "미래완료는 '그 미래 시점에는 이미 끝난 상태'라는 뜻이에요. by + 미래 시점과 자주 함께 써요."
+          },
+          "summary_prompt": "미래완료를 현재완료와 비교해 기준 시점이 어떻게 다른지 써 보세요."
+        }
+      },
+      "misconceptions": [
+        { "id": "T.future_perf.present_perfect", "desc": "미래 시점 표현과 함께 현재완료를 씀", "wrong": "By next year, I have finished it.", "right": "By next year, I will have finished it." }
+      ]
+    },
+    {
+      "id": "T.time_clause",
+      "name": "시간·조건 부사절의 현재",
+      "stages": "M2→M3",
+      "prerequisites": ["T.future", "C.conj_sub"],
+      "levels": {
+        "M": {
+          "why": "'내일 비가 오면'처럼 미래의 조건이나 때를 말할 때, 영어는 특별한 규칙을 따라요.",
+          "core": "when, if, before, after, until이 이끄는 시간·조건 부사절에서는 미래 일도 현재시제로 써요. 미래라는 정보는 주절의 will이 맡아요.",
+          "diagram": "[If it rains tomorrow] (현재시제) → [we will stay home] (will). 미래 표시는 한 문장에 한 번, 주절에만.",
+          "examples": [
+            { "en": "If it rains tomorrow, we will stay home.", "ko": "내일 비가 오면 우리는 집에 있을 거예요." },
+            { "en": "I will call you when I arrive.", "ko": "도착하면 전화할게." }
+          ],
+          "contrast": null,
+          "summary_prompt": "when이나 if 뒤에 will을 쓰지 않는 이유를 내 말로 써 보세요."
+        },
+        "H": {
+          "core": "같은 when, if라도 '언제 ~할지', '~할지 아닌지'라는 명사절이면 미래는 will로 써요.",
+          "contrast": {
+            "a": { "en": "I'll tell him when he comes.", "ko": "그가 오면 말할게. (부사절: 현재)" },
+            "b": { "en": "I don't know when he will come.", "ko": "그가 언제 올지 모르겠어. (명사절: will)" },
+            "point": "문장에서 '때·조건'(부사)인지 '무엇을'(명사, 목적어)인지로 구분해요."
+          }
+        }
+      },
+      "misconceptions": [
+        { "id": "T.time_clause.will_in_adv", "desc": "시간·조건 부사절에 will을 씀", "wrong": "When he will come, I'll tell him.", "right": "When he comes, I'll tell him." },
+        { "id": "T.time_clause.present_in_noun", "desc": "명사절 if/when에도 현재시제를 씀", "wrong": "I don't know if he comes tomorrow.", "right": "I don't know if he will come tomorrow." }
+      ]
+    },
+    {
+      "id": "T.sequence",
+      "name": "시제 일치",
+      "stages": "H",
+      "prerequisites": ["T.past_perfect", "C.noun_clause"],
+      "levels": {
+        "H": {
+          "why": "과거에 누가 한 말이나 생각을 전할 때, 그 안의 시제도 과거 기준으로 맞춰야 해요.",
+          "core": "주절 동사가 과거면 종속절 시제도 한 칸 과거 쪽으로 이동해요. (현재→과거, 과거·현재완료→과거완료, will→would) 변하지 않는 사실은 현재시제를 유지해요.",
+          "diagram": "말한 시점(과거)을 새로운 '지금'으로 삼아 시간선 전체를 왼쪽으로 한 칸 옮긴 그림.",
+          "examples": [
+            { "en": "I thought that he knew the answer.", "ko": "나는 그가 답을 안다고 생각했어요." },
+            { "en": "He told me that he had seen the movie.", "ko": "그는 그 영화를 봤다고 내게 말했어요." },
+            { "en": "She said that she would help me.", "ko": "그녀는 나를 도와주겠다고 말했어요." },
+            { "en": "We learned that water boils at 100°C.", "ko": "우리는 물이 100도에서 끓는다고 배웠어요. (불변의 사실)" }
+          ],
+          "contrast": {
+            "a": { "en": "He says he is busy.", "ko": "그는 바쁘다고 말한다." },
+            "b": { "en": "He said he was busy.", "ko": "그는 바쁘다고 말했다." },
+            "point": "주절이 과거로 바뀌면 안쪽 문장의 시제도 함께 과거 쪽으로 움직여요."
+          },
+          "summary_prompt": "시제 일치의 규칙과 예외를 각각 한 줄로 써 보세요."
+        }
+      },
+      "misconceptions": [
+        { "id": "T.sequence.main_only", "desc": "주절만 과거로 바꾸고 종속절 시제는 그대로 둠", "wrong": "I thought that he knows the answer.", "right": "I thought that he knew the answer." },
+        { "id": "T.sequence.truth_exception", "desc": "불변의 사실까지 과거로 바꿈", "wrong": "We learned that water boiled at 100°C.", "right": "We learned that water boils at 100°C." }
+      ]
+    }
+  ]
+}
