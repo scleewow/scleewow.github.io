@@ -142,6 +142,19 @@ h3 { font-size: 16px; margin: 0 0 8px; }
 .tl-ko { font-size: 13.5px; fill: var(--muted); }
 .diagram-caption { color: var(--muted); font-size: 14px; margin: 10px 0 0; }
 
+/* 문장 성분 칸 그림 */
+.slots { display: grid; gap: 12px; }
+.slot-label { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+.slot-cells { display: flex; flex-wrap: wrap; gap: 6px; }
+.slot { display: flex; flex-direction: column; align-items: center; border-radius: 10px; padding: 6px 10px; border: 2px solid; min-width: 56px; }
+.slot-role { font-size: 11.5px; font-weight: 700; }
+.slot-text { font-size: 16px; font-weight: 600; color: var(--text); }
+.r-subj { border-color: #3b5bdb; background: #edf2ff; } .r-subj .slot-role { color: #3b5bdb; }
+.r-verb { border-color: #e8590c; background: #fff4e6; } .r-verb .slot-role { color: #e8590c; }
+.r-obj  { border-color: #2f9e44; background: #ebfbee; } .r-obj .slot-role { color: #2f9e44; }
+.r-comp { border-color: #9c36b5; background: #f8f0fc; } .r-comp .slot-role { color: #9c36b5; }
+.r-mod  { border-color: #adb5bd; border-style: dashed; background: #f8f9fa; } .r-mod .slot-role { color: #6b7280; }
+
 /* 묶음 그림 */
 .groups { display: grid; gap: 10px; }
 .group { background: var(--bg); border: 2px solid var(--line); border-radius: 12px; padding: 12px; text-align: center; }
