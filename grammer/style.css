@@ -118,6 +118,17 @@ h3 { font-size: 16px; margin: 0 0 8px; }
 .locked { color: var(--muted); }
 .areas-soon { color: var(--muted); font-size: 14px; }
 
+/* 고정 막대: 이전 · 진행 · 다음 (항상 같은 자리, 스크롤해도 위에 붙어 있음) */
+.stepbar {
+  position: sticky; top: var(--bar-top, 0px); z-index: 5;
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg); padding: 10px 0; margin: 6px 0 12px;
+}
+.stepbar .btn, .stepbar-side { flex: 0 0 96px; width: 96px; text-align: center; padding: 10px 0; }
+.stepbar-mid { flex: 1; min-width: 0; text-align: center; }
+.stepbar-mid .progress-steps { margin: 0 0 4px; }
+.step-count { font-size: 13px; color: var(--muted); }
+
 /* 개념 학습 */
 .progress-steps { display: flex; gap: 4px; margin: 10px 0 16px; }
 .progress-steps span { flex: 1; height: 5px; border-radius: 3px; background: var(--line); }
