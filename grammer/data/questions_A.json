@@ -1,0 +1,2703 @@
+{
+  "area": "A",
+  "types": {
+    "concept": "개념 확인",
+    "apply": "적용",
+    "reason": "이유 확인",
+    "order": "문장 만들기"
+  },
+  "questions": [
+    {
+      "id": "A.can.q1",
+      "concept": "A.can",
+      "level": "E",
+      "type": "apply",
+      "question": "She can ___ very fast.",
+      "options": [
+        {
+          "id": "a",
+          "text": "run",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "runs",
+          "misconception": "A.can.verb_s"
+        },
+        {
+          "id": "c",
+          "text": "to run",
+          "misconception": "A.can.to"
+        }
+      ],
+      "explanation": "can 뒤에는 항상 동사원형이 와요."
+    },
+    {
+      "id": "A.can.q2",
+      "concept": "A.can",
+      "level": "E",
+      "type": "apply",
+      "question": "\"너는 기타를 칠 수 있니?\" → ___ you play the guitar?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Can",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Are",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "Does",
+          "misconception": "A.can.do_question"
+        }
+      ],
+      "explanation": "\"~할 수 있니?\"는 Can + 주어 + 동사원형이에요."
+    },
+    {
+      "id": "A.can.q3",
+      "concept": "A.can",
+      "level": "E",
+      "type": "apply",
+      "question": "\"나는 수영을 못 한다.\" → I ___ swim.",
+      "options": [
+        {
+          "id": "a",
+          "text": "can't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "don't can",
+          "misconception": "A.can.do_question"
+        },
+        {
+          "id": "c",
+          "text": "can't to",
+          "misconception": "A.can.to"
+        }
+      ],
+      "explanation": "can의 부정은 can't(cannot)예요. do를 쓰지 않아요."
+    },
+    {
+      "id": "A.can.q4",
+      "concept": "A.can",
+      "level": "E",
+      "type": "apply",
+      "question": "Can I ___ your eraser?",
+      "options": [
+        {
+          "id": "a",
+          "text": "use",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "using",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "uses",
+          "misconception": "A.can.verb_s"
+        }
+      ],
+      "explanation": "Can + 주어 + 동사원형이에요."
+    },
+    {
+      "id": "A.can.q5",
+      "concept": "A.can",
+      "level": "E",
+      "type": "apply",
+      "question": "He ___ ride a bike when he was four.",
+      "options": [
+        {
+          "id": "a",
+          "text": "could",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "can",
+          "misconception": "A.can.past"
+        },
+        {
+          "id": "c",
+          "text": "cans",
+          "misconception": "A.can.verb_s"
+        }
+      ],
+      "explanation": "when he was four는 과거라서 can의 과거형 could를 써요."
+    },
+    {
+      "id": "A.can.q6",
+      "concept": "A.can",
+      "level": "E",
+      "type": "concept",
+      "question": "Can I open the window? 에서 can의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "~해도 될까요? (허락)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "~할 수 있니? (능력)",
+          "misconception": "A.can.meaning"
+        },
+        {
+          "id": "c",
+          "text": "~할 거니? (미래)",
+          "misconception": null
+        }
+      ],
+      "explanation": "Can I ~?는 해도 되는지 허락을 구하는 말이에요."
+    },
+    {
+      "id": "A.can.q7",
+      "concept": "A.can",
+      "level": "E",
+      "type": "concept",
+      "question": "Penguins can't fly. 에서 can't의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "~할 수 없다 (능력)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "~하면 안 된다 (금지)",
+          "misconception": "A.can.meaning"
+        },
+        {
+          "id": "c",
+          "text": "~하지 않을 것이다",
+          "misconception": null
+        }
+      ],
+      "explanation": "펭귄은 날 능력이 없다는 뜻이에요."
+    },
+    {
+      "id": "A.can.q8",
+      "concept": "A.can",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 너는 영어를 말할 수 있니?",
+      "tokens": [
+        "Can",
+        "you",
+        "speak",
+        "English?"
+      ],
+      "answer": [
+        "Can",
+        "you",
+        "speak",
+        "English?"
+      ],
+      "misconception": "A.can.do_question",
+      "explanation": "Can이 주어 앞으로 나오고, 뒤의 동사는 원형이에요."
+    },
+    {
+      "id": "A.can.q9",
+      "concept": "A.can",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 피아노를 칠 수 없다.",
+      "tokens": [
+        "He",
+        "can't",
+        "play",
+        "the piano."
+      ],
+      "answer": [
+        "He",
+        "can't",
+        "play",
+        "the piano."
+      ],
+      "misconception": null,
+      "explanation": "주어 + can't + 동사원형 순서예요."
+    },
+    {
+      "id": "A.can.q10",
+      "concept": "A.can",
+      "level": "E",
+      "type": "reason",
+      "question": "She can swims. 가 틀린 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "can 뒤에는 항상 동사원형이 오기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "she 뒤에는 can을 쓸 수 없어서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "swim 앞에 to가 필요해서",
+          "misconception": "A.can.to"
+        }
+      ],
+      "explanation": "조동사 뒤의 동사는 주어와 상관없이 원형이에요."
+    },
+    {
+      "id": "A.modal_basic.q1",
+      "concept": "A.modal_basic",
+      "level": "M",
+      "type": "apply",
+      "question": "You must ___ your homework.",
+      "options": [
+        {
+          "id": "a",
+          "text": "finish",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "finishes",
+          "misconception": "A.modal_basic.verb_form"
+        },
+        {
+          "id": "c",
+          "text": "to finish",
+          "misconception": "A.modal_basic.verb_form"
+        }
+      ],
+      "explanation": "조동사 must 뒤에는 동사원형이 와요."
+    },
+    {
+      "id": "A.modal_basic.q2",
+      "concept": "A.modal_basic",
+      "level": "M",
+      "type": "apply",
+      "question": "You look sick. You ___ see a doctor.",
+      "options": [
+        {
+          "id": "a",
+          "text": "should",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "must not",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "may not",
+          "misconception": null
+        }
+      ],
+      "explanation": "아파 보이는 사람에게 하는 충고라서 should예요."
+    },
+    {
+      "id": "A.modal_basic.q3",
+      "concept": "A.modal_basic",
+      "level": "M",
+      "type": "apply",
+      "question": "Students ___ run in the hallway. It's dangerous.",
+      "options": [
+        {
+          "id": "a",
+          "text": "must not",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "don't must",
+          "misconception": "A.modal_basic.neg"
+        },
+        {
+          "id": "c",
+          "text": "must",
+          "misconception": null
+        }
+      ],
+      "explanation": "위험하니까 \"뛰면 안 된다\"는 금지예요. 조동사의 부정은 must not이에요."
+    },
+    {
+      "id": "A.modal_basic.q4",
+      "concept": "A.modal_basic",
+      "level": "M",
+      "type": "apply",
+      "question": "___ I come in?",
+      "options": [
+        {
+          "id": "a",
+          "text": "May",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Do",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "Am",
+          "misconception": null
+        }
+      ],
+      "explanation": "공손하게 허락을 구할 때 May I ~?를 써요."
+    },
+    {
+      "id": "A.modal_basic.q5",
+      "concept": "A.modal_basic",
+      "level": "M",
+      "type": "apply",
+      "question": "It ___ rain tomorrow, so take an umbrella.",
+      "options": [
+        {
+          "id": "a",
+          "text": "may",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "must",
+          "misconception": "A.modal_basic.strength"
+        },
+        {
+          "id": "c",
+          "text": "should",
+          "misconception": null
+        }
+      ],
+      "explanation": "확실하지 않은 추측이라 may(~일지도 모른다)예요."
+    },
+    {
+      "id": "A.modal_basic.q6",
+      "concept": "A.modal_basic",
+      "level": "M",
+      "type": "apply",
+      "question": "I ___ swim next year.",
+      "options": [
+        {
+          "id": "a",
+          "text": "will be able to",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "will can",
+          "misconception": "A.modal_basic.double"
+        },
+        {
+          "id": "c",
+          "text": "can will",
+          "misconception": "A.modal_basic.double"
+        }
+      ],
+      "explanation": "조동사 두 개를 함께 쓸 수 없어서 can을 be able to로 바꿔요."
+    },
+    {
+      "id": "A.modal_basic.q7",
+      "concept": "A.modal_basic",
+      "level": "M",
+      "type": "concept",
+      "question": "You must wear a helmet. 과 You should wear a helmet. 의 차이는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "앞은 꼭 해야 하는 의무, 뒤는 하는 게 좋다는 충고",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "두 문장의 뜻이 같다",
+          "misconception": "A.modal_basic.strength"
+        },
+        {
+          "id": "c",
+          "text": "앞이 더 약한 표현이다",
+          "misconception": "A.modal_basic.strength"
+        }
+      ],
+      "explanation": "must가 should보다 강해요."
+    },
+    {
+      "id": "A.modal_basic.q8",
+      "concept": "A.modal_basic",
+      "level": "M",
+      "type": "concept",
+      "question": "It may snow tonight. 에서 may의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "~일지도 모른다",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "~해도 된다",
+          "misconception": "A.modal_basic.may_meaning"
+        },
+        {
+          "id": "c",
+          "text": "~해야 한다",
+          "misconception": null
+        }
+      ],
+      "explanation": "날씨에 대한 확실하지 않은 추측이에요."
+    },
+    {
+      "id": "A.modal_basic.q9",
+      "concept": "A.modal_basic",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 너는 일찍 자는 게 좋겠다.",
+      "tokens": [
+        "You",
+        "should",
+        "go to bed",
+        "early."
+      ],
+      "answer": [
+        "You",
+        "should",
+        "go to bed",
+        "early."
+      ],
+      "misconception": null,
+      "explanation": "충고는 should + 동사원형이에요."
+    },
+    {
+      "id": "A.modal_basic.q10",
+      "concept": "A.modal_basic",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 여기서 사진을 찍으면 안 됩니다.",
+      "tokens": [
+        "You",
+        "must not",
+        "take pictures",
+        "here."
+      ],
+      "answer": [
+        "You",
+        "must not",
+        "take pictures",
+        "here."
+      ],
+      "misconception": null,
+      "explanation": "금지는 must not + 동사원형이에요."
+    },
+    {
+      "id": "A.semi_modal.q1",
+      "concept": "A.semi_modal",
+      "level": "M",
+      "type": "apply",
+      "question": "She ___ wear a uniform at school.",
+      "options": [
+        {
+          "id": "a",
+          "text": "has to",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "have to",
+          "misconception": "A.semi_modal.form"
+        },
+        {
+          "id": "c",
+          "text": "has",
+          "misconception": null
+        }
+      ],
+      "explanation": "주어 She가 3인칭 단수라서 has to예요."
+    },
+    {
+      "id": "A.semi_modal.q2",
+      "concept": "A.semi_modal",
+      "level": "M",
+      "type": "apply",
+      "question": "I ___ wait for an hour yesterday.",
+      "options": [
+        {
+          "id": "a",
+          "text": "had to",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "must",
+          "misconception": "A.semi_modal.must_past"
+        },
+        {
+          "id": "c",
+          "text": "have to",
+          "misconception": "A.semi_modal.form"
+        }
+      ],
+      "explanation": "yesterday는 과거예요. must는 과거형이 없어서 had to를 써요."
+    },
+    {
+      "id": "A.semi_modal.q3",
+      "concept": "A.semi_modal",
+      "level": "M",
+      "type": "apply",
+      "question": "It's Sunday. You ___ get up early.",
+      "options": [
+        {
+          "id": "a",
+          "text": "don't have to",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "must not",
+          "misconception": "A.semi_modal.mustnot_donthave"
+        },
+        {
+          "id": "c",
+          "text": "doesn't have to",
+          "misconception": "A.semi_modal.form"
+        }
+      ],
+      "explanation": "일요일이라 일찍 일어날 \"필요가 없다\"는 뜻이에요."
+    },
+    {
+      "id": "A.semi_modal.q4",
+      "concept": "A.semi_modal",
+      "level": "M",
+      "type": "apply",
+      "question": "You ___ cheat on the test.",
+      "options": [
+        {
+          "id": "a",
+          "text": "must not",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "don't have to",
+          "misconception": "A.semi_modal.mustnot_donthave"
+        },
+        {
+          "id": "c",
+          "text": "had not",
+          "misconception": null
+        }
+      ],
+      "explanation": "시험에서 부정행위는 \"하면 안 되는\" 일이라 must not이에요."
+    },
+    {
+      "id": "A.semi_modal.q5",
+      "concept": "A.semi_modal",
+      "level": "M",
+      "type": "apply",
+      "question": "It's going to rain. You ___ take an umbrella.",
+      "options": [
+        {
+          "id": "a",
+          "text": "had better",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "had better to",
+          "misconception": "A.semi_modal.had_better_form"
+        },
+        {
+          "id": "c",
+          "text": "have better",
+          "misconception": "A.semi_modal.had_better_form"
+        }
+      ],
+      "explanation": "had better + 동사원형 = ~하는 게 낫다."
+    },
+    {
+      "id": "A.semi_modal.q6",
+      "concept": "A.semi_modal",
+      "level": "M",
+      "type": "apply",
+      "question": "I ___ live in Busan, but now I live in Seoul.",
+      "options": [
+        {
+          "id": "a",
+          "text": "used to",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "am used to",
+          "misconception": "A.semi_modal.used_to"
+        },
+        {
+          "id": "c",
+          "text": "use to",
+          "misconception": "A.semi_modal.used_to"
+        }
+      ],
+      "explanation": "예전에는 그랬지만 지금은 아닌 일은 used to + 동사원형이에요."
+    },
+    {
+      "id": "A.semi_modal.q7",
+      "concept": "A.semi_modal",
+      "level": "M",
+      "type": "apply",
+      "question": "He is used to ___ up early.",
+      "options": [
+        {
+          "id": "a",
+          "text": "getting",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "get",
+          "misconception": "A.semi_modal.used_to"
+        },
+        {
+          "id": "c",
+          "text": "got",
+          "misconception": null
+        }
+      ],
+      "explanation": "be used to(~에 익숙하다)의 to는 전치사라서 뒤에 -ing가 와요."
+    },
+    {
+      "id": "A.semi_modal.q8",
+      "concept": "A.semi_modal",
+      "level": "M",
+      "type": "apply",
+      "question": "After practice, I will ___ swim well.",
+      "options": [
+        {
+          "id": "a",
+          "text": "be able to",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "can",
+          "misconception": "A.modal_basic.double"
+        },
+        {
+          "id": "c",
+          "text": "able to",
+          "misconception": "A.semi_modal.form"
+        }
+      ],
+      "explanation": "will 뒤에 can을 쓸 수 없어서 be able to를 써요."
+    },
+    {
+      "id": "A.semi_modal.q9",
+      "concept": "A.semi_modal",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 너는 늦지 않는 게 좋겠다.",
+      "tokens": [
+        "You",
+        "had better not",
+        "be",
+        "late."
+      ],
+      "answer": [
+        "You",
+        "had better not",
+        "be",
+        "late."
+      ],
+      "misconception": null,
+      "explanation": "had better의 부정은 had better not + 동사원형이에요."
+    },
+    {
+      "id": "A.semi_modal.q10",
+      "concept": "A.semi_modal",
+      "level": "M",
+      "type": "reason",
+      "question": "You don't have to come. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "올 필요가 없다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "오면 안 된다.",
+          "misconception": "A.semi_modal.mustnot_donthave"
+        },
+        {
+          "id": "c",
+          "text": "꼭 와야 한다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "don't have to는 \"~할 필요가 없다\"예요. \"~하면 안 된다\"는 must not이에요."
+    },
+    {
+      "id": "A.inference.q1",
+      "concept": "A.inference",
+      "level": "M",
+      "type": "apply",
+      "question": "He worked all day. He ___ be tired.",
+      "options": [
+        {
+          "id": "a",
+          "text": "must",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "can't",
+          "misconception": "A.inference.strength"
+        },
+        {
+          "id": "c",
+          "text": "should not",
+          "misconception": null
+        }
+      ],
+      "explanation": "하루 종일 일했다는 근거가 있어서 \"피곤한 게 틀림없다\"는 강한 확신이에요."
+    },
+    {
+      "id": "A.inference.q2",
+      "concept": "A.inference",
+      "level": "M",
+      "type": "apply",
+      "question": "That ___ be true! I don't believe it.",
+      "options": [
+        {
+          "id": "a",
+          "text": "can't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "must",
+          "misconception": "A.inference.strength"
+        },
+        {
+          "id": "c",
+          "text": "may",
+          "misconception": "A.inference.strength"
+        }
+      ],
+      "explanation": "믿을 수 없다는 강한 부정 확신이라 can't(~일 리가 없다)예요."
+    },
+    {
+      "id": "A.inference.q3",
+      "concept": "A.inference",
+      "level": "M",
+      "type": "apply",
+      "question": "I'm not sure, but she ___ be at the library.",
+      "options": [
+        {
+          "id": "a",
+          "text": "may",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "must",
+          "misconception": "A.inference.strength"
+        },
+        {
+          "id": "c",
+          "text": "can't",
+          "misconception": "A.inference.strength"
+        }
+      ],
+      "explanation": "확실하지 않은 약한 추측이라 may예요."
+    },
+    {
+      "id": "A.inference.q4",
+      "concept": "A.inference",
+      "level": "M",
+      "type": "apply",
+      "question": "He just ate a big lunch. He ___ be hungry.",
+      "options": [
+        {
+          "id": "a",
+          "text": "can't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "must not",
+          "misconception": "A.inference.mustnot_for_cant"
+        },
+        {
+          "id": "c",
+          "text": "must",
+          "misconception": "A.inference.strength"
+        }
+      ],
+      "explanation": "방금 점심을 많이 먹어서 \"배고플 리가 없다\"예요. 이때는 can't를 써요."
+    },
+    {
+      "id": "A.inference.q5",
+      "concept": "A.inference",
+      "level": "M",
+      "type": "concept",
+      "question": "She must be a teacher. 에서 must의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "~임에 틀림없다",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "~해야 한다",
+          "misconception": "A.inference.must_only_duty"
+        },
+        {
+          "id": "c",
+          "text": "~일 리가 없다",
+          "misconception": "A.inference.strength"
+        }
+      ],
+      "explanation": "must + be는 주로 강한 추측이에요."
+    },
+    {
+      "id": "A.inference.q6",
+      "concept": "A.inference",
+      "level": "M",
+      "type": "concept",
+      "question": "확신이 가장 강한 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "He must be at home.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "He may be at home.",
+          "misconception": "A.inference.strength"
+        },
+        {
+          "id": "c",
+          "text": "He might be at home.",
+          "misconception": "A.inference.strength"
+        }
+      ],
+      "explanation": "must(틀림없다)가 may, might(~일지도 모른다)보다 확신이 강해요."
+    },
+    {
+      "id": "A.inference.q7",
+      "concept": "A.inference",
+      "level": "M",
+      "type": "apply",
+      "question": "All the lights are off. They ___ be asleep.",
+      "options": [
+        {
+          "id": "a",
+          "text": "must",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "can't",
+          "misconception": "A.inference.strength"
+        },
+        {
+          "id": "c",
+          "text": "don't",
+          "misconception": null
+        }
+      ],
+      "explanation": "불이 모두 꺼졌다는 근거로 \"자고 있는 게 틀림없다\"고 추측해요."
+    },
+    {
+      "id": "A.inference.q8",
+      "concept": "A.inference",
+      "level": "H",
+      "type": "apply",
+      "question": "It ___ rain later, but I'm not sure.",
+      "options": [
+        {
+          "id": "a",
+          "text": "might",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "must",
+          "misconception": "A.inference.strength"
+        },
+        {
+          "id": "c",
+          "text": "can't",
+          "misconception": "A.inference.strength"
+        }
+      ],
+      "explanation": "확실하지 않은 약한 가능성이라 might예요."
+    },
+    {
+      "id": "A.inference.q9",
+      "concept": "A.inference",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그 이야기는 사실일 리가 없다.",
+      "tokens": [
+        "The story",
+        "can't",
+        "be",
+        "true."
+      ],
+      "answer": [
+        "The story",
+        "can't",
+        "be",
+        "true."
+      ],
+      "misconception": null,
+      "explanation": "\"~일 리가 없다\"는 can't + be예요."
+    },
+    {
+      "id": "A.inference.q10",
+      "concept": "A.inference",
+      "level": "M",
+      "type": "reason",
+      "question": "He studied all night. He must be tired. 에서 must를 \"~해야 한다\"로 해석하지 않는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "must 뒤에 be가 오고, 밤새 공부했다는 근거로 상태를 추측하는 말이라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "must는 언제나 \"틀림없다\"라는 뜻이라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "tired가 형용사라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "같은 must라도 근거를 보고 상태를 짐작하면 추측이에요."
+    },
+    {
+      "id": "A.modal_perfect.q1",
+      "concept": "A.modal_perfect",
+      "level": "H",
+      "type": "apply",
+      "question": "I failed the test. I ___ harder.",
+      "options": [
+        {
+          "id": "a",
+          "text": "should have studied",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "should studied",
+          "misconception": "A.modal_perfect.form"
+        },
+        {
+          "id": "c",
+          "text": "should have study",
+          "misconception": "A.modal_perfect.form"
+        }
+      ],
+      "explanation": "시험에 떨어져서 \"더 열심히 공부했어야 했는데\"라는 후회예요."
+    },
+    {
+      "id": "A.modal_perfect.q2",
+      "concept": "A.modal_perfect",
+      "level": "H",
+      "type": "apply",
+      "question": "The ground is wet. It ___ last night.",
+      "options": [
+        {
+          "id": "a",
+          "text": "must have rained",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "must rain",
+          "misconception": "A.modal_perfect.as_duty"
+        },
+        {
+          "id": "c",
+          "text": "should have rained",
+          "misconception": "A.modal_perfect.meaning"
+        }
+      ],
+      "explanation": "땅이 젖었다는 근거로 어젯밤 일을 강하게 추측해요."
+    },
+    {
+      "id": "A.modal_perfect.q3",
+      "concept": "A.modal_perfect",
+      "level": "H",
+      "type": "apply",
+      "question": "I feel sick. I ___ so much.",
+      "options": [
+        {
+          "id": "a",
+          "text": "shouldn't have eaten",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "shouldn't eat",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "should have eaten",
+          "misconception": "A.modal_perfect.meaning"
+        }
+      ],
+      "explanation": "많이 먹어서 아프니까 \"그렇게 많이 먹지 말았어야 했는데\"예요."
+    },
+    {
+      "id": "A.modal_perfect.q4",
+      "concept": "A.modal_perfect",
+      "level": "H",
+      "type": "apply",
+      "question": "He ___ that. He was with me all day.",
+      "options": [
+        {
+          "id": "a",
+          "text": "can't have done",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "must have done",
+          "misconception": "A.modal_perfect.meaning"
+        },
+        {
+          "id": "c",
+          "text": "should have done",
+          "misconception": "A.modal_perfect.meaning"
+        }
+      ],
+      "explanation": "하루 종일 나와 있었으니 \"그가 했을 리가 없다\"예요."
+    },
+    {
+      "id": "A.modal_perfect.q5",
+      "concept": "A.modal_perfect",
+      "level": "H",
+      "type": "apply",
+      "question": "She isn't here yet. She ___ the bus.",
+      "options": [
+        {
+          "id": "a",
+          "text": "may have missed",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "may miss",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "should have missed",
+          "misconception": "A.modal_perfect.meaning"
+        }
+      ],
+      "explanation": "확실하지 않지만 \"버스를 놓쳤을지도 모른다\"는 약한 추측이에요."
+    },
+    {
+      "id": "A.modal_perfect.q6",
+      "concept": "A.modal_perfect",
+      "level": "H",
+      "type": "concept",
+      "question": "I should have called you. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "전화했어야 했는데 (안 했다)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "전화해야 한다",
+          "misconception": "A.modal_perfect.as_duty"
+        },
+        {
+          "id": "c",
+          "text": "전화했다",
+          "misconception": "A.modal_perfect.meaning"
+        }
+      ],
+      "explanation": "should have p.p.는 과거에 하지 않은 일에 대한 후회예요."
+    },
+    {
+      "id": "A.modal_perfect.q7",
+      "concept": "A.modal_perfect",
+      "level": "H",
+      "type": "concept",
+      "question": "He must have forgotten my birthday. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "그는 내 생일을 잊었음에 틀림없다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "그는 내 생일을 잊어야 한다.",
+          "misconception": "A.modal_perfect.as_duty"
+        },
+        {
+          "id": "c",
+          "text": "그는 내 생일을 잊지 말았어야 했다.",
+          "misconception": "A.modal_perfect.meaning"
+        }
+      ],
+      "explanation": "must have p.p.는 과거 일에 대한 강한 추측이에요."
+    },
+    {
+      "id": "A.modal_perfect.q8",
+      "concept": "A.modal_perfect",
+      "level": "H",
+      "type": "apply",
+      "question": "You ___ the game! You were so close.",
+      "options": [
+        {
+          "id": "a",
+          "text": "could have won",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "could win",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "can have won",
+          "misconception": "A.modal_perfect.form"
+        }
+      ],
+      "explanation": "아깝게 졌을 때 \"이길 수도 있었는데\"는 could have p.p.예요."
+    },
+    {
+      "id": "A.modal_perfect.q9",
+      "concept": "A.modal_perfect",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 그 영화를 봤어야 했는데.",
+      "tokens": [
+        "I",
+        "should have",
+        "seen",
+        "the movie."
+      ],
+      "answer": [
+        "I",
+        "should have",
+        "seen",
+        "the movie."
+      ],
+      "misconception": null,
+      "explanation": "should have + p.p.(seen) 순서예요."
+    },
+    {
+      "id": "A.modal_perfect.q10",
+      "concept": "A.modal_perfect",
+      "level": "H",
+      "type": "reason",
+      "question": "should have p.p.가 과거의 일을 말하는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "have p.p.가 이미 지나간 일이라는 표시라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "should가 과거형이라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "미래 일을 나타내서",
+          "misconception": null
+        }
+      ],
+      "explanation": "조동사는 지금의 판단이고, have p.p.가 판단의 대상이 과거임을 알려 줘요."
+    },
+    {
+      "id": "A.cond_real.q1",
+      "concept": "A.cond_real",
+      "level": "M",
+      "type": "apply",
+      "question": "If it ___ tomorrow, we'll cancel the picnic.",
+      "options": [
+        {
+          "id": "a",
+          "text": "rains",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "will rain",
+          "misconception": "A.cond_real.will_in_if"
+        },
+        {
+          "id": "c",
+          "text": "rained",
+          "misconception": "A.cond_real.vs_subj"
+        }
+      ],
+      "explanation": "조건의 if절은 미래 일도 현재형으로 써요."
+    },
+    {
+      "id": "A.cond_real.q2",
+      "concept": "A.cond_real",
+      "level": "M",
+      "type": "apply",
+      "question": "If you study hard, you ___ the test.",
+      "options": [
+        {
+          "id": "a",
+          "text": "will pass",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "passed",
+          "misconception": "A.cond_real.vs_subj"
+        },
+        {
+          "id": "c",
+          "text": "would passed",
+          "misconception": null
+        }
+      ],
+      "explanation": "실제로 일어날 수 있는 일의 결과는 will + 동사원형이에요."
+    },
+    {
+      "id": "A.cond_real.q3",
+      "concept": "A.cond_real",
+      "level": "M",
+      "type": "apply",
+      "question": "If you heat ice, it ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "melts",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "melted",
+          "misconception": "A.cond_real.vs_subj"
+        },
+        {
+          "id": "c",
+          "text": "will melted",
+          "misconception": null
+        }
+      ],
+      "explanation": "언제나 그런 과학 사실은 양쪽 모두 현재형이에요."
+    },
+    {
+      "id": "A.cond_real.q4",
+      "concept": "A.cond_real",
+      "level": "M",
+      "type": "apply",
+      "question": "___ you hurry, you will miss the bus.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Unless",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "If",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "When",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"서두르지 않으면 버스를 놓칠 것이다\"라서 unless(~하지 않으면)예요."
+    },
+    {
+      "id": "A.cond_real.q5",
+      "concept": "A.cond_real",
+      "level": "M",
+      "type": "apply",
+      "question": "Unless you ___, you'll be late.",
+      "options": [
+        {
+          "id": "a",
+          "text": "hurry",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "don't hurry",
+          "misconception": "A.cond_real.unless_not"
+        },
+        {
+          "id": "c",
+          "text": "will hurry",
+          "misconception": "A.cond_real.will_in_if"
+        }
+      ],
+      "explanation": "unless에 이미 not의 뜻이 있고, 조건절이라 현재형이에요."
+    },
+    {
+      "id": "A.cond_real.q6",
+      "concept": "A.cond_real",
+      "level": "M",
+      "type": "apply",
+      "question": "If you are tired, ___ a rest.",
+      "options": [
+        {
+          "id": "a",
+          "text": "take",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "taking",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "to take",
+          "misconception": null
+        }
+      ],
+      "explanation": "결과 자리에 명령문(동사원형으로 시작)이 올 수 있어요."
+    },
+    {
+      "id": "A.cond_real.q7",
+      "concept": "A.cond_real",
+      "level": "M",
+      "type": "concept",
+      "question": "If it rains tomorrow, I will stay home. 이 말하는 상황은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "내일 실제로 비가 올 수도 있다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "내일 비가 절대 오지 않는다.",
+          "misconception": "A.cond_real.vs_subj"
+        },
+        {
+          "id": "c",
+          "text": "어제 비가 왔다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "조건문은 실제로 일어날 수 있는 일을 말해요."
+    },
+    {
+      "id": "A.cond_real.q8",
+      "concept": "A.cond_real",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 네가 오면 우리는 함께 놀 거야.",
+      "tokens": [
+        "If you come,",
+        "we",
+        "will play",
+        "together."
+      ],
+      "answer": [
+        "If you come,",
+        "we",
+        "will play",
+        "together."
+      ],
+      "misconception": "A.cond_real.will_in_if",
+      "explanation": "if절은 현재형(come), 주절은 will + 동사원형이에요."
+    },
+    {
+      "id": "A.cond_real.q9",
+      "concept": "A.cond_real",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 서두르지 않으면 늦을 것이다.",
+      "tokens": [
+        "He",
+        "will be late",
+        "unless",
+        "he hurries."
+      ],
+      "answer": [
+        "He",
+        "will be late",
+        "unless",
+        "he hurries."
+      ],
+      "misconception": null,
+      "explanation": "unless(~하지 않으면) 뒤는 현재형이고 not을 쓰지 않아요."
+    },
+    {
+      "id": "A.cond_real.q10",
+      "concept": "A.cond_real",
+      "level": "M",
+      "type": "reason",
+      "question": "If it will rain tomorrow, ~ 가 틀린 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "조건을 나타내는 if절에서는 미래 일도 현재형으로 쓰기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "rain은 동사가 아니라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "tomorrow가 있으면 과거형을 써야 해서",
+          "misconception": "A.cond_real.vs_subj"
+        }
+      ],
+      "explanation": "미래라는 정보는 주절의 will이 맡아요."
+    },
+    {
+      "id": "A.subj_past.q1",
+      "concept": "A.subj_past",
+      "level": "M",
+      "type": "apply",
+      "question": "If I ___ a bird, I could fly.",
+      "options": [
+        {
+          "id": "a",
+          "text": "were",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "am",
+          "misconception": "A.subj_past.present_if"
+        },
+        {
+          "id": "c",
+          "text": "will be",
+          "misconception": null
+        }
+      ],
+      "explanation": "지금 사실이 아닌 상상이라 be동사의 과거형 were를 써요."
+    },
+    {
+      "id": "A.subj_past.q2",
+      "concept": "A.subj_past",
+      "level": "M",
+      "type": "apply",
+      "question": "If I had a lot of money, I ___ a big house.",
+      "options": [
+        {
+          "id": "a",
+          "text": "would buy",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "will buy",
+          "misconception": "A.subj_past.will_main"
+        },
+        {
+          "id": "c",
+          "text": "bought",
+          "misconception": null
+        }
+      ],
+      "explanation": "가정법 과거의 주절은 would + 동사원형이에요."
+    },
+    {
+      "id": "A.subj_past.q3",
+      "concept": "A.subj_past",
+      "level": "M",
+      "type": "apply",
+      "question": "If I ___ his number, I would call him.",
+      "options": [
+        {
+          "id": "a",
+          "text": "knew",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "know",
+          "misconception": "A.subj_past.present_if"
+        },
+        {
+          "id": "c",
+          "text": "had known",
+          "misconception": null
+        }
+      ],
+      "explanation": "지금 번호를 모르는 상황의 상상이라 과거형 knew예요."
+    },
+    {
+      "id": "A.subj_past.q4",
+      "concept": "A.subj_past",
+      "level": "M",
+      "type": "apply",
+      "question": "If I ___ you, I would apologize.",
+      "options": [
+        {
+          "id": "a",
+          "text": "were",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "am",
+          "misconception": "A.subj_past.present_if"
+        },
+        {
+          "id": "c",
+          "text": "was",
+          "misconception": "A.subj_past.was_were"
+        }
+      ],
+      "explanation": "If I were you(내가 너라면)는 충고할 때 쓰는 표현이에요. 교과서 기준은 were예요."
+    },
+    {
+      "id": "A.subj_past.q5",
+      "concept": "A.subj_past",
+      "level": "M",
+      "type": "concept",
+      "question": "If I were rich, I would travel. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "지금 부자가 아니라서 여행을 못 한다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "예전에 부자였다.",
+          "misconception": "A.subj_past.past_meaning"
+        },
+        {
+          "id": "c",
+          "text": "곧 부자가 될 것이다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "가정법 과거는 모양은 과거지만 지금 사실의 반대를 말해요."
+    },
+    {
+      "id": "A.subj_past.q6",
+      "concept": "A.subj_past",
+      "level": "M",
+      "type": "concept",
+      "question": "If it is sunny tomorrow, ~ 와 If it were sunny now, ~ 의 차이는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "앞은 일어날 수 있는 조건, 뒤는 지금 사실과 반대인 상상",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "두 문장의 뜻이 같다",
+          "misconception": "A.cond_real.vs_subj"
+        },
+        {
+          "id": "c",
+          "text": "앞이 상상, 뒤가 실제 조건이다",
+          "misconception": "A.cond_real.vs_subj"
+        }
+      ],
+      "explanation": "현재형 if절은 조건문, 과거형 if절은 가정법이에요."
+    },
+    {
+      "id": "A.subj_past.q7",
+      "concept": "A.subj_past",
+      "level": "M",
+      "type": "apply",
+      "question": "If she ___ here, she would help us.",
+      "options": [
+        {
+          "id": "a",
+          "text": "were",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is",
+          "misconception": "A.subj_past.present_if"
+        },
+        {
+          "id": "c",
+          "text": "will be",
+          "misconception": null
+        }
+      ],
+      "explanation": "지금 여기 없는 상황의 상상이라 were예요."
+    },
+    {
+      "id": "A.subj_past.q8",
+      "concept": "A.subj_past",
+      "level": "H",
+      "type": "apply",
+      "question": "As I don't have time, I can't help you. = If I ___ time, I could help you.",
+      "options": [
+        {
+          "id": "a",
+          "text": "had",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "have",
+          "misconception": "A.subj_past.present_if"
+        },
+        {
+          "id": "c",
+          "text": "didn't have",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"시간이 없다\"는 사실의 반대이므로 긍정 + 과거형 had예요."
+    },
+    {
+      "id": "A.subj_past.q9",
+      "concept": "A.subj_past",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 내가 너라면 그에게 사실대로 말할 거야.",
+      "tokens": [
+        "If I were you,",
+        "I",
+        "would tell",
+        "him the truth."
+      ],
+      "answer": [
+        "If I were you,",
+        "I",
+        "would tell",
+        "him the truth."
+      ],
+      "misconception": null,
+      "explanation": "If I were you 다음에 주절 would + 동사원형이 와요."
+    },
+    {
+      "id": "A.subj_past.q10",
+      "concept": "A.subj_past",
+      "level": "M",
+      "type": "reason",
+      "question": "If I were a bird, ~ 에서 과거형 were를 쓰는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "지금 사실이 아닌 상상이라는 표시라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "과거에 새였던 이야기라서",
+          "misconception": "A.subj_past.past_meaning"
+        },
+        {
+          "id": "c",
+          "text": "I 뒤에는 항상 were를 써서",
+          "misconception": null
+        }
+      ],
+      "explanation": "시제를 한 칸 과거로 옮겨서 \"현실이 아님\"을 나타내요."
+    },
+    {
+      "id": "A.subj_pp.q1",
+      "concept": "A.subj_pp",
+      "level": "H",
+      "type": "apply",
+      "question": "If I had studied harder, I ___ the test.",
+      "options": [
+        {
+          "id": "a",
+          "text": "would have passed",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "would pass",
+          "misconception": "A.subj_pp.would_base"
+        },
+        {
+          "id": "c",
+          "text": "will pass",
+          "misconception": null
+        }
+      ],
+      "explanation": "과거 사실의 반대라서 주절은 would have p.p.예요."
+    },
+    {
+      "id": "A.subj_pp.q2",
+      "concept": "A.subj_pp",
+      "level": "H",
+      "type": "apply",
+      "question": "If it ___ yesterday, we would have gone hiking.",
+      "options": [
+        {
+          "id": "a",
+          "text": "hadn't rained",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "didn't rain",
+          "misconception": "A.subj_pp.if_form"
+        },
+        {
+          "id": "c",
+          "text": "wouldn't have rained",
+          "misconception": "A.subj_pp.if_form"
+        }
+      ],
+      "explanation": "어제(과거) 사실의 반대라서 if절은 had not p.p.예요."
+    },
+    {
+      "id": "A.subj_pp.q3",
+      "concept": "A.subj_pp",
+      "level": "H",
+      "type": "apply",
+      "question": "If I ___ about the party, I would have come.",
+      "options": [
+        {
+          "id": "a",
+          "text": "had known",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "knew",
+          "misconception": "A.subj_pp.if_form"
+        },
+        {
+          "id": "c",
+          "text": "have known",
+          "misconception": null
+        }
+      ],
+      "explanation": "과거에 몰랐던 일의 상상이라 had known이에요."
+    },
+    {
+      "id": "A.subj_pp.q4",
+      "concept": "A.subj_pp",
+      "level": "H",
+      "type": "apply",
+      "question": "If you had told me, I ___ you.",
+      "options": [
+        {
+          "id": "a",
+          "text": "could have helped",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "could help",
+          "misconception": "A.subj_pp.would_base"
+        },
+        {
+          "id": "c",
+          "text": "can help",
+          "misconception": null
+        }
+      ],
+      "explanation": "주절은 could + have p.p.예요."
+    },
+    {
+      "id": "A.subj_pp.q5",
+      "concept": "A.subj_pp",
+      "level": "H",
+      "type": "concept",
+      "question": "If I had left earlier, I wouldn't have missed the train. 의 실제 사실은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "일찍 출발하지 않아서 기차를 놓쳤다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "일찍 출발해서 기차를 탔다.",
+          "misconception": "A.subj_pp.meaning"
+        },
+        {
+          "id": "c",
+          "text": "지금 기차를 놓칠 것 같다.",
+          "misconception": "A.subj_pp.meaning"
+        }
+      ],
+      "explanation": "가정법 과거완료는 과거 사실의 반대예요."
+    },
+    {
+      "id": "A.subj_pp.q6",
+      "concept": "A.subj_pp",
+      "level": "H",
+      "type": "apply",
+      "question": "As I didn't have enough money, I couldn't buy it. = If I ___ enough money, I could have bought it.",
+      "options": [
+        {
+          "id": "a",
+          "text": "had had",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "had",
+          "misconception": "A.subj_pp.if_form"
+        },
+        {
+          "id": "c",
+          "text": "have had",
+          "misconception": null
+        }
+      ],
+      "explanation": "과거 사실(didn't have)의 반대라서 had + p.p.(had) = had had예요."
+    },
+    {
+      "id": "A.subj_pp.q7",
+      "concept": "A.subj_pp",
+      "level": "H",
+      "type": "concept",
+      "question": "가정법 과거완료가 나타내는 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "과거 사실과 반대되는 상상",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "현재 사실과 반대되는 상상",
+          "misconception": "A.subj_pp.meaning"
+        },
+        {
+          "id": "c",
+          "text": "앞으로 일어날 수 있는 일",
+          "misconception": "A.cond_real.vs_subj"
+        }
+      ],
+      "explanation": "현재 사실의 반대는 가정법 과거, 과거 사실의 반대는 가정법 과거완료예요."
+    },
+    {
+      "id": "A.subj_pp.q8",
+      "concept": "A.subj_pp",
+      "level": "H",
+      "type": "apply",
+      "question": "If he had been careful, the accident ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "wouldn't have happened",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "wouldn't happen",
+          "misconception": "A.subj_pp.would_base"
+        },
+        {
+          "id": "c",
+          "text": "didn't happen",
+          "misconception": null
+        }
+      ],
+      "explanation": "이미 일어난 사고에 대한 상상이라 wouldn't have p.p.예요."
+    },
+    {
+      "id": "A.subj_pp.q9",
+      "concept": "A.subj_pp",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 내가 그것을 알았더라면 너를 도왔을 텐데.",
+      "tokens": [
+        "If I had known it,",
+        "I",
+        "would have helped",
+        "you."
+      ],
+      "answer": [
+        "If I had known it,",
+        "I",
+        "would have helped",
+        "you."
+      ],
+      "misconception": null,
+      "explanation": "if절 had p.p., 주절 would have p.p.예요."
+    },
+    {
+      "id": "A.subj_pp.q10",
+      "concept": "A.subj_pp",
+      "level": "H",
+      "type": "reason",
+      "question": "If I had studied, I would have passed. 에서 had studied를 쓴 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "과거 사실과 반대되는 상상이라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "현재 사실과 반대라서",
+          "misconception": "A.subj_pp.meaning"
+        },
+        {
+          "id": "c",
+          "text": "실제로 공부를 했기 때문에",
+          "misconception": "A.subj_pp.meaning"
+        }
+      ],
+      "explanation": "과거의 상상은 시제를 한 칸 더 과거(had p.p.)로 옮겨요."
+    },
+    {
+      "id": "A.subj_mixed.q1",
+      "concept": "A.subj_mixed",
+      "level": "H",
+      "type": "apply",
+      "question": "If I had slept well last night, I ___ tired now.",
+      "options": [
+        {
+          "id": "a",
+          "text": "wouldn't be",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "wouldn't have been",
+          "misconception": "A.subj_mixed.same_tense"
+        },
+        {
+          "id": "c",
+          "text": "am not",
+          "misconception": null
+        }
+      ],
+      "explanation": "결과가 지금(now)이라서 would + 동사원형이에요."
+    },
+    {
+      "id": "A.subj_mixed.q2",
+      "concept": "A.subj_mixed",
+      "level": "H",
+      "type": "apply",
+      "question": "If she had taken the medicine, she ___ better now.",
+      "options": [
+        {
+          "id": "a",
+          "text": "would feel",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "would have felt",
+          "misconception": "A.subj_mixed.same_tense"
+        },
+        {
+          "id": "c",
+          "text": "will feel",
+          "misconception": null
+        }
+      ],
+      "explanation": "약을 먹은 일은 과거, 나아진 느낌은 지금이라 would + 원형이에요."
+    },
+    {
+      "id": "A.subj_mixed.q3",
+      "concept": "A.subj_mixed",
+      "level": "H",
+      "type": "apply",
+      "question": "If I ___ English harder in school, I could speak it well now.",
+      "options": [
+        {
+          "id": "a",
+          "text": "had studied",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "studied",
+          "misconception": "A.subj_mixed.reversed"
+        },
+        {
+          "id": "c",
+          "text": "have studied",
+          "misconception": null
+        }
+      ],
+      "explanation": "학교 다닐 때(과거) 공부한 일의 반대라서 had p.p.예요."
+    },
+    {
+      "id": "A.subj_mixed.q4",
+      "concept": "A.subj_mixed",
+      "level": "H",
+      "type": "concept",
+      "question": "If I had saved money, I would be rich now. 의 실제 사실은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "돈을 모으지 않아서 지금 부자가 아니다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "돈을 모아서 지금 부자다.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "앞으로 부자가 될 것이다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "과거에 돈을 모으지 않았고, 그 결과 지금 부자가 아니에요."
+    },
+    {
+      "id": "A.subj_mixed.q5",
+      "concept": "A.subj_mixed",
+      "level": "H",
+      "type": "apply",
+      "question": "As I missed the bus, I am late now. = If I hadn't missed the bus, I ___ late now.",
+      "options": [
+        {
+          "id": "a",
+          "text": "wouldn't be",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "wouldn't have been",
+          "misconception": "A.subj_mixed.same_tense"
+        },
+        {
+          "id": "c",
+          "text": "won't be",
+          "misconception": null
+        }
+      ],
+      "explanation": "버스를 놓친 것은 과거, 늦은 것은 지금이에요."
+    },
+    {
+      "id": "A.subj_mixed.q6",
+      "concept": "A.subj_mixed",
+      "level": "H",
+      "type": "concept",
+      "question": "혼합 가정법에서 주절이 would + 동사원형인 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "결과가 지금의 사실과 반대라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "결과도 과거의 일이라서",
+          "misconception": "A.subj_mixed.same_tense"
+        },
+        {
+          "id": "c",
+          "text": "미래의 계획이라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "지금 사실의 반대는 가정법 과거(would + 원형)로 써요."
+    },
+    {
+      "id": "A.subj_mixed.q7",
+      "concept": "A.subj_mixed",
+      "level": "H",
+      "type": "apply",
+      "question": "If he had listened to me, he ___ in trouble now.",
+      "options": [
+        {
+          "id": "a",
+          "text": "wouldn't be",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "wouldn't have been",
+          "misconception": "A.subj_mixed.same_tense"
+        },
+        {
+          "id": "c",
+          "text": "isn't",
+          "misconception": null
+        }
+      ],
+      "explanation": "now가 있어서 결과는 지금이에요."
+    },
+    {
+      "id": "A.subj_mixed.q8",
+      "concept": "A.subj_mixed",
+      "level": "H",
+      "type": "apply",
+      "question": "If I ___ breakfast this morning, I wouldn't be hungry now.",
+      "options": [
+        {
+          "id": "a",
+          "text": "had eaten",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "ate",
+          "misconception": "A.subj_mixed.reversed"
+        },
+        {
+          "id": "c",
+          "text": "would eat",
+          "misconception": "A.subj_mixed.reversed"
+        }
+      ],
+      "explanation": "아침을 먹은 것은 과거의 일이라 had p.p.예요."
+    },
+    {
+      "id": "A.subj_mixed.q9",
+      "concept": "A.subj_mixed",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 내가 그 일을 맡았더라면 지금 서울에 살고 있을 텐데.",
+      "tokens": [
+        "If I had taken the job,",
+        "I",
+        "would live",
+        "in Seoul now."
+      ],
+      "answer": [
+        "If I had taken the job,",
+        "I",
+        "would live",
+        "in Seoul now."
+      ],
+      "misconception": null,
+      "explanation": "if절은 과거의 반대(had p.p.), 주절은 지금의 반대(would + 원형)예요."
+    },
+    {
+      "id": "A.subj_mixed.q10",
+      "concept": "A.subj_mixed",
+      "level": "H",
+      "type": "reason",
+      "question": "If I had studied, I would be a doctor now. 에서 now의 역할은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "결과가 지금이라는 것을 알려 줘서 주절에 would + 원형을 쓰게 한다",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "아무 역할이 없다",
+          "misconception": "A.subj_mixed.same_tense"
+        },
+        {
+          "id": "c",
+          "text": "조건이 지금이라는 뜻이다",
+          "misconception": "A.subj_mixed.reversed"
+        }
+      ],
+      "explanation": "시간 표현을 보면 각 부분의 시제를 정할 수 있어요."
+    },
+    {
+      "id": "A.subj_wish.q1",
+      "concept": "A.subj_wish",
+      "level": "H",
+      "type": "apply",
+      "question": "I wish I ___ taller.",
+      "options": [
+        {
+          "id": "a",
+          "text": "were",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "am",
+          "misconception": "A.subj_wish.present"
+        },
+        {
+          "id": "c",
+          "text": "will be",
+          "misconception": "A.subj_wish.present"
+        }
+      ],
+      "explanation": "지금 키가 크지 않은 아쉬움이라 과거형 were예요."
+    },
+    {
+      "id": "A.subj_wish.q2",
+      "concept": "A.subj_wish",
+      "level": "H",
+      "type": "apply",
+      "question": "I wish I ___ harder last year.",
+      "options": [
+        {
+          "id": "a",
+          "text": "had studied",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "studied",
+          "misconception": "A.subj_wish.time_mix"
+        },
+        {
+          "id": "c",
+          "text": "study",
+          "misconception": "A.subj_wish.present"
+        }
+      ],
+      "explanation": "last year(과거)에 대한 아쉬움이라 had p.p.예요."
+    },
+    {
+      "id": "A.subj_wish.q3",
+      "concept": "A.subj_wish",
+      "level": "H",
+      "type": "apply",
+      "question": "He talks as if he ___ everything, but he doesn't.",
+      "options": [
+        {
+          "id": "a",
+          "text": "knew",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "knows",
+          "misconception": "A.subj_wish.as_if"
+        },
+        {
+          "id": "c",
+          "text": "has known",
+          "misconception": null
+        }
+      ],
+      "explanation": "실제로는 다 알지 못해서, 사실이 아닌 비유라 과거형 knew예요."
+    },
+    {
+      "id": "A.subj_wish.q4",
+      "concept": "A.subj_wish",
+      "level": "H",
+      "type": "apply",
+      "question": "It's time you ___ to bed.",
+      "options": [
+        {
+          "id": "a",
+          "text": "went",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "go",
+          "misconception": "A.subj_wish.present"
+        },
+        {
+          "id": "c",
+          "text": "going",
+          "misconception": null
+        }
+      ],
+      "explanation": "It's time + 주어 + 과거형 = 벌써 ~할 시간이다."
+    },
+    {
+      "id": "A.subj_wish.q5",
+      "concept": "A.subj_wish",
+      "level": "H",
+      "type": "apply",
+      "question": "I wish I ___ to the concert yesterday.",
+      "options": [
+        {
+          "id": "a",
+          "text": "had gone",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "went",
+          "misconception": "A.subj_wish.time_mix"
+        },
+        {
+          "id": "c",
+          "text": "go",
+          "misconception": "A.subj_wish.present"
+        }
+      ],
+      "explanation": "yesterday(과거)에 대한 아쉬움이라 had gone이에요."
+    },
+    {
+      "id": "A.subj_wish.q6",
+      "concept": "A.subj_wish",
+      "level": "H",
+      "type": "concept",
+      "question": "I wish I had a dog. 의 실제 사실은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "지금 개가 없다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "지금 개가 있다.",
+          "misconception": "A.subj_wish.present"
+        },
+        {
+          "id": "c",
+          "text": "예전에 개가 있었다.",
+          "misconception": "A.subj_wish.time_mix"
+        }
+      ],
+      "explanation": "I wish + 과거형은 지금 사실의 반대예요."
+    },
+    {
+      "id": "A.subj_wish.q7",
+      "concept": "A.subj_wish",
+      "level": "H",
+      "type": "concept",
+      "question": "I wish I had known his number. 의 실제 사실은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "그때 그의 번호를 몰랐다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "지금 그의 번호를 모른다.",
+          "misconception": "A.subj_wish.time_mix"
+        },
+        {
+          "id": "c",
+          "text": "그의 번호를 알고 있었다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "I wish + had p.p.는 과거 사실의 반대예요."
+    },
+    {
+      "id": "A.subj_wish.q8",
+      "concept": "A.subj_wish",
+      "level": "H",
+      "type": "apply",
+      "question": "She looked as if she ___ a ghost.",
+      "options": [
+        {
+          "id": "a",
+          "text": "had seen",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "sees",
+          "misconception": "A.subj_wish.as_if"
+        },
+        {
+          "id": "c",
+          "text": "has seen",
+          "misconception": null
+        }
+      ],
+      "explanation": "보였던 때(looked)보다 먼저 귀신을 본 것 같다는 비유라서 had p.p.예요."
+    },
+    {
+      "id": "A.subj_wish.q9",
+      "concept": "A.subj_wish",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 내가 새라면 좋을 텐데.",
+      "tokens": [
+        "I wish",
+        "I were",
+        "a bird."
+      ],
+      "answer": [
+        "I wish",
+        "I were",
+        "a bird."
+      ],
+      "misconception": null,
+      "explanation": "I wish + 주어 + 과거형(were)이에요."
+    },
+    {
+      "id": "A.subj_wish.q10",
+      "concept": "A.subj_wish",
+      "level": "H",
+      "type": "reason",
+      "question": "I wish I were rich. 에서 were를 쓰는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "지금 사실이 아닌 바람이라서 가정법 과거를 써서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "과거에 부자였던 이야기라서",
+          "misconception": "A.subj_wish.time_mix"
+        },
+        {
+          "id": "c",
+          "text": "I 뒤에는 항상 were를 써서",
+          "misconception": null
+        }
+      ],
+      "explanation": "I wish 뒤에는 가정법 시제가 와요."
+    },
+    {
+      "id": "A.subj_omit.q1",
+      "concept": "A.subj_omit",
+      "level": "H",
+      "type": "apply",
+      "question": "___ I known the truth, I would have told you.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Had",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "If",
+          "misconception": "A.subj_omit.order"
+        },
+        {
+          "id": "c",
+          "text": "Did",
+          "misconception": "A.subj_omit.do"
+        }
+      ],
+      "explanation": "If I had known에서 if를 생략하고 had를 주어 앞으로 보낸 모양이에요."
+    },
+    {
+      "id": "A.subj_omit.q2",
+      "concept": "A.subj_omit",
+      "level": "H",
+      "type": "apply",
+      "question": "___ I you, I would accept the offer.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Were",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Was",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "Am",
+          "misconception": null
+        }
+      ],
+      "explanation": "If I were you에서 if를 생략하고 were를 앞으로 보냈어요."
+    },
+    {
+      "id": "A.subj_omit.q3",
+      "concept": "A.subj_omit",
+      "level": "H",
+      "type": "apply",
+      "question": "___ you need any help, please call me.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Should",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Do",
+          "misconception": "A.subj_omit.do"
+        },
+        {
+          "id": "c",
+          "text": "Will",
+          "misconception": null
+        }
+      ],
+      "explanation": "If you should need help(혹시 도움이 필요하면)에서 if를 생략한 모양이에요."
+    },
+    {
+      "id": "A.subj_omit.q4",
+      "concept": "A.subj_omit",
+      "level": "H",
+      "type": "concept",
+      "question": "Had I known it, I would have helped you. 와 같은 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "If I had known it, I would have helped you.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Did I know it? I would help you.",
+          "misconception": "A.subj_omit.question"
+        },
+        {
+          "id": "c",
+          "text": "I had known it, so I helped you.",
+          "misconception": null
+        }
+      ],
+      "explanation": "if 생략 도치는 if가 있는 문장과 뜻이 같아요."
+    },
+    {
+      "id": "A.subj_omit.q5",
+      "concept": "A.subj_omit",
+      "level": "H",
+      "type": "concept",
+      "question": "Were I rich, I would travel. 에서 Were가 맨 앞에 온 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "if를 생략하고 동사를 주어 앞으로 보냈기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "의문문이라서",
+          "misconception": "A.subj_omit.question"
+        },
+        {
+          "id": "c",
+          "text": "과거 이야기라서",
+          "misconception": "A.subj_past.past_meaning"
+        }
+      ],
+      "explanation": "뒤에 쉼표와 would 주절이 있으니 가정법이에요."
+    },
+    {
+      "id": "A.subj_omit.q6",
+      "concept": "A.subj_omit",
+      "level": "H",
+      "type": "apply",
+      "question": "If he had come earlier, he could have met her. = ___ earlier, he could have met her.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Had he come",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "He had come",
+          "misconception": "A.subj_omit.order"
+        },
+        {
+          "id": "c",
+          "text": "Did he come",
+          "misconception": "A.subj_omit.do"
+        }
+      ],
+      "explanation": "if를 빼고 had를 주어 he 앞으로 보내요."
+    },
+    {
+      "id": "A.subj_omit.q7",
+      "concept": "A.subj_omit",
+      "level": "H",
+      "type": "apply",
+      "question": "If I were in your place, I would wait. = ___ in your place, I would wait.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Were I",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I were",
+          "misconception": "A.subj_omit.order"
+        },
+        {
+          "id": "c",
+          "text": "Was I",
+          "misconception": null
+        }
+      ],
+      "explanation": "if를 빼고 were를 주어 I 앞으로 보내요."
+    },
+    {
+      "id": "A.subj_omit.q8",
+      "concept": "A.subj_omit",
+      "level": "H",
+      "type": "apply",
+      "question": "Without your help, I ___ the race.",
+      "options": [
+        {
+          "id": "a",
+          "text": "would have lost",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "will lose",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "lost",
+          "misconception": null
+        }
+      ],
+      "explanation": "Without your help(네 도움이 없었다면)는 if절을 대신하는 표현이라 주절은 가정법이에요."
+    },
+    {
+      "id": "A.subj_omit.q9",
+      "concept": "A.subj_omit",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 혹시 비가 오면 경기는 취소될 것입니다.",
+      "tokens": [
+        "Should it rain,",
+        "the game",
+        "will be",
+        "canceled."
+      ],
+      "answer": [
+        "Should it rain,",
+        "the game",
+        "will be",
+        "canceled."
+      ],
+      "misconception": null,
+      "explanation": "If it should rain에서 if를 생략해 Should가 앞으로 나왔어요."
+    },
+    {
+      "id": "A.subj_omit.q10",
+      "concept": "A.subj_omit",
+      "level": "H",
+      "type": "reason",
+      "question": "Had I known it, ~ 에서 had가 문장 맨 앞에 온 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "if를 생략해서 had가 주어 앞으로 나갔기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "의문문이기 때문에",
+          "misconception": "A.subj_omit.question"
+        },
+        {
+          "id": "c",
+          "text": "had를 강조하기 때문에",
+          "misconception": null
+        }
+      ],
+      "explanation": "if 생략 가정법에서는 had·were·should가 주어 앞으로 나가요."
+    }
+  ]
+}

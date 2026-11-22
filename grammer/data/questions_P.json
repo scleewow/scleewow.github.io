@@ -1,0 +1,1727 @@
+{
+  "area": "P",
+  "types": {
+    "concept": "개념 확인",
+    "apply": "적용",
+    "reason": "이유 확인",
+    "order": "문장 만들기"
+  },
+  "questions": [
+    {
+      "id": "P.concept.q1",
+      "concept": "P.concept",
+      "level": "M",
+      "type": "concept",
+      "question": "The window was broken by Tom. 에서 창문을 깬 사람은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Tom",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "the window",
+          "misconception": "P.concept.who_does"
+        },
+        {
+          "id": "c",
+          "text": "알 수 없다",
+          "misconception": null
+        }
+      ],
+      "explanation": "수동태에서 동작을 한 쪽은 by 뒤에 와요."
+    },
+    {
+      "id": "P.concept.q2",
+      "concept": "P.concept",
+      "level": "M",
+      "type": "concept",
+      "question": "수동태의 주어는 동작을 어떻게 하나요?",
+      "options": [
+        {
+          "id": "a",
+          "text": "동작을 받는다",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "동작을 직접 한다",
+          "misconception": "P.concept.who_does"
+        },
+        {
+          "id": "c",
+          "text": "동작과 관계없다",
+          "misconception": null
+        }
+      ],
+      "explanation": "수동태는 주어가 동작을 받는 문장이에요."
+    },
+    {
+      "id": "P.concept.q3",
+      "concept": "P.concept",
+      "level": "M",
+      "type": "apply",
+      "question": "Tom broke the window. 를 수동태로 바꾸면?",
+      "options": [
+        {
+          "id": "a",
+          "text": "The window was broken by Tom.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Tom was broken by the window.",
+          "misconception": "P.concept.object_switch"
+        },
+        {
+          "id": "c",
+          "text": "The window broke Tom.",
+          "misconception": "P.concept.object_switch"
+        }
+      ],
+      "explanation": "능동태의 목적어(the window)가 수동태의 주어가 돼요."
+    },
+    {
+      "id": "P.concept.q4",
+      "concept": "P.concept",
+      "level": "M",
+      "type": "apply",
+      "question": "수동태로 바꿀 수 없는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "The accident happened yesterday.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "She wrote a letter.",
+          "misconception": "P.concept.intransitive"
+        },
+        {
+          "id": "c",
+          "text": "They built the bridge.",
+          "misconception": "P.concept.intransitive"
+        }
+      ],
+      "explanation": "happen은 목적어가 없는 동사라서 수동태가 없어요."
+    },
+    {
+      "id": "P.concept.q5",
+      "concept": "P.concept",
+      "level": "M",
+      "type": "apply",
+      "question": "틀린 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "The accident was happened.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "My bike was stolen.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "The song is loved by many people.",
+          "misconception": null
+        }
+      ],
+      "explanation": "happen은 수동태로 쓰지 않아요. The accident happened.가 맞아요."
+    },
+    {
+      "id": "P.concept.q6",
+      "concept": "P.concept",
+      "level": "M",
+      "type": "concept",
+      "question": "My bike was stolen. 에서 by ~가 없는 이유로 알맞은 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "누가 훔쳤는지 모르기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "자전거가 직접 훔쳤기 때문에",
+          "misconception": "P.concept.who_does"
+        },
+        {
+          "id": "c",
+          "text": "by는 항상 생략해야 해서",
+          "misconception": null
+        }
+      ],
+      "explanation": "하는 사람을 모르거나 중요하지 않으면 by ~를 생략해요."
+    },
+    {
+      "id": "P.concept.q7",
+      "concept": "P.concept",
+      "level": "M",
+      "type": "concept",
+      "question": "This song is loved by many people. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "이 노래는 많은 사람들에게 사랑받는다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "이 노래는 많은 사람들을 사랑한다.",
+          "misconception": "P.concept.who_does"
+        },
+        {
+          "id": "c",
+          "text": "많은 사람들이 이 노래를 사랑했었다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "수동태는 \"~되다, ~받다\"로 해석해요."
+    },
+    {
+      "id": "P.concept.q8",
+      "concept": "P.concept",
+      "level": "M",
+      "type": "apply",
+      "question": "The cat ___ the mouse. (고양이가 쥐를 잡았다)",
+      "options": [
+        {
+          "id": "a",
+          "text": "caught",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "was caught",
+          "misconception": "P.concept.who_does"
+        },
+        {
+          "id": "c",
+          "text": "was catch",
+          "misconception": null
+        }
+      ],
+      "explanation": "고양이가 직접 잡은 것이라 능동태예요."
+    },
+    {
+      "id": "P.concept.q9",
+      "concept": "P.concept",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 이 집은 1990년에 지어졌다.",
+      "tokens": [
+        "This house",
+        "was built",
+        "in 1990."
+      ],
+      "answer": [
+        "This house",
+        "was built",
+        "in 1990."
+      ],
+      "misconception": null,
+      "explanation": "집은 지어지는 쪽이라 수동태 was built를 써요."
+    },
+    {
+      "id": "P.concept.q10",
+      "concept": "P.concept",
+      "level": "M",
+      "type": "reason",
+      "question": "English is spoken in many countries. 가 수동태인 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "영어는 말하는 쪽이 아니라 말해지는 쪽이라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "영어가 직접 말을 해서",
+          "misconception": "P.concept.who_does"
+        },
+        {
+          "id": "c",
+          "text": "in many countries가 있어서",
+          "misconception": null
+        }
+      ],
+      "explanation": "주어가 동작을 받으면 수동태예요."
+    },
+    {
+      "id": "P.basic.q1",
+      "concept": "P.basic",
+      "level": "M",
+      "type": "apply",
+      "question": "The room ___ every day.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is cleaned",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "cleaned",
+          "misconception": "P.basic.no_be"
+        },
+        {
+          "id": "c",
+          "text": "is clean",
+          "misconception": "P.basic.base_form"
+        }
+      ],
+      "explanation": "방은 청소되는 쪽이고 매일의 일이라 is + p.p.예요."
+    },
+    {
+      "id": "P.basic.q2",
+      "concept": "P.basic",
+      "level": "M",
+      "type": "apply",
+      "question": "This book ___ in 2010.",
+      "options": [
+        {
+          "id": "a",
+          "text": "was written",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "was wrote",
+          "misconception": "P.basic.base_form"
+        },
+        {
+          "id": "c",
+          "text": "written",
+          "misconception": "P.basic.no_be"
+        }
+      ],
+      "explanation": "write의 p.p.는 written이에요."
+    },
+    {
+      "id": "P.basic.q3",
+      "concept": "P.basic",
+      "level": "M",
+      "type": "apply",
+      "question": "These cookies ___ by my mom yesterday.",
+      "options": [
+        {
+          "id": "a",
+          "text": "were made",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "was made",
+          "misconception": "P.basic.be_agree"
+        },
+        {
+          "id": "c",
+          "text": "are made",
+          "misconception": "P.basic.be_agree"
+        }
+      ],
+      "explanation": "주어가 복수(cookies)이고 과거라서 were예요."
+    },
+    {
+      "id": "P.basic.q4",
+      "concept": "P.basic",
+      "level": "M",
+      "type": "apply",
+      "question": "The door ___ locked last night.",
+      "options": [
+        {
+          "id": "a",
+          "text": "wasn't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "didn't",
+          "misconception": "P.basic.do_question"
+        },
+        {
+          "id": "c",
+          "text": "doesn't",
+          "misconception": "P.basic.do_question"
+        }
+      ],
+      "explanation": "수동태의 부정은 be동사 뒤에 not을 붙여요."
+    },
+    {
+      "id": "P.basic.q5",
+      "concept": "P.basic",
+      "level": "M",
+      "type": "apply",
+      "question": "___ the window broken by Tom?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Was",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Did",
+          "misconception": "P.basic.do_question"
+        },
+        {
+          "id": "c",
+          "text": "Does",
+          "misconception": "P.basic.do_question"
+        }
+      ],
+      "explanation": "수동태 의문문은 be동사를 앞으로 보내요."
+    },
+    {
+      "id": "P.basic.q6",
+      "concept": "P.basic",
+      "level": "M",
+      "type": "apply",
+      "question": "English ___ in Canada.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is spoken",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is speak",
+          "misconception": "P.basic.base_form"
+        },
+        {
+          "id": "c",
+          "text": "speaks",
+          "misconception": null
+        }
+      ],
+      "explanation": "speak의 p.p.는 spoken이에요."
+    },
+    {
+      "id": "P.basic.q7",
+      "concept": "P.basic",
+      "level": "M",
+      "type": "apply",
+      "question": "The bridge ___ in 1950.",
+      "options": [
+        {
+          "id": "a",
+          "text": "was built",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "built",
+          "misconception": "P.basic.no_be"
+        },
+        {
+          "id": "c",
+          "text": "was build",
+          "misconception": "P.basic.base_form"
+        }
+      ],
+      "explanation": "be동사와 p.p.(built)가 함께 있어야 해요."
+    },
+    {
+      "id": "P.basic.q8",
+      "concept": "P.basic",
+      "level": "M",
+      "type": "concept",
+      "question": "수동태의 기본 모양은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "be + 과거분사(p.p.)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "have + 과거분사(p.p.)",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "be + 동사원형",
+          "misconception": "P.basic.base_form"
+        }
+      ],
+      "explanation": "have + p.p.는 완료형이에요."
+    },
+    {
+      "id": "P.basic.q9",
+      "concept": "P.basic",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그 문은 잠겨 있지 않았다.",
+      "tokens": [
+        "The door",
+        "was not",
+        "locked."
+      ],
+      "answer": [
+        "The door",
+        "was not",
+        "locked."
+      ],
+      "misconception": null,
+      "explanation": "be동사 + not + p.p. 순서예요."
+    },
+    {
+      "id": "P.basic.q10",
+      "concept": "P.basic",
+      "level": "M",
+      "type": "reason",
+      "question": "The room cleaned every day. 가 틀린 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "수동태에 꼭 필요한 be동사가 빠져서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "clean이 불규칙동사라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "every day 때문에 진행형을 써야 해서",
+          "misconception": null
+        }
+      ],
+      "explanation": "방은 스스로 청소하지 않으니 수동태 be + p.p.가 필요해요."
+    },
+    {
+      "id": "P.tense.q1",
+      "concept": "P.tense",
+      "level": "M",
+      "type": "apply",
+      "question": "The new bridge ___ next year.",
+      "options": [
+        {
+          "id": "a",
+          "text": "will be finished",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "will finished",
+          "misconception": "P.tense.modal_be"
+        },
+        {
+          "id": "c",
+          "text": "will be finish",
+          "misconception": "P.tense.no_pp"
+        }
+      ],
+      "explanation": "미래 수동태는 will be + p.p.예요."
+    },
+    {
+      "id": "P.tense.q2",
+      "concept": "P.tense",
+      "level": "M",
+      "type": "apply",
+      "question": "The road ___ now, so we have to go around.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is being repaired",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is been repaired",
+          "misconception": "P.tense.being_been"
+        },
+        {
+          "id": "c",
+          "text": "is repairing",
+          "misconception": null
+        }
+      ],
+      "explanation": "지금 수리되고 있는 중이라 진행 수동태 be + being + p.p.예요."
+    },
+    {
+      "id": "P.tense.q3",
+      "concept": "P.tense",
+      "level": "M",
+      "type": "apply",
+      "question": "The work ___ already.",
+      "options": [
+        {
+          "id": "a",
+          "text": "has been done",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "has being done",
+          "misconception": "P.tense.being_been"
+        },
+        {
+          "id": "c",
+          "text": "has done",
+          "misconception": null
+        }
+      ],
+      "explanation": "완료 수동태는 have/has + been + p.p.예요."
+    },
+    {
+      "id": "P.tense.q4",
+      "concept": "P.tense",
+      "level": "M",
+      "type": "apply",
+      "question": "This rule must ___ by everyone.",
+      "options": [
+        {
+          "id": "a",
+          "text": "be followed",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "followed",
+          "misconception": "P.tense.modal_be"
+        },
+        {
+          "id": "c",
+          "text": "is followed",
+          "misconception": "P.tense.modal_be"
+        }
+      ],
+      "explanation": "조동사 뒤에는 be + p.p.예요."
+    },
+    {
+      "id": "P.tense.q5",
+      "concept": "P.tense",
+      "level": "M",
+      "type": "apply",
+      "question": "My computer can't ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "be fixed",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "fixed",
+          "misconception": "P.tense.modal_be"
+        },
+        {
+          "id": "c",
+          "text": "be fix",
+          "misconception": "P.tense.no_pp"
+        }
+      ],
+      "explanation": "조동사 can't 뒤에 be + p.p.예요."
+    },
+    {
+      "id": "P.tense.q6",
+      "concept": "P.tense",
+      "level": "M",
+      "type": "apply",
+      "question": "The letter ___ sent yet.",
+      "options": [
+        {
+          "id": "a",
+          "text": "hasn't been",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "hasn't being",
+          "misconception": "P.tense.being_been"
+        },
+        {
+          "id": "c",
+          "text": "didn't been",
+          "misconception": null
+        }
+      ],
+      "explanation": "yet과 함께 완료 수동태의 부정 hasn't been + p.p.예요."
+    },
+    {
+      "id": "P.tense.q7",
+      "concept": "P.tense",
+      "level": "M",
+      "type": "apply",
+      "question": "The house ___ painted when I visited.",
+      "options": [
+        {
+          "id": "a",
+          "text": "was being",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "was been",
+          "misconception": "P.tense.being_been"
+        },
+        {
+          "id": "c",
+          "text": "has been",
+          "misconception": null
+        }
+      ],
+      "explanation": "방문했을 때 칠해지고 있던 중이라 과거진행 수동태 was being + p.p.예요."
+    },
+    {
+      "id": "P.tense.q8",
+      "concept": "P.tense",
+      "level": "M",
+      "type": "concept",
+      "question": "The road has been repaired. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "도로가 (이미) 수리되었다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "도로가 지금 수리되고 있다.",
+          "misconception": "P.tense.being_been"
+        },
+        {
+          "id": "c",
+          "text": "도로가 수리할 것이다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "has been p.p.는 완료 수동태예요."
+    },
+    {
+      "id": "P.tense.q9",
+      "concept": "P.tense",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그 영화는 다음 달에 개봉될 것이다.",
+      "tokens": [
+        "The movie",
+        "will be",
+        "released",
+        "next month."
+      ],
+      "answer": [
+        "The movie",
+        "will be",
+        "released",
+        "next month."
+      ],
+      "misconception": null,
+      "explanation": "will + be + p.p. 순서예요."
+    },
+    {
+      "id": "P.tense.q10",
+      "concept": "P.tense",
+      "level": "M",
+      "type": "reason",
+      "question": "It can be fixed. 에서 is가 아니라 be를 쓰는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "조동사 뒤에는 동사원형이 와야 해서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "fixed가 과거형이라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "It이 단수라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "조동사 뒤 원형 규칙이 수동태에도 적용돼서 be가 돼요."
+    },
+    {
+      "id": "P.by.q1",
+      "concept": "P.by",
+      "level": "M",
+      "type": "apply",
+      "question": "This novel was written ___ a famous writer.",
+      "options": [
+        {
+          "id": "a",
+          "text": "by",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "with",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "of",
+          "misconception": null
+        }
+      ],
+      "explanation": "누가 썼는지(행위자)는 by로 나타내요."
+    },
+    {
+      "id": "P.by.q2",
+      "concept": "P.by",
+      "level": "M",
+      "type": "apply",
+      "question": "I am interested ___ science.",
+      "options": [
+        {
+          "id": "a",
+          "text": "in",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "by",
+          "misconception": "P.by.always_by"
+        },
+        {
+          "id": "c",
+          "text": "with",
+          "misconception": null
+        }
+      ],
+      "explanation": "be interested in은 정해진 짝이에요."
+    },
+    {
+      "id": "P.by.q3",
+      "concept": "P.by",
+      "level": "M",
+      "type": "apply",
+      "question": "The glass is filled ___ water.",
+      "options": [
+        {
+          "id": "a",
+          "text": "with",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "by",
+          "misconception": "P.by.always_by"
+        },
+        {
+          "id": "c",
+          "text": "of",
+          "misconception": null
+        }
+      ],
+      "explanation": "be filled with = ~로 가득 차 있다."
+    },
+    {
+      "id": "P.by.q4",
+      "concept": "P.by",
+      "level": "M",
+      "type": "apply",
+      "question": "The mountain is covered ___ snow.",
+      "options": [
+        {
+          "id": "a",
+          "text": "with",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "by",
+          "misconception": "P.by.always_by"
+        },
+        {
+          "id": "c",
+          "text": "in",
+          "misconception": null
+        }
+      ],
+      "explanation": "be covered with = ~로 덮여 있다."
+    },
+    {
+      "id": "P.by.q5",
+      "concept": "P.by",
+      "level": "M",
+      "type": "apply",
+      "question": "This desk is made ___ wood.",
+      "options": [
+        {
+          "id": "a",
+          "text": "of",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "from",
+          "misconception": "P.by.of_from"
+        },
+        {
+          "id": "c",
+          "text": "by",
+          "misconception": "P.by.always_by"
+        }
+      ],
+      "explanation": "나무가 그대로 보이는 재료라 made of예요."
+    },
+    {
+      "id": "P.by.q6",
+      "concept": "P.by",
+      "level": "M",
+      "type": "apply",
+      "question": "Cheese is made ___ milk.",
+      "options": [
+        {
+          "id": "a",
+          "text": "from",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "of",
+          "misconception": "P.by.of_from"
+        },
+        {
+          "id": "c",
+          "text": "by",
+          "misconception": "P.by.always_by"
+        }
+      ],
+      "explanation": "우유가 치즈로 변해서 원래 모습이 안 보이니 made from이에요."
+    },
+    {
+      "id": "P.by.q7",
+      "concept": "P.by",
+      "level": "M",
+      "type": "apply",
+      "question": "Jeju Island is known ___ its beautiful beaches.",
+      "options": [
+        {
+          "id": "a",
+          "text": "for",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "by",
+          "misconception": "P.by.always_by"
+        },
+        {
+          "id": "c",
+          "text": "of",
+          "misconception": null
+        }
+      ],
+      "explanation": "be known for = ~로 유명하다."
+    },
+    {
+      "id": "P.by.q8",
+      "concept": "P.by",
+      "level": "M",
+      "type": "concept",
+      "question": "가장 자연스러운 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "English is spoken in Canada.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "English is spoken by people in Canada.",
+          "misconception": "P.by.keep_people"
+        },
+        {
+          "id": "c",
+          "text": "English is spoken by them in Canada.",
+          "misconception": "P.by.keep_people"
+        }
+      ],
+      "explanation": "행위자가 일반 사람이면 by people은 보통 생략해요."
+    },
+    {
+      "id": "P.by.q9",
+      "concept": "P.by",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그녀는 그 결과에 만족했다.",
+      "tokens": [
+        "She",
+        "was satisfied",
+        "with",
+        "the result."
+      ],
+      "answer": [
+        "She",
+        "was satisfied",
+        "with",
+        "the result."
+      ],
+      "misconception": null,
+      "explanation": "be satisfied with = ~에 만족하다."
+    },
+    {
+      "id": "P.by.q10",
+      "concept": "P.by",
+      "level": "M",
+      "type": "reason",
+      "question": "My bike was stolen. 에 by ~가 없는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "누가 훔쳤는지 모르기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "by는 과거에 쓸 수 없어서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "stolen이 형용사라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "행위자를 모르거나 중요하지 않으면 by ~를 생략해요."
+    },
+    {
+      "id": "P.emotion.q1",
+      "concept": "P.emotion",
+      "level": "M",
+      "type": "apply",
+      "question": "The movie was so ___ that I fell asleep.",
+      "options": [
+        {
+          "id": "a",
+          "text": "boring",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "bored",
+          "misconception": "P.emotion.thing_ed"
+        },
+        {
+          "id": "c",
+          "text": "bore",
+          "misconception": null
+        }
+      ],
+      "explanation": "영화가 지루함을 일으키는 쪽이라 -ing예요."
+    },
+    {
+      "id": "P.emotion.q2",
+      "concept": "P.emotion",
+      "level": "M",
+      "type": "apply",
+      "question": "I was ___ during the long class.",
+      "options": [
+        {
+          "id": "a",
+          "text": "bored",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "boring",
+          "misconception": "P.emotion.person_ing"
+        },
+        {
+          "id": "c",
+          "text": "bore",
+          "misconception": null
+        }
+      ],
+      "explanation": "나는 지루함을 느끼는 쪽이라 -ed예요."
+    },
+    {
+      "id": "P.emotion.q3",
+      "concept": "P.emotion",
+      "level": "M",
+      "type": "apply",
+      "question": "We were very ___ about the trip.",
+      "options": [
+        {
+          "id": "a",
+          "text": "excited",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "exciting",
+          "misconception": "P.emotion.person_ing"
+        },
+        {
+          "id": "c",
+          "text": "excite",
+          "misconception": null
+        }
+      ],
+      "explanation": "우리는 신이 난 감정을 느끼는 쪽이에요."
+    },
+    {
+      "id": "P.emotion.q4",
+      "concept": "P.emotion",
+      "level": "M",
+      "type": "apply",
+      "question": "The news was ___. Nobody expected it.",
+      "options": [
+        {
+          "id": "a",
+          "text": "surprising",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "surprised",
+          "misconception": "P.emotion.thing_ed"
+        },
+        {
+          "id": "c",
+          "text": "surprise",
+          "misconception": null
+        }
+      ],
+      "explanation": "소식이 놀라움을 일으키는 쪽이에요."
+    },
+    {
+      "id": "P.emotion.q5",
+      "concept": "P.emotion",
+      "level": "M",
+      "type": "apply",
+      "question": "Are you ___ in K-pop?",
+      "options": [
+        {
+          "id": "a",
+          "text": "interested",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "interesting",
+          "misconception": "P.emotion.person_ing"
+        },
+        {
+          "id": "c",
+          "text": "interest",
+          "misconception": null
+        }
+      ],
+      "explanation": "관심을 느끼는 사람이라 interested in이에요."
+    },
+    {
+      "id": "P.emotion.q6",
+      "concept": "P.emotion",
+      "level": "M",
+      "type": "apply",
+      "question": "It was a long and ___ day.",
+      "options": [
+        {
+          "id": "a",
+          "text": "tiring",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "tired",
+          "misconception": "P.emotion.thing_ed"
+        },
+        {
+          "id": "c",
+          "text": "tire",
+          "misconception": null
+        }
+      ],
+      "explanation": "하루가 피곤하게 만드는 쪽이라 tiring이에요."
+    },
+    {
+      "id": "P.emotion.q7",
+      "concept": "P.emotion",
+      "level": "M",
+      "type": "concept",
+      "question": "I am boring. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "나는 (남을) 지루하게 하는 사람이다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "나는 지루함을 느낀다.",
+          "misconception": "P.emotion.person_ing"
+        },
+        {
+          "id": "c",
+          "text": "나는 지루한 것을 싫어한다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "-ing는 감정을 일으키는 쪽이에요."
+    },
+    {
+      "id": "P.emotion.q8",
+      "concept": "P.emotion",
+      "level": "M",
+      "type": "apply",
+      "question": "He is an ___ speaker. Everyone loves his talks.",
+      "options": [
+        {
+          "id": "a",
+          "text": "interesting",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "interested",
+          "misconception": "P.emotion.always_person"
+        },
+        {
+          "id": "c",
+          "text": "interest",
+          "misconception": null
+        }
+      ],
+      "explanation": "사람이어도 흥미를 일으키는 쪽이면 -ing예요."
+    },
+    {
+      "id": "P.emotion.q9",
+      "concept": "P.emotion",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그 경기는 정말 신났다.",
+      "tokens": [
+        "The game",
+        "was",
+        "really exciting."
+      ],
+      "answer": [
+        "The game",
+        "was",
+        "really exciting."
+      ],
+      "misconception": null,
+      "explanation": "경기가 신나는 감정을 일으키는 쪽이라 exciting이에요."
+    },
+    {
+      "id": "P.emotion.q10",
+      "concept": "P.emotion",
+      "level": "M",
+      "type": "reason",
+      "question": "\"나는 지루하다\"를 I am bored.로 쓰는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "나는 지루함을 느끼는(받는) 쪽이라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "주어가 사람이면 항상 -ed라서",
+          "misconception": "P.emotion.always_person"
+        },
+        {
+          "id": "c",
+          "text": "과거의 일이라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "bore는 \"지루하게 만들다\"라서, 그 감정을 받는 쪽은 p.p.(-ed)예요."
+    },
+    {
+      "id": "P.form4_5.q1",
+      "concept": "P.form4_5",
+      "level": "H",
+      "type": "apply",
+      "question": "He gave me a book. → I was given ___ by him.",
+      "options": [
+        {
+          "id": "a",
+          "text": "a book",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "P.form4_5.drop_obj"
+        },
+        {
+          "id": "c",
+          "text": "to a book",
+          "misconception": null
+        }
+      ],
+      "explanation": "주어로 가지 않은 목적어 a book은 동사 뒤에 그대로 남아요."
+    },
+    {
+      "id": "P.form4_5.q2",
+      "concept": "P.form4_5",
+      "level": "H",
+      "type": "apply",
+      "question": "He gave me a book. → A book was given ___ me by him.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "P.form4_5.no_to"
+        },
+        {
+          "id": "c",
+          "text": "for",
+          "misconception": null
+        }
+      ],
+      "explanation": "give는 사람 앞에 to를 붙여요."
+    },
+    {
+      "id": "P.form4_5.q3",
+      "concept": "P.form4_5",
+      "level": "H",
+      "type": "apply",
+      "question": "Mom made me a cake. → A cake was made ___ me by Mom.",
+      "options": [
+        {
+          "id": "a",
+          "text": "for",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "P.form4_5.no_to"
+        }
+      ],
+      "explanation": "make는 3형식으로 바꿀 때처럼 for를 써요."
+    },
+    {
+      "id": "P.form4_5.q4",
+      "concept": "P.form4_5",
+      "level": "H",
+      "type": "apply",
+      "question": "Her friends call her Amy. → She ___ Amy by her friends.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is called",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "calls",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "is called as",
+          "misconception": null
+        }
+      ],
+      "explanation": "5형식의 목적격 보어 Amy는 be p.p. 뒤에 그대로 남아요."
+    },
+    {
+      "id": "P.form4_5.q5",
+      "concept": "P.form4_5",
+      "level": "H",
+      "type": "apply",
+      "question": "They made me clean the room. → I was made ___ the room.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to clean",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "clean",
+          "misconception": "P.form4_5.bare_inf"
+        },
+        {
+          "id": "c",
+          "text": "cleaned",
+          "misconception": null
+        }
+      ],
+      "explanation": "사역동사 make의 수동태에서 원형은 to부정사가 돼요."
+    },
+    {
+      "id": "P.form4_5.q6",
+      "concept": "P.form4_5",
+      "level": "H",
+      "type": "apply",
+      "question": "I saw him enter the room. → He was seen ___ the room.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to enter",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "enter",
+          "misconception": "P.form4_5.bare_inf"
+        },
+        {
+          "id": "c",
+          "text": "entered",
+          "misconception": null
+        }
+      ],
+      "explanation": "지각동사의 원형 보어도 수동태에서는 to부정사가 돼요."
+    },
+    {
+      "id": "P.form4_5.q7",
+      "concept": "P.form4_5",
+      "level": "H",
+      "type": "apply",
+      "question": "Someone left the door open. → The door was left ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "open",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "opened to",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "to open",
+          "misconception": "P.form4_5.bare_inf"
+        }
+      ],
+      "explanation": "형용사 보어 open은 그대로 남아요."
+    },
+    {
+      "id": "P.form4_5.q8",
+      "concept": "P.form4_5",
+      "level": "H",
+      "type": "concept",
+      "question": "틀린 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "I was given by my uncle.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I was given a watch by my uncle.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "A watch was given to me by my uncle.",
+          "misconception": null
+        }
+      ],
+      "explanation": "남은 목적어(a watch)가 빠지면 무엇을 받았는지 알 수 없어요."
+    },
+    {
+      "id": "P.form4_5.q9",
+      "concept": "P.form4_5",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 방을 청소하게 되었다. (억지로)",
+      "tokens": [
+        "I",
+        "was made",
+        "to clean",
+        "my room."
+      ],
+      "answer": [
+        "I",
+        "was made",
+        "to clean",
+        "my room."
+      ],
+      "misconception": "P.form4_5.bare_inf",
+      "explanation": "사역 make의 수동태는 be made + to부정사예요."
+    },
+    {
+      "id": "P.form4_5.q10",
+      "concept": "P.form4_5",
+      "level": "H",
+      "type": "reason",
+      "question": "A book was given to me. 에서 to가 필요한 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "사물이 주어가 되면 사람은 to + 사람 형태로 남기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "수동태에는 항상 to가 있어야 해서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "given이 과거분사라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "3형식 give A to B처럼 사람 앞에 to를 붙여요."
+    },
+    {
+      "id": "P.phrasal.q1",
+      "concept": "P.phrasal",
+      "level": "H",
+      "type": "apply",
+      "question": "The kids laughed at him. → He was laughed ___ by the kids.",
+      "options": [
+        {
+          "id": "a",
+          "text": "at",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "P.phrasal.drop_prep"
+        },
+        {
+          "id": "c",
+          "text": "to",
+          "misconception": null
+        }
+      ],
+      "explanation": "laugh at을 통째로 옮겨서 at이 남아요."
+    },
+    {
+      "id": "P.phrasal.q2",
+      "concept": "P.phrasal",
+      "level": "H",
+      "type": "apply",
+      "question": "Her grandma looks after the baby. → The baby is ___ by her grandma.",
+      "options": [
+        {
+          "id": "a",
+          "text": "looked after",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "looked",
+          "misconception": "P.phrasal.drop_prep"
+        },
+        {
+          "id": "c",
+          "text": "looking after",
+          "misconception": null
+        }
+      ],
+      "explanation": "look after의 수동태는 be looked after예요."
+    },
+    {
+      "id": "P.phrasal.q3",
+      "concept": "P.phrasal",
+      "level": "H",
+      "type": "apply",
+      "question": "Tom took care of the dog. → The dog was taken care ___ by Tom.",
+      "options": [
+        {
+          "id": "a",
+          "text": "of",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "P.phrasal.drop_prep"
+        },
+        {
+          "id": "c",
+          "text": "for",
+          "misconception": null
+        }
+      ],
+      "explanation": "take care of를 통째로 옮겨요."
+    },
+    {
+      "id": "P.phrasal.q4",
+      "concept": "P.phrasal",
+      "level": "H",
+      "type": "apply",
+      "question": "The game ___ because of the rain.",
+      "options": [
+        {
+          "id": "a",
+          "text": "was put off",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "was put",
+          "misconception": "P.phrasal.drop_prep"
+        },
+        {
+          "id": "c",
+          "text": "put off",
+          "misconception": null
+        }
+      ],
+      "explanation": "put off(미루다)의 수동태 was put off예요."
+    },
+    {
+      "id": "P.phrasal.q5",
+      "concept": "P.phrasal",
+      "level": "H",
+      "type": "apply",
+      "question": "All the lights ___ at 10 p.m.",
+      "options": [
+        {
+          "id": "a",
+          "text": "were turned off",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "were turned",
+          "misconception": "P.phrasal.drop_prep"
+        },
+        {
+          "id": "c",
+          "text": "turned off by",
+          "misconception": null
+        }
+      ],
+      "explanation": "turn off의 수동태는 be turned off예요."
+    },
+    {
+      "id": "P.phrasal.q6",
+      "concept": "P.phrasal",
+      "level": "H",
+      "type": "apply",
+      "question": "The cat was run ___ by a car.",
+      "options": [
+        {
+          "id": "a",
+          "text": "over",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "P.phrasal.drop_prep"
+        },
+        {
+          "id": "c",
+          "text": "on",
+          "misconception": null
+        }
+      ],
+      "explanation": "run over(차로 치다)의 수동태예요."
+    },
+    {
+      "id": "P.phrasal.q7",
+      "concept": "P.phrasal",
+      "level": "H",
+      "type": "concept",
+      "question": "바른 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "He was laughed at by his classmates.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "He was laughed by his classmates.",
+          "misconception": "P.phrasal.drop_prep"
+        },
+        {
+          "id": "c",
+          "text": "He was laughed by his classmates at.",
+          "misconception": "P.phrasal.split"
+        }
+      ],
+      "explanation": "구동사는 한 덩어리로 be p.p. 자리에 둬요."
+    },
+    {
+      "id": "P.phrasal.q8",
+      "concept": "P.phrasal",
+      "level": "H",
+      "type": "concept",
+      "question": "The meeting was put off. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "회의가 미뤄졌다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "회의가 꺼졌다.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "회의가 시작되었다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "put off = 미루다, be put off = 미뤄지다."
+    },
+    {
+      "id": "P.phrasal.q9",
+      "concept": "P.phrasal",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그 아기는 할머니의 돌봄을 받는다.",
+      "tokens": [
+        "The baby",
+        "is looked after",
+        "by",
+        "her grandma."
+      ],
+      "answer": [
+        "The baby",
+        "is looked after",
+        "by",
+        "her grandma."
+      ],
+      "misconception": null,
+      "explanation": "look after를 통째로 be p.p. 자리에 둬요."
+    },
+    {
+      "id": "P.phrasal.q10",
+      "concept": "P.phrasal",
+      "level": "H",
+      "type": "reason",
+      "question": "He was laughed at by them. 에서 at by가 연달아 오는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "laugh at이 한 덩어리 동사라 at이 동사와 함께 옮겨 가서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "at by는 정해진 숙어라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "them을 강조하려고",
+          "misconception": null
+        }
+      ],
+      "explanation": "구동사의 전치사는 동사의 일부라서 빼면 안 돼요."
+    }
+  ]
+}
