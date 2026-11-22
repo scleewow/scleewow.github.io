@@ -302,3 +302,6 @@ body.toc-open { overflow: hidden; }
   .brand { font-size: 15px; }
   .topbar { padding: 10px 14px; }
 }
+
+/* 이 문제 다시 풀기 안내 */
+.retry-note { font-size: 13px; color: var(--warn); background: var(--warn-soft); border-radius: 8px; padding: 6px 10px; margin: 4px 0 8px; }
