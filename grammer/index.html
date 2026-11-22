@@ -9,13 +9,17 @@
 </head>
 <body>
   <header class="topbar">
-    <a href="#/" class="brand">영어 문법 개념 학습</a>
+    <div class="topbar-left">
+      <button id="toc-btn" class="toc-btn" aria-label="전체 목차">☰ 목차</button>
+      <a href="#/" class="brand">영어 문법 개념 학습</a>
+    </div>
     <nav>
       <a href="#/review" id="nav-review">복습</a>
       <a href="#/notes">개념 노트</a>
       <a href="#/settings">설정</a>
     </nav>
   </header>
+  <div id="toc" class="toc" hidden></div>
   <main id="app"><p class="loading">불러오는 중...</p></main>
   <script src="app.js"></script>
 </body>
