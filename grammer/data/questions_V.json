@@ -1,0 +1,2963 @@
+{
+  "area": "V",
+  "types": {
+    "concept": "개념 확인",
+    "apply": "적용",
+    "reason": "이유 확인",
+    "order": "문장 만들기"
+  },
+  "questions": [
+    {
+      "id": "V.concept.q1",
+      "concept": "V.concept",
+      "level": "M",
+      "type": "apply",
+      "question": "I want ___ pizza.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to eat",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "eat",
+          "misconception": "V.concept.two_verbs"
+        },
+        {
+          "id": "c",
+          "text": "eats",
+          "misconception": "V.concept.two_verbs"
+        }
+      ],
+      "explanation": "want가 진짜 동사라서 eat은 to부정사로 바꿔요."
+    },
+    {
+      "id": "V.concept.q2",
+      "concept": "V.concept",
+      "level": "M",
+      "type": "apply",
+      "question": "___ is good for your health.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Swimming",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Swim",
+          "misconception": "V.concept.two_verbs"
+        },
+        {
+          "id": "c",
+          "text": "Swims",
+          "misconception": null
+        }
+      ],
+      "explanation": "주어 자리에 동사를 쓰려면 동명사로 바꿔요."
+    },
+    {
+      "id": "V.concept.q3",
+      "concept": "V.concept",
+      "level": "M",
+      "type": "concept",
+      "question": "Swimming is fun. 에서 문장의 진짜 동사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Swimming",
+          "misconception": "V.concept.as_main"
+        },
+        {
+          "id": "c",
+          "text": "fun",
+          "misconception": null
+        }
+      ],
+      "explanation": "Swimming은 주어 역할을 하는 동명사예요."
+    },
+    {
+      "id": "V.concept.q4",
+      "concept": "V.concept",
+      "level": "M",
+      "type": "concept",
+      "question": "I enjoy reading books. 에서 books의 역할은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "reading의 목적어",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "enjoy의 주어",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "목적어가 될 수 없다",
+          "misconception": "V.concept.no_object"
+        }
+      ],
+      "explanation": "준동사도 동사처럼 목적어를 가질 수 있어요."
+    },
+    {
+      "id": "V.concept.q5",
+      "concept": "V.concept",
+      "level": "M",
+      "type": "concept",
+      "question": "준동사가 아닌 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "She swims.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to swim",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "swimming",
+          "misconception": null
+        }
+      ],
+      "explanation": "She swims.의 swims는 문장의 진짜 동사예요."
+    },
+    {
+      "id": "V.concept.q6",
+      "concept": "V.concept",
+      "level": "M",
+      "type": "concept",
+      "question": "준동사의 세 가지 모양이 아닌 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "will + 동사원형",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to + 동사원형",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "동사원형 + -ing",
+          "misconception": null
+        }
+      ],
+      "explanation": "will + 원형은 미래를 나타내는 동사 모양이에요."
+    },
+    {
+      "id": "V.concept.q7",
+      "concept": "V.concept",
+      "level": "M",
+      "type": "apply",
+      "question": "Look at the ___ baby. (자고 있는 아기)",
+      "options": [
+        {
+          "id": "a",
+          "text": "sleeping",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "sleep",
+          "misconception": "V.concept.two_verbs"
+        },
+        {
+          "id": "c",
+          "text": "slept",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"자고 있는\"처럼 명사를 꾸미는 분사예요."
+    },
+    {
+      "id": "V.concept.q8",
+      "concept": "V.concept",
+      "level": "M",
+      "type": "apply",
+      "question": "바른 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "I like to play soccer.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I like play soccer.",
+          "misconception": "V.concept.two_verbs"
+        },
+        {
+          "id": "c",
+          "text": "I like plays soccer.",
+          "misconception": "V.concept.two_verbs"
+        }
+      ],
+      "explanation": "두 번째 동사는 준동사로 바꿔요."
+    },
+    {
+      "id": "V.concept.q9",
+      "concept": "V.concept",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 만화책 읽는 것은 재미있다.",
+      "tokens": [
+        "Reading",
+        "comic books",
+        "is",
+        "fun."
+      ],
+      "answer": [
+        "Reading",
+        "comic books",
+        "is",
+        "fun."
+      ],
+      "misconception": null,
+      "explanation": "Reading comic books가 주어, is가 진짜 동사예요."
+    },
+    {
+      "id": "V.concept.q10",
+      "concept": "V.concept",
+      "level": "M",
+      "type": "reason",
+      "question": "I want eat pizza. 가 틀린 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "한 문장에 진짜 동사가 두 개라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "pizza 앞에 a가 없어서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "want는 과거형이어야 해서",
+          "misconception": null
+        }
+      ],
+      "explanation": "두 번째 동사 eat은 to eat으로 바꿔야 해요."
+    },
+    {
+      "id": "V.to_noun.q1",
+      "concept": "V.to_noun",
+      "level": "M",
+      "type": "apply",
+      "question": "I want ___ Europe someday.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to visit",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to visits",
+          "misconception": "V.to_noun.to_form"
+        },
+        {
+          "id": "c",
+          "text": "visit",
+          "misconception": "V.concept.two_verbs"
+        }
+      ],
+      "explanation": "want의 목적어로 to + 원형이 와요."
+    },
+    {
+      "id": "V.to_noun.q2",
+      "concept": "V.to_noun",
+      "level": "M",
+      "type": "apply",
+      "question": "My dream is ___ a doctor.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to be",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "be",
+          "misconception": "V.concept.two_verbs"
+        },
+        {
+          "id": "c",
+          "text": "to am",
+          "misconception": "V.to_noun.to_form"
+        }
+      ],
+      "explanation": "보어 자리 \"의사가 되는 것\"은 to be예요."
+    },
+    {
+      "id": "V.to_noun.q3",
+      "concept": "V.to_noun",
+      "level": "M",
+      "type": "apply",
+      "question": "___ is easy to learn English.",
+      "options": [
+        {
+          "id": "a",
+          "text": "It",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "This",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "That",
+          "misconception": null
+        }
+      ],
+      "explanation": "가주어는 It을 써요."
+    },
+    {
+      "id": "V.to_noun.q4",
+      "concept": "V.to_noun",
+      "level": "M",
+      "type": "concept",
+      "question": "It is important to exercise. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "운동하는 것은 중요하다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "그것은 운동하기에 중요하다.",
+          "misconception": "V.to_noun.it_that"
+        },
+        {
+          "id": "c",
+          "text": "그것은 운동을 중요하게 한다.",
+          "misconception": "V.to_noun.it_that"
+        }
+      ],
+      "explanation": "It은 가주어, 진짜 주어는 to exercise예요."
+    },
+    {
+      "id": "V.to_noun.q5",
+      "concept": "V.to_noun",
+      "level": "M",
+      "type": "apply",
+      "question": "I don't know ___ to say.",
+      "options": [
+        {
+          "id": "a",
+          "text": "what",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "that",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "it",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"무엇을 말해야 할지\" = what to say."
+    },
+    {
+      "id": "V.to_noun.q6",
+      "concept": "V.to_noun",
+      "level": "M",
+      "type": "apply",
+      "question": "Can you tell me ___ to get to the station?",
+      "options": [
+        {
+          "id": "a",
+          "text": "how",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "what",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "who",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"역에 어떻게 가는지\" = how to get."
+    },
+    {
+      "id": "V.to_noun.q7",
+      "concept": "V.to_noun",
+      "level": "M",
+      "type": "apply",
+      "question": "She decided ___ the party. (가지 않기로)",
+      "options": [
+        {
+          "id": "a",
+          "text": "not to go to",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to not go to",
+          "misconception": "V.to_noun.not_place"
+        },
+        {
+          "id": "c",
+          "text": "to go not to",
+          "misconception": "V.to_noun.not_place"
+        }
+      ],
+      "explanation": "to부정사의 부정은 not을 to 앞에 둬요."
+    },
+    {
+      "id": "V.to_noun.q8",
+      "concept": "V.to_noun",
+      "level": "M",
+      "type": "concept",
+      "question": "I hope to see you again. 에서 to see의 역할은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "hope의 목적어",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "문장의 진짜 동사",
+          "misconception": "V.concept.as_main"
+        },
+        {
+          "id": "c",
+          "text": "명사를 꾸미는 말",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"너를 다시 보는 것\"을 바란다 → 목적어예요."
+    },
+    {
+      "id": "V.to_noun.q9",
+      "concept": "V.to_noun",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 영어를 배우는 것은 재미있다.",
+      "tokens": [
+        "It",
+        "is fun",
+        "to learn",
+        "English."
+      ],
+      "answer": [
+        "It",
+        "is fun",
+        "to learn",
+        "English."
+      ],
+      "misconception": null,
+      "explanation": "가주어 It + is + 형용사 + 진주어 to부정사예요."
+    },
+    {
+      "id": "V.to_noun.q10",
+      "concept": "V.to_noun",
+      "level": "M",
+      "type": "reason",
+      "question": "To learn English is fun.을 보통 It is fun to learn English.로 쓰는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "긴 주어를 뒤로 보내고 짧은 It을 앞에 두는 것이 자연스러워서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to부정사는 주어가 될 수 없어서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "It이 English를 가리켜서",
+          "misconception": "V.to_noun.it_that"
+        }
+      ],
+      "explanation": "영어는 머리가 무거운 문장을 피해서 가주어 It을 써요."
+    },
+    {
+      "id": "V.to_adj.q1",
+      "concept": "V.to_adj",
+      "level": "M",
+      "type": "apply",
+      "question": "I have a lot of homework ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to do",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "do",
+          "misconception": "V.concept.two_verbs"
+        },
+        {
+          "id": "c",
+          "text": "doing to",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"해야 할 숙제\"는 명사 뒤에 to부정사예요."
+    },
+    {
+      "id": "V.to_adj.q2",
+      "concept": "V.to_adj",
+      "level": "M",
+      "type": "apply",
+      "question": "Do you want something ___?",
+      "options": [
+        {
+          "id": "a",
+          "text": "to eat",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "eat",
+          "misconception": "V.concept.two_verbs"
+        },
+        {
+          "id": "c",
+          "text": "ate",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"먹을 것\" = something to eat."
+    },
+    {
+      "id": "V.to_adj.q3",
+      "concept": "V.to_adj",
+      "level": "M",
+      "type": "apply",
+      "question": "I want something ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "cold to drink",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to drink cold",
+          "misconception": "V.to_adj.thing_order"
+        },
+        {
+          "id": "c",
+          "text": "drink cold",
+          "misconception": null
+        }
+      ],
+      "explanation": "-thing + 형용사 + to부정사 순서예요."
+    },
+    {
+      "id": "V.to_adj.q4",
+      "concept": "V.to_adj",
+      "level": "M",
+      "type": "apply",
+      "question": "I need a chair to sit ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "on",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "V.to_adj.drop_prep"
+        },
+        {
+          "id": "c",
+          "text": "at",
+          "misconception": null
+        }
+      ],
+      "explanation": "sit on a chair에서 왔으니 on이 필요해요."
+    },
+    {
+      "id": "V.to_adj.q5",
+      "concept": "V.to_adj",
+      "level": "M",
+      "type": "apply",
+      "question": "She needs a friend to talk ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "with",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "V.to_adj.drop_prep"
+        },
+        {
+          "id": "c",
+          "text": "about",
+          "misconception": null
+        }
+      ],
+      "explanation": "talk with a friend에서 왔어요."
+    },
+    {
+      "id": "V.to_adj.q6",
+      "concept": "V.to_adj",
+      "level": "M",
+      "type": "apply",
+      "question": "It's time ___ to bed.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to go",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "going",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "go",
+          "misconception": "V.concept.two_verbs"
+        }
+      ],
+      "explanation": "\"잘 시간\" = time to go to bed."
+    },
+    {
+      "id": "V.to_adj.q7",
+      "concept": "V.to_adj",
+      "level": "M",
+      "type": "concept",
+      "question": "I have a book to read. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "나는 읽을 책이 있다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "나는 책을 읽어야 한다.",
+          "misconception": "V.to_adj.before_noun"
+        },
+        {
+          "id": "c",
+          "text": "나는 책을 읽었다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "to read가 a book을 뒤에서 꾸며요."
+    },
+    {
+      "id": "V.to_adj.q8",
+      "concept": "V.to_adj",
+      "level": "M",
+      "type": "concept",
+      "question": "There is nothing to do here. 에서 to do의 역할은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "nothing을 꾸민다",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "문장의 진짜 동사",
+          "misconception": "V.concept.as_main"
+        },
+        {
+          "id": "c",
+          "text": "주어",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"할 것이 없다\" → nothing을 꾸미는 형용사 역할이에요."
+    },
+    {
+      "id": "V.to_adj.q9",
+      "concept": "V.to_adj",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 쓸 펜이 필요하다.",
+      "tokens": [
+        "I",
+        "need",
+        "a pen",
+        "to write with."
+      ],
+      "answer": [
+        "I",
+        "need",
+        "a pen",
+        "to write with."
+      ],
+      "misconception": null,
+      "explanation": "write with a pen에서 와서 끝에 with가 붙어요."
+    },
+    {
+      "id": "V.to_adj.q10",
+      "concept": "V.to_adj",
+      "level": "M",
+      "type": "reason",
+      "question": "a chair to sit on에서 on이 필요한 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "\"의자에 앉다\"가 sit on a chair라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "on은 항상 to부정사 뒤에 붙어서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "chair가 단수라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "꾸밈을 받는 명사가 원래 전치사의 목적어였기 때문이에요."
+    },
+    {
+      "id": "V.gerund.q1",
+      "concept": "V.gerund",
+      "level": "M",
+      "type": "apply",
+      "question": "She is good at ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "drawing",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "draw",
+          "misconception": "V.gerund.prep_to"
+        },
+        {
+          "id": "c",
+          "text": "to draw",
+          "misconception": "V.gerund.prep_to"
+        }
+      ],
+      "explanation": "전치사 at 뒤에는 동명사가 와요."
+    },
+    {
+      "id": "V.gerund.q2",
+      "concept": "V.gerund",
+      "level": "M",
+      "type": "apply",
+      "question": "Thank you for ___ me.",
+      "options": [
+        {
+          "id": "a",
+          "text": "helping",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "help",
+          "misconception": "V.gerund.prep_to"
+        },
+        {
+          "id": "c",
+          "text": "to help",
+          "misconception": "V.gerund.prep_to"
+        }
+      ],
+      "explanation": "전치사 for 뒤에는 동명사예요."
+    },
+    {
+      "id": "V.gerund.q3",
+      "concept": "V.gerund",
+      "level": "M",
+      "type": "apply",
+      "question": "Reading comic books ___ fun.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "are",
+          "misconception": "V.gerund.plural_verb"
+        },
+        {
+          "id": "c",
+          "text": "be",
+          "misconception": null
+        }
+      ],
+      "explanation": "동명사 주어는 단수 취급해요."
+    },
+    {
+      "id": "V.gerund.q4",
+      "concept": "V.gerund",
+      "level": "M",
+      "type": "apply",
+      "question": "I enjoy ___ with my friends.",
+      "options": [
+        {
+          "id": "a",
+          "text": "playing soccer",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to play soccer",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "play soccer",
+          "misconception": "V.concept.two_verbs"
+        }
+      ],
+      "explanation": "enjoy 뒤에는 동명사가 와요."
+    },
+    {
+      "id": "V.gerund.q5",
+      "concept": "V.gerund",
+      "level": "M",
+      "type": "apply",
+      "question": "My hobby is ___ stamps.",
+      "options": [
+        {
+          "id": "a",
+          "text": "collecting",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "collect",
+          "misconception": "V.concept.two_verbs"
+        },
+        {
+          "id": "c",
+          "text": "collects",
+          "misconception": null
+        }
+      ],
+      "explanation": "보어 자리 \"우표 모으기\"는 동명사예요."
+    },
+    {
+      "id": "V.gerund.q6",
+      "concept": "V.gerund",
+      "level": "M",
+      "type": "apply",
+      "question": "I'm sorry for ___ you back.",
+      "options": [
+        {
+          "id": "a",
+          "text": "not calling",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "calling not",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "don't call",
+          "misconception": null
+        }
+      ],
+      "explanation": "동명사의 부정은 not을 앞에 둬요."
+    },
+    {
+      "id": "V.gerund.q7",
+      "concept": "V.gerund",
+      "level": "M",
+      "type": "concept",
+      "question": "My hobby is collecting stamps. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "내 취미는 우표를 모으는 것이다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "내 취미가 우표를 모으고 있다.",
+          "misconception": "V.gerund.vs_progressive"
+        },
+        {
+          "id": "c",
+          "text": "나는 우표를 모았다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"~하는 것\"이라 동명사예요."
+    },
+    {
+      "id": "V.gerund.q8",
+      "concept": "V.gerund",
+      "level": "M",
+      "type": "concept",
+      "question": "동명사로 쓰인 -ing는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Swimming is my favorite sport.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "He is swimming now.",
+          "misconception": "V.gerund.vs_progressive"
+        },
+        {
+          "id": "c",
+          "text": "They were swimming at noon.",
+          "misconception": "V.gerund.vs_progressive"
+        }
+      ],
+      "explanation": "주어 자리에서 \"수영하는 것\"이라는 뜻이에요. 나머지는 진행형이에요."
+    },
+    {
+      "id": "V.gerund.q9",
+      "concept": "V.gerund",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 설거지를 끝냈다.",
+      "tokens": [
+        "He",
+        "finished",
+        "washing",
+        "the dishes."
+      ],
+      "answer": [
+        "He",
+        "finished",
+        "washing",
+        "the dishes."
+      ],
+      "misconception": null,
+      "explanation": "finish 뒤에는 동명사가 와요."
+    },
+    {
+      "id": "V.gerund.q10",
+      "concept": "V.gerund",
+      "level": "M",
+      "type": "reason",
+      "question": "She is good at draw. 가 틀린 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "전치사 뒤에는 명사 역할을 하는 동명사가 와야 해서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "good은 동사 앞에 와야 해서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "at 대신 to를 써야 해서",
+          "misconception": "V.gerund.prep_to"
+        }
+      ],
+      "explanation": "전치사의 목적어는 명사여야 하므로 drawing이에요."
+    },
+    {
+      "id": "V.to_adv.q1",
+      "concept": "V.to_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "I went to the library ___ for the test.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to study",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "for study",
+          "misconception": "V.to_adv.for_purpose"
+        },
+        {
+          "id": "c",
+          "text": "studying",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"공부하려고\"라는 목적은 to부정사예요."
+    },
+    {
+      "id": "V.to_adv.q2",
+      "concept": "V.to_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "I'm glad ___ you again.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to see",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "seeing",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "for see",
+          "misconception": "V.to_adv.for_purpose"
+        }
+      ],
+      "explanation": "감정 형용사 glad 뒤에서 감정의 원인을 말해요."
+    },
+    {
+      "id": "V.to_adv.q3",
+      "concept": "V.to_adv",
+      "level": "M",
+      "type": "concept",
+      "question": "He grew up to be a pilot. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "그는 자라서 조종사가 되었다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "그는 조종사가 되기 위해 자랐다.",
+          "misconception": "V.to_adv.meaning_mix"
+        },
+        {
+          "id": "c",
+          "text": "그는 조종사가 되는 것을 키웠다.",
+          "misconception": "V.to_adv.as_noun"
+        }
+      ],
+      "explanation": "grow up + to부정사는 결과(자라서 ~가 되다)예요."
+    },
+    {
+      "id": "V.to_adv.q4",
+      "concept": "V.to_adv",
+      "level": "M",
+      "type": "concept",
+      "question": "She saved money to buy a bike. 에서 to buy의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "사기 위해",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "사는 것",
+          "misconception": "V.to_adv.as_noun"
+        },
+        {
+          "id": "c",
+          "text": "사서 결국",
+          "misconception": "V.to_adv.meaning_mix"
+        }
+      ],
+      "explanation": "돈을 모은 목적이에요."
+    },
+    {
+      "id": "V.to_adv.q5",
+      "concept": "V.to_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "This question is hard ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to answer",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "answering",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "for answer",
+          "misconception": "V.to_adv.for_purpose"
+        }
+      ],
+      "explanation": "\"대답하기에 어려운\" → 형용사 + to부정사예요."
+    },
+    {
+      "id": "V.to_adv.q6",
+      "concept": "V.to_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "I was surprised ___ the news.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to hear",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "hear",
+          "misconception": "V.concept.two_verbs"
+        },
+        {
+          "id": "c",
+          "text": "heard",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"소식을 듣고 놀랐다\" → 감정의 원인이에요."
+    },
+    {
+      "id": "V.to_adv.q7",
+      "concept": "V.to_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "I left early ___ late.",
+      "options": [
+        {
+          "id": "a",
+          "text": "in order not to be",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "in order to not be",
+          "misconception": "V.to_noun.not_place"
+        },
+        {
+          "id": "c",
+          "text": "not in order to be",
+          "misconception": "V.to_noun.not_place"
+        }
+      ],
+      "explanation": "\"늦지 않기 위해\"는 in order not to예요."
+    },
+    {
+      "id": "V.to_adv.q8",
+      "concept": "V.to_adv",
+      "level": "M",
+      "type": "concept",
+      "question": "부사적 용법(목적)으로 쓰인 to부정사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "I came here to meet you.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I want to meet you.",
+          "misconception": "V.to_adv.as_noun"
+        },
+        {
+          "id": "c",
+          "text": "I have a friend to meet.",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"너를 만나려고 왔다\"는 목적이에요. 나머지는 명사적, 형용사적 용법이에요."
+    },
+    {
+      "id": "V.to_adv.q9",
+      "concept": "V.to_adv",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 버스를 타려고 일찍 일어났다.",
+      "tokens": [
+        "I",
+        "got up early",
+        "to catch",
+        "the bus."
+      ],
+      "answer": [
+        "I",
+        "got up early",
+        "to catch",
+        "the bus."
+      ],
+      "misconception": null,
+      "explanation": "목적의 to부정사는 뼈대 뒤에 붙어요."
+    },
+    {
+      "id": "V.to_adv.q10",
+      "concept": "V.to_adv",
+      "level": "M",
+      "type": "reason",
+      "question": "I went to the library to study. 의 to study가 명사적 용법이 아닌 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "빼도 문장의 뼈대가 완전해서 이유(목적)를 덧붙이는 말이라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "library 뒤에 와서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "study가 동사라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "목적어·주어·보어 자리가 아니라 뼈대 밖에서 꾸미는 말이에요."
+    },
+    {
+      "id": "V.to_vs_ing.q1",
+      "concept": "V.to_vs_ing",
+      "level": "M",
+      "type": "apply",
+      "question": "I enjoy ___ in the sea.",
+      "options": [
+        {
+          "id": "a",
+          "text": "swimming",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to swim",
+          "misconception": "V.to_vs_ing.enjoy_to"
+        },
+        {
+          "id": "c",
+          "text": "swim",
+          "misconception": "V.concept.two_verbs"
+        }
+      ],
+      "explanation": "enjoy는 동명사만 목적어로 써요."
+    },
+    {
+      "id": "V.to_vs_ing.q2",
+      "concept": "V.to_vs_ing",
+      "level": "M",
+      "type": "apply",
+      "question": "We decided ___ a new car.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to buy",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "buying",
+          "misconception": "V.to_vs_ing.want_ing"
+        },
+        {
+          "id": "c",
+          "text": "buy",
+          "misconception": "V.concept.two_verbs"
+        }
+      ],
+      "explanation": "decide는 앞으로 할 일이라 to부정사예요."
+    },
+    {
+      "id": "V.to_vs_ing.q3",
+      "concept": "V.to_vs_ing",
+      "level": "M",
+      "type": "apply",
+      "question": "Have you finished ___ your homework?",
+      "options": [
+        {
+          "id": "a",
+          "text": "doing",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to do",
+          "misconception": "V.to_vs_ing.enjoy_to"
+        },
+        {
+          "id": "c",
+          "text": "do",
+          "misconception": "V.concept.two_verbs"
+        }
+      ],
+      "explanation": "finish는 동명사만 목적어로 써요."
+    },
+    {
+      "id": "V.to_vs_ing.q4",
+      "concept": "V.to_vs_ing",
+      "level": "M",
+      "type": "apply",
+      "question": "I hope ___ you soon.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to see",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "seeing",
+          "misconception": "V.to_vs_ing.want_ing"
+        },
+        {
+          "id": "c",
+          "text": "see",
+          "misconception": "V.concept.two_verbs"
+        }
+      ],
+      "explanation": "hope는 to부정사를 써요."
+    },
+    {
+      "id": "V.to_vs_ing.q5",
+      "concept": "V.to_vs_ing",
+      "level": "M",
+      "type": "apply",
+      "question": "Would you mind ___ the window?",
+      "options": [
+        {
+          "id": "a",
+          "text": "opening",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to open",
+          "misconception": "V.to_vs_ing.enjoy_to"
+        },
+        {
+          "id": "c",
+          "text": "open",
+          "misconception": "V.concept.two_verbs"
+        }
+      ],
+      "explanation": "mind는 동명사를 써요."
+    },
+    {
+      "id": "V.to_vs_ing.q6",
+      "concept": "V.to_vs_ing",
+      "level": "M",
+      "type": "apply",
+      "question": "Don't forget ___ the door when you leave.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to lock",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "locking",
+          "misconception": "V.to_vs_ing.meaning"
+        },
+        {
+          "id": "c",
+          "text": "lock",
+          "misconception": "V.concept.two_verbs"
+        }
+      ],
+      "explanation": "앞으로 잠가야 할 일이라 to부정사예요."
+    },
+    {
+      "id": "V.to_vs_ing.q7",
+      "concept": "V.to_vs_ing",
+      "level": "M",
+      "type": "concept",
+      "question": "He stopped smoking. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "그는 담배를 끊었다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "그는 담배를 피우려고 멈췄다.",
+          "misconception": "V.to_vs_ing.meaning"
+        },
+        {
+          "id": "c",
+          "text": "그는 담배를 계속 피웠다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "stop + -ing = 하던 것을 멈추다."
+    },
+    {
+      "id": "V.to_vs_ing.q8",
+      "concept": "V.to_vs_ing",
+      "level": "M",
+      "type": "concept",
+      "question": "I remember meeting her. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "나는 그녀를 만났던 것을 기억한다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "나는 그녀를 만날 것을 기억한다.",
+          "misconception": "V.to_vs_ing.meaning"
+        },
+        {
+          "id": "c",
+          "text": "나는 그녀를 만나려고 기억한다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "remember + -ing = 이미 한 일을 기억하다."
+    },
+    {
+      "id": "V.to_vs_ing.q9",
+      "concept": "V.to_vs_ing",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 피아노 연습하는 것을 포기했다.",
+      "tokens": [
+        "He",
+        "gave up",
+        "practicing",
+        "the piano."
+      ],
+      "answer": [
+        "He",
+        "gave up",
+        "practicing",
+        "the piano."
+      ],
+      "misconception": null,
+      "explanation": "give up 뒤에는 동명사가 와요."
+    },
+    {
+      "id": "V.to_vs_ing.q10",
+      "concept": "V.to_vs_ing",
+      "level": "M",
+      "type": "reason",
+      "question": "I forgot to call him. 이 \"전화하지 않았다\"는 뜻인 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "to부정사는 아직 하지 않은 앞으로의 일을 가리켜서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "forgot이 과거형이라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "call이 원형이라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "to는 미래 쪽, -ing는 이미 한 일 쪽이에요."
+    },
+    {
+      "id": "V.participle.q1",
+      "concept": "V.participle",
+      "level": "M",
+      "type": "apply",
+      "question": "Look at the ___ baby.",
+      "options": [
+        {
+          "id": "a",
+          "text": "sleeping",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "slept",
+          "misconception": "V.participle.active_passive"
+        },
+        {
+          "id": "c",
+          "text": "sleep",
+          "misconception": null
+        }
+      ],
+      "explanation": "아기가 직접 자고 있으니 현재분사예요."
+    },
+    {
+      "id": "V.participle.q2",
+      "concept": "V.participle",
+      "level": "M",
+      "type": "apply",
+      "question": "Be careful of the ___ glass.",
+      "options": [
+        {
+          "id": "a",
+          "text": "broken",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "breaking",
+          "misconception": "V.participle.active_passive"
+        },
+        {
+          "id": "c",
+          "text": "break",
+          "misconception": null
+        }
+      ],
+      "explanation": "유리가 깨진(당한) 상태라 과거분사예요."
+    },
+    {
+      "id": "V.participle.q3",
+      "concept": "V.participle",
+      "level": "M",
+      "type": "apply",
+      "question": "I bought a car ___ in Korea.",
+      "options": [
+        {
+          "id": "a",
+          "text": "made",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "making",
+          "misconception": "V.participle.active_passive"
+        },
+        {
+          "id": "c",
+          "text": "make",
+          "misconception": null
+        }
+      ],
+      "explanation": "차는 만들어지는 쪽이라 과거분사예요."
+    },
+    {
+      "id": "V.participle.q4",
+      "concept": "V.participle",
+      "level": "M",
+      "type": "apply",
+      "question": "The boy ___ under the tree is my brother.",
+      "options": [
+        {
+          "id": "a",
+          "text": "sitting",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "sat",
+          "misconception": "V.participle.as_verb"
+        },
+        {
+          "id": "c",
+          "text": "is sitting",
+          "misconception": "V.participle.as_verb"
+        }
+      ],
+      "explanation": "진짜 동사는 is라서, 소년을 꾸미는 말은 분사 sitting이에요."
+    },
+    {
+      "id": "V.participle.q5",
+      "concept": "V.participle",
+      "level": "M",
+      "type": "apply",
+      "question": "She has a cat ___ Nabi.",
+      "options": [
+        {
+          "id": "a",
+          "text": "named",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "naming",
+          "misconception": "V.participle.active_passive"
+        },
+        {
+          "id": "c",
+          "text": "names",
+          "misconception": null
+        }
+      ],
+      "explanation": "고양이는 이름이 \"지어진\" 쪽이라 named예요."
+    },
+    {
+      "id": "V.participle.q6",
+      "concept": "V.participle",
+      "level": "M",
+      "type": "apply",
+      "question": "There are many ___ leaves on the ground.",
+      "options": [
+        {
+          "id": "a",
+          "text": "fallen",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "falling",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "fall",
+          "misconception": null
+        }
+      ],
+      "explanation": "땅에 이미 떨어져 있는 잎(완료)이라 fallen이에요."
+    },
+    {
+      "id": "V.participle.q7",
+      "concept": "V.participle",
+      "level": "M",
+      "type": "concept",
+      "question": "바른 표현은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "a car made in Korea",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a made in Korea car",
+          "misconception": "V.participle.position"
+        },
+        {
+          "id": "c",
+          "text": "a car making in Korea",
+          "misconception": "V.participle.active_passive"
+        }
+      ],
+      "explanation": "다른 말과 함께 길어진 분사는 명사 뒤에 와요."
+    },
+    {
+      "id": "V.participle.q8",
+      "concept": "V.participle",
+      "level": "M",
+      "type": "concept",
+      "question": "The man reading a book is my uncle. 에서 문장의 진짜 동사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "reading",
+          "misconception": "V.participle.as_verb"
+        },
+        {
+          "id": "c",
+          "text": "book",
+          "misconception": null
+        }
+      ],
+      "explanation": "reading a book은 the man을 꾸미는 분사구예요."
+    },
+    {
+      "id": "V.participle.q9",
+      "concept": "V.participle",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 무대에서 춤추고 있는 소녀는 내 여동생이다.",
+      "tokens": [
+        "The girl",
+        "dancing on the stage",
+        "is",
+        "my sister."
+      ],
+      "answer": [
+        "The girl",
+        "dancing on the stage",
+        "is",
+        "my sister."
+      ],
+      "misconception": null,
+      "explanation": "분사구가 명사 바로 뒤에서 꾸미고, 그다음 진짜 동사가 와요."
+    },
+    {
+      "id": "V.participle.q10",
+      "concept": "V.participle",
+      "level": "M",
+      "type": "reason",
+      "question": "a broken window에서 broken을 쓰는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "창문이 깨뜨림을 당한 쪽이라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "창문이 스스로 깨고 있어서",
+          "misconception": "V.participle.active_passive"
+        },
+        {
+          "id": "c",
+          "text": "과거의 일이라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "꾸밈받는 명사가 당하면 과거분사예요."
+    },
+    {
+      "id": "V.object_comp.q1",
+      "concept": "V.object_comp",
+      "level": "M",
+      "type": "apply",
+      "question": "My mom made me ___ my room.",
+      "options": [
+        {
+          "id": "a",
+          "text": "clean",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to clean",
+          "misconception": "V.object_comp.causative_to"
+        },
+        {
+          "id": "c",
+          "text": "cleaned",
+          "misconception": null
+        }
+      ],
+      "explanation": "사역동사 make 뒤에는 동사원형이에요."
+    },
+    {
+      "id": "V.object_comp.q2",
+      "concept": "V.object_comp",
+      "level": "M",
+      "type": "apply",
+      "question": "The teacher told us ___ quiet.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to be",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "be",
+          "misconception": "V.object_comp.tell_base"
+        },
+        {
+          "id": "c",
+          "text": "being",
+          "misconception": null
+        }
+      ],
+      "explanation": "tell + 목적어 + to부정사예요."
+    },
+    {
+      "id": "V.object_comp.q3",
+      "concept": "V.object_comp",
+      "level": "M",
+      "type": "apply",
+      "question": "He let me ___ his phone.",
+      "options": [
+        {
+          "id": "a",
+          "text": "use",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to use",
+          "misconception": "V.object_comp.causative_to"
+        },
+        {
+          "id": "c",
+          "text": "used",
+          "misconception": null
+        }
+      ],
+      "explanation": "let은 사역동사라 동사원형이에요."
+    },
+    {
+      "id": "V.object_comp.q4",
+      "concept": "V.object_comp",
+      "level": "M",
+      "type": "apply",
+      "question": "I want you ___ to my party.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to come",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "come",
+          "misconception": "V.object_comp.tell_base"
+        },
+        {
+          "id": "c",
+          "text": "coming",
+          "misconception": null
+        }
+      ],
+      "explanation": "want + 목적어 + to부정사예요."
+    },
+    {
+      "id": "V.object_comp.q5",
+      "concept": "V.object_comp",
+      "level": "M",
+      "type": "apply",
+      "question": "I heard someone ___ my name.",
+      "options": [
+        {
+          "id": "a",
+          "text": "calling",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to call",
+          "misconception": "V.object_comp.causative_to"
+        },
+        {
+          "id": "c",
+          "text": "called",
+          "misconception": "V.object_comp.passive_pp"
+        }
+      ],
+      "explanation": "지각동사 hear 뒤에는 원형이나 -ing예요. someone이 부르는 쪽이에요."
+    },
+    {
+      "id": "V.object_comp.q6",
+      "concept": "V.object_comp",
+      "level": "M",
+      "type": "apply",
+      "question": "She asked me ___ the window.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to open",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "open",
+          "misconception": "V.object_comp.tell_base"
+        },
+        {
+          "id": "c",
+          "text": "opened",
+          "misconception": null
+        }
+      ],
+      "explanation": "ask + 목적어 + to부정사예요."
+    },
+    {
+      "id": "V.object_comp.q7",
+      "concept": "V.object_comp",
+      "level": "H",
+      "type": "apply",
+      "question": "I had my bike ___ yesterday.",
+      "options": [
+        {
+          "id": "a",
+          "text": "repaired",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "repair",
+          "misconception": "V.object_comp.passive_pp"
+        },
+        {
+          "id": "c",
+          "text": "to repair",
+          "misconception": "V.object_comp.causative_to"
+        }
+      ],
+      "explanation": "자전거는 수리되는 쪽이라 p.p.예요."
+    },
+    {
+      "id": "V.object_comp.q8",
+      "concept": "V.object_comp",
+      "level": "H",
+      "type": "apply",
+      "question": "I heard my name ___ in the hall.",
+      "options": [
+        {
+          "id": "a",
+          "text": "called",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "call",
+          "misconception": "V.object_comp.passive_pp"
+        },
+        {
+          "id": "c",
+          "text": "calling",
+          "misconception": "V.object_comp.passive_pp"
+        }
+      ],
+      "explanation": "내 이름은 불리는 쪽이라 p.p.예요."
+    },
+    {
+      "id": "V.object_comp.q9",
+      "concept": "V.object_comp",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 그녀가 길을 건너는 것을 보았다.",
+      "tokens": [
+        "I",
+        "saw",
+        "her",
+        "cross",
+        "the street."
+      ],
+      "answer": [
+        "I",
+        "saw",
+        "her",
+        "cross",
+        "the street."
+      ],
+      "misconception": null,
+      "explanation": "지각동사 see + 목적어 + 원형이에요."
+    },
+    {
+      "id": "V.object_comp.q10",
+      "concept": "V.object_comp",
+      "level": "M",
+      "type": "reason",
+      "question": "She made me cry. 에서 cry 앞에 to가 없는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "make가 사역동사라서 목적격 보어로 동사원형을 쓰기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "cry가 짧은 단어라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "과거의 일이라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "사역동사(make, have, let) 뒤에는 원형이에요."
+    },
+    {
+      "id": "V.idiom.q1",
+      "concept": "V.idiom",
+      "level": "M",
+      "type": "apply",
+      "question": "I look forward to ___ you.",
+      "options": [
+        {
+          "id": "a",
+          "text": "seeing",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "see",
+          "misconception": "V.idiom.to_prep"
+        },
+        {
+          "id": "c",
+          "text": "saw",
+          "misconception": null
+        }
+      ],
+      "explanation": "look forward to의 to는 전치사라 동명사가 와요."
+    },
+    {
+      "id": "V.idiom.q2",
+      "concept": "V.idiom",
+      "level": "M",
+      "type": "apply",
+      "question": "He is ___ to reach the top shelf.",
+      "options": [
+        {
+          "id": "a",
+          "text": "tall enough",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "enough tall",
+          "misconception": "V.idiom.enough_order"
+        },
+        {
+          "id": "c",
+          "text": "too tall",
+          "misconception": "V.idiom.too_meaning"
+        }
+      ],
+      "explanation": "enough는 형용사 뒤에 와요."
+    },
+    {
+      "id": "V.idiom.q3",
+      "concept": "V.idiom",
+      "level": "M",
+      "type": "concept",
+      "question": "She is too young to drive. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "그녀는 너무 어려서 운전할 수 없다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "그녀는 어려서 운전할 수 있다.",
+          "misconception": "V.idiom.too_meaning"
+        },
+        {
+          "id": "c",
+          "text": "그녀는 운전하기에 충분히 어리다.",
+          "misconception": "V.idiom.too_meaning"
+        }
+      ],
+      "explanation": "too ~ to는 \"너무 ~해서 …할 수 없다\"예요."
+    },
+    {
+      "id": "V.idiom.q4",
+      "concept": "V.idiom",
+      "level": "M",
+      "type": "apply",
+      "question": "How about ___ to the movies?",
+      "options": [
+        {
+          "id": "a",
+          "text": "going",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "go",
+          "misconception": "V.gerund.prep_to"
+        },
+        {
+          "id": "c",
+          "text": "to go",
+          "misconception": null
+        }
+      ],
+      "explanation": "How about 뒤에는 동명사가 와요."
+    },
+    {
+      "id": "V.idiom.q5",
+      "concept": "V.idiom",
+      "level": "M",
+      "type": "apply",
+      "question": "I'm used to ___ up early.",
+      "options": [
+        {
+          "id": "a",
+          "text": "getting",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "get",
+          "misconception": "V.idiom.used_to"
+        },
+        {
+          "id": "c",
+          "text": "got",
+          "misconception": null
+        }
+      ],
+      "explanation": "be used to(~에 익숙하다)의 to는 전치사라 동명사예요."
+    },
+    {
+      "id": "V.idiom.q6",
+      "concept": "V.idiom",
+      "level": "M",
+      "type": "apply",
+      "question": "Let's go ___ this weekend.",
+      "options": [
+        {
+          "id": "a",
+          "text": "camping",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to camp",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "camp",
+          "misconception": null
+        }
+      ],
+      "explanation": "go -ing = ~하러 가다."
+    },
+    {
+      "id": "V.idiom.q7",
+      "concept": "V.idiom",
+      "level": "M",
+      "type": "concept",
+      "question": "I used to live in Busan. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "나는 (예전에) 부산에 살았다. (지금은 아님)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "나는 부산에 사는 것에 익숙하다.",
+          "misconception": "V.idiom.used_to"
+        },
+        {
+          "id": "c",
+          "text": "나는 부산에 살기 위해 썼다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "used to + 원형은 과거의 습관·상태예요."
+    },
+    {
+      "id": "V.idiom.q8",
+      "concept": "V.idiom",
+      "level": "H",
+      "type": "apply",
+      "question": "I was too tired to walk. = I was so tired that I ___ walk.",
+      "options": [
+        {
+          "id": "a",
+          "text": "couldn't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "could",
+          "misconception": "V.idiom.too_meaning"
+        },
+        {
+          "id": "c",
+          "text": "can",
+          "misconception": "V.idiom.too_meaning"
+        }
+      ],
+      "explanation": "too ~ to = so ~ that 주어 can't이고, 과거라 couldn't예요."
+    },
+    {
+      "id": "V.idiom.q9",
+      "concept": "V.idiom",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그 상자는 너무 무거워서 들 수 없다.",
+      "tokens": [
+        "The box",
+        "is too heavy",
+        "to lift."
+      ],
+      "answer": [
+        "The box",
+        "is too heavy",
+        "to lift."
+      ],
+      "misconception": null,
+      "explanation": "too + 형용사 + to부정사예요."
+    },
+    {
+      "id": "V.idiom.q10",
+      "concept": "V.idiom",
+      "level": "H",
+      "type": "reason",
+      "question": "I can't help ___. (웃지 않을 수 없다) 에 알맞은 말과 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "laughing - cannot help 뒤에는 동명사가 와서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to laugh - help 뒤에는 to부정사가 와서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "laugh - 조동사 can 뒤라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "cannot help -ing = ~하지 않을 수 없다."
+    },
+    {
+      "id": "V.subject.q1",
+      "concept": "V.subject",
+      "level": "H",
+      "type": "apply",
+      "question": "It is difficult ___ me to solve this problem.",
+      "options": [
+        {
+          "id": "a",
+          "text": "for",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "of",
+          "misconception": "V.subject.for_of"
+        },
+        {
+          "id": "c",
+          "text": "to",
+          "misconception": null
+        }
+      ],
+      "explanation": "difficult는 일에 대한 평가라 for예요."
+    },
+    {
+      "id": "V.subject.q2",
+      "concept": "V.subject",
+      "level": "H",
+      "type": "apply",
+      "question": "It was very kind ___ you to help me.",
+      "options": [
+        {
+          "id": "a",
+          "text": "of",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "for",
+          "misconception": "V.subject.for_of"
+        },
+        {
+          "id": "c",
+          "text": "to",
+          "misconception": null
+        }
+      ],
+      "explanation": "kind는 사람의 성격이라 of예요."
+    },
+    {
+      "id": "V.subject.q3",
+      "concept": "V.subject",
+      "level": "H",
+      "type": "apply",
+      "question": "It is important for ___ to exercise.",
+      "options": [
+        {
+          "id": "a",
+          "text": "us",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "we",
+          "misconception": "V.subject.subject_case"
+        },
+        {
+          "id": "c",
+          "text": "our",
+          "misconception": null
+        }
+      ],
+      "explanation": "for 뒤에는 목적격이에요."
+    },
+    {
+      "id": "V.subject.q4",
+      "concept": "V.subject",
+      "level": "H",
+      "type": "apply",
+      "question": "It was careless ___ him to leave the door open.",
+      "options": [
+        {
+          "id": "a",
+          "text": "of",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "for",
+          "misconception": "V.subject.for_of"
+        },
+        {
+          "id": "c",
+          "text": "with",
+          "misconception": null
+        }
+      ],
+      "explanation": "careless는 사람의 태도에 대한 평가라 of예요."
+    },
+    {
+      "id": "V.subject.q5",
+      "concept": "V.subject",
+      "level": "H",
+      "type": "apply",
+      "question": "Do you mind ___ opening the window?",
+      "options": [
+        {
+          "id": "a",
+          "text": "my",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I",
+          "misconception": "V.subject.gerund_form"
+        },
+        {
+          "id": "c",
+          "text": "mine",
+          "misconception": null
+        }
+      ],
+      "explanation": "동명사의 의미상 주어는 소유격(또는 목적격)이에요."
+    },
+    {
+      "id": "V.subject.q6",
+      "concept": "V.subject",
+      "level": "H",
+      "type": "apply",
+      "question": "This book is easy ___ children to read.",
+      "options": [
+        {
+          "id": "a",
+          "text": "for",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "of",
+          "misconception": "V.subject.for_of"
+        },
+        {
+          "id": "c",
+          "text": "with",
+          "misconception": null
+        }
+      ],
+      "explanation": "읽는 일이 쉽다는 평가라 for예요."
+    },
+    {
+      "id": "V.subject.q7",
+      "concept": "V.subject",
+      "level": "H",
+      "type": "concept",
+      "question": "It is easy for him to swim. 에서 수영하는 사람은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "him (그)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "It",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "알 수 없다",
+          "misconception": null
+        }
+      ],
+      "explanation": "for him이 to swim의 의미상 주어예요."
+    },
+    {
+      "id": "V.subject.q8",
+      "concept": "V.subject",
+      "level": "H",
+      "type": "concept",
+      "question": "of + 목적격을 쓰는 형용사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "wise",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "necessary",
+          "misconception": "V.subject.for_of"
+        },
+        {
+          "id": "c",
+          "text": "important",
+          "misconception": "V.subject.for_of"
+        }
+      ],
+      "explanation": "wise(현명한)는 사람에 대한 평가예요."
+    },
+    {
+      "id": "V.subject.q9",
+      "concept": "V.subject",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 내가 그 노래를 부르는 것은 어렵다.",
+      "tokens": [
+        "It is hard",
+        "for me",
+        "to sing",
+        "the song."
+      ],
+      "answer": [
+        "It is hard",
+        "for me",
+        "to sing",
+        "the song."
+      ],
+      "misconception": null,
+      "explanation": "It + 형용사 + for 목적격 + to부정사 순서예요."
+    },
+    {
+      "id": "V.subject.q10",
+      "concept": "V.subject",
+      "level": "H",
+      "type": "reason",
+      "question": "It was nice of you to come. 에서 of를 쓰는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "nice가 \"너\"라는 사람의 성격을 평가하는 말이라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "과거의 일이라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "come이 이동 동사라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "You were nice.가 말이 되면 of예요."
+    },
+    {
+      "id": "V.perfect.q1",
+      "concept": "V.perfect",
+      "level": "H",
+      "type": "apply",
+      "question": "It seems that he was sick last week. = He seems ___ sick last week.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to have been",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to be",
+          "misconception": "V.perfect.same_time"
+        },
+        {
+          "id": "c",
+          "text": "to had been",
+          "misconception": "V.perfect.form"
+        }
+      ],
+      "explanation": "아팠던 것은 seems(현재)보다 이전이라 to have p.p.예요."
+    },
+    {
+      "id": "V.perfect.q2",
+      "concept": "V.perfect",
+      "level": "H",
+      "type": "apply",
+      "question": "It seems that she is happy. = She seems ___ happy.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to be",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to have been",
+          "misconception": "V.perfect.same_time"
+        },
+        {
+          "id": "c",
+          "text": "being",
+          "misconception": null
+        }
+      ],
+      "explanation": "같은 때(현재)라서 단순형 to be예요."
+    },
+    {
+      "id": "V.perfect.q3",
+      "concept": "V.perfect",
+      "level": "H",
+      "type": "apply",
+      "question": "I'm ashamed of ___ to you yesterday.",
+      "options": [
+        {
+          "id": "a",
+          "text": "having lied",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "lie",
+          "misconception": "V.gerund.prep_to"
+        },
+        {
+          "id": "c",
+          "text": "having lie",
+          "misconception": "V.perfect.form"
+        }
+      ],
+      "explanation": "거짓말한 것이 부끄러워하는 지금보다 이전이라 having p.p.예요."
+    },
+    {
+      "id": "V.perfect.q4",
+      "concept": "V.perfect",
+      "level": "H",
+      "type": "apply",
+      "question": "He seems to have lost his key. = It seems that he ___ his key.",
+      "options": [
+        {
+          "id": "a",
+          "text": "lost",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "loses",
+          "misconception": "V.perfect.tense_change"
+        },
+        {
+          "id": "c",
+          "text": "will lose",
+          "misconception": null
+        }
+      ],
+      "explanation": "to have p.p.는 seems보다 이전이라 과거형 lost예요."
+    },
+    {
+      "id": "V.perfect.q5",
+      "concept": "V.perfect",
+      "level": "H",
+      "type": "concept",
+      "question": "He seems to have been rich. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "그는 (예전에) 부자였던 것 같다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "그는 (지금) 부자인 것 같다.",
+          "misconception": "V.perfect.same_time"
+        },
+        {
+          "id": "c",
+          "text": "그는 부자가 될 것 같다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "to have p.p.는 더 이전의 일이에요."
+    },
+    {
+      "id": "V.perfect.q6",
+      "concept": "V.perfect",
+      "level": "H",
+      "type": "apply",
+      "question": "She is proud of ___ first prize last year.",
+      "options": [
+        {
+          "id": "a",
+          "text": "having won",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to have won",
+          "misconception": "V.gerund.prep_to"
+        },
+        {
+          "id": "c",
+          "text": "having win",
+          "misconception": "V.perfect.form"
+        }
+      ],
+      "explanation": "전치사 of 뒤라서 동명사이고, 작년의 우승이 지금 자랑스러운 것보다 이전이라 완료 동명사 having won이에요."
+    },
+    {
+      "id": "V.perfect.q7",
+      "concept": "V.perfect",
+      "level": "H",
+      "type": "concept",
+      "question": "I'm sorry for having kept you waiting. 에서 having kept를 쓴 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "기다리게 한 일이 미안해하는 지금보다 먼저라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "지금 기다리게 하고 있어서",
+          "misconception": "V.perfect.same_time"
+        },
+        {
+          "id": "c",
+          "text": "kept가 불규칙동사라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "완료 동명사는 문장의 동사보다 이전의 일이에요."
+    },
+    {
+      "id": "V.perfect.q8",
+      "concept": "V.perfect",
+      "level": "H",
+      "type": "apply",
+      "question": "They seem ___ the work already.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to have finished",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to finish",
+          "misconception": "V.perfect.same_time"
+        },
+        {
+          "id": "c",
+          "text": "to finished",
+          "misconception": "V.perfect.form"
+        }
+      ],
+      "explanation": "already로 이미 끝낸 일이라 to have p.p.예요."
+    },
+    {
+      "id": "V.perfect.q9",
+      "concept": "V.perfect",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 그 영화를 봤던 것 같다.",
+      "tokens": [
+        "He",
+        "seems",
+        "to have seen",
+        "the movie."
+      ],
+      "answer": [
+        "He",
+        "seems",
+        "to have seen",
+        "the movie."
+      ],
+      "misconception": null,
+      "explanation": "seem + to have p.p. = ~했던 것 같다."
+    },
+    {
+      "id": "V.perfect.q10",
+      "concept": "V.perfect",
+      "level": "H",
+      "type": "reason",
+      "question": "완료형 준동사의 시간 기준은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "문장의 진짜 동사의 시간",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "말하는 지금 시간",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "항상 과거",
+          "misconception": null
+        }
+      ],
+      "explanation": "문장의 동사보다 먼저 일어난 일이면 완료형이에요."
+    },
+    {
+      "id": "V.part_clause.q1",
+      "concept": "V.part_clause",
+      "level": "H",
+      "type": "apply",
+      "question": "___ tired, I went to bed early.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Feeling",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Felt",
+          "misconception": "V.part_clause.keep_conj"
+        },
+        {
+          "id": "c",
+          "text": "Feel",
+          "misconception": null
+        }
+      ],
+      "explanation": "Because I felt tired에서 접속사와 주어를 빼고 felt를 Feeling으로 바꿔요."
+    },
+    {
+      "id": "V.part_clause.q2",
+      "concept": "V.part_clause",
+      "level": "H",
+      "type": "apply",
+      "question": "___ from the sky, the island looks like a heart.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Seen",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Seeing",
+          "misconception": "V.part_clause.active_passive"
+        },
+        {
+          "id": "c",
+          "text": "See",
+          "misconception": null
+        }
+      ],
+      "explanation": "섬은 보여지는 쪽이라 p.p.예요."
+    },
+    {
+      "id": "V.part_clause.q3",
+      "concept": "V.part_clause",
+      "level": "H",
+      "type": "apply",
+      "question": "___ what to do, I called my mom.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Not knowing",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Knowing not",
+          "misconception": "V.part_clause.not_place"
+        },
+        {
+          "id": "c",
+          "text": "Don't knowing",
+          "misconception": null
+        }
+      ],
+      "explanation": "부정은 분사 앞에 Not을 둬요."
+    },
+    {
+      "id": "V.part_clause.q4",
+      "concept": "V.part_clause",
+      "level": "H",
+      "type": "apply",
+      "question": "___ my homework, I went out to play.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Having finished",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Having finish",
+          "misconception": "V.perfect.form"
+        },
+        {
+          "id": "c",
+          "text": "Finished",
+          "misconception": "V.part_clause.active_passive"
+        }
+      ],
+      "explanation": "숙제를 끝낸 일이 나간 것보다 먼저라 Having p.p.예요."
+    },
+    {
+      "id": "V.part_clause.q5",
+      "concept": "V.part_clause",
+      "level": "H",
+      "type": "apply",
+      "question": "___ in English, the book was hard to read.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Written",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Writing",
+          "misconception": "V.part_clause.active_passive"
+        },
+        {
+          "id": "c",
+          "text": "Wrote",
+          "misconception": "V.part_clause.keep_conj"
+        }
+      ],
+      "explanation": "책은 쓰인(당한) 쪽이라 (Being) Written이에요."
+    },
+    {
+      "id": "V.part_clause.q6",
+      "concept": "V.part_clause",
+      "level": "H",
+      "type": "apply",
+      "question": "___ the police, the thief ran away.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Seeing",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Seen",
+          "misconception": "V.part_clause.active_passive"
+        },
+        {
+          "id": "c",
+          "text": "Saw",
+          "misconception": "V.part_clause.keep_conj"
+        }
+      ],
+      "explanation": "도둑이 경찰을 본 쪽(능동)이라 -ing예요."
+    },
+    {
+      "id": "V.part_clause.q7",
+      "concept": "V.part_clause",
+      "level": "H",
+      "type": "concept",
+      "question": "Walking home, I met Tom. 과 뜻이 같은 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "When I was walking home, I met Tom.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Tom was walking home, so I met him.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "I walked home because I met Tom.",
+          "misconception": null
+        }
+      ],
+      "explanation": "분사구문의 주어는 주절의 주어(I)와 같아요."
+    },
+    {
+      "id": "V.part_clause.q8",
+      "concept": "V.part_clause",
+      "level": "H",
+      "type": "concept",
+      "question": "Smiling brightly, she waved at me. 에서 분사구문의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "밝게 웃으며 (동시 동작)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "밝게 웃었기 때문에",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "밝게 웃는다면",
+          "misconception": null
+        }
+      ],
+      "explanation": "손을 흔드는 동작과 동시에 일어난 일이에요."
+    },
+    {
+      "id": "V.part_clause.q9",
+      "concept": "V.part_clause",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 음악을 들으며 그는 숙제를 했다.",
+      "tokens": [
+        "Listening to music,",
+        "he",
+        "did",
+        "his homework."
+      ],
+      "answer": [
+        "Listening to music,",
+        "he",
+        "did",
+        "his homework."
+      ],
+      "misconception": null,
+      "explanation": "분사구문 뒤에 주절(주어 + 동사)이 와요."
+    },
+    {
+      "id": "V.part_clause.q10",
+      "concept": "V.part_clause",
+      "level": "H",
+      "type": "reason",
+      "question": "Seen from the sky에서 Seeing이 아니라 Seen을 쓰는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "주절의 주어(섬)가 보여지는 쪽이라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "과거의 일이라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "see가 불규칙동사라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "주절 주어가 당하면 p.p., 하면 -ing예요."
+    }
+  ]
+}

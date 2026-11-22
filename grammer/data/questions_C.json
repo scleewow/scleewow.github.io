@@ -1,0 +1,2957 @@
+{
+  "area": "C",
+  "types": {
+    "concept": "개념 확인",
+    "apply": "적용",
+    "reason": "이유 확인",
+    "order": "문장 만들기"
+  },
+  "questions": [
+    {
+      "id": "C.conj_coord.q1",
+      "concept": "C.conj_coord",
+      "level": "E",
+      "type": "apply",
+      "question": "I like apples ___ bananas.",
+      "options": [
+        {
+          "id": "a",
+          "text": "and",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "but",
+          "misconception": "C.conj_coord.but_and"
+        },
+        {
+          "id": "c",
+          "text": "so",
+          "misconception": null
+        }
+      ],
+      "explanation": "좋아하는 것을 더하니 and예요."
+    },
+    {
+      "id": "C.conj_coord.q2",
+      "concept": "C.conj_coord",
+      "level": "E",
+      "type": "apply",
+      "question": "The bag is small ___ heavy.",
+      "options": [
+        {
+          "id": "a",
+          "text": "but",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "and",
+          "misconception": "C.conj_coord.but_and"
+        },
+        {
+          "id": "c",
+          "text": "or",
+          "misconception": null
+        }
+      ],
+      "explanation": "작은데 무겁다는 반대 느낌이라 but이에요."
+    },
+    {
+      "id": "C.conj_coord.q3",
+      "concept": "C.conj_coord",
+      "level": "E",
+      "type": "apply",
+      "question": "Do you want tea ___ coffee?",
+      "options": [
+        {
+          "id": "a",
+          "text": "or",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "and",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "so",
+          "misconception": null
+        }
+      ],
+      "explanation": "둘 중 고르는 거라 or예요."
+    },
+    {
+      "id": "C.conj_coord.q4",
+      "concept": "C.conj_coord",
+      "level": "E",
+      "type": "apply",
+      "question": "It was raining, ___ we stayed home.",
+      "options": [
+        {
+          "id": "a",
+          "text": "so",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "because",
+          "misconception": "C.conj_coord.so_because"
+        },
+        {
+          "id": "c",
+          "text": "or",
+          "misconception": null
+        }
+      ],
+      "explanation": "비가 와서 → 그래서 집에 있었다 (결과)예요."
+    },
+    {
+      "id": "C.conj_coord.q5",
+      "concept": "C.conj_coord",
+      "level": "E",
+      "type": "apply",
+      "question": "I was hungry, ___ I ate a sandwich.",
+      "options": [
+        {
+          "id": "a",
+          "text": "so",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "but",
+          "misconception": "C.conj_coord.but_and"
+        },
+        {
+          "id": "c",
+          "text": "or",
+          "misconception": null
+        }
+      ],
+      "explanation": "배고파서 먹은 것은 결과라 so예요."
+    },
+    {
+      "id": "C.conj_coord.q6",
+      "concept": "C.conj_coord",
+      "level": "E",
+      "type": "apply",
+      "question": "He is rich, ___ he isn't happy.",
+      "options": [
+        {
+          "id": "a",
+          "text": "but",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "so",
+          "misconception": "C.conj_coord.so_because"
+        },
+        {
+          "id": "c",
+          "text": "and",
+          "misconception": "C.conj_coord.but_and"
+        }
+      ],
+      "explanation": "부자인데 행복하지 않다는 반대라 but이에요."
+    },
+    {
+      "id": "C.conj_coord.q7",
+      "concept": "C.conj_coord",
+      "level": "M",
+      "type": "apply",
+      "question": "Hurry up, ___ you will miss the bus.",
+      "options": [
+        {
+          "id": "a",
+          "text": "or",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "and",
+          "misconception": "C.conj_coord.imperative_or"
+        },
+        {
+          "id": "c",
+          "text": "so",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"서둘러, 그렇지 않으면 놓칠 거야\" → 명령문, or예요."
+    },
+    {
+      "id": "C.conj_coord.q8",
+      "concept": "C.conj_coord",
+      "level": "M",
+      "type": "apply",
+      "question": "Study hard, ___ you will pass the test.",
+      "options": [
+        {
+          "id": "a",
+          "text": "and",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "or",
+          "misconception": "C.conj_coord.imperative_or"
+        },
+        {
+          "id": "c",
+          "text": "but",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"열심히 공부해, 그러면 합격할 거야\" → 명령문, and예요."
+    },
+    {
+      "id": "C.conj_coord.q9",
+      "concept": "C.conj_coord",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 피곤해서 일찍 잤다.",
+      "tokens": [
+        "I was tired,",
+        "so",
+        "I went to bed",
+        "early."
+      ],
+      "answer": [
+        "I was tired,",
+        "so",
+        "I went to bed",
+        "early."
+      ],
+      "misconception": null,
+      "explanation": "원인 문장, so + 결과 문장이에요."
+    },
+    {
+      "id": "C.conj_coord.q10",
+      "concept": "C.conj_coord",
+      "level": "E",
+      "type": "reason",
+      "question": "I was tired, so I slept. 에서 so를 쓴 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "뒤 문장이 앞 문장의 결과라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "뒤 문장이 앞 문장의 이유라서",
+          "misconception": "C.conj_coord.so_because"
+        },
+        {
+          "id": "c",
+          "text": "두 문장이 반대라서",
+          "misconception": "C.conj_coord.but_and"
+        }
+      ],
+      "explanation": "so는 \"그래서\"라는 결과예요."
+    },
+    {
+      "id": "C.conj_sub.q1",
+      "concept": "C.conj_sub",
+      "level": "M",
+      "type": "apply",
+      "question": "I stayed home ___ I was sick.",
+      "options": [
+        {
+          "id": "a",
+          "text": "because",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "although",
+          "misconception": "C.conj_sub.although_because"
+        },
+        {
+          "id": "c",
+          "text": "because of",
+          "misconception": "C.conj_sub.because_of"
+        }
+      ],
+      "explanation": "아픈 것이 집에 있던 이유예요. 뒤에 주어 + 동사가 있으니 because예요."
+    },
+    {
+      "id": "C.conj_sub.q2",
+      "concept": "C.conj_sub",
+      "level": "M",
+      "type": "apply",
+      "question": "___ it was cold, we went swimming.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Although",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Because",
+          "misconception": "C.conj_sub.although_because"
+        },
+        {
+          "id": "c",
+          "text": "So",
+          "misconception": null
+        }
+      ],
+      "explanation": "추웠는데도 수영했다는 예상 밖의 결과라 Although예요."
+    },
+    {
+      "id": "C.conj_sub.q3",
+      "concept": "C.conj_sub",
+      "level": "M",
+      "type": "apply",
+      "question": "We didn't go out because ___ the rain.",
+      "options": [
+        {
+          "id": "a",
+          "text": "of",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "C.conj_sub.because_of"
+        },
+        {
+          "id": "c",
+          "text": "to",
+          "misconception": null
+        }
+      ],
+      "explanation": "the rain은 명사라서 because of예요."
+    },
+    {
+      "id": "C.conj_sub.q4",
+      "concept": "C.conj_sub",
+      "level": "M",
+      "type": "apply",
+      "question": "I'll call you when I ___ home.",
+      "options": [
+        {
+          "id": "a",
+          "text": "get",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "will get",
+          "misconception": "C.conj_sub.will_clause"
+        },
+        {
+          "id": "c",
+          "text": "got",
+          "misconception": null
+        }
+      ],
+      "explanation": "때의 부사절은 미래 일도 현재형이에요."
+    },
+    {
+      "id": "C.conj_sub.q5",
+      "concept": "C.conj_sub",
+      "level": "M",
+      "type": "apply",
+      "question": "Wash your hands ___ you eat.",
+      "options": [
+        {
+          "id": "a",
+          "text": "before",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "after",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "although",
+          "misconception": "C.conj_sub.although_because"
+        }
+      ],
+      "explanation": "먹기 전에 손을 씻어요."
+    },
+    {
+      "id": "C.conj_sub.q6",
+      "concept": "C.conj_sub",
+      "level": "M",
+      "type": "apply",
+      "question": "My phone rang ___ I was taking a shower.",
+      "options": [
+        {
+          "id": "a",
+          "text": "while",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "because",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "until",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"샤워하는 동안\" = while이에요."
+    },
+    {
+      "id": "C.conj_sub.q7",
+      "concept": "C.conj_sub",
+      "level": "M",
+      "type": "concept",
+      "question": "완전한 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "When I got home, I took a nap.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "When I got home.",
+          "misconception": "C.conj_sub.alone"
+        },
+        {
+          "id": "c",
+          "text": "Because I was tired.",
+          "misconception": "C.conj_sub.alone"
+        }
+      ],
+      "explanation": "부사절은 주절이 있어야 완전한 문장이 돼요."
+    },
+    {
+      "id": "C.conj_sub.q8",
+      "concept": "C.conj_sub",
+      "level": "M",
+      "type": "concept",
+      "question": "Although he was tired, he kept working. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "그는 피곤했지만 계속 일했다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "그는 피곤해서 계속 일했다.",
+          "misconception": "C.conj_sub.although_because"
+        },
+        {
+          "id": "c",
+          "text": "그는 피곤할 때까지 일했다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "although = ~이지만 (양보)예요."
+    },
+    {
+      "id": "C.conj_sub.q9",
+      "concept": "C.conj_sub",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 집에 오자마자 숙제를 했다.",
+      "tokens": [
+        "As soon as I came home,",
+        "I",
+        "did",
+        "my homework."
+      ],
+      "answer": [
+        "As soon as I came home,",
+        "I",
+        "did",
+        "my homework."
+      ],
+      "misconception": null,
+      "explanation": "부사절이 앞에 오면 쉼표 뒤에 주절이 와요."
+    },
+    {
+      "id": "C.conj_sub.q10",
+      "concept": "C.conj_sub",
+      "level": "M",
+      "type": "reason",
+      "question": "Because I was sick. 만으로는 문장이 되지 않는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "부사절은 주절에 붙어야 하는 말이라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "sick이 형용사라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "because는 문장 맨 앞에 올 수 없어서",
+          "misconception": null
+        }
+      ],
+      "explanation": "부사절은 이유를 덧붙이는 말이라 주절이 필요해요."
+    },
+    {
+      "id": "C.noun_clause.q1",
+      "concept": "C.noun_clause",
+      "level": "M",
+      "type": "apply",
+      "question": "I think ___ he is honest.",
+      "options": [
+        {
+          "id": "a",
+          "text": "that",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "if",
+          "misconception": "C.noun_clause.that_whether"
+        },
+        {
+          "id": "c",
+          "text": "what",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"그가 정직하다는 것\"을 생각해요 → that절이에요."
+    },
+    {
+      "id": "C.noun_clause.q2",
+      "concept": "C.noun_clause",
+      "level": "M",
+      "type": "apply",
+      "question": "I don't know ___ he will come or not.",
+      "options": [
+        {
+          "id": "a",
+          "text": "whether",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "that",
+          "misconception": "C.noun_clause.that_whether"
+        },
+        {
+          "id": "c",
+          "text": "what",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"올지 안 올지\" 모르니 whether예요."
+    },
+    {
+      "id": "C.noun_clause.q3",
+      "concept": "C.noun_clause",
+      "level": "M",
+      "type": "apply",
+      "question": "I wonder if it ___ tomorrow.",
+      "options": [
+        {
+          "id": "a",
+          "text": "will rain",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "rains",
+          "misconception": "C.noun_clause.if_will"
+        },
+        {
+          "id": "c",
+          "text": "rained",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"~인지\" 명사절이고 내일 일이라 will을 써요."
+    },
+    {
+      "id": "C.noun_clause.q4",
+      "concept": "C.noun_clause",
+      "level": "M",
+      "type": "apply",
+      "question": "___ is true that she won the prize.",
+      "options": [
+        {
+          "id": "a",
+          "text": "It",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "That",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "This",
+          "misconception": null
+        }
+      ],
+      "explanation": "가주어 It + 진주어 that절이에요."
+    },
+    {
+      "id": "C.noun_clause.q5",
+      "concept": "C.noun_clause",
+      "level": "M",
+      "type": "apply",
+      "question": "The problem is ___ we don't have enough time.",
+      "options": [
+        {
+          "id": "a",
+          "text": "that",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "if",
+          "misconception": "C.noun_clause.that_whether"
+        },
+        {
+          "id": "c",
+          "text": "because",
+          "misconception": null
+        }
+      ],
+      "explanation": "보어 자리 \"~라는 것\"은 that절이에요."
+    },
+    {
+      "id": "C.noun_clause.q6",
+      "concept": "C.noun_clause",
+      "level": "M",
+      "type": "concept",
+      "question": "I don't know if he will come. 에서 if의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "~인지 (아닌지)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "~하면",
+          "misconception": "C.noun_clause.if_will"
+        },
+        {
+          "id": "c",
+          "text": "~이지만",
+          "misconception": null
+        }
+      ],
+      "explanation": "know의 목적어가 되는 명사절 if예요."
+    },
+    {
+      "id": "C.noun_clause.q7",
+      "concept": "C.noun_clause",
+      "level": "M",
+      "type": "concept",
+      "question": "I believe (that) you can do it. 에서 that을 뺄 수 있는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "목적어 자리의 명사절 that은 생략할 수 있어서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "that은 항상 생략해야 해서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "you가 대명사라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "동사 바로 뒤 목적어 that은 흔히 생략해요."
+    },
+    {
+      "id": "C.noun_clause.q8",
+      "concept": "C.noun_clause",
+      "level": "H",
+      "type": "apply",
+      "question": "___ he agrees or not doesn't matter.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Whether",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "If",
+          "misconception": "C.noun_clause.if_subject"
+        },
+        {
+          "id": "c",
+          "text": "That",
+          "misconception": "C.noun_clause.that_whether"
+        }
+      ],
+      "explanation": "주어 자리 명사절에는 if가 아니라 whether를 써요."
+    },
+    {
+      "id": "C.noun_clause.q9",
+      "concept": "C.noun_clause",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 그녀가 옳다고 생각한다.",
+      "tokens": [
+        "I",
+        "think",
+        "that",
+        "she is right."
+      ],
+      "answer": [
+        "I",
+        "think",
+        "that",
+        "she is right."
+      ],
+      "misconception": null,
+      "explanation": "think의 목적어로 that절이 와요."
+    },
+    {
+      "id": "C.noun_clause.q10",
+      "concept": "C.noun_clause",
+      "level": "M",
+      "type": "reason",
+      "question": "I don't know if he comes tomorrow. 가 어색한 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "\"~인지\"라는 명사절이라 내일 일은 will을 써야 해서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "if 뒤에는 항상 과거형이 와서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "know 뒤에 that이 있어야 해서",
+          "misconception": null
+        }
+      ],
+      "explanation": "미래 일 현재형 규칙은 조건·때 부사절에만 적용돼요."
+    },
+    {
+      "id": "C.rel_pronoun.q1",
+      "concept": "C.rel_pronoun",
+      "level": "M",
+      "type": "apply",
+      "question": "I have a friend ___ lives in Jeju.",
+      "options": [
+        {
+          "id": "a",
+          "text": "who",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "which",
+          "misconception": "C.rel_pronoun.who_which"
+        },
+        {
+          "id": "c",
+          "text": "what",
+          "misconception": null
+        }
+      ],
+      "explanation": "선행사 a friend가 사람이라 who예요."
+    },
+    {
+      "id": "C.rel_pronoun.q2",
+      "concept": "C.rel_pronoun",
+      "level": "M",
+      "type": "apply",
+      "question": "This is the dog ___ has long ears.",
+      "options": [
+        {
+          "id": "a",
+          "text": "which",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "who",
+          "misconception": "C.rel_pronoun.who_which"
+        },
+        {
+          "id": "c",
+          "text": "what",
+          "misconception": null
+        }
+      ],
+      "explanation": "선행사가 동물이라 which예요."
+    },
+    {
+      "id": "C.rel_pronoun.q3",
+      "concept": "C.rel_pronoun",
+      "level": "M",
+      "type": "apply",
+      "question": "The boy who ___ glasses is my brother.",
+      "options": [
+        {
+          "id": "a",
+          "text": "wears",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "wear",
+          "misconception": "C.rel_pronoun.agree"
+        },
+        {
+          "id": "c",
+          "text": "he wears",
+          "misconception": "C.rel_pronoun.double_subj"
+        }
+      ],
+      "explanation": "선행사 the boy가 단수라 wears예요."
+    },
+    {
+      "id": "C.rel_pronoun.q4",
+      "concept": "C.rel_pronoun",
+      "level": "M",
+      "type": "apply",
+      "question": "The students who ___ in the room are noisy.",
+      "options": [
+        {
+          "id": "a",
+          "text": "are",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is",
+          "misconception": "C.rel_pronoun.agree"
+        },
+        {
+          "id": "c",
+          "text": "they are",
+          "misconception": "C.rel_pronoun.double_subj"
+        }
+      ],
+      "explanation": "선행사 students가 복수라 are예요."
+    },
+    {
+      "id": "C.rel_pronoun.q5",
+      "concept": "C.rel_pronoun",
+      "level": "M",
+      "type": "apply",
+      "question": "This is the bus ___ goes to Seoul.",
+      "options": [
+        {
+          "id": "a",
+          "text": "that",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "who",
+          "misconception": "C.rel_pronoun.who_which"
+        },
+        {
+          "id": "c",
+          "text": "it",
+          "misconception": null
+        }
+      ],
+      "explanation": "that은 사물에도 쓸 수 있어요."
+    },
+    {
+      "id": "C.rel_pronoun.q6",
+      "concept": "C.rel_pronoun",
+      "level": "M",
+      "type": "concept",
+      "question": "the girl who is singing 에서 선행사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "the girl",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "who",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "singing",
+          "misconception": null
+        }
+      ],
+      "explanation": "관계대명사 앞에서 꾸밈을 받는 명사가 선행사예요."
+    },
+    {
+      "id": "C.rel_pronoun.q7",
+      "concept": "C.rel_pronoun",
+      "level": "M",
+      "type": "concept",
+      "question": "바른 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "I know the man who lives next door.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I know the man who he lives next door.",
+          "misconception": "C.rel_pronoun.double_subj"
+        },
+        {
+          "id": "c",
+          "text": "I know the man which lives next door.",
+          "misconception": "C.rel_pronoun.who_which"
+        }
+      ],
+      "explanation": "사람 + who, 관계절 안에 주어를 다시 쓰지 않아요."
+    },
+    {
+      "id": "C.rel_pronoun.q8",
+      "concept": "C.rel_pronoun",
+      "level": "M",
+      "type": "apply",
+      "question": "I have a friend. She speaks French. → I have a friend ___ French.",
+      "options": [
+        {
+          "id": "a",
+          "text": "who speaks",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "who she speaks",
+          "misconception": "C.rel_pronoun.double_subj"
+        },
+        {
+          "id": "c",
+          "text": "which speaks",
+          "misconception": "C.rel_pronoun.who_which"
+        }
+      ],
+      "explanation": "She가 who로 바뀌어서 She는 사라져요."
+    },
+    {
+      "id": "C.rel_pronoun.q9",
+      "concept": "C.rel_pronoun",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 안경을 쓴 소년은 내 동생이다.",
+      "tokens": [
+        "The boy",
+        "who wears glasses",
+        "is",
+        "my brother."
+      ],
+      "answer": [
+        "The boy",
+        "who wears glasses",
+        "is",
+        "my brother."
+      ],
+      "misconception": null,
+      "explanation": "관계절이 선행사 바로 뒤에서 꾸미고, 그다음 진짜 동사 is가 와요."
+    },
+    {
+      "id": "C.rel_pronoun.q10",
+      "concept": "C.rel_pronoun",
+      "level": "M",
+      "type": "reason",
+      "question": "the boy who lives here에서 lives에 -s가 붙는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "관계절의 주어(who)가 가리키는 the boy가 단수라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "who는 항상 단수라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "here 때문에",
+          "misconception": null
+        }
+      ],
+      "explanation": "관계대명사는 선행사의 수를 그대로 이어받아요."
+    },
+    {
+      "id": "C.rel_case.q1",
+      "concept": "C.rel_case",
+      "level": "M",
+      "type": "apply",
+      "question": "This is the book ___ I bought yesterday.",
+      "options": [
+        {
+          "id": "a",
+          "text": "which",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "who",
+          "misconception": "C.rel_pronoun.who_which"
+        },
+        {
+          "id": "c",
+          "text": "whose",
+          "misconception": "C.rel_case.whose"
+        }
+      ],
+      "explanation": "사물 선행사의 목적격은 which예요. 생략도 가능해요."
+    },
+    {
+      "id": "C.rel_case.q2",
+      "concept": "C.rel_case",
+      "level": "M",
+      "type": "apply",
+      "question": "I have a friend ___ father is a doctor.",
+      "options": [
+        {
+          "id": "a",
+          "text": "whose",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "who",
+          "misconception": "C.rel_case.whose"
+        },
+        {
+          "id": "c",
+          "text": "which",
+          "misconception": "C.rel_case.whose"
+        }
+      ],
+      "explanation": "\"친구의 아버지\"라는 소유 관계라 whose예요."
+    },
+    {
+      "id": "C.rel_case.q3",
+      "concept": "C.rel_case",
+      "level": "M",
+      "type": "apply",
+      "question": "The cake I made ___ delicious.",
+      "options": [
+        {
+          "id": "a",
+          "text": "was",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "it was",
+          "misconception": "C.rel_case.double_obj"
+        },
+        {
+          "id": "c",
+          "text": "were",
+          "misconception": null
+        }
+      ],
+      "explanation": "The cake (that) I made가 주어이고, 진짜 동사는 was예요."
+    },
+    {
+      "id": "C.rel_case.q4",
+      "concept": "C.rel_case",
+      "level": "M",
+      "type": "apply",
+      "question": "This is the movie which I watched ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "last night",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "it last night",
+          "misconception": "C.rel_case.double_obj"
+        },
+        {
+          "id": "c",
+          "text": "them last night",
+          "misconception": "C.rel_case.double_obj"
+        }
+      ],
+      "explanation": "which가 이미 watched의 목적어라서 it을 다시 쓰지 않아요."
+    },
+    {
+      "id": "C.rel_case.q5",
+      "concept": "C.rel_case",
+      "level": "M",
+      "type": "concept",
+      "question": "관계대명사를 생략할 수 있는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "She is the girl who I met at the party.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "She is the girl who lives next door.",
+          "misconception": "C.rel_case.omit_subj"
+        },
+        {
+          "id": "c",
+          "text": "He is the man whose car was stolen.",
+          "misconception": null
+        }
+      ],
+      "explanation": "목적격(뒤에 주어 + 동사)만 생략할 수 있어요."
+    },
+    {
+      "id": "C.rel_case.q6",
+      "concept": "C.rel_case",
+      "level": "M",
+      "type": "apply",
+      "question": "The man ___ helped me is my uncle.",
+      "options": [
+        {
+          "id": "a",
+          "text": "who",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "C.rel_case.omit_subj"
+        },
+        {
+          "id": "c",
+          "text": "whose",
+          "misconception": "C.rel_case.whose"
+        }
+      ],
+      "explanation": "뒤에 동사가 바로 오니 주격이라 생략할 수 없어요."
+    },
+    {
+      "id": "C.rel_case.q7",
+      "concept": "C.rel_case",
+      "level": "M",
+      "type": "apply",
+      "question": "I saw a house ___ roof was red.",
+      "options": [
+        {
+          "id": "a",
+          "text": "whose",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "which",
+          "misconception": "C.rel_case.whose"
+        },
+        {
+          "id": "c",
+          "text": "that",
+          "misconception": "C.rel_case.whose"
+        }
+      ],
+      "explanation": "\"그 집의 지붕\"이라 whose예요. 사물에도 써요."
+    },
+    {
+      "id": "C.rel_case.q8",
+      "concept": "C.rel_case",
+      "level": "M",
+      "type": "concept",
+      "question": "the girl I like 에서 생략된 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "목적격 관계대명사 who(m)/that",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "주격 관계대명사",
+          "misconception": "C.rel_case.omit_subj"
+        },
+        {
+          "id": "c",
+          "text": "소유격 whose",
+          "misconception": null
+        }
+      ],
+      "explanation": "I like (그 소녀) → 목적격이 생략됐어요."
+    },
+    {
+      "id": "C.rel_case.q9",
+      "concept": "C.rel_case",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 이것은 내가 만든 케이크이다.",
+      "tokens": [
+        "This is",
+        "the cake",
+        "I made."
+      ],
+      "answer": [
+        "This is",
+        "the cake",
+        "I made."
+      ],
+      "misconception": null,
+      "explanation": "목적격 관계대명사를 생략하고 선행사 뒤에 바로 주어 + 동사가 와요."
+    },
+    {
+      "id": "C.rel_case.q10",
+      "concept": "C.rel_case",
+      "level": "M",
+      "type": "reason",
+      "question": "This is the book which I bought it. 이 틀린 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "which가 이미 bought의 목적어라서 it이 겹치기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "which 대신 who를 써야 해서",
+          "misconception": "C.rel_pronoun.who_which"
+        },
+        {
+          "id": "c",
+          "text": "bought가 과거형이라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "관계대명사가 관계절의 빠진 자리를 대신해요."
+    },
+    {
+      "id": "C.indirect_q.q1",
+      "concept": "C.indirect_q",
+      "level": "M",
+      "type": "apply",
+      "question": "Do you know where ___?",
+      "options": [
+        {
+          "id": "a",
+          "text": "he lives",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "does he live",
+          "misconception": "C.indirect_q.q_order"
+        },
+        {
+          "id": "c",
+          "text": "he does live",
+          "misconception": null
+        }
+      ],
+      "explanation": "간접의문문은 의문사 + 주어 + 동사예요."
+    },
+    {
+      "id": "C.indirect_q.q2",
+      "concept": "C.indirect_q",
+      "level": "M",
+      "type": "apply",
+      "question": "Can you tell me where the station ___?",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is it",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "does",
+          "misconception": null
+        }
+      ],
+      "explanation": "where the station is → 주어 + be 순서예요."
+    },
+    {
+      "id": "C.indirect_q.q3",
+      "concept": "C.indirect_q",
+      "level": "M",
+      "type": "apply",
+      "question": "Tell me who ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "she is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is she",
+          "misconception": "C.indirect_q.q_order"
+        },
+        {
+          "id": "c",
+          "text": "does she",
+          "misconception": "C.indirect_q.q_order"
+        }
+      ],
+      "explanation": "문장 속에서는 주어 + be 순서예요."
+    },
+    {
+      "id": "C.indirect_q.q4",
+      "concept": "C.indirect_q",
+      "level": "M",
+      "type": "apply",
+      "question": "I wonder ___ he is at home.",
+      "options": [
+        {
+          "id": "a",
+          "text": "if",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "C.indirect_q.no_if"
+        },
+        {
+          "id": "c",
+          "text": "what",
+          "misconception": null
+        }
+      ],
+      "explanation": "의문사가 없는 의문문은 if/whether로 이어요."
+    },
+    {
+      "id": "C.indirect_q.q5",
+      "concept": "C.indirect_q",
+      "level": "M",
+      "type": "apply",
+      "question": "I don't know what time ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "the movie starts",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "does the movie start",
+          "misconception": "C.indirect_q.q_order"
+        },
+        {
+          "id": "c",
+          "text": "starts the movie",
+          "misconception": "C.indirect_q.q_order"
+        }
+      ],
+      "explanation": "does가 사라지고 starts에 -s가 돌아와요."
+    },
+    {
+      "id": "C.indirect_q.q6",
+      "concept": "C.indirect_q",
+      "level": "M",
+      "type": "apply",
+      "question": "___ do you think he wants?",
+      "options": [
+        {
+          "id": "a",
+          "text": "What",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Do you think what",
+          "misconception": "C.indirect_q.think_front"
+        },
+        {
+          "id": "c",
+          "text": "If",
+          "misconception": null
+        }
+      ],
+      "explanation": "think로 묻는 문장은 의문사를 맨 앞에 둬요."
+    },
+    {
+      "id": "C.indirect_q.q7",
+      "concept": "C.indirect_q",
+      "level": "M",
+      "type": "apply",
+      "question": "Do you know who ___ the window?",
+      "options": [
+        {
+          "id": "a",
+          "text": "broke",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "did break",
+          "misconception": "C.indirect_q.q_order"
+        },
+        {
+          "id": "c",
+          "text": "did he break",
+          "misconception": "C.indirect_q.q_order"
+        }
+      ],
+      "explanation": "의문사 who가 주어라서 who + 동사 그대로예요."
+    },
+    {
+      "id": "C.indirect_q.q8",
+      "concept": "C.indirect_q",
+      "level": "M",
+      "type": "concept",
+      "question": "바른 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "I know how old she is.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I know how old is she.",
+          "misconception": "C.indirect_q.q_order"
+        },
+        {
+          "id": "c",
+          "text": "I know how old does she.",
+          "misconception": "C.indirect_q.q_order"
+        }
+      ],
+      "explanation": "의문사구(how old) + 주어 + 동사예요."
+    },
+    {
+      "id": "C.indirect_q.q9",
+      "concept": "C.indirect_q",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그가 왜 늦었는지 아니?",
+      "tokens": [
+        "Do you know",
+        "why",
+        "he was",
+        "late?"
+      ],
+      "answer": [
+        "Do you know",
+        "why",
+        "he was",
+        "late?"
+      ],
+      "misconception": "C.indirect_q.q_order",
+      "explanation": "Do you know + 의문사 + 주어 + 동사예요."
+    },
+    {
+      "id": "C.indirect_q.q10",
+      "concept": "C.indirect_q",
+      "level": "M",
+      "type": "reason",
+      "question": "I know where he lives.에서 does가 없는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "문장 속에 들어간 의문문은 평서문 어순이 되어 do/does가 필요 없어서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "where 뒤에는 does를 쓸 수 없어서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "know가 현재형이라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "간접의문문은 주어 + 동사 순서예요."
+    },
+    {
+      "id": "C.rel_what.q1",
+      "concept": "C.rel_what",
+      "level": "M",
+      "type": "apply",
+      "question": "___ I want is a new bike.",
+      "options": [
+        {
+          "id": "a",
+          "text": "What",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "That",
+          "misconception": "C.rel_what.no_antecedent_that"
+        },
+        {
+          "id": "c",
+          "text": "Which",
+          "misconception": "C.rel_what.no_antecedent_that"
+        }
+      ],
+      "explanation": "\"내가 원하는 것\"이고 선행사가 없으니 What이에요."
+    },
+    {
+      "id": "C.rel_what.q2",
+      "concept": "C.rel_what",
+      "level": "M",
+      "type": "apply",
+      "question": "This is the bag ___ I want.",
+      "options": [
+        {
+          "id": "a",
+          "text": "that",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "what",
+          "misconception": "C.rel_what.with_antecedent"
+        },
+        {
+          "id": "c",
+          "text": "who",
+          "misconception": "C.rel_pronoun.who_which"
+        }
+      ],
+      "explanation": "선행사 the bag이 있어서 that이에요."
+    },
+    {
+      "id": "C.rel_what.q3",
+      "concept": "C.rel_what",
+      "level": "M",
+      "type": "apply",
+      "question": "I can't believe ___ I saw.",
+      "options": [
+        {
+          "id": "a",
+          "text": "what",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "that",
+          "misconception": "C.rel_what.no_antecedent_that"
+        },
+        {
+          "id": "c",
+          "text": "which",
+          "misconception": "C.rel_what.no_antecedent_that"
+        }
+      ],
+      "explanation": "\"내가 본 것\"이고 선행사가 없어서 what이에요."
+    },
+    {
+      "id": "C.rel_what.q4",
+      "concept": "C.rel_what",
+      "level": "M",
+      "type": "apply",
+      "question": "Show me ___ you bought.",
+      "options": [
+        {
+          "id": "a",
+          "text": "what",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "which",
+          "misconception": "C.rel_what.no_antecedent_that"
+        },
+        {
+          "id": "c",
+          "text": "who",
+          "misconception": null
+        }
+      ],
+      "explanation": "show의 목적어 \"네가 산 것\"이에요."
+    },
+    {
+      "id": "C.rel_what.q5",
+      "concept": "C.rel_what",
+      "level": "M",
+      "type": "concept",
+      "question": "What he said is true. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "그가 말한 것은 사실이다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "그가 무엇을 말했니? 사실이다.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "그는 사실을 말했다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "What he said가 주어 \"그가 말한 것\"이에요."
+    },
+    {
+      "id": "C.rel_what.q6",
+      "concept": "C.rel_what",
+      "level": "M",
+      "type": "concept",
+      "question": "what과 같은 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "the thing which",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "the person who",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "the reason why",
+          "misconception": null
+        }
+      ],
+      "explanation": "what = the thing which (~하는 것)예요."
+    },
+    {
+      "id": "C.rel_what.q7",
+      "concept": "C.rel_what",
+      "level": "M",
+      "type": "apply",
+      "question": "This is ___ I was looking for.",
+      "options": [
+        {
+          "id": "a",
+          "text": "what",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "that",
+          "misconception": "C.rel_what.no_antecedent_that"
+        },
+        {
+          "id": "c",
+          "text": "the thing what",
+          "misconception": "C.rel_what.with_antecedent"
+        }
+      ],
+      "explanation": "선행사 없이 \"내가 찾던 것\"이라 what이에요."
+    },
+    {
+      "id": "C.rel_what.q8",
+      "concept": "C.rel_what",
+      "level": "H",
+      "type": "apply",
+      "question": "I know ___ he is honest.",
+      "options": [
+        {
+          "id": "a",
+          "text": "that",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "what",
+          "misconception": "C.rel_what.what_vs_that"
+        },
+        {
+          "id": "c",
+          "text": "which",
+          "misconception": null
+        }
+      ],
+      "explanation": "he is honest는 빠진 자리가 없는 완전한 문장이라 that이에요."
+    },
+    {
+      "id": "C.rel_what.q9",
+      "concept": "C.rel_what",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 내가 필요한 것은 시간이다.",
+      "tokens": [
+        "What I need",
+        "is",
+        "time."
+      ],
+      "answer": [
+        "What I need",
+        "is",
+        "time."
+      ],
+      "misconception": null,
+      "explanation": "What I need가 주어 덩어리예요."
+    },
+    {
+      "id": "C.rel_what.q10",
+      "concept": "C.rel_what",
+      "level": "M",
+      "type": "reason",
+      "question": "the bag what I want 가 틀린 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "what은 선행사를 이미 품고 있어서 앞에 명사가 오면 안 되기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "bag은 사물이라 who를 써야 해서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "want 뒤에 목적어가 없어서",
+          "misconception": null
+        }
+      ],
+      "explanation": "선행사가 있으면 which나 that을 써요."
+    },
+    {
+      "id": "C.correlative.q1",
+      "concept": "C.correlative",
+      "level": "M",
+      "type": "apply",
+      "question": "Both Tom ___ Jerry are my friends.",
+      "options": [
+        {
+          "id": "a",
+          "text": "and",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "or",
+          "misconception": "C.correlative.pair"
+        },
+        {
+          "id": "c",
+          "text": "nor",
+          "misconception": "C.correlative.pair"
+        }
+      ],
+      "explanation": "both A and B가 짝이에요."
+    },
+    {
+      "id": "C.correlative.q2",
+      "concept": "C.correlative",
+      "level": "M",
+      "type": "apply",
+      "question": "You can have either cake ___ ice cream.",
+      "options": [
+        {
+          "id": "a",
+          "text": "or",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "and",
+          "misconception": "C.correlative.pair"
+        },
+        {
+          "id": "c",
+          "text": "nor",
+          "misconception": "C.correlative.pair"
+        }
+      ],
+      "explanation": "either A or B가 짝이에요."
+    },
+    {
+      "id": "C.correlative.q3",
+      "concept": "C.correlative",
+      "level": "M",
+      "type": "apply",
+      "question": "Neither I nor my sister ___ carrots.",
+      "options": [
+        {
+          "id": "a",
+          "text": "likes",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "like",
+          "misconception": "C.correlative.agree"
+        },
+        {
+          "id": "c",
+          "text": "don't like",
+          "misconception": "C.correlative.double_neg"
+        }
+      ],
+      "explanation": "B(my sister)에 맞춰 likes예요. neither에 이미 부정이 있어요."
+    },
+    {
+      "id": "C.correlative.q4",
+      "concept": "C.correlative",
+      "level": "M",
+      "type": "apply",
+      "question": "Both my brother and I ___ students.",
+      "options": [
+        {
+          "id": "a",
+          "text": "are",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "am",
+          "misconception": "C.correlative.agree"
+        },
+        {
+          "id": "c",
+          "text": "is",
+          "misconception": "C.correlative.agree"
+        }
+      ],
+      "explanation": "both A and B는 항상 복수예요."
+    },
+    {
+      "id": "C.correlative.q5",
+      "concept": "C.correlative",
+      "level": "M",
+      "type": "apply",
+      "question": "Either you or he ___ to clean the room.",
+      "options": [
+        {
+          "id": "a",
+          "text": "has",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "have",
+          "misconception": "C.correlative.agree"
+        },
+        {
+          "id": "c",
+          "text": "are",
+          "misconception": null
+        }
+      ],
+      "explanation": "B(he)에 맞춰 has예요."
+    },
+    {
+      "id": "C.correlative.q6",
+      "concept": "C.correlative",
+      "level": "M",
+      "type": "apply",
+      "question": "Not only you but also he ___ wrong.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "are",
+          "misconception": "C.correlative.agree"
+        },
+        {
+          "id": "c",
+          "text": "be",
+          "misconception": null
+        }
+      ],
+      "explanation": "B(he)에 맞춰 is예요."
+    },
+    {
+      "id": "C.correlative.q7",
+      "concept": "C.correlative",
+      "level": "M",
+      "type": "concept",
+      "question": "He is not a teacher but a doctor. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "그는 선생님이 아니라 의사다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "그는 선생님도 의사도 아니다.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "그는 선생님이자 의사다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "not A but B = A가 아니라 B."
+    },
+    {
+      "id": "C.correlative.q8",
+      "concept": "C.correlative",
+      "level": "H",
+      "type": "apply",
+      "question": "Not only you but also he is wrong. = He as well as you ___ wrong.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "are",
+          "misconception": "C.correlative.agree"
+        },
+        {
+          "id": "c",
+          "text": "am",
+          "misconception": null
+        }
+      ],
+      "explanation": "B as well as A에서는 앞의 B(He)에 맞춰요."
+    },
+    {
+      "id": "C.correlative.q9",
+      "concept": "C.correlative",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 우유도 주스도 좋아하지 않는다.",
+      "tokens": [
+        "I",
+        "like",
+        "neither milk",
+        "nor juice."
+      ],
+      "answer": [
+        "I",
+        "like",
+        "neither milk",
+        "nor juice."
+      ],
+      "misconception": "C.correlative.double_neg",
+      "explanation": "neither A nor B에 부정이 있으니 don't를 쓰지 않아요."
+    },
+    {
+      "id": "C.correlative.q10",
+      "concept": "C.correlative",
+      "level": "M",
+      "type": "reason",
+      "question": "Neither I nor my sister likes carrots.에서 likes를 쓰는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "동사와 가까운 B(my sister)에 맞추기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "neither는 항상 단수라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "I가 주어라서",
+          "misconception": "C.correlative.agree"
+        }
+      ],
+      "explanation": "either/neither/not only 구문은 B에 일치해요."
+    },
+    {
+      "id": "C.rel_prep.q1",
+      "concept": "C.rel_prep",
+      "level": "H",
+      "type": "apply",
+      "question": "This is the house in ___ I live.",
+      "options": [
+        {
+          "id": "a",
+          "text": "which",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "that",
+          "misconception": "C.rel_prep.prep_that"
+        },
+        {
+          "id": "c",
+          "text": "what",
+          "misconception": null
+        }
+      ],
+      "explanation": "전치사 바로 뒤에는 which를 써요. that은 안 돼요."
+    },
+    {
+      "id": "C.rel_prep.q2",
+      "concept": "C.rel_prep",
+      "level": "H",
+      "type": "apply",
+      "question": "This is the house which I live ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "in",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "C.rel_prep.drop_prep"
+        },
+        {
+          "id": "c",
+          "text": "at which",
+          "misconception": "C.rel_prep.double_prep"
+        }
+      ],
+      "explanation": "I live in the house에서 in이 필요해요."
+    },
+    {
+      "id": "C.rel_prep.q3",
+      "concept": "C.rel_prep",
+      "level": "H",
+      "type": "apply",
+      "question": "She is the girl with ___ I talked.",
+      "options": [
+        {
+          "id": "a",
+          "text": "whom",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "who",
+          "misconception": "C.rel_prep.prep_that"
+        },
+        {
+          "id": "c",
+          "text": "that",
+          "misconception": "C.rel_prep.prep_that"
+        }
+      ],
+      "explanation": "전치사 뒤 사람 관계대명사는 whom이에요."
+    },
+    {
+      "id": "C.rel_prep.q4",
+      "concept": "C.rel_prep",
+      "level": "H",
+      "type": "apply",
+      "question": "The chair on which I sat ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "was broken",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "on was broken",
+          "misconception": "C.rel_prep.double_prep"
+        },
+        {
+          "id": "c",
+          "text": "it was broken",
+          "misconception": null
+        }
+      ],
+      "explanation": "전치사를 앞에 뒀으니 끝에 on을 또 쓰지 않아요."
+    },
+    {
+      "id": "C.rel_prep.q5",
+      "concept": "C.rel_prep",
+      "level": "H",
+      "type": "concept",
+      "question": "This is the house in which I live. 와 같은 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "This is the house where I live.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "This is the house which I live.",
+          "misconception": "C.rel_prep.drop_prep"
+        },
+        {
+          "id": "c",
+          "text": "This is the house in that I live.",
+          "misconception": "C.rel_prep.prep_that"
+        }
+      ],
+      "explanation": "in which = where예요."
+    },
+    {
+      "id": "C.rel_prep.q6",
+      "concept": "C.rel_prep",
+      "level": "H",
+      "type": "apply",
+      "question": "This is the music ___ I often listen to.",
+      "options": [
+        {
+          "id": "a",
+          "text": "which",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to which",
+          "misconception": "C.rel_prep.double_prep"
+        },
+        {
+          "id": "c",
+          "text": "what",
+          "misconception": null
+        }
+      ],
+      "explanation": "전치사 to가 끝에 있으니 앞에는 which만 와요."
+    },
+    {
+      "id": "C.rel_prep.q7",
+      "concept": "C.rel_prep",
+      "level": "H",
+      "type": "apply",
+      "question": "The topic about ___ we talked was interesting.",
+      "options": [
+        {
+          "id": "a",
+          "text": "which",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "that",
+          "misconception": "C.rel_prep.prep_that"
+        },
+        {
+          "id": "c",
+          "text": "it",
+          "misconception": null
+        }
+      ],
+      "explanation": "전치사 about 뒤에는 which예요."
+    },
+    {
+      "id": "C.rel_prep.q8",
+      "concept": "C.rel_prep",
+      "level": "H",
+      "type": "concept",
+      "question": "바른 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "He is the friend I went to school with.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "He is the friend with who I went to school.",
+          "misconception": "C.rel_prep.prep_that"
+        },
+        {
+          "id": "c",
+          "text": "He is the friend I went to school.",
+          "misconception": "C.rel_prep.drop_prep"
+        }
+      ],
+      "explanation": "전치사를 끝에 두면 관계대명사를 생략할 수 있어요."
+    },
+    {
+      "id": "C.rel_prep.q9",
+      "concept": "C.rel_prep",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 이것이 내가 앉았던 의자이다.",
+      "tokens": [
+        "This is",
+        "the chair",
+        "on which",
+        "I sat."
+      ],
+      "answer": [
+        "This is",
+        "the chair",
+        "on which",
+        "I sat."
+      ],
+      "misconception": null,
+      "explanation": "전치사 + which가 선행사 바로 뒤에 와요."
+    },
+    {
+      "id": "C.rel_prep.q10",
+      "concept": "C.rel_prep",
+      "level": "H",
+      "type": "reason",
+      "question": "the house which I live in 에서 in이 필요한 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "원래 문장이 I live in the house라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "house 뒤에는 항상 in이 와서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "which가 장소를 뜻해서",
+          "misconception": null
+        }
+      ],
+      "explanation": "관계대명사는 the house 자리만 대신하고, in은 그대로 남아요."
+    },
+    {
+      "id": "C.rel_adverb.q1",
+      "concept": "C.rel_adverb",
+      "level": "H",
+      "type": "apply",
+      "question": "This is the city ___ I was born.",
+      "options": [
+        {
+          "id": "a",
+          "text": "where",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "which",
+          "misconception": "C.rel_adverb.where_which"
+        },
+        {
+          "id": "c",
+          "text": "when",
+          "misconception": "C.rel_adverb.wrong_word"
+        }
+      ],
+      "explanation": "장소이고 뒤 문장(I was born)이 완전해서 where예요."
+    },
+    {
+      "id": "C.rel_adverb.q2",
+      "concept": "C.rel_adverb",
+      "level": "H",
+      "type": "apply",
+      "question": "I remember the day ___ we first met.",
+      "options": [
+        {
+          "id": "a",
+          "text": "when",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "where",
+          "misconception": "C.rel_adverb.wrong_word"
+        },
+        {
+          "id": "c",
+          "text": "which",
+          "misconception": null
+        }
+      ],
+      "explanation": "때를 나타내는 선행사라 when이에요."
+    },
+    {
+      "id": "C.rel_adverb.q3",
+      "concept": "C.rel_adverb",
+      "level": "H",
+      "type": "apply",
+      "question": "Tell me the reason ___ you were late.",
+      "options": [
+        {
+          "id": "a",
+          "text": "why",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "when",
+          "misconception": "C.rel_adverb.wrong_word"
+        },
+        {
+          "id": "c",
+          "text": "which",
+          "misconception": null
+        }
+      ],
+      "explanation": "the reason 뒤에는 why예요."
+    },
+    {
+      "id": "C.rel_adverb.q4",
+      "concept": "C.rel_adverb",
+      "level": "H",
+      "type": "apply",
+      "question": "This is the town ___ I visited last year.",
+      "options": [
+        {
+          "id": "a",
+          "text": "which",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "where",
+          "misconception": "C.rel_adverb.where_which"
+        },
+        {
+          "id": "c",
+          "text": "when",
+          "misconception": "C.rel_adverb.wrong_word"
+        }
+      ],
+      "explanation": "visited의 목적어가 빠져 있어서 관계대명사 which예요."
+    },
+    {
+      "id": "C.rel_adverb.q5",
+      "concept": "C.rel_adverb",
+      "level": "H",
+      "type": "apply",
+      "question": "This is ___ I solved the problem.",
+      "options": [
+        {
+          "id": "a",
+          "text": "how",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "the way how",
+          "misconception": "C.rel_adverb.the_way_how"
+        },
+        {
+          "id": "c",
+          "text": "where",
+          "misconception": null
+        }
+      ],
+      "explanation": "the way how는 안 돼요. how만 써요."
+    },
+    {
+      "id": "C.rel_adverb.q6",
+      "concept": "C.rel_adverb",
+      "level": "H",
+      "type": "concept",
+      "question": "the city where I was born 에서 where와 같은 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "in which",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "which",
+          "misconception": "C.rel_adverb.where_which"
+        },
+        {
+          "id": "c",
+          "text": "in that",
+          "misconception": "C.rel_prep.prep_that"
+        }
+      ],
+      "explanation": "where = 전치사 + which예요."
+    },
+    {
+      "id": "C.rel_adverb.q7",
+      "concept": "C.rel_adverb",
+      "level": "H",
+      "type": "concept",
+      "question": "바른 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "This is the way I made the cake.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "This is the way how I made the cake.",
+          "misconception": "C.rel_adverb.the_way_how"
+        },
+        {
+          "id": "c",
+          "text": "This is the way where I made the cake.",
+          "misconception": "C.rel_adverb.wrong_word"
+        }
+      ],
+      "explanation": "the way 또는 how 하나만 써요."
+    },
+    {
+      "id": "C.rel_adverb.q8",
+      "concept": "C.rel_adverb",
+      "level": "H",
+      "type": "apply",
+      "question": "Summer is the season ___ many people go to the beach.",
+      "options": [
+        {
+          "id": "a",
+          "text": "when",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "where",
+          "misconception": "C.rel_adverb.wrong_word"
+        },
+        {
+          "id": "c",
+          "text": "which",
+          "misconception": null
+        }
+      ],
+      "explanation": "계절(때)이고 뒤 문장이 완전해서 when이에요."
+    },
+    {
+      "id": "C.rel_adverb.q9",
+      "concept": "C.rel_adverb",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 이곳이 우리가 처음 만난 공원이다.",
+      "tokens": [
+        "This is",
+        "the park",
+        "where we",
+        "first met."
+      ],
+      "answer": [
+        "This is",
+        "the park",
+        "where we",
+        "first met."
+      ],
+      "misconception": null,
+      "explanation": "장소 선행사 + where + 완전한 문장이에요."
+    },
+    {
+      "id": "C.rel_adverb.q10",
+      "concept": "C.rel_adverb",
+      "level": "H",
+      "type": "reason",
+      "question": "the town which I visited에서 where가 아니라 which를 쓰는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "visited 뒤의 목적어가 빠져 있어서 관계대명사가 필요하기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "town은 장소가 아니라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "visited가 과거형이라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "뒤 문장이 완전하면 관계부사, 빠진 자리가 있으면 관계대명사예요."
+    },
+    {
+      "id": "C.rel_nonrestrict.q1",
+      "concept": "C.rel_nonrestrict",
+      "level": "H",
+      "type": "apply",
+      "question": "I met Tom, ___ told me the news.",
+      "options": [
+        {
+          "id": "a",
+          "text": "who",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "that",
+          "misconception": "C.rel_nonrestrict.that_comma"
+        },
+        {
+          "id": "c",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "C.rel_nonrestrict.that_comma"
+        }
+      ],
+      "explanation": "계속적 용법에는 that을 쓸 수 없고 생략도 안 돼요."
+    },
+    {
+      "id": "C.rel_nonrestrict.q2",
+      "concept": "C.rel_nonrestrict",
+      "level": "H",
+      "type": "apply",
+      "question": "He passed the test, ___ surprised everyone.",
+      "options": [
+        {
+          "id": "a",
+          "text": "which",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "that",
+          "misconception": "C.rel_nonrestrict.that_comma"
+        },
+        {
+          "id": "c",
+          "text": "what",
+          "misconception": null
+        }
+      ],
+      "explanation": "앞 문장 전체(합격한 일)를 받는 which예요."
+    },
+    {
+      "id": "C.rel_nonrestrict.q3",
+      "concept": "C.rel_nonrestrict",
+      "level": "H",
+      "type": "apply",
+      "question": "I bought a new phone, ___ broke the next day.",
+      "options": [
+        {
+          "id": "a",
+          "text": "which",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "that",
+          "misconception": "C.rel_nonrestrict.that_comma"
+        },
+        {
+          "id": "c",
+          "text": "who",
+          "misconception": "C.rel_pronoun.who_which"
+        }
+      ],
+      "explanation": "사물 + 쉼표 = , which예요."
+    },
+    {
+      "id": "C.rel_nonrestrict.q4",
+      "concept": "C.rel_nonrestrict",
+      "level": "H",
+      "type": "concept",
+      "question": "I have two sons, who are doctors. 에서 알 수 있는 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "아들이 둘뿐이고 둘 다 의사다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "의사인 아들이 둘이고, 다른 아들이 더 있을 수 있다.",
+          "misconception": "C.rel_nonrestrict.meaning"
+        },
+        {
+          "id": "c",
+          "text": "아들 둘이 의사가 되고 싶어 한다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "쉼표가 있으면 덧붙이는 정보라서 아들은 둘뿐이에요."
+    },
+    {
+      "id": "C.rel_nonrestrict.q5",
+      "concept": "C.rel_nonrestrict",
+      "level": "H",
+      "type": "concept",
+      "question": "He passed the test, which surprised everyone. 에서 모두를 놀라게 한 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "그가 시험에 합격한 일",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "시험 자체",
+          "misconception": "C.rel_nonrestrict.whole_clause"
+        },
+        {
+          "id": "c",
+          "text": "그 사람 자체",
+          "misconception": null
+        }
+      ],
+      "explanation": ", which가 앞 문장 전체를 받았어요."
+    },
+    {
+      "id": "C.rel_nonrestrict.q6",
+      "concept": "C.rel_nonrestrict",
+      "level": "H",
+      "type": "apply",
+      "question": "I visited Gyeongju, ___ is famous for its history.",
+      "options": [
+        {
+          "id": "a",
+          "text": "which",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "where",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "that",
+          "misconception": "C.rel_nonrestrict.that_comma"
+        }
+      ],
+      "explanation": "is의 주어가 빠졌으니 관계대명사, 쉼표 뒤라 which예요."
+    },
+    {
+      "id": "C.rel_nonrestrict.q7",
+      "concept": "C.rel_nonrestrict",
+      "level": "H",
+      "type": "apply",
+      "question": "I met Tom, who told me the news. = I met Tom, ___ told me the news.",
+      "options": [
+        {
+          "id": "a",
+          "text": "and he",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "and who",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "but it",
+          "misconception": null
+        }
+      ],
+      "explanation": "계속적 용법 , who는 \"and + 대명사\"로 바꿀 수 있어요."
+    },
+    {
+      "id": "C.rel_nonrestrict.q8",
+      "concept": "C.rel_nonrestrict",
+      "level": "H",
+      "type": "concept",
+      "question": "틀린 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "My mom, that is a nurse, works at night.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "My mom, who is a nurse, works at night.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "I lost my bag, which made me sad.",
+          "misconception": null
+        }
+      ],
+      "explanation": "쉼표가 있는 계속적 용법에는 that을 쓸 수 없어요."
+    },
+    {
+      "id": "C.rel_nonrestrict.q9",
+      "concept": "C.rel_nonrestrict",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 늦게 왔는데, 그것이 나를 화나게 했다.",
+      "tokens": [
+        "He came late,",
+        "which",
+        "made me",
+        "angry."
+      ],
+      "answer": [
+        "He came late,",
+        "which",
+        "made me",
+        "angry."
+      ],
+      "misconception": null,
+      "explanation": ", which가 앞 문장 전체를 받아요."
+    },
+    {
+      "id": "C.rel_nonrestrict.q10",
+      "concept": "C.rel_nonrestrict",
+      "level": "H",
+      "type": "reason",
+      "question": "계속적 용법에서 that을 쓰지 않는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "that은 앞 명사를 골라내는 한정적 용법으로만 쓰기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "that은 사람에게 쓸 수 없어서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "쉼표 뒤에는 대명사가 올 수 없어서",
+          "misconception": null
+        }
+      ],
+      "explanation": "계속적 용법은 who, which만 써요."
+    },
+    {
+      "id": "C.rel_compound.q1",
+      "concept": "C.rel_compound",
+      "level": "H",
+      "type": "apply",
+      "question": "___ comes first will get a prize.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Whoever",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Who",
+          "misconception": "C.rel_compound.who_ever"
+        },
+        {
+          "id": "c",
+          "text": "Whatever",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"먼저 오는 사람은 누구든\"이라 Whoever예요."
+    },
+    {
+      "id": "C.rel_compound.q2",
+      "concept": "C.rel_compound",
+      "level": "H",
+      "type": "apply",
+      "question": "You can eat ___ you want.",
+      "options": [
+        {
+          "id": "a",
+          "text": "whatever",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "whoever",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "however",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"원하는 것은 무엇이든\"이라 whatever예요."
+    },
+    {
+      "id": "C.rel_compound.q3",
+      "concept": "C.rel_compound",
+      "level": "H",
+      "type": "apply",
+      "question": "___ you say, I won't change my mind.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Whatever",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "What",
+          "misconception": "C.rel_compound.who_ever"
+        },
+        {
+          "id": "c",
+          "text": "However",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"네가 무슨 말을 하더라도\"라는 양보예요."
+    },
+    {
+      "id": "C.rel_compound.q4",
+      "concept": "C.rel_compound",
+      "level": "H",
+      "type": "apply",
+      "question": "However ___, I will finish it.",
+      "options": [
+        {
+          "id": "a",
+          "text": "hard it is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "it is hard",
+          "misconception": "C.rel_compound.however_order"
+        },
+        {
+          "id": "c",
+          "text": "is it hard",
+          "misconception": null
+        }
+      ],
+      "explanation": "However + 형용사 + 주어 + 동사예요."
+    },
+    {
+      "id": "C.rel_compound.q5",
+      "concept": "C.rel_compound",
+      "level": "H",
+      "type": "apply",
+      "question": "Call me ___ you need help.",
+      "options": [
+        {
+          "id": "a",
+          "text": "whenever",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "whoever",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "whatever",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"도움이 필요할 때마다\" = whenever예요."
+    },
+    {
+      "id": "C.rel_compound.q6",
+      "concept": "C.rel_compound",
+      "level": "H",
+      "type": "apply",
+      "question": "I'll follow you ___ you go.",
+      "options": [
+        {
+          "id": "a",
+          "text": "wherever",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "whatever",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "whoever",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"네가 가는 곳 어디든\" = wherever예요."
+    },
+    {
+      "id": "C.rel_compound.q7",
+      "concept": "C.rel_compound",
+      "level": "H",
+      "type": "concept",
+      "question": "Whoever wins, I'll be happy. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "누가 이기든 나는 기쁠 것이다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "이기는 사람은 기쁠 것이다.",
+          "misconception": "C.rel_compound.meaning"
+        },
+        {
+          "id": "c",
+          "text": "누가 이겼는지 궁금하다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "쉼표로 떨어진 whoever절은 양보(누가 ~하더라도)예요."
+    },
+    {
+      "id": "C.rel_compound.q8",
+      "concept": "C.rel_compound",
+      "level": "H",
+      "type": "concept",
+      "question": "whoever와 같은 뜻은? (명사절)",
+      "options": [
+        {
+          "id": "a",
+          "text": "anyone who",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "the person what",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "no matter where",
+          "misconception": null
+        }
+      ],
+      "explanation": "명사절 whoever = anyone who예요."
+    },
+    {
+      "id": "C.rel_compound.q9",
+      "concept": "C.rel_compound",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 아무리 피곤해도 나는 운동한다.",
+      "tokens": [
+        "However tired I am,",
+        "I",
+        "exercise."
+      ],
+      "answer": [
+        "However tired I am,",
+        "I",
+        "exercise."
+      ],
+      "misconception": "C.rel_compound.however_order",
+      "explanation": "However + 형용사 + 주어 + 동사, 주절 순서예요."
+    },
+    {
+      "id": "C.rel_compound.q10",
+      "concept": "C.rel_compound",
+      "level": "H",
+      "type": "reason",
+      "question": "Whatever you choose, I'll support you. 의 whatever가 양보의 뜻인 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "주어나 목적어가 아니라 쉼표로 떨어져 주절을 꾸미는 부사절이라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "whatever는 항상 양보의 뜻이라서",
+          "misconception": "C.rel_compound.meaning"
+        },
+        {
+          "id": "c",
+          "text": "choose가 현재형이라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "문장의 자리를 보면 명사절인지 부사절인지 알 수 있어요."
+    }
+  ]
+}

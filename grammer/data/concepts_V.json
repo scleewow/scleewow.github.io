@@ -1,0 +1,1418 @@
+{
+  "area": "V",
+  "title": "준동사",
+  "intro": "동사가 모양을 바꿔(to + 원형, -ing, p.p.) 명사·형용사·부사 역할을 하는 방법이에요. 동사의 성질(목적어, 수식어)은 그대로 가져가요.",
+  "concepts": [
+    {
+      "id": "V.concept",
+      "name": "준동사란",
+      "stages": "M2",
+      "prerequisites": [
+        "S.pos",
+        "S.component"
+      ],
+      "levels": {
+        "M": {
+          "why": "\"수영하는 것은 재미있다\", \"읽을 책\", \"만나서 기쁘다\"처럼 동사를 명사나 형용사처럼 쓰고 싶을 때가 많아요. 영어는 한 문장에 동사가 하나라서, 나머지 동사는 모양을 바꿔야 해요.",
+          "core": "준동사는 동사가 to부정사(to + 원형), 동명사(-ing), 분사(-ing / p.p.)로 모양을 바꾼 것이에요. 문장의 진짜 동사가 아니라 명사·형용사·부사 역할을 해요.",
+          "slots": [
+            {
+              "label": "동사 하나",
+              "cells": [
+                {
+                  "role": "주어",
+                  "text": "I"
+                },
+                {
+                  "role": "동사",
+                  "text": "swim"
+                },
+                {
+                  "role": "수식어",
+                  "text": "every day"
+                }
+              ]
+            },
+            {
+              "label": "명사 역할",
+              "cells": [
+                {
+                  "role": "주어 (동명사)",
+                  "text": "Swimming"
+                },
+                {
+                  "role": "동사",
+                  "text": "is"
+                },
+                {
+                  "role": "보어",
+                  "text": "fun"
+                }
+              ]
+            },
+            {
+              "label": "명사 역할",
+              "cells": [
+                {
+                  "role": "주어",
+                  "text": "I"
+                },
+                {
+                  "role": "동사",
+                  "text": "want"
+                },
+                {
+                  "role": "목적어 (to부정사)",
+                  "text": "to swim"
+                }
+              ]
+            }
+          ],
+          "diagram": "진짜 동사(is, want)는 하나뿐이고, swim은 모양을 바꿔서 주어나 목적어 자리에 들어가요.",
+          "form": {
+            "note": "준동사는 세 가지 모양이 있어요.",
+            "rows": [
+              {
+                "label": "to부정사",
+                "pattern": "to + 동사원형 → 명사·형용사·부사",
+                "example": "I want to eat. / something to eat / glad to see you"
+              },
+              {
+                "label": "동명사",
+                "pattern": "동사원형 + -ing → 명사",
+                "example": "Reading is fun. / I like reading."
+              },
+              {
+                "label": "분사",
+                "pattern": "-ing(진행·능동) / p.p.(완료·수동) → 형용사",
+                "example": "a sleeping baby / a broken window"
+              },
+              {
+                "label": "동사 성질 유지",
+                "pattern": "준동사도 목적어·수식어를 가질 수 있어요",
+                "example": "I like reading comic books at night."
+              }
+            ],
+            "tip": "한 문장(절)에 진짜 동사는 하나예요. I want eat pizza. (X) → I want to eat pizza. (O)"
+          },
+          "contrast": {
+            "a": {
+              "en": "I like to read books.",
+              "ko": "like가 진짜 동사, to read는 목적어"
+            },
+            "b": {
+              "en": "I like read books.",
+              "ko": "동사가 두 개라서 틀림 (X)"
+            },
+            "point": "두 번째 동사는 to부정사나 동명사로 모양을 바꿔야 해요."
+          },
+          "summary_prompt": "준동사가 무엇인지, 왜 필요한지 설명해 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "V.concept.two_verbs",
+          "desc": "한 문장에 동사를 두 개 그대로 씀",
+          "wrong": "I want eat pizza. / Swim is fun.",
+          "right": "I want to eat pizza. / Swimming is fun."
+        },
+        {
+          "id": "V.concept.as_main",
+          "desc": "준동사를 문장의 진짜 동사로 착각함",
+          "wrong": "Swimming is fun. 의 동사 = Swimming",
+          "right": "진짜 동사는 is"
+        },
+        {
+          "id": "V.concept.no_object",
+          "desc": "준동사는 목적어를 가질 수 없다고 생각함",
+          "wrong": "reading은 뒤에 목적어가 올 수 없다",
+          "right": "I enjoy reading books. (books는 reading의 목적어)"
+        }
+      ]
+    },
+    {
+      "id": "V.to_noun",
+      "name": "to부정사 명사적 용법",
+      "stages": "M2",
+      "prerequisites": [
+        "V.concept"
+      ],
+      "levels": {
+        "M": {
+          "why": "\"~하는 것\", \"~하기\"처럼 동작을 명사로 쓰고 싶을 때 to부정사를 써요.",
+          "core": "to부정사(to + 원형)는 \"~하는 것, ~하기\"라는 뜻으로 주어, 목적어, 보어 자리에 들어가요. 주어가 길면 It을 앞에 두고 to부정사를 뒤로 보내요.",
+          "slots": [
+            {
+              "label": "목적어",
+              "cells": [
+                {
+                  "role": "주어",
+                  "text": "I"
+                },
+                {
+                  "role": "동사",
+                  "text": "want"
+                },
+                {
+                  "role": "목적어",
+                  "text": "to travel"
+                }
+              ]
+            },
+            {
+              "label": "보어",
+              "cells": [
+                {
+                  "role": "주어",
+                  "text": "My dream"
+                },
+                {
+                  "role": "동사",
+                  "text": "is"
+                },
+                {
+                  "role": "보어",
+                  "text": "to be a doctor"
+                }
+              ]
+            },
+            {
+              "label": "가주어",
+              "cells": [
+                {
+                  "role": "주어 (가주어)",
+                  "text": "It"
+                },
+                {
+                  "role": "동사",
+                  "text": "is"
+                },
+                {
+                  "role": "보어",
+                  "text": "easy"
+                },
+                {
+                  "role": "진주어",
+                  "text": "to learn English"
+                }
+              ]
+            }
+          ],
+          "diagram": "주어로 쓸 때는 보통 It을 앞에 두고 진짜 주어(to부정사)를 뒤로 보내요.",
+          "form": {
+            "note": "to 뒤에는 항상 동사원형이에요.",
+            "rows": [
+              {
+                "label": "목적어",
+                "pattern": "동사 + to부정사",
+                "example": "I want to travel. / She decided to study abroad."
+              },
+              {
+                "label": "보어",
+                "pattern": "be + to부정사 (~하는 것이다)",
+                "example": "My dream is to be a doctor."
+              },
+              {
+                "label": "주어 (가주어 It)",
+                "pattern": "It is + 형용사 + to부정사",
+                "example": "It is easy to learn English."
+              },
+              {
+                "label": "의문사 + to부정사",
+                "pattern": "what / how / where + to부정사",
+                "example": "I don't know what to say. / how to swim"
+              },
+              {
+                "label": "부정",
+                "pattern": "not + to부정사",
+                "example": "I decided not to go."
+              }
+            ],
+            "tip": "to 뒤에 -s, -ed, -ing를 붙이지 않아요. to plays (X), to played (X)"
+          },
+          "uses": [
+            {
+              "name": "의문사 + to부정사",
+              "meaning": "무엇을/어떻게 ~할지",
+              "desc": "의문사와 to부정사가 합쳐져 하나의 명사 덩어리가 돼요.",
+              "signals": [
+                "what to",
+                "how to",
+                "where to",
+                "when to"
+              ],
+              "examples": [
+                {
+                  "en": "Tell me how to use this.",
+                  "ko": "이걸 어떻게 쓰는지 알려 줘."
+                },
+                {
+                  "en": "I don't know where to go.",
+                  "ko": "어디로 가야 할지 모르겠어."
+                }
+              ]
+            }
+          ],
+          "contrast": {
+            "a": {
+              "en": "It is fun to play games.",
+              "ko": "It은 가짜 주어, 진짜 주어는 to play games"
+            },
+            "b": {
+              "en": "It is my game.",
+              "ko": "It은 \"그것\"이라는 대명사"
+            },
+            "point": "It 뒤쪽에 to부정사가 있으면 가주어 It이에요. \"그것\"으로 해석하지 않아요."
+          },
+          "summary_prompt": "to부정사가 주어, 목적어, 보어로 쓰인 문장을 하나씩 써 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "V.to_noun.to_form",
+          "desc": "to 뒤에 원형이 아닌 모양을 씀",
+          "wrong": "I want to plays. / to played",
+          "right": "I want to play."
+        },
+        {
+          "id": "V.to_noun.it_that",
+          "desc": "가주어 It을 \"그것\"으로 해석함",
+          "wrong": "It is easy to learn English. = 그것은 영어 배우기 쉽다",
+          "right": "= 영어를 배우는 것은 쉽다"
+        },
+        {
+          "id": "V.to_noun.not_place",
+          "desc": "to부정사의 부정에서 not 위치를 틀림",
+          "wrong": "I decided to not go. / I didn't decide to go. (가지 않기로 했다는 뜻으로)",
+          "right": "I decided not to go."
+        }
+      ]
+    },
+    {
+      "id": "V.to_adj",
+      "name": "to부정사 형용사적 용법",
+      "stages": "M2",
+      "prerequisites": [
+        "V.to_noun"
+      ],
+      "levels": {
+        "M": {
+          "why": "\"읽을 책\", \"먹을 것\", \"할 숙제\"처럼 \"~할\"이라는 뜻으로 명사를 꾸밀 때 to부정사를 써요.",
+          "core": "to부정사가 명사 뒤에 와서 \"~할, ~하는\"이라는 뜻으로 그 명사를 꾸며요. 한국어와 달리 꾸미는 말이 명사 뒤에 와요.",
+          "slots": [
+            {
+              "label": "한국어",
+              "cells": [
+                {
+                  "role": "수식어",
+                  "text": "읽을"
+                },
+                {
+                  "role": "목적어",
+                  "text": "책"
+                }
+              ]
+            },
+            {
+              "label": "영어",
+              "cells": [
+                {
+                  "role": "목적어",
+                  "text": "a book"
+                },
+                {
+                  "role": "수식어 (to부정사)",
+                  "text": "to read"
+                }
+              ]
+            },
+            {
+              "label": "문장",
+              "cells": [
+                {
+                  "role": "주어",
+                  "text": "I"
+                },
+                {
+                  "role": "동사",
+                  "text": "have"
+                },
+                {
+                  "role": "목적어",
+                  "text": "homework"
+                },
+                {
+                  "role": "수식어",
+                  "text": "to do"
+                }
+              ]
+            }
+          ],
+          "diagram": "한국어는 \"읽을 책\", 영어는 \"책 + 읽을(a book to read)\"처럼 꾸미는 말이 뒤에 와요.",
+          "form": {
+            "note": "-thing으로 끝나는 말 뒤에도 자주 와요.",
+            "rows": [
+              {
+                "label": "명사 + to부정사",
+                "pattern": "~할 (명사)",
+                "example": "a book to read / time to go"
+              },
+              {
+                "label": "-thing + to부정사",
+                "pattern": "~할 것",
+                "example": "something to eat / nothing to do"
+              },
+              {
+                "label": "-thing + 형용사 + to부정사",
+                "pattern": "형용사가 먼저",
+                "example": "something cold to drink"
+              },
+              {
+                "label": "명사 + to부정사 + 전치사",
+                "pattern": "전치사가 필요한 동사는 끝에 전치사",
+                "example": "a chair to sit on / a friend to talk with"
+              }
+            ],
+            "tip": "\"앉을 의자\"는 sit on a chair에서 와서 a chair to sit on이에요. on을 빼먹지 마세요."
+          },
+          "contrast": {
+            "a": {
+              "en": "something to drink cold (X)",
+              "ko": "형용사를 to부정사 뒤에 둠"
+            },
+            "b": {
+              "en": "something cold to drink (O)",
+              "ko": "-thing + 형용사 + to부정사"
+            },
+            "point": "-thing은 형용사가 바로 뒤에 오고, 그다음 to부정사가 와요."
+          },
+          "summary_prompt": "\"마실 차가운 것\"을 영어로 쓰고, 단어 순서의 이유를 설명해 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "V.to_adj.before_noun",
+          "desc": "to부정사를 명사 앞에 둠 (한국어 순서)",
+          "wrong": "I have to read a book. (읽을 책이 있다는 뜻으로)",
+          "right": "I have a book to read."
+        },
+        {
+          "id": "V.to_adj.thing_order",
+          "desc": "-thing + 형용사 + to부정사 순서를 틀림",
+          "wrong": "cold something to drink / something to drink cold",
+          "right": "something cold to drink"
+        },
+        {
+          "id": "V.to_adj.drop_prep",
+          "desc": "끝에 와야 할 전치사를 빼먹음",
+          "wrong": "a chair to sit / a pen to write",
+          "right": "a chair to sit on / a pen to write with"
+        }
+      ]
+    },
+    {
+      "id": "V.gerund",
+      "name": "동명사",
+      "stages": "M2",
+      "prerequisites": [
+        "V.concept"
+      ],
+      "levels": {
+        "M": {
+          "why": "\"~하는 것, ~하기\"를 to부정사 말고 -ing로도 나타낼 수 있어요. 특히 전치사 뒤에는 동명사만 올 수 있어요.",
+          "core": "동명사는 \"동사원형 + -ing\"로 \"~하는 것\"이라는 뜻의 명사 역할을 해요. 주어, 목적어, 보어, 전치사의 목적어 자리에 와요.",
+          "slots": [
+            {
+              "label": "주어",
+              "cells": [
+                {
+                  "role": "주어",
+                  "text": "Reading books"
+                },
+                {
+                  "role": "동사",
+                  "text": "is"
+                },
+                {
+                  "role": "보어",
+                  "text": "fun"
+                }
+              ]
+            },
+            {
+              "label": "목적어",
+              "cells": [
+                {
+                  "role": "주어",
+                  "text": "I"
+                },
+                {
+                  "role": "동사",
+                  "text": "enjoy"
+                },
+                {
+                  "role": "목적어",
+                  "text": "cooking"
+                }
+              ]
+            },
+            {
+              "label": "전치사 뒤",
+              "cells": [
+                {
+                  "role": "주어",
+                  "text": "He"
+                },
+                {
+                  "role": "동사",
+                  "text": "is good"
+                },
+                {
+                  "role": "수식어",
+                  "text": "at drawing"
+                }
+              ]
+            }
+          ],
+          "diagram": "동명사는 명사 자리 어디에나 들어갈 수 있고, 전치사 뒤에서는 to부정사 대신 반드시 동명사를 써요.",
+          "form": {
+            "note": "동명사 주어는 하나의 일로 보기 때문에 단수 취급해요.",
+            "rows": [
+              {
+                "label": "주어",
+                "pattern": "동명사 + 단수 동사",
+                "example": "Reading books is fun."
+              },
+              {
+                "label": "목적어",
+                "pattern": "동사 + 동명사",
+                "example": "I enjoy cooking. / He finished washing the dishes."
+              },
+              {
+                "label": "보어",
+                "pattern": "be + 동명사",
+                "example": "My hobby is collecting stamps."
+              },
+              {
+                "label": "전치사 뒤",
+                "pattern": "전치사 + 동명사",
+                "example": "She is good at drawing. / Thank you for helping me."
+              },
+              {
+                "label": "부정",
+                "pattern": "not + 동명사",
+                "example": "I'm sorry for not calling you."
+              }
+            ],
+            "tip": "동명사 주어는 뒤의 명사가 복수여도 단수 동사예요. Reading books are (X) → is (O)"
+          },
+          "contrast": {
+            "a": {
+              "en": "My hobby is collecting stamps.",
+              "ko": "동명사: 취미 = 우표 모으기"
+            },
+            "b": {
+              "en": "He is collecting stamps.",
+              "ko": "진행형: 그는 우표를 모으고 있다"
+            },
+            "point": "같은 -ing라도 \"~하는 것\"이면 동명사, \"~하는 중\"이면 진행형이에요."
+          },
+          "summary_prompt": "동명사가 들어가는 자리 네 가지를 예문과 함께 써 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "V.gerund.prep_to",
+          "desc": "전치사 뒤에 to부정사나 원형을 씀",
+          "wrong": "She is good at draw. / Thank you for to help.",
+          "right": "She is good at drawing. / Thank you for helping."
+        },
+        {
+          "id": "V.gerund.plural_verb",
+          "desc": "동명사 주어에 복수 동사를 씀",
+          "wrong": "Reading books are fun.",
+          "right": "Reading books is fun."
+        },
+        {
+          "id": "V.gerund.vs_progressive",
+          "desc": "동명사와 진행형의 -ing를 혼동함",
+          "wrong": "My hobby is collecting stamps. = 내 취미가 우표를 모으고 있다",
+          "right": "= 내 취미는 우표를 모으는 것이다"
+        }
+      ]
+    },
+    {
+      "id": "V.to_adv",
+      "name": "to부정사 부사적 용법",
+      "stages": "M2→M3",
+      "prerequisites": [
+        "V.to_noun"
+      ],
+      "levels": {
+        "M": {
+          "why": "\"공부하려고 도서관에 갔다\", \"만나서 반갑다\"처럼 목적, 감정의 원인, 결과를 덧붙일 때 to부정사를 써요.",
+          "core": "to부정사가 문장 뼈대 밖에서 동사나 형용사를 꾸미면 부사적 용법이에요. 목적(~하려고), 감정의 원인(~해서), 결과(…해서 결국 ~하다), 판단의 근거, 형용사 수식(~하기에) 뜻이 있어요.",
+          "groups": [
+            {
+              "title": "목적",
+              "tone": "good",
+              "items": [
+                "~하기 위해, ~하려고",
+                "I went to the library to study."
+              ]
+            },
+            {
+              "title": "감정의 원인",
+              "items": [
+                "~해서 (기쁜/슬픈)",
+                "I'm glad to see you."
+              ]
+            },
+            {
+              "title": "결과",
+              "items": [
+                "…해서 (결국) ~하다",
+                "He grew up to be a pilot."
+              ]
+            },
+            {
+              "title": "형용사 수식",
+              "items": [
+                "~하기에 (쉬운/어려운)",
+                "This book is easy to read."
+              ]
+            }
+          ],
+          "diagram": "뼈대(I went to the library)가 이미 완성되어 있고, to부정사는 이유나 목적을 덧붙여요.",
+          "form": {
+            "note": "앞에 무엇이 있는지 보고 뜻을 정해요.",
+            "rows": [
+              {
+                "label": "목적",
+                "pattern": "동작 + to부정사 (= in order to)",
+                "example": "I got up early to catch the bus."
+              },
+              {
+                "label": "감정의 원인",
+                "pattern": "감정 형용사 + to부정사",
+                "example": "I was surprised to hear the news."
+              },
+              {
+                "label": "결과",
+                "pattern": "grow up / live / wake up + to부정사",
+                "example": "She lived to be 100."
+              },
+              {
+                "label": "판단의 근거",
+                "pattern": "must be ~ + to부정사 (~하다니)",
+                "example": "He must be smart to solve it."
+              },
+              {
+                "label": "형용사 수식",
+                "pattern": "형용사 + to부정사 (~하기에)",
+                "example": "This question is hard to answer."
+              }
+            ],
+            "tip": "목적을 분명히 하려면 in order to, 부정은 not to / in order not to를 써요."
+          },
+          "uses": [
+            {
+              "name": "목적",
+              "meaning": "~하려고, ~하기 위해",
+              "desc": "가장 많이 쓰여요. 왜 그 동작을 했는지 알려 줘요.",
+              "signals": [
+                "동작 동사 뒤",
+                "in order to"
+              ],
+              "examples": [
+                {
+                  "en": "She saved money to buy a bike.",
+                  "ko": "그녀는 자전거를 사려고 돈을 모았다."
+                }
+              ]
+            },
+            {
+              "name": "감정의 원인",
+              "meaning": "~해서",
+              "desc": "happy, glad, sad, sorry, surprised 뒤에서 감정이 생긴 이유를 말해요.",
+              "signals": [
+                "감정 형용사 + to"
+              ],
+              "examples": [
+                {
+                  "en": "I'm sorry to hear that.",
+                  "ko": "그 말을 들으니 유감이야."
+                }
+              ]
+            }
+          ],
+          "contrast": {
+            "a": {
+              "en": "I want to study.",
+              "ko": "명사적: 공부하는 것을 원한다 (목적어)"
+            },
+            "b": {
+              "en": "I went to the library to study.",
+              "ko": "부사적: 공부하려고 갔다 (목적)"
+            },
+            "point": "빼도 문장이 성립하면 부사적, 빼면 문장이 무너지면 명사적이에요."
+          },
+          "summary_prompt": "to부정사의 부사적 용법 뜻 세 가지를 예문과 함께 써 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "V.to_adv.as_noun",
+          "desc": "부사적 용법을 \"~하는 것\"으로 해석함",
+          "wrong": "I went out to buy milk. = 우유를 사는 것으로 나갔다",
+          "right": "= 우유를 사러 나갔다"
+        },
+        {
+          "id": "V.to_adv.for_purpose",
+          "desc": "목적을 for + 동사원형으로 씀",
+          "wrong": "I came here for meet you.",
+          "right": "I came here to meet you."
+        },
+        {
+          "id": "V.to_adv.meaning_mix",
+          "desc": "감정의 원인·결과·목적의 뜻을 혼동함",
+          "wrong": "He grew up to be a doctor. = 의사가 되기 위해 자랐다",
+          "right": "= 자라서 의사가 되었다"
+        }
+      ]
+    },
+    {
+      "id": "V.to_vs_ing",
+      "name": "목적어로 오는 to부정사 vs 동명사",
+      "stages": "M2→M3",
+      "prerequisites": [
+        "V.to_noun",
+        "V.gerund"
+      ],
+      "levels": {
+        "M": {
+          "why": "동사마다 뒤에 to부정사를 좋아하는지, 동명사를 좋아하는지 정해져 있어요. 어떤 동사는 둘 다 되지만 뜻이 달라져요.",
+          "core": "to부정사는 앞으로 할 일(미래·바람), 동명사는 이미 하고 있거나 한 일(경험·습관)을 나타내는 경향이 있어요. 이 감각으로 동사를 묶어 기억해요.",
+          "groups": [
+            {
+              "title": "to부정사만",
+              "items": [
+                "want, hope, plan, decide, promise, expect, need"
+              ],
+              "example": "앞으로 할 일"
+            },
+            {
+              "title": "동명사만",
+              "items": [
+                "enjoy, finish, mind, give up, avoid, keep, practice"
+              ],
+              "example": "하고 있는·한 일"
+            },
+            {
+              "title": "둘 다 (뜻 같음)",
+              "items": [
+                "like, love, hate, start, begin"
+              ],
+              "example": "I like to swim. = I like swimming."
+            },
+            {
+              "title": "둘 다 (뜻 다름)",
+              "tone": "good",
+              "items": [
+                "remember, forget, stop, try"
+              ],
+              "example": "to = 앞으로, -ing = 이미"
+            }
+          ],
+          "diagram": "to는 \"앞쪽(미래)\"을 향하고, -ing는 \"이미 하고 있는 일\"을 가리킨다고 생각하면 기억하기 쉬워요.",
+          "form": {
+            "note": "뜻이 달라지는 동사는 시간의 방향으로 구분해요.",
+            "rows": [
+              {
+                "label": "remember / forget + to",
+                "pattern": "(앞으로) ~할 것을 기억하다 / 잊다",
+                "example": "Remember to lock the door."
+              },
+              {
+                "label": "remember / forget + -ing",
+                "pattern": "(이미) ~한 것을 기억하다 / 잊다",
+                "example": "I remember locking the door."
+              },
+              {
+                "label": "stop + -ing",
+                "pattern": "~하던 것을 멈추다",
+                "example": "He stopped smoking."
+              },
+              {
+                "label": "stop + to",
+                "pattern": "~하기 위해 (하던 일을) 멈추다",
+                "example": "He stopped to smoke. (담배를 피우려고 멈췄다)"
+              },
+              {
+                "label": "try + to / -ing",
+                "pattern": "~하려고 애쓰다 / 시험 삼아 해 보다",
+                "example": "I tried to open it. / Try adding salt."
+              }
+            ],
+            "tip": "stop to ~의 to부정사는 목적어가 아니라 \"~하려고\"라는 부사적 용법이에요."
+          },
+          "contrast": {
+            "a": {
+              "en": "I forgot to call him.",
+              "ko": "전화해야 할 것을 잊었다 (전화 안 함)"
+            },
+            "b": {
+              "en": "I forgot calling him.",
+              "ko": "전화했던 것을 잊었다 (전화는 했음)"
+            },
+            "point": "to는 아직 안 한 일, -ing는 이미 한 일이에요."
+          },
+          "summary_prompt": "remember to와 remember -ing의 차이를 예문으로 설명해 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "V.to_vs_ing.enjoy_to",
+          "desc": "enjoy, finish 등 뒤에 to부정사를 씀",
+          "wrong": "I enjoy to swim. / finish to do",
+          "right": "I enjoy swimming. / finish doing"
+        },
+        {
+          "id": "V.to_vs_ing.want_ing",
+          "desc": "want, decide 등 뒤에 동명사를 씀",
+          "wrong": "I want going. / decided going",
+          "right": "I want to go. / decided to go"
+        },
+        {
+          "id": "V.to_vs_ing.meaning",
+          "desc": "remember·forget·stop 뒤의 to와 -ing 뜻 차이를 무시함",
+          "wrong": "He stopped smoking. = 담배를 피우려고 멈췄다",
+          "right": "= 담배를 끊었다(피우던 것을 멈췄다)"
+        }
+      ]
+    },
+    {
+      "id": "V.participle",
+      "name": "분사 (현재분사·과거분사)",
+      "stages": "M3",
+      "prerequisites": [
+        "V.concept",
+        "P.basic"
+      ],
+      "levels": {
+        "M": {
+          "why": "\"자고 있는 아기\", \"깨진 창문\"처럼 동사의 뜻으로 명사를 꾸미고 싶을 때 분사를 써요.",
+          "core": "현재분사(-ing)는 \"~하는, ~하고 있는\"(능동·진행), 과거분사(p.p.)는 \"~된, ~당한\"(수동·완료)이에요. 혼자면 명사 앞, 다른 말과 함께 길어지면 명사 뒤에서 꾸며요.",
+          "groups": [
+            {
+              "title": "현재분사 (-ing)",
+              "tone": "good",
+              "items": [
+                "a sleeping baby (자고 있는 아기)",
+                "falling leaves (떨어지는 잎)"
+              ],
+              "example": "명사가 직접 함"
+            },
+            {
+              "title": "과거분사 (p.p.)",
+              "items": [
+                "a broken window (깨진 창문)",
+                "fallen leaves (떨어진 잎)"
+              ],
+              "example": "명사가 당함·이미 끝남"
+            }
+          ],
+          "diagram": "꾸밈을 받는 명사가 그 동작을 하면 -ing, 당하면 p.p.예요.",
+          "form": {
+            "note": "분사 혼자면 명사 앞, 다른 말이 붙어 길어지면 명사 뒤예요.",
+            "rows": [
+              {
+                "label": "명사 앞",
+                "pattern": "분사 + 명사",
+                "example": "a crying boy / a used car"
+              },
+              {
+                "label": "명사 뒤",
+                "pattern": "명사 + 분사 + 다른 말",
+                "example": "the boy crying in the room / a car made in Korea"
+              },
+              {
+                "label": "보어",
+                "pattern": "주어 + 동사 + 분사",
+                "example": "He sat reading a book. / She looked tired."
+              },
+              {
+                "label": "동사 시제 안",
+                "pattern": "be + -ing (진행) / have + p.p. (완료) / be + p.p. (수동)",
+                "example": "He is running. / It has broken. / It was broken."
+              }
+            ],
+            "tip": "\"한국에서 만들어진 차\"는 a car made in Korea예요. a made in Korea car (X)"
+          },
+          "contrast": {
+            "a": {
+              "en": "The man is reading a book.",
+              "ko": "진행형의 일부 (동사)"
+            },
+            "b": {
+              "en": "The man reading a book is my uncle.",
+              "ko": "명사를 뒤에서 꾸미는 분사 (진짜 동사는 is)"
+            },
+            "point": "분사가 명사를 꾸미면 문장의 진짜 동사는 따로 있어요."
+          },
+          "summary_prompt": "현재분사와 과거분사의 차이를 \"하는가, 당하는가\"로 설명하고 예를 들어 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "V.participle.active_passive",
+          "desc": "능동(-ing)과 수동(p.p.)을 반대로 씀",
+          "wrong": "a breaking window (깨진 창문) / the boy called... (부르는 소년)",
+          "right": "a broken window / the boy calling..."
+        },
+        {
+          "id": "V.participle.position",
+          "desc": "긴 분사구를 명사 앞에 둠",
+          "wrong": "a made in Korea car",
+          "right": "a car made in Korea"
+        },
+        {
+          "id": "V.participle.as_verb",
+          "desc": "명사를 꾸미는 분사를 문장의 진짜 동사로 착각함",
+          "wrong": "The girl dancing on the stage. (완전한 문장이라고 생각)",
+          "right": "The girl dancing on the stage is my sister."
+        }
+      ]
+    },
+    {
+      "id": "V.object_comp",
+      "name": "5형식의 목적격 보어",
+      "stages": "M3→H",
+      "prerequisites": [
+        "S.form5",
+        "V.to_noun",
+        "V.participle"
+      ],
+      "levels": {
+        "M": {
+          "why": "\"엄마가 나에게 방을 청소하라고 했다\", \"나는 그가 노래하는 것을 들었다\"처럼 목적어가 하는 동작을 말할 때, 앞의 동사에 따라 목적격 보어의 모양이 달라져요.",
+          "core": "목적격 보어 자리의 모양은 앞의 동사가 정해요. 대부분은 to부정사, 사역동사(make, have, let)는 동사원형, 지각동사(see, hear, feel)는 동사원형이나 -ing예요.",
+          "groups": [
+            {
+              "title": "to부정사",
+              "items": [
+                "want, ask, tell, allow, expect, advise + 목적어 + to부정사"
+              ],
+              "example": "She told me to wait."
+            },
+            {
+              "title": "사역동사 + 원형",
+              "tone": "good",
+              "items": [
+                "make, have, let + 목적어 + 동사원형"
+              ],
+              "example": "Mom made me clean my room."
+            },
+            {
+              "title": "지각동사 + 원형/-ing",
+              "items": [
+                "see, watch, hear, feel + 목적어 + 원형 / -ing"
+              ],
+              "example": "I heard him sing(ing)."
+            }
+          ],
+          "diagram": "목적어와 목적격 보어는 \"주어-동사\" 관계예요. me → clean, him → sing.",
+          "form": {
+            "note": "목적어가 직접 하는 동작이면 위 규칙, 당하는 동작이면 p.p.를 써요.",
+            "rows": [
+              {
+                "label": "to부정사",
+                "pattern": "동사 + 목적어 + to부정사",
+                "example": "My teacher told us to be quiet."
+              },
+              {
+                "label": "사역 (make / have / let)",
+                "pattern": "동사 + 목적어 + 원형",
+                "example": "He let me use his phone."
+              },
+              {
+                "label": "지각 (see / hear / feel)",
+                "pattern": "동사 + 목적어 + 원형 / -ing",
+                "example": "I saw her cross(ing) the street."
+              },
+              {
+                "label": "help",
+                "pattern": "help + 목적어 + 원형 / to부정사",
+                "example": "He helped me (to) carry the box."
+              }
+            ],
+            "tip": "사역동사 뒤에 to를 넣지 않아요. She made me to cry. (X)"
+          },
+          "contrast": {
+            "a": {
+              "en": "She told me to clean my room.",
+              "ko": "tell → to부정사"
+            },
+            "b": {
+              "en": "She made me clean my room.",
+              "ko": "make(사역) → 동사원형"
+            },
+            "point": "뜻이 비슷해도 동사에 따라 to가 있고 없음이 달라요."
+          },
+          "summary_prompt": "목적격 보어로 to부정사, 원형, -ing가 오는 동사를 각각 정리해 보세요."
+        },
+        "H": {
+          "core": "목적어가 동작을 당하면 목적격 보어는 p.p.예요. have/get + 사물 + p.p. = (남을 시켜) ~되게 하다.",
+          "extra": "I had my hair cut. (머리를 잘랐다 - 미용사가) / I heard my name called. (내 이름이 불리는 것을 들었다) / get은 get + 목적어 + to부정사 (I got him to help me.)"
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "V.object_comp.causative_to",
+          "desc": "사역동사 뒤에 to부정사를 씀",
+          "wrong": "She made me to cry. / let me to go",
+          "right": "She made me cry. / let me go"
+        },
+        {
+          "id": "V.object_comp.tell_base",
+          "desc": "tell, want, ask 뒤에 원형을 씀",
+          "wrong": "She told me wait. / I want you come.",
+          "right": "She told me to wait. / I want you to come."
+        },
+        {
+          "id": "V.object_comp.passive_pp",
+          "desc": "목적어가 당하는 동작인데 원형을 씀",
+          "wrong": "I had my hair cutting. / I had my bike repair.",
+          "right": "I had my bike repaired."
+        }
+      ]
+    },
+    {
+      "id": "V.idiom",
+      "name": "준동사 관용 표현",
+      "stages": "M3→H",
+      "prerequisites": [
+        "V.to_adv",
+        "V.gerund"
+      ],
+      "levels": {
+        "M": {
+          "why": "\"너무 ~해서 …할 수 없다\", \"~할 만큼 충분히\", \"~하는 것을 기대하다\"처럼 자주 쓰는 표현은 덩어리로 익혀 두면 빠르게 이해할 수 있어요.",
+          "core": "too ~ to(너무 ~해서 …할 수 없다), enough to(…할 만큼 충분히 ~한), look forward to -ing(~을 기대하다)처럼 준동사가 들어간 관용 표현이 있어요.",
+          "groups": [
+            {
+              "title": "to부정사 표현",
+              "items": [
+                "too + 형용사 + to (너무 ~해서 …할 수 없다)",
+                "형용사 + enough + to (…할 만큼 충분히 ~한)"
+              ]
+            },
+            {
+              "title": "동명사 표현",
+              "tone": "good",
+              "items": [
+                "look forward to -ing",
+                "be used to -ing (~에 익숙하다)",
+                "How about -ing? (~하는 게 어때?)",
+                "go -ing (~하러 가다)"
+              ]
+            }
+          ],
+          "diagram": "look forward to, be used to의 to는 전치사라서 뒤에 동명사가 와요.",
+          "form": {
+            "note": "enough는 형용사 뒤에 와요.",
+            "rows": [
+              {
+                "label": "too ~ to",
+                "pattern": "너무 ~해서 …할 수 없다",
+                "example": "I'm too tired to walk."
+              },
+              {
+                "label": "enough to",
+                "pattern": "형용사 + enough + to부정사",
+                "example": "He is tall enough to reach the shelf."
+              },
+              {
+                "label": "look forward to -ing",
+                "pattern": "~을 기대하다 (to는 전치사)",
+                "example": "I look forward to seeing you."
+              },
+              {
+                "label": "be used to -ing",
+                "pattern": "~하는 데 익숙하다",
+                "example": "I'm used to getting up early."
+              },
+              {
+                "label": "How about -ing?",
+                "pattern": "~하는 게 어때?",
+                "example": "How about going to the movies?"
+              },
+              {
+                "label": "go -ing",
+                "pattern": "~하러 가다",
+                "example": "Let's go shopping."
+              }
+            ],
+            "tip": "look forward to see (X) → look forward to seeing (O). to 뒤라고 항상 원형인 건 아니에요."
+          },
+          "contrast": {
+            "a": {
+              "en": "I used to get up early.",
+              "ko": "(예전에) 일찍 일어나곤 했다 (지금은 아님)"
+            },
+            "b": {
+              "en": "I'm used to getting up early.",
+              "ko": "일찍 일어나는 데 익숙하다"
+            },
+            "point": "used to + 원형은 과거의 습관, be used to + -ing는 익숙함이에요."
+          },
+          "summary_prompt": "too ~ to와 enough to의 뜻을 예문과 함께 비교해 보세요."
+        },
+        "H": {
+          "core": "too ~ to는 so ~ that 주어 can't로, enough to는 so ~ that 주어 can으로 바꿀 수 있어요. 동명사 관용 표현도 더 있어요.",
+          "extra": "I'm too tired to walk. = I'm so tired that I can't walk. / cannot help -ing (~하지 않을 수 없다) / be busy -ing (~하느라 바쁘다) / It is no use -ing (~해도 소용없다) / feel like -ing (~하고 싶다)"
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "V.idiom.to_prep",
+          "desc": "전치사 to(look forward to, be used to) 뒤에 원형을 씀",
+          "wrong": "I look forward to see you.",
+          "right": "I look forward to seeing you."
+        },
+        {
+          "id": "V.idiom.enough_order",
+          "desc": "enough를 형용사 앞에 둠",
+          "wrong": "He is enough tall to ride it.",
+          "right": "He is tall enough to ride it."
+        },
+        {
+          "id": "V.idiom.too_meaning",
+          "desc": "too ~ to를 긍정의 뜻(매우 ~해서 …할 수 있다)으로 해석함",
+          "wrong": "too young to drive = 어려서 운전할 수 있다",
+          "right": "= 너무 어려서 운전할 수 없다"
+        },
+        {
+          "id": "V.idiom.used_to",
+          "desc": "used to(과거 습관)와 be used to -ing(익숙함)를 혼동함",
+          "wrong": "I'm used to get up early.",
+          "right": "I'm used to getting up early."
+        }
+      ]
+    },
+    {
+      "id": "V.subject",
+      "name": "의미상 주어",
+      "stages": "H",
+      "prerequisites": [
+        "V.to_noun",
+        "V.gerund"
+      ],
+      "levels": {
+        "H": {
+          "why": "\"이 문제는 내가 풀기에 어렵다\", \"네가 와 줘서 고맙다\"처럼 준동사의 동작을 하는 사람이 문장의 주어와 다를 때, 그 사람을 따로 밝혀야 해요.",
+          "core": "준동사의 동작을 하는 사람을 의미상 주어라고 해요. to부정사는 \"for + 목적격\", 사람의 성격을 평가하는 형용사 뒤는 \"of + 목적격\", 동명사는 \"소유격(또는 목적격)\"으로 나타내요.",
+          "groups": [
+            {
+              "title": "for + 목적격",
+              "items": [
+                "It is hard for me to solve it."
+              ],
+              "example": "대부분의 형용사"
+            },
+            {
+              "title": "of + 목적격",
+              "tone": "good",
+              "items": [
+                "It is kind of you to help me."
+              ],
+              "example": "kind, nice, smart, foolish 등 사람의 성격"
+            },
+            {
+              "title": "소유격 + 동명사",
+              "items": [
+                "I don't mind your(you) opening the window."
+              ],
+              "example": "동명사"
+            }
+          ],
+          "diagram": "형용사가 일(to부정사)에 대한 평가면 for, 사람에 대한 평가면 of예요.",
+          "form": {
+            "note": "의미상 주어가 문장의 주어나 일반 사람과 같으면 쓰지 않아요.",
+            "rows": [
+              {
+                "label": "for + 목적격 + to부정사",
+                "pattern": "대부분의 형용사 (easy, hard, important, necessary)",
+                "example": "It is important for us to exercise."
+              },
+              {
+                "label": "of + 목적격 + to부정사",
+                "pattern": "사람의 성격·태도 형용사 (kind, nice, wise, careless)",
+                "example": "It was careless of him to lose it."
+              },
+              {
+                "label": "소유격 / 목적격 + 동명사",
+                "pattern": "동명사의 동작을 하는 사람",
+                "example": "Do you mind my(me) sitting here?"
+              },
+              {
+                "label": "생략",
+                "pattern": "일반 사람이거나 문장의 주어와 같을 때",
+                "example": "It is easy to learn. / I like swimming."
+              }
+            ],
+            "tip": "of를 쓸지 헷갈리면 \"사람 is 형용사\"가 말이 되는지 보세요. You are kind. (O) → of / This is easy (일이 쉬움) → for"
+          },
+          "contrast": {
+            "a": {
+              "en": "It is easy for him to swim.",
+              "ko": "수영하는 일이 쉽다 (for)"
+            },
+            "b": {
+              "en": "It is nice of him to help me.",
+              "ko": "그가 친절하다 (of)"
+            },
+            "point": "일에 대한 평가는 for, 사람에 대한 평가는 of예요."
+          },
+          "summary_prompt": "to부정사의 의미상 주어로 for와 of를 쓰는 경우를 구분해 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "V.subject.for_of",
+          "desc": "사람의 성격 형용사 뒤에 for를 쓰거나, 일반 형용사 뒤에 of를 씀",
+          "wrong": "It is kind for you to help. / It is hard of me to read.",
+          "right": "It is kind of you to help. / It is hard for me to read."
+        },
+        {
+          "id": "V.subject.subject_case",
+          "desc": "의미상 주어를 주격으로 씀",
+          "wrong": "It is hard for I to solve it.",
+          "right": "It is hard for me to solve it."
+        },
+        {
+          "id": "V.subject.gerund_form",
+          "desc": "동명사의 의미상 주어를 주격으로 씀",
+          "wrong": "Do you mind I opening the window?",
+          "right": "Do you mind my(me) opening the window?"
+        }
+      ]
+    },
+    {
+      "id": "V.perfect",
+      "name": "완료형 준동사",
+      "stages": "H",
+      "prerequisites": [
+        "V.subject",
+        "T.perfect"
+      ],
+      "levels": {
+        "H": {
+          "why": "\"그는 부자였던 것 같다\", \"거짓말한 것이 부끄럽다\"처럼 준동사의 일이 문장의 동사보다 먼저 일어났을 때, 그 시간 차이를 표시해야 해요.",
+          "core": "준동사의 일이 문장의 동사보다 앞선 시간이면 완료형을 써요. to부정사는 to have p.p., 동명사는 having p.p.예요.",
+          "groups": [
+            {
+              "title": "같은 때",
+              "items": [
+                "He seems to be rich.",
+                "(지금) 부자인 것 같다"
+              ],
+              "example": "to + 원형"
+            },
+            {
+              "title": "더 이전",
+              "tone": "good",
+              "items": [
+                "He seems to have been rich.",
+                "(예전에) 부자였던 것 같다"
+              ],
+              "example": "to have p.p."
+            }
+          ],
+          "diagram": "문장의 동사 시간을 기준으로, 그보다 앞선 일이면 have p.p.를 붙여요.",
+          "form": {
+            "note": "기준은 항상 문장의 진짜 동사예요.",
+            "rows": [
+              {
+                "label": "완료 부정사",
+                "pattern": "to have + p.p.",
+                "example": "He seems to have been sick. (아팠던 것 같다)"
+              },
+              {
+                "label": "완료 동명사",
+                "pattern": "having + p.p.",
+                "example": "I'm ashamed of having lied. (거짓말한 것이 부끄럽다)"
+              },
+              {
+                "label": "that절로 바꾸기",
+                "pattern": "seem to have p.p. = It seems that + 과거",
+                "example": "He seems to have lost it. = It seems that he lost it."
+              },
+              {
+                "label": "같은 때",
+                "pattern": "seem to + 원형 = It seems that + 현재",
+                "example": "She seems to be happy. = It seems that she is happy."
+              }
+            ],
+            "tip": "seemed(과거)일 때 to have p.p.는 그보다 더 이전(과거완료)의 일이에요."
+          },
+          "contrast": {
+            "a": {
+              "en": "He seems to be ill.",
+              "ko": "(지금) 아픈 것 같다"
+            },
+            "b": {
+              "en": "He seems to have been ill.",
+              "ko": "(전에) 아팠던 것 같다"
+            },
+            "point": "준동사의 일이 더 이전이면 완료형이에요."
+          },
+          "summary_prompt": "He seems to be rich.와 He seems to have been rich.의 차이를 설명해 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "V.perfect.same_time",
+          "desc": "더 이전의 일인데 단순형을 씀",
+          "wrong": "It seems that he was sick. = He seems to be sick.",
+          "right": "= He seems to have been sick."
+        },
+        {
+          "id": "V.perfect.form",
+          "desc": "완료형 준동사 모양을 틀림",
+          "wrong": "to had been / having been lie",
+          "right": "to have been / having lied"
+        },
+        {
+          "id": "V.perfect.tense_change",
+          "desc": "that절로 바꿀 때 시제를 틀림",
+          "wrong": "He seems to have lost it. = It seems that he loses it.",
+          "right": "= It seems that he lost it."
+        }
+      ]
+    },
+    {
+      "id": "V.part_clause",
+      "name": "분사구문",
+      "stages": "H",
+      "prerequisites": [
+        "V.participle",
+        "C.conj_sub"
+      ],
+      "levels": {
+        "H": {
+          "why": "\"집에 걸어가다가 친구를 만났다\"처럼 두 문장을 이을 때, 접속사와 주어를 빼고 분사로 간단히 줄일 수 있어요. 글에서 자주 나와요.",
+          "core": "분사구문은 부사절(접속사 + 주어 + 동사)에서 접속사와 주어를 빼고 동사를 분사로 바꾼 것이에요. 두 절의 주어가 같을 때 써요.",
+          "slots": [
+            {
+              "label": "부사절",
+              "cells": [
+                {
+                  "role": "수식어 (부사절)",
+                  "text": "When I walked home,"
+                },
+                {
+                  "role": "주어",
+                  "text": "I"
+                },
+                {
+                  "role": "동사",
+                  "text": "met"
+                },
+                {
+                  "role": "목적어",
+                  "text": "Tom"
+                }
+              ]
+            },
+            {
+              "label": "분사구문",
+              "cells": [
+                {
+                  "role": "수식어 (분사구문)",
+                  "text": "Walking home,"
+                },
+                {
+                  "role": "주어",
+                  "text": "I"
+                },
+                {
+                  "role": "동사",
+                  "text": "met"
+                },
+                {
+                  "role": "목적어",
+                  "text": "Tom"
+                }
+              ]
+            }
+          ],
+          "diagram": "접속사(When)와 같은 주어(I)를 지우고, 동사(walked)를 -ing로 바꿔요.",
+          "form": {
+            "note": "만드는 순서: ① 접속사 지우기 ② 같은 주어 지우기 ③ 동사를 -ing로 (be동사는 Being, 흔히 생략)",
+            "rows": [
+              {
+                "label": "능동",
+                "pattern": "동사 → -ing",
+                "example": "Because I felt tired, I went to bed. → Feeling tired, I went to bed."
+              },
+              {
+                "label": "수동",
+                "pattern": "(Being) + p.p.",
+                "example": "As it was written in English, it was hard. → (Being) Written in English, it was hard."
+              },
+              {
+                "label": "부정",
+                "pattern": "Not + 분사",
+                "example": "As I didn't know what to do, I called Mom. → Not knowing what to do, ~"
+              },
+              {
+                "label": "완료",
+                "pattern": "Having + p.p. (주절보다 이전)",
+                "example": "After I had finished it, I went out. → Having finished it, I went out."
+              },
+              {
+                "label": "뜻",
+                "pattern": "때·이유·동시동작·조건 (문맥으로 판단)",
+                "example": "Smiling brightly, she waved at me. (밝게 웃으며)"
+              }
+            ],
+            "tip": "주어가 다르면 주어를 지우지 않아요. It being sunny, we went out."
+          },
+          "contrast": {
+            "a": {
+              "en": "Seeing the police, the thief ran away.",
+              "ko": "도둑이 경찰을 봄 (능동 -ing)"
+            },
+            "b": {
+              "en": "Seen from the sky, the island looks like a heart.",
+              "ko": "섬이 보여짐 (수동 p.p.)"
+            },
+            "point": "주절의 주어가 그 동작을 하면 -ing, 당하면 p.p.예요."
+          },
+          "summary_prompt": "부사절을 분사구문으로 바꾸는 순서를 예문과 함께 설명해 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "V.part_clause.active_passive",
+          "desc": "주절 주어가 당하는 동작인데 -ing를 씀 (또는 반대)",
+          "wrong": "Seeing from the sky, the island looks small.",
+          "right": "Seen from the sky, the island looks small."
+        },
+        {
+          "id": "V.part_clause.not_place",
+          "desc": "부정의 not을 분사 뒤에 둠",
+          "wrong": "Knowing not what to do, ~",
+          "right": "Not knowing what to do, ~"
+        },
+        {
+          "id": "V.part_clause.keep_conj",
+          "desc": "분사구문에 원래 동사 모양을 남김",
+          "wrong": "Felt tired, I went to bed. (능동인데 과거형)",
+          "right": "Feeling tired, I went to bed."
+        }
+      ]
+    }
+  ]
+}
