@@ -1,0 +1,943 @@
+{
+ "areas": [
+  {
+   "code": "S",
+   "title": "문장의 뼈대",
+   "desc": "주어 + 동사에서 출발하는 모든 문장의 기본 구조"
+  },
+  {
+   "code": "T",
+   "title": "동사의 시간",
+   "desc": "동사가 '언제'를 표현하는 방법"
+  },
+  {
+   "code": "A",
+   "title": "동사의 태도",
+   "desc": "가능·의무·추측·가정을 동사에 얹는 방법"
+  },
+  {
+   "code": "P",
+   "title": "동사의 방향",
+   "desc": "주어가 하는지, 당하는지 (능동과 수동)"
+  },
+  {
+   "code": "N",
+   "title": "명사 주변",
+   "desc": "셀 수 있는가, 아는 것인가: 관사·대명사·수 일치"
+  },
+  {
+   "code": "D",
+   "title": "꾸미는 말",
+   "desc": "뼈대는 그대로 두고 정보를 더하는 말"
+  },
+  {
+   "code": "V",
+   "title": "준동사",
+   "desc": "동사를 명사·형용사·부사처럼 쓰는 방법"
+  },
+  {
+   "code": "C",
+   "title": "문장 연결",
+   "desc": "문장 안에 다른 문장(절)을 넣는 방법"
+  },
+  {
+   "code": "X",
+   "title": "특수 구문",
+   "desc": "기본 어순을 일부러 바꾸는 구문"
+  }
+ ],
+ "concepts": [
+  {
+   "id": "S.sv",
+   "name": "주어와 동사",
+   "area": "S",
+   "stages": "E",
+   "prerequisites": []
+  },
+  {
+   "id": "S.be",
+   "name": "be동사",
+   "area": "S",
+   "stages": "E",
+   "prerequisites": [
+    "S.sv"
+   ]
+  },
+  {
+   "id": "S.verb",
+   "name": "일반동사",
+   "area": "S",
+   "stages": "E",
+   "prerequisites": [
+    "S.sv"
+   ]
+  },
+  {
+   "id": "S.be_vs_verb",
+   "name": "be동사 vs 일반동사",
+   "area": "S",
+   "stages": "E→M1",
+   "prerequisites": [
+    "S.be",
+    "S.verb"
+   ]
+  },
+  {
+   "id": "S.pos",
+   "name": "품사 (8품사)",
+   "area": "S",
+   "stages": "E→M1",
+   "prerequisites": [
+    "S.sv"
+   ]
+  },
+  {
+   "id": "S.component",
+   "name": "문장 성분",
+   "area": "S",
+   "stages": "M1",
+   "prerequisites": [
+    "S.pos"
+   ]
+  },
+  {
+   "id": "S.form1_2",
+   "name": "1형식·2형식",
+   "area": "S",
+   "stages": "M1",
+   "prerequisites": [
+    "S.component"
+   ]
+  },
+  {
+   "id": "S.form3",
+   "name": "3형식",
+   "area": "S",
+   "stages": "M1",
+   "prerequisites": [
+    "S.component"
+   ]
+  },
+  {
+   "id": "S.form4",
+   "name": "4형식",
+   "area": "S",
+   "stages": "M2",
+   "prerequisites": [
+    "S.form3"
+   ]
+  },
+  {
+   "id": "S.form5",
+   "name": "5형식",
+   "area": "S",
+   "stages": "M2→M3",
+   "prerequisites": [
+    "S.form3",
+    "S.form1_2"
+   ]
+  },
+  {
+   "id": "S.parse",
+   "name": "긴 문장의 뼈대 찾기",
+   "area": "S",
+   "stages": "H",
+   "prerequisites": [
+    "S.form5",
+    "V.concept",
+    "C.rel_pronoun"
+   ]
+  },
+  {
+   "id": "T.present",
+   "name": "현재시제",
+   "area": "T",
+   "stages": "E",
+   "prerequisites": [
+    "S.verb"
+   ]
+  },
+  {
+   "id": "T.3sg",
+   "name": "3인칭 단수 -s",
+   "area": "T",
+   "stages": "E→M1",
+   "prerequisites": [
+    "T.present",
+    "N.pronoun"
+   ]
+  },
+  {
+   "id": "T.progressive",
+   "name": "현재진행",
+   "area": "T",
+   "stages": "E",
+   "prerequisites": [
+    "S.be",
+    "T.present"
+   ]
+  },
+  {
+   "id": "T.past",
+   "name": "과거시제 (규칙·불규칙)",
+   "area": "T",
+   "stages": "E→M1",
+   "prerequisites": [
+    "T.present"
+   ]
+  },
+  {
+   "id": "T.future",
+   "name": "미래 (will / be going to)",
+   "area": "T",
+   "stages": "M1",
+   "prerequisites": [
+    "T.present"
+   ]
+  },
+  {
+   "id": "T.past_prog",
+   "name": "과거진행",
+   "area": "T",
+   "stages": "M1",
+   "prerequisites": [
+    "T.past",
+    "T.progressive"
+   ]
+  },
+  {
+   "id": "T.pp_form",
+   "name": "과거분사 형태",
+   "area": "T",
+   "stages": "M2",
+   "prerequisites": [
+    "T.past"
+   ]
+  },
+  {
+   "id": "T.perfect",
+   "name": "현재완료",
+   "area": "T",
+   "stages": "M2→M3",
+   "prerequisites": [
+    "T.past",
+    "T.pp_form"
+   ]
+  },
+  {
+   "id": "T.past_perfect",
+   "name": "과거완료",
+   "area": "T",
+   "stages": "M3→H",
+   "prerequisites": [
+    "T.perfect"
+   ]
+  },
+  {
+   "id": "T.perf_prog",
+   "name": "완료진행",
+   "area": "T",
+   "stages": "H",
+   "prerequisites": [
+    "T.perfect",
+    "T.progressive"
+   ]
+  },
+  {
+   "id": "T.future_perf",
+   "name": "미래완료",
+   "area": "T",
+   "stages": "H",
+   "prerequisites": [
+    "T.perfect",
+    "T.future"
+   ]
+  },
+  {
+   "id": "T.time_clause",
+   "name": "시간·조건 부사절의 현재",
+   "area": "T",
+   "stages": "M2→M3",
+   "prerequisites": [
+    "T.future",
+    "C.conj_sub"
+   ]
+  },
+  {
+   "id": "T.sequence",
+   "name": "시제 일치",
+   "area": "T",
+   "stages": "H",
+   "prerequisites": [
+    "T.past_perfect",
+    "C.noun_clause"
+   ]
+  },
+  {
+   "id": "A.can",
+   "name": "can (능력·허락)",
+   "area": "A",
+   "stages": "E",
+   "prerequisites": [
+    "S.verb"
+   ]
+  },
+  {
+   "id": "A.modal_basic",
+   "name": "기본 조동사 (must, should, may, will)",
+   "area": "A",
+   "stages": "M1→M2",
+   "prerequisites": [
+    "A.can"
+   ]
+  },
+  {
+   "id": "A.semi_modal",
+   "name": "have to, be able to, had better, used to",
+   "area": "A",
+   "stages": "M2",
+   "prerequisites": [
+    "A.modal_basic"
+   ]
+  },
+  {
+   "id": "A.inference",
+   "name": "추측의 조동사",
+   "area": "A",
+   "stages": "M3→H",
+   "prerequisites": [
+    "A.modal_basic"
+   ]
+  },
+  {
+   "id": "A.modal_perfect",
+   "name": "조동사 + have p.p.",
+   "area": "A",
+   "stages": "H",
+   "prerequisites": [
+    "A.inference",
+    "T.perfect"
+   ]
+  },
+  {
+   "id": "A.cond_real",
+   "name": "조건문 (실제 가능한 일)",
+   "area": "A",
+   "stages": "M2",
+   "prerequisites": [
+    "T.time_clause"
+   ]
+  },
+  {
+   "id": "A.subj_past",
+   "name": "가정법 과거",
+   "area": "A",
+   "stages": "M3→H",
+   "prerequisites": [
+    "A.cond_real",
+    "T.past"
+   ]
+  },
+  {
+   "id": "A.subj_pp",
+   "name": "가정법 과거완료",
+   "area": "A",
+   "stages": "H",
+   "prerequisites": [
+    "A.subj_past",
+    "T.past_perfect"
+   ]
+  },
+  {
+   "id": "A.subj_mixed",
+   "name": "혼합 가정법",
+   "area": "A",
+   "stages": "H",
+   "prerequisites": [
+    "A.subj_pp"
+   ]
+  },
+  {
+   "id": "A.subj_wish",
+   "name": "I wish / as if / It's time",
+   "area": "A",
+   "stages": "H",
+   "prerequisites": [
+    "A.subj_past"
+   ]
+  },
+  {
+   "id": "A.subj_omit",
+   "name": "if 생략과 도치",
+   "area": "A",
+   "stages": "H",
+   "prerequisites": [
+    "A.subj_pp",
+    "X.inversion"
+   ]
+  },
+  {
+   "id": "P.concept",
+   "name": "능동과 수동의 차이",
+   "area": "P",
+   "stages": "M2",
+   "prerequisites": [
+    "S.form3"
+   ]
+  },
+  {
+   "id": "P.basic",
+   "name": "수동태 기본형 (be + p.p.)",
+   "area": "P",
+   "stages": "M2",
+   "prerequisites": [
+    "P.concept",
+    "T.pp_form"
+   ]
+  },
+  {
+   "id": "P.tense",
+   "name": "수동태의 시제·조동사",
+   "area": "P",
+   "stages": "M3",
+   "prerequisites": [
+    "P.basic",
+    "T.perfect",
+    "A.modal_basic"
+   ]
+  },
+  {
+   "id": "P.by",
+   "name": "by + 행위자와 관용 전치사",
+   "area": "P",
+   "stages": "M3",
+   "prerequisites": [
+    "P.basic"
+   ]
+  },
+  {
+   "id": "P.emotion",
+   "name": "감정동사: -ing vs -ed",
+   "area": "P",
+   "stages": "M3",
+   "prerequisites": [
+    "P.basic",
+    "V.participle"
+   ]
+  },
+  {
+   "id": "P.form4_5",
+   "name": "4·5형식의 수동태",
+   "area": "P",
+   "stages": "H",
+   "prerequisites": [
+    "P.tense",
+    "S.form4",
+    "S.form5"
+   ]
+  },
+  {
+   "id": "P.phrasal",
+   "name": "구동사의 수동태",
+   "area": "P",
+   "stages": "H",
+   "prerequisites": [
+    "P.tense"
+   ]
+  },
+  {
+   "id": "N.plural",
+   "name": "단수와 복수",
+   "area": "N",
+   "stages": "E",
+   "prerequisites": []
+  },
+  {
+   "id": "N.pronoun",
+   "name": "인칭대명사와 격",
+   "area": "N",
+   "stages": "E→M1",
+   "prerequisites": [
+    "S.sv"
+   ]
+  },
+  {
+   "id": "N.article_basic",
+   "name": "a/an과 the",
+   "area": "N",
+   "stages": "E→M1",
+   "prerequisites": [
+    "N.plural"
+   ]
+  },
+  {
+   "id": "N.countable",
+   "name": "셀 수 있는 명사 vs 없는 명사",
+   "area": "N",
+   "stages": "M1",
+   "prerequisites": [
+    "N.plural",
+    "N.article_basic"
+   ]
+  },
+  {
+   "id": "N.quantifier",
+   "name": "수량 형용사",
+   "area": "N",
+   "stages": "M1→M2",
+   "prerequisites": [
+    "N.countable"
+   ]
+  },
+  {
+   "id": "N.agreement",
+   "name": "주어-동사 수 일치",
+   "area": "N",
+   "stages": "M1→H",
+   "prerequisites": [
+    "T.3sg",
+    "N.countable"
+   ]
+  },
+  {
+   "id": "N.reflexive",
+   "name": "재귀대명사",
+   "area": "N",
+   "stages": "M2",
+   "prerequisites": [
+    "N.pronoun"
+   ]
+  },
+  {
+   "id": "N.indefinite",
+   "name": "부정대명사 (one, another, the other)",
+   "area": "N",
+   "stages": "M2→M3",
+   "prerequisites": [
+    "N.article_basic"
+   ]
+  },
+  {
+   "id": "N.it",
+   "name": "비인칭 it과 가주어 it",
+   "area": "N",
+   "stages": "M2→M3",
+   "prerequisites": [
+    "N.pronoun"
+   ]
+  },
+  {
+   "id": "N.article_adv",
+   "name": "관사 심화",
+   "area": "N",
+   "stages": "M3→H",
+   "prerequisites": [
+    "N.article_basic",
+    "N.countable"
+   ]
+  },
+  {
+   "id": "D.adj",
+   "name": "형용사",
+   "area": "D",
+   "stages": "E",
+   "prerequisites": [
+    "S.pos"
+   ]
+  },
+  {
+   "id": "D.adv",
+   "name": "부사",
+   "area": "D",
+   "stages": "E→M1",
+   "prerequisites": [
+    "D.adj"
+   ]
+  },
+  {
+   "id": "D.prep",
+   "name": "전치사구",
+   "area": "D",
+   "stages": "E→M2",
+   "prerequisites": [
+    "S.sv"
+   ]
+  },
+  {
+   "id": "D.adj_vs_adv",
+   "name": "형용사와 부사의 자리",
+   "area": "D",
+   "stages": "M1",
+   "prerequisites": [
+    "D.adv",
+    "S.form1_2"
+   ]
+  },
+  {
+   "id": "D.freq",
+   "name": "빈도부사의 위치",
+   "area": "D",
+   "stages": "M1",
+   "prerequisites": [
+    "D.adv",
+    "S.be_vs_verb"
+   ]
+  },
+  {
+   "id": "D.compare",
+   "name": "비교급·최상급",
+   "area": "D",
+   "stages": "M1→M2",
+   "prerequisites": [
+    "D.adj",
+    "D.adv"
+   ]
+  },
+  {
+   "id": "D.as_as",
+   "name": "원급 비교",
+   "area": "D",
+   "stages": "M2",
+   "prerequisites": [
+    "D.compare"
+   ]
+  },
+  {
+   "id": "D.compare_adv",
+   "name": "비교 구문 심화",
+   "area": "D",
+   "stages": "M3→H",
+   "prerequisites": [
+    "D.as_as"
+   ]
+  },
+  {
+   "id": "V.concept",
+   "name": "준동사란",
+   "area": "V",
+   "stages": "M2",
+   "prerequisites": [
+    "S.pos",
+    "S.component"
+   ]
+  },
+  {
+   "id": "V.to_noun",
+   "name": "to부정사 명사적 용법",
+   "area": "V",
+   "stages": "M2",
+   "prerequisites": [
+    "V.concept"
+   ]
+  },
+  {
+   "id": "V.to_adj",
+   "name": "to부정사 형용사적 용법",
+   "area": "V",
+   "stages": "M2",
+   "prerequisites": [
+    "V.to_noun"
+   ]
+  },
+  {
+   "id": "V.gerund",
+   "name": "동명사",
+   "area": "V",
+   "stages": "M2",
+   "prerequisites": [
+    "V.concept"
+   ]
+  },
+  {
+   "id": "V.to_adv",
+   "name": "to부정사 부사적 용법",
+   "area": "V",
+   "stages": "M2→M3",
+   "prerequisites": [
+    "V.to_noun"
+   ]
+  },
+  {
+   "id": "V.to_vs_ing",
+   "name": "목적어로 오는 to부정사 vs 동명사",
+   "area": "V",
+   "stages": "M2→M3",
+   "prerequisites": [
+    "V.to_noun",
+    "V.gerund"
+   ]
+  },
+  {
+   "id": "V.participle",
+   "name": "분사 (현재분사·과거분사)",
+   "area": "V",
+   "stages": "M3",
+   "prerequisites": [
+    "V.concept",
+    "P.basic"
+   ]
+  },
+  {
+   "id": "V.object_comp",
+   "name": "5형식의 목적격 보어",
+   "area": "V",
+   "stages": "M3→H",
+   "prerequisites": [
+    "S.form5",
+    "V.to_noun",
+    "V.participle"
+   ]
+  },
+  {
+   "id": "V.idiom",
+   "name": "준동사 관용 표현",
+   "area": "V",
+   "stages": "M3→H",
+   "prerequisites": [
+    "V.to_adv",
+    "V.gerund"
+   ]
+  },
+  {
+   "id": "V.subject",
+   "name": "의미상 주어",
+   "area": "V",
+   "stages": "H",
+   "prerequisites": [
+    "V.to_noun",
+    "V.gerund"
+   ]
+  },
+  {
+   "id": "V.perfect",
+   "name": "완료형 준동사",
+   "area": "V",
+   "stages": "H",
+   "prerequisites": [
+    "V.subject",
+    "T.perfect"
+   ]
+  },
+  {
+   "id": "V.part_clause",
+   "name": "분사구문",
+   "area": "V",
+   "stages": "H",
+   "prerequisites": [
+    "V.participle",
+    "C.conj_sub"
+   ]
+  },
+  {
+   "id": "C.conj_coord",
+   "name": "등위접속사 (and, but, or, so)",
+   "area": "C",
+   "stages": "E→M1",
+   "prerequisites": [
+    "S.sv"
+   ]
+  },
+  {
+   "id": "C.conj_sub",
+   "name": "부사절 접속사 (when, because, if)",
+   "area": "C",
+   "stages": "M1→M2",
+   "prerequisites": [
+    "C.conj_coord"
+   ]
+  },
+  {
+   "id": "C.noun_clause",
+   "name": "명사절 (that, whether/if)",
+   "area": "C",
+   "stages": "M2→M3",
+   "prerequisites": [
+    "C.conj_sub",
+    "S.component"
+   ]
+  },
+  {
+   "id": "C.rel_pronoun",
+   "name": "관계대명사 (who, which, that)",
+   "area": "C",
+   "stages": "M3",
+   "prerequisites": [
+    "C.conj_sub",
+    "N.pronoun"
+   ]
+  },
+  {
+   "id": "C.rel_case",
+   "name": "관계대명사의 격과 생략",
+   "area": "C",
+   "stages": "M3",
+   "prerequisites": [
+    "C.rel_pronoun"
+   ]
+  },
+  {
+   "id": "C.indirect_q",
+   "name": "간접의문문",
+   "area": "C",
+   "stages": "M3",
+   "prerequisites": [
+    "C.noun_clause",
+    "X.question"
+   ]
+  },
+  {
+   "id": "C.rel_what",
+   "name": "관계대명사 what",
+   "area": "C",
+   "stages": "M3→H",
+   "prerequisites": [
+    "C.rel_pronoun",
+    "C.noun_clause"
+   ]
+  },
+  {
+   "id": "C.correlative",
+   "name": "상관접속사",
+   "area": "C",
+   "stages": "M3→H",
+   "prerequisites": [
+    "C.conj_coord",
+    "N.agreement"
+   ]
+  },
+  {
+   "id": "C.rel_prep",
+   "name": "전치사 + 관계대명사",
+   "area": "C",
+   "stages": "H",
+   "prerequisites": [
+    "C.rel_case",
+    "D.prep"
+   ]
+  },
+  {
+   "id": "C.rel_adverb",
+   "name": "관계부사 (where, when, why, how)",
+   "area": "C",
+   "stages": "H",
+   "prerequisites": [
+    "C.rel_prep"
+   ]
+  },
+  {
+   "id": "C.rel_nonrestrict",
+   "name": "계속적 용법",
+   "area": "C",
+   "stages": "H",
+   "prerequisites": [
+    "C.rel_case"
+   ]
+  },
+  {
+   "id": "C.rel_compound",
+   "name": "복합관계사 (whoever, whatever)",
+   "area": "C",
+   "stages": "H",
+   "prerequisites": [
+    "C.rel_what",
+    "C.conj_sub"
+   ]
+  },
+  {
+   "id": "X.negative",
+   "name": "부정문",
+   "area": "X",
+   "stages": "E",
+   "prerequisites": [
+    "S.be_vs_verb"
+   ]
+  },
+  {
+   "id": "X.question",
+   "name": "의문문 (Yes/No, 의문사)",
+   "area": "X",
+   "stages": "E→M1",
+   "prerequisites": [
+    "S.be_vs_verb"
+   ]
+  },
+  {
+   "id": "X.imperative",
+   "name": "명령문·제안문",
+   "area": "X",
+   "stages": "E",
+   "prerequisites": [
+    "S.verb"
+   ]
+  },
+  {
+   "id": "X.there",
+   "name": "There is / are",
+   "area": "X",
+   "stages": "E→M1",
+   "prerequisites": [
+    "S.be",
+    "N.plural"
+   ]
+  },
+  {
+   "id": "X.tag",
+   "name": "부가의문문",
+   "area": "X",
+   "stages": "M2",
+   "prerequisites": [
+    "X.question",
+    "X.negative"
+   ]
+  },
+  {
+   "id": "X.exclamation",
+   "name": "감탄문 (What / How)",
+   "area": "X",
+   "stages": "M2",
+   "prerequisites": [
+    "D.adj",
+    "N.article_basic"
+   ]
+  },
+  {
+   "id": "X.ellipsis",
+   "name": "생략·대동사 (so do I)",
+   "area": "X",
+   "stages": "M3→H",
+   "prerequisites": [
+    "X.question",
+    "X.negative"
+   ]
+  },
+  {
+   "id": "X.speech",
+   "name": "화법 전환",
+   "area": "X",
+   "stages": "H",
+   "prerequisites": [
+    "T.sequence",
+    "C.indirect_q"
+   ]
+  },
+  {
+   "id": "X.inversion",
+   "name": "도치",
+   "area": "X",
+   "stages": "H",
+   "prerequisites": [
+    "X.question"
+   ]
+  },
+  {
+   "id": "X.emphasis",
+   "name": "강조 (It is ~ that)",
+   "area": "X",
+   "stages": "H",
+   "prerequisites": [
+    "N.it",
+    "C.noun_clause"
+   ]
+  }
+ ]
+}
