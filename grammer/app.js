@@ -69,6 +69,30 @@
     return Promise.all(AREAS.filter(a => a.ready).map(a => loadArea(a.code)));
   }
   const areaOf = id => id.split('.')[0];
+  const isReadyArea = code => AREAS.some(a => a.code === code && a.ready);
+
+  // 전체 개념 지도 (9개 영역, 94개 개념의 이름·단계·선수 관계)
+  let MAP = null;
+  async function loadMap() {
+    if (MAP) return MAP;
+    const m = await fetch('data/map.json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+    const byId = {}, next = {};
+    m.concepts.forEach(c => { byId[c.id] = c; next[c.id] = []; });
+    m.concepts.forEach(c => c.prerequisites.forEach(p => { if (next[p]) next[p].push(c.id); }));
+    const areaTitle = {};
+    m.areas.forEach(a => { areaTitle[a.code] = a.title; });
+    MAP = { areas: m.areas, concepts: m.concepts, byId, next, areaTitle };
+    return MAP;
+  }
+  // 단계 문자열(예: 'M2→M3')의 시작 단계를 E/M/H 묶음으로
+  const startBand = stages => stages.split('→')[0].charAt(0);
+  const isReadyConcept = id => isReadyArea(areaOf(id)) && !!(cache[areaOf(id)] && cache[areaOf(id)].conceptMap[id]);
+  const conceptHref = id => isReadyConcept(id) ? `#/learn/${id}` : `#/concept/${id}`;
+  function conceptLink(id) {
+    const c = MAP && MAP.byId[id];
+    const name = c ? c.name : id;
+    return `<a href="${esc(conceptHref(id))}">${esc(name)}</a>${isReadyConcept(id) ? statusBadge(id) : '<span class="badge">준비 중</span>'}`;
+  }
 
   // ---------- 도우미 ----------
   const app = document.getElementById('app');
@@ -110,21 +134,55 @@
     document.getElementById('nav-review').innerHTML = '복습' + (n ? `<span class="count">${n}</span>` : '');
   }
 
-  // ---------- 홈 ----------
+  // ---------- 첫 화면: 전체 개념 지도 ----------
   async function renderHome() {
-    const areas = await loadReadyAreas();
+    await Promise.all([loadMap(), loadReadyAreas()]);
     const due = dueReviews().length;
+    const readyCount = MAP.concepts.filter(c => isReadyConcept(c.id)).length;
     let html = `<h1>개념 지도</h1>
-      <p class="sub">지금 단계: ${levelBadge(state.level)} <a href="#/settings">바꾸기</a></p>`;
+      <p class="sub">영어 문법 전체 ${MAP.concepts.length}개 개념이에요. 지금 배울 수 있는 개념은 ${readyCount}개예요.<br>
+      지금 단계: ${levelBadge(state.level)} <a href="#/settings">바꾸기</a></p>`;
     if (due) {
       html += `<div class="card"><h3>오늘 복습할 문제 ${due}개</h3>
         <p class="sub">전에 틀린 문제를 다시 풀어 개념을 단단하게 만들어요.</p>
         <a class="btn" href="#/review">복습 시작</a></div>`;
     }
-    areas.forEach(area => {
-      html += `<div class="card"><div class="area-head"><h2>${esc(area.title)}</h2></div>
-        <p class="sub">${esc(area.intro)}</p>
-        <div class="legend"><span><i class="dot good"></i>이해함</span><span><i class="dot warn"></i>흔들림</span><span><i class="dot"></i>아직</span></div>
+    html += `<div class="legend"><span><i class="dot good"></i>이해함</span><span><i class="dot warn"></i>흔들림</span>
+      <span><i class="dot"></i>아직</span><span><i class="dot soon"></i>준비 중</span></div>`;
+
+    MAP.areas.forEach(a => {
+      const list = MAP.concepts.filter(c => c.area === a.code);
+      const ready = isReadyArea(a.code);
+      const good = list.filter(c => isReadyConcept(c.id) && statusOf(c.id) === 'good').length;
+      html += `<div class="card map-area ${ready ? '' : 'soon'}">
+        <div class="area-head"><h2><a href="#/area/${a.code}">${esc(a.title)}</a></h2>
+          ${ready ? `<span class="badge good">이해함 ${good} / ${list.length}</span>` : '<span class="badge">준비 중</span>'}</div>
+        <p class="sub">${esc(a.desc)}</p>`;
+      ['E', 'M', 'H'].forEach(band => {
+        const items = list.filter(c => startBand(c.stages) === band);
+        if (!items.length) return;
+        const above = LEVEL_ORDER[band] > LEVEL_ORDER[state.level];
+        html += `<div class="band ${above ? 'above' : ''}"><span class="band-label">${LEVELS[band]}</span><div class="band-chips">
+          ${items.map(c => {
+            const cls = isReadyConcept(c.id) ? `ready ${statusOf(c.id)}` : 'soon';
+            return `<a class="cchip ${cls}" href="${esc(conceptHref(c.id))}">${esc(c.name)}</a>`;
+          }).join('')}</div></div>`;
+      });
+      html += `</div>`;
+    });
+    app.innerHTML = html;
+  }
+
+  // ---------- 영역 화면: 한 영역의 학습 목록 ----------
+  async function renderArea(code) {
+    await Promise.all([loadMap(), loadReadyAreas()]);
+    const meta = MAP.areas.find(a => a.code === code);
+    if (!meta) { app.innerHTML = '<p>영역을 찾을 수 없어요.</p>'; return; }
+    let html = `<a href="#/">← 개념 지도</a><h1>${esc(meta.title)}</h1>`;
+    if (isReadyArea(code)) {
+      const area = cache[code];
+      html += `<p class="sub">${esc(area.intro)}</p>
+        <div class="card"><div class="legend"><span><i class="dot good"></i>이해함</span><span><i class="dot warn"></i>흔들림</span><span><i class="dot"></i>아직</span></div>
         <ul class="concept-list">`;
       area.concepts.forEach(c => {
         const lv = levelsFor(c);
@@ -134,10 +192,33 @@
           ${levelBadge(lv.lowest)}</a></li>`;
       });
       html += `</ul></div>`;
-    });
-    const soon = AREAS.filter(a => !a.ready).map(a => a.title).join(', ');
-    html += `<p class="areas-soon">준비 중인 영역: ${esc(soon)}</p>`;
+    } else {
+      html += `<p class="sub">${esc(meta.desc)}</p>
+        <div class="notice">이 영역은 아직 준비 중이에요. 어떤 개념을 배우게 되는지 미리 볼 수 있어요.</div>
+        <div class="card"><ul class="concept-list">`;
+      MAP.concepts.filter(c => c.area === code).forEach(c => {
+        html += `<li><a href="#/concept/${esc(c.id)}"><i class="dot soon"></i>
+          <span class="name">${esc(c.name)}</span>${levelBadge(startBand(c.stages))}</a></li>`;
+      });
+      html += `</ul></div>`;
+    }
     app.innerHTML = html;
+  }
+
+  // ---------- 준비 중인 개념 안내 ----------
+  async function renderConceptInfo(id) {
+    await Promise.all([loadMap(), loadReadyAreas()]);
+    if (isReadyConcept(id)) { location.hash = `#/learn/${id}`; return; }
+    const c = MAP.byId[id];
+    if (!c) { app.innerHTML = '<p>개념을 찾을 수 없어요.</p>'; return; }
+    const pre = c.prerequisites.map(conceptLink).join(' ') || '없음';
+    const nxt = MAP.next[id].map(conceptLink).join(' ') || '없음';
+    app.innerHTML = `<a href="#/area/${esc(c.area)}">← ${esc(MAP.areaTitle[c.area])}</a>
+      <h1>${esc(c.name)}</h1>
+      <p class="sub">${esc(MAP.areaTitle[c.area])} · ${levelBadge(startBand(c.stages))}</p>
+      <div class="notice">이 개념의 설명과 문제는 아직 준비 중이에요.</div>
+      <div class="card"><h3>먼저 알아야 할 개념</h3><p class="prereq">${pre}</p>
+        <h3>다음에 이어지는 개념</h3><p class="prereq">${nxt}</p></div>`;
   }
 
   // ---------- 그림 (시간선 / 묶음) ----------
@@ -307,23 +388,22 @@
   }
 
   async function renderLearn(id, stepIdx) {
-    const area = await loadArea(areaOf(id));
+    if (!isReadyArea(areaOf(id))) { location.hash = `#/concept/${id}`; return; }
+    const [area] = await Promise.all([loadArea(areaOf(id)), loadMap(), loadReadyAreas()]);
     const concept = area.conceptMap[id];
     if (!concept) { app.innerHTML = '<p>개념을 찾을 수 없어요.</p>'; return; }
-    const { steps, lv, base } = buildSteps(concept);
+    const { steps, lv } = buildSteps(concept);
     const total = steps.length + 1; // 마지막: 확인 문제로
     const i = Math.max(0, Math.min(stepIdx || 0, total - 1));
 
-    const prereqs = concept.prerequisites.map(p => {
-      const a = cache[areaOf(p)];
-      const pc = a && a.conceptMap[p];
-      return pc ? `<a href="#/learn/${esc(p)}">${esc(pc.name)}</a>${statusBadge(p)}` : `<span>${esc(p)}</span>`;
-    }).join(' ');
-    const weak = concept.prerequisites.filter(p => cache[areaOf(p)] && cache[areaOf(p)].conceptMap[p] && statusOf(p) !== 'good');
+    const prereqs = concept.prerequisites.map(conceptLink).join(' ');
+    const nexts = (MAP.next[id] || []).map(conceptLink).join(' ');
+    const weak = concept.prerequisites.filter(p => isReadyConcept(p) && statusOf(p) !== 'good');
 
-    let html = `<a href="#/">← 개념 지도</a>
+    let html = `<a href="#/area/${esc(area.code)}">← ${esc(area.title)}</a>
       <h1>${esc(concept.name)}</h1>
       <p class="prereq">먼저 알아야 할 개념: ${prereqs || '없음'}</p>`;
+    if (i === total - 1 && nexts) html += `<p class="prereq">다음에 이어지는 개념: ${nexts}</p>`;
     if (lv.aboveMe) {
       html += `<div class="notice">이 개념은 ${LEVELS[lv.lowest]} 단계예요. 지금 단계보다 높지만 미리 볼 수 있어요.</div>`;
     } else if (weak.length && i === 0) {
@@ -671,6 +751,8 @@
     const parts = (location.hash.replace(/^#\/?/, '') || '').split('/');
     try {
       switch (parts[0]) {
+        case 'area': await renderArea(decodeURIComponent(parts[1])); break;
+        case 'concept': await renderConceptInfo(decodeURIComponent(parts[1])); break;
         case 'learn': await renderLearn(decodeURIComponent(parts[1]), parseInt(parts[2] || '0', 10)); break;
         case 'quiz': await startQuiz(decodeURIComponent(parts[1])); break;
         case 'review': await startReview(); break;
