@@ -93,7 +93,6 @@ h3 { font-size: 16px; margin: 0 0 8px; }
 .map-area h2 a::after { content: ' ›'; color: var(--muted); }
 .map-area.soon h2 a { color: var(--muted); }
 .band { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px solid var(--line); }
-.band.above { opacity: .55; }
 .band-label { flex: 0 0 34px; font-size: 13px; font-weight: 700; color: var(--muted); padding-top: 5px; }
 .band-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .cchip {
@@ -250,4 +249,56 @@ select, input[type=text] {
 @media (max-width: 560px) {
   .contrast { grid-template-columns: 1fr; }
   .topbar nav { gap: 12px; }
+}
+
+/* 경로 표시: 개념 지도 › 영역 › 개념 */
+.crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font-size: 14px; margin-bottom: 2px; }
+.crumbs .sep { color: var(--none); }
+.crumbs .here { color: var(--muted); }
+
+/* 제목 + 문제 바로 풀기 */
+.title-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.title-row h1 { flex: 1; min-width: 0; }
+.btn.small { padding: 7px 12px; font-size: 14px; flex: 0 0 auto; }
+
+/* 목록 줄 오른쪽의 '문제' 바로가기 */
+.concept-list li.with-quiz { display: flex; align-items: center; }
+.concept-list li.with-quiz > a:first-child { flex: 1; min-width: 0; }
+.qlink {
+  flex: 0 0 auto; font-size: 13px; font-weight: 600; color: var(--primary);
+  border: 1px solid var(--primary-soft); background: var(--primary-soft);
+  border-radius: 8px; padding: 3px 10px; margin-left: 8px;
+}
+.qlink:hover { border-color: var(--primary); }
+
+/* 위쪽 메뉴의 목차 버튼 */
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.toc-btn {
+  font: inherit; font-size: 14px; font-weight: 600; color: var(--primary);
+  background: var(--primary-soft); border: none; border-radius: 8px; padding: 5px 10px; cursor: pointer;
+}
+
+/* 전체 목차 서랍 */
+.toc { position: fixed; inset: 0; z-index: 20; background: rgba(20, 24, 36, .35); }
+.toc[hidden] { display: none; }
+.toc-panel {
+  position: absolute; top: 0; left: 0; bottom: 0; width: min(360px, 88vw); overflow-y: auto;
+  background: var(--card); padding: 14px 16px 40px; box-shadow: 2px 0 16px rgba(0, 0, 0, .12);
+}
+.toc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.toc-close { font-size: 18px; background: none; border: none; cursor: pointer; color: var(--muted); padding: 4px 8px; }
+.toc-home { display: block; font-weight: 700; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.toc details { border-bottom: 1px solid var(--line); }
+.toc summary { cursor: pointer; font-weight: 700; padding: 10px 0; display: flex; justify-content: space-between; }
+.toc-count { font-size: 12px; font-weight: 600; color: var(--muted); }
+.toc ul { list-style: none; margin: 0 0 8px; padding: 0; }
+.toc li { display: flex; align-items: center; padding: 3px 0 3px 4px; border-radius: 8px; }
+.toc li.current { background: var(--primary-soft); }
+.toc-name { flex: 1; min-width: 0; color: var(--text); font-size: 14px; display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+.toc-name:hover { color: var(--primary); }
+body.toc-open { overflow: hidden; }
+
+@media (max-width: 560px) {
+  .brand { font-size: 15px; }
+  .topbar { padding: 10px 14px; }
 }
