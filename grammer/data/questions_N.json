@@ -1,0 +1,2467 @@
+{
+  "area": "N",
+  "types": {
+    "concept": "개념 확인",
+    "apply": "적용",
+    "reason": "이유 확인",
+    "order": "문장 만들기"
+  },
+  "questions": [
+    {
+      "id": "N.plural.q1",
+      "concept": "N.plural",
+      "level": "E",
+      "type": "apply",
+      "question": "I have two ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "brothers",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "brother",
+          "misconception": "N.plural.missing"
+        },
+        {
+          "id": "c",
+          "text": "brotheres",
+          "misconception": "N.plural.spelling"
+        }
+      ],
+      "explanation": "two(둘) 뒤에는 복수형이 와요. brother는 -s만 붙여요."
+    },
+    {
+      "id": "N.plural.q2",
+      "concept": "N.plural",
+      "level": "E",
+      "type": "apply",
+      "question": "There are three ___ in the room.",
+      "options": [
+        {
+          "id": "a",
+          "text": "boxes",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "boxs",
+          "misconception": "N.plural.spelling"
+        },
+        {
+          "id": "c",
+          "text": "box",
+          "misconception": "N.plural.missing"
+        }
+      ],
+      "explanation": "box는 -x로 끝나서 -es를 붙여요."
+    },
+    {
+      "id": "N.plural.q3",
+      "concept": "N.plural",
+      "level": "E",
+      "type": "apply",
+      "question": "Five ___ are playing in the park.",
+      "options": [
+        {
+          "id": "a",
+          "text": "children",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "childs",
+          "misconception": "N.plural.irregular"
+        },
+        {
+          "id": "c",
+          "text": "child",
+          "misconception": "N.plural.missing"
+        }
+      ],
+      "explanation": "child의 복수형은 불규칙으로 children이에요."
+    },
+    {
+      "id": "N.plural.q4",
+      "concept": "N.plural",
+      "level": "E",
+      "type": "apply",
+      "question": "The ___ are sleeping.",
+      "options": [
+        {
+          "id": "a",
+          "text": "babies",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "babys",
+          "misconception": "N.plural.spelling"
+        },
+        {
+          "id": "c",
+          "text": "baby",
+          "misconception": "N.plural.missing"
+        }
+      ],
+      "explanation": "are가 복수라서 복수형이 와요. baby는 자음 + y라서 y를 i로 바꾸고 -es를 붙여요."
+    },
+    {
+      "id": "N.plural.q5",
+      "concept": "N.plural",
+      "level": "E",
+      "type": "apply",
+      "question": "I brush my ___ after every meal.",
+      "options": [
+        {
+          "id": "a",
+          "text": "teeth",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "tooths",
+          "misconception": "N.plural.irregular"
+        },
+        {
+          "id": "c",
+          "text": "toothes",
+          "misconception": "N.plural.irregular"
+        }
+      ],
+      "explanation": "tooth(이)의 복수형은 불규칙으로 teeth예요."
+    },
+    {
+      "id": "N.plural.q6",
+      "concept": "N.plural",
+      "level": "E",
+      "type": "apply",
+      "question": "The ___ are falling from the trees.",
+      "options": [
+        {
+          "id": "a",
+          "text": "leaves",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "leafs",
+          "misconception": "N.plural.spelling"
+        },
+        {
+          "id": "c",
+          "text": "leaf",
+          "misconception": "N.plural.missing"
+        }
+      ],
+      "explanation": "leaf는 -f로 끝나서 f를 v로 바꾸고 -es를 붙여요."
+    },
+    {
+      "id": "N.plural.q7",
+      "concept": "N.plural",
+      "level": "E",
+      "type": "apply",
+      "question": "My new glasses ___ very nice.",
+      "options": [
+        {
+          "id": "a",
+          "text": "are",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is",
+          "misconception": "N.plural.pair_items"
+        },
+        {
+          "id": "c",
+          "text": "am",
+          "misconception": null
+        }
+      ],
+      "explanation": "glasses(안경)는 항상 복수로 쓰는 명사라서 are예요."
+    },
+    {
+      "id": "N.plural.q8",
+      "concept": "N.plural",
+      "level": "E",
+      "type": "concept",
+      "question": "단수와 복수의 모양이 같은 명사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "sheep",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "dog",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "man",
+          "misconception": "N.plural.irregular"
+        }
+      ],
+      "explanation": "sheep(양)은 한 마리도 sheep, 여러 마리도 sheep이에요. man의 복수형은 men이에요."
+    },
+    {
+      "id": "N.plural.q9",
+      "concept": "N.plural",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 개 두 마리를 키운다.",
+      "tokens": [
+        "I",
+        "have",
+        "two",
+        "dogs."
+      ],
+      "answer": [
+        "I",
+        "have",
+        "two",
+        "dogs."
+      ],
+      "misconception": null,
+      "explanation": "숫자 two 뒤에는 복수형 dogs가 와요."
+    },
+    {
+      "id": "N.plural.q10",
+      "concept": "N.plural",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 저 상자들은 무겁다.",
+      "tokens": [
+        "Those boxes",
+        "are",
+        "heavy."
+      ],
+      "answer": [
+        "Those boxes",
+        "are",
+        "heavy."
+      ],
+      "misconception": null,
+      "explanation": "주어가 복수(Those boxes)라서 동사도 are를 써요."
+    },
+    {
+      "id": "N.pronoun.q1",
+      "concept": "N.pronoun",
+      "level": "E",
+      "type": "apply",
+      "question": "\"이것은 나의 가방이다.\" → This is ___ bag.",
+      "options": [
+        {
+          "id": "a",
+          "text": "my",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "me",
+          "misconception": "N.pronoun.possessive"
+        },
+        {
+          "id": "c",
+          "text": "mine",
+          "misconception": "N.pronoun.mine"
+        }
+      ],
+      "explanation": "명사(bag) 앞에서 \"~의\"는 소유격 my예요. mine은 뒤에 명사 없이 써요."
+    },
+    {
+      "id": "N.pronoun.q2",
+      "concept": "N.pronoun",
+      "level": "E",
+      "type": "apply",
+      "question": "\"톰은 그녀를 좋아한다.\" → Tom likes ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "her",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "she",
+          "misconception": "N.pronoun.subject_object"
+        },
+        {
+          "id": "c",
+          "text": "hers",
+          "misconception": null
+        }
+      ],
+      "explanation": "동사 likes 뒤 목적어 자리라서 목적격 her예요."
+    },
+    {
+      "id": "N.pronoun.q3",
+      "concept": "N.pronoun",
+      "level": "E",
+      "type": "apply",
+      "question": "___ are my best friends.",
+      "options": [
+        {
+          "id": "a",
+          "text": "They",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Them",
+          "misconception": "N.pronoun.subject_object"
+        },
+        {
+          "id": "c",
+          "text": "Their",
+          "misconception": "N.pronoun.possessive"
+        }
+      ],
+      "explanation": "주어 자리라서 주격 They예요."
+    },
+    {
+      "id": "N.pronoun.q4",
+      "concept": "N.pronoun",
+      "level": "E",
+      "type": "apply",
+      "question": "\"이 연필은 내 것이 아니야. 그의 것이야.\" → It's ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "his",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "him",
+          "misconception": "N.pronoun.mine"
+        },
+        {
+          "id": "c",
+          "text": "he",
+          "misconception": "N.pronoun.subject_object"
+        }
+      ],
+      "explanation": "\"그의 것\"은 소유대명사 his예요. he는 his – him – his로 바뀌어요."
+    },
+    {
+      "id": "N.pronoun.q5",
+      "concept": "N.pronoun",
+      "level": "E",
+      "type": "apply",
+      "question": "The dog wagged ___ tail.",
+      "options": [
+        {
+          "id": "a",
+          "text": "its",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "it's",
+          "misconception": "N.pronoun.its"
+        },
+        {
+          "id": "c",
+          "text": "it",
+          "misconception": "N.pronoun.possessive"
+        }
+      ],
+      "explanation": "\"그것의 꼬리\"라서 소유격 its예요. it's는 it is의 줄임말이에요."
+    },
+    {
+      "id": "N.pronoun.q6",
+      "concept": "N.pronoun",
+      "level": "M",
+      "type": "apply",
+      "question": "Please come with ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "me",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I",
+          "misconception": "N.pronoun.after_prep"
+        },
+        {
+          "id": "c",
+          "text": "my",
+          "misconception": "N.pronoun.possessive"
+        }
+      ],
+      "explanation": "전치사 with 뒤에는 목적격 me를 써요."
+    },
+    {
+      "id": "N.pronoun.q7",
+      "concept": "N.pronoun",
+      "level": "M",
+      "type": "apply",
+      "question": "Tom and ___ went to the movies.",
+      "options": [
+        {
+          "id": "a",
+          "text": "I",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "me",
+          "misconception": "N.pronoun.subject_object"
+        },
+        {
+          "id": "c",
+          "text": "my",
+          "misconception": "N.pronoun.possessive"
+        }
+      ],
+      "explanation": "Tom and ___가 주어 자리라서 주격 I를 써요."
+    },
+    {
+      "id": "N.pronoun.q8",
+      "concept": "N.pronoun",
+      "level": "E",
+      "type": "apply",
+      "question": "\"이 책은 너의 것이니?\" → Is this book ___?",
+      "options": [
+        {
+          "id": "a",
+          "text": "yours",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "your",
+          "misconception": "N.pronoun.mine"
+        },
+        {
+          "id": "c",
+          "text": "you",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"너의 것\"은 소유대명사 yours예요. your는 뒤에 명사가 와야 해요."
+    },
+    {
+      "id": "N.pronoun.q9",
+      "concept": "N.pronoun",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 그녀의 이름을 안다.",
+      "tokens": [
+        "He",
+        "knows",
+        "her name."
+      ],
+      "answer": [
+        "He",
+        "knows",
+        "her name."
+      ],
+      "misconception": null,
+      "explanation": "주어는 주격 He, \"그녀의 이름\"은 소유격 her + 명사예요."
+    },
+    {
+      "id": "N.pronoun.q10",
+      "concept": "N.pronoun",
+      "level": "E",
+      "type": "reason",
+      "question": "Mom loves us. 에서 we가 아니라 us를 쓰는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "동사 loves 뒤의 목적어 자리라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "주어 자리라서",
+          "misconception": "N.pronoun.subject_object"
+        },
+        {
+          "id": "c",
+          "text": "\"우리의\"라는 뜻이라서",
+          "misconception": "N.pronoun.possessive"
+        }
+      ],
+      "explanation": "동사 뒤 목적어 자리에는 목적격을 써요. we의 목적격은 us예요."
+    },
+    {
+      "id": "N.article_basic.q1",
+      "concept": "N.article_basic",
+      "level": "E",
+      "type": "apply",
+      "question": "I ate ___ apple.",
+      "options": [
+        {
+          "id": "a",
+          "text": "an",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a",
+          "misconception": "N.article_basic.a_an_sound"
+        },
+        {
+          "id": "c",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": null
+        }
+      ],
+      "explanation": "apple은 모음 소리 [애]로 시작해서 an이에요."
+    },
+    {
+      "id": "N.article_basic.q2",
+      "concept": "N.article_basic",
+      "level": "E",
+      "type": "apply",
+      "question": "She is ___ university student.",
+      "options": [
+        {
+          "id": "a",
+          "text": "a",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "an",
+          "misconception": "N.article_basic.a_an_sound"
+        },
+        {
+          "id": "c",
+          "text": "the",
+          "misconception": null
+        }
+      ],
+      "explanation": "university는 u로 시작하지만 [유] 소리라서 a예요."
+    },
+    {
+      "id": "N.article_basic.q3",
+      "concept": "N.article_basic",
+      "level": "E",
+      "type": "apply",
+      "question": "We waited for ___ hour.",
+      "options": [
+        {
+          "id": "a",
+          "text": "an",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a",
+          "misconception": "N.article_basic.a_an_sound"
+        },
+        {
+          "id": "c",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": null
+        }
+      ],
+      "explanation": "hour는 h가 소리 나지 않아 [아워]로 시작해서 an이에요."
+    },
+    {
+      "id": "N.article_basic.q4",
+      "concept": "N.article_basic",
+      "level": "E",
+      "type": "apply",
+      "question": "I have a cat. ___ cat is white.",
+      "options": [
+        {
+          "id": "a",
+          "text": "The",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "A",
+          "misconception": "N.article_basic.second_mention"
+        },
+        {
+          "id": "c",
+          "text": "An",
+          "misconception": "N.article_basic.a_an_sound"
+        }
+      ],
+      "explanation": "앞에서 말한 바로 그 고양이라서 the예요."
+    },
+    {
+      "id": "N.article_basic.q5",
+      "concept": "N.article_basic",
+      "level": "E",
+      "type": "apply",
+      "question": "___ sun rises in the east.",
+      "options": [
+        {
+          "id": "a",
+          "text": "The",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "A",
+          "misconception": "N.article_basic.unique"
+        },
+        {
+          "id": "c",
+          "text": "An",
+          "misconception": "N.article_basic.unique"
+        }
+      ],
+      "explanation": "해는 하나뿐이라서 the를 써요."
+    },
+    {
+      "id": "N.article_basic.q6",
+      "concept": "N.article_basic",
+      "level": "E",
+      "type": "apply",
+      "question": "어법상 맞는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "I have two books.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I have a books.",
+          "misconception": "N.article_basic.a_with_plural"
+        },
+        {
+          "id": "c",
+          "text": "I have two book.",
+          "misconception": "N.plural.missing"
+        }
+      ],
+      "explanation": "a는 \"하나\"라는 뜻이라 복수 명사 앞에 쓸 수 없어요."
+    },
+    {
+      "id": "N.article_basic.q7",
+      "concept": "N.article_basic",
+      "level": "E",
+      "type": "apply",
+      "question": "She plays ___ violin very well.",
+      "options": [
+        {
+          "id": "a",
+          "text": "the",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "an",
+          "misconception": "N.article_basic.a_an_sound"
+        }
+      ],
+      "explanation": "악기를 연주할 때는 play the + 악기예요."
+    },
+    {
+      "id": "N.article_basic.q8",
+      "concept": "N.article_basic",
+      "level": "M",
+      "type": "apply",
+      "question": "Today is ___ first day of school.",
+      "options": [
+        {
+          "id": "a",
+          "text": "the",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "an",
+          "misconception": "N.article_basic.a_an_sound"
+        }
+      ],
+      "explanation": "first(첫 번째)처럼 순서를 나타내는 말 앞에는 the를 써요."
+    },
+    {
+      "id": "N.article_basic.q9",
+      "concept": "N.article_basic",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 어제 개 한 마리를 봤다.",
+      "tokens": [
+        "I",
+        "saw",
+        "a dog",
+        "yesterday."
+      ],
+      "answer": [
+        "I",
+        "saw",
+        "a dog",
+        "yesterday."
+      ],
+      "misconception": null,
+      "explanation": "처음 말하는 개라서 a dog이에요."
+    },
+    {
+      "id": "N.article_basic.q10",
+      "concept": "N.article_basic",
+      "level": "E",
+      "type": "reason",
+      "question": "I have a cat. The cat is white. 에서 두 번째 문장에 the를 쓴 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "앞에서 말한 바로 그 고양이라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "고양이가 하얀색이라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "고양이가 두 마리라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "처음 말할 때는 a, 이미 말한 것을 다시 가리킬 때는 the예요."
+    },
+    {
+      "id": "N.countable.q1",
+      "concept": "N.countable",
+      "level": "M",
+      "type": "apply",
+      "question": "I need some ___ about the trip.",
+      "options": [
+        {
+          "id": "a",
+          "text": "information",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "informations",
+          "misconception": "N.countable.plural_s"
+        },
+        {
+          "id": "c",
+          "text": "an information",
+          "misconception": "N.countable.a_with_uncount"
+        }
+      ],
+      "explanation": "information(정보)은 셀 수 없는 명사라서 a도 -s도 붙이지 않아요."
+    },
+    {
+      "id": "N.countable.q2",
+      "concept": "N.countable",
+      "level": "M",
+      "type": "apply",
+      "question": "Can I have ___ water?",
+      "options": [
+        {
+          "id": "a",
+          "text": "some",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a",
+          "misconception": "N.countable.a_with_uncount"
+        },
+        {
+          "id": "c",
+          "text": "two",
+          "misconception": "N.countable.plural_s"
+        }
+      ],
+      "explanation": "water는 셀 수 없어서 a나 숫자를 바로 붙이지 않아요. some(약간의)을 써요."
+    },
+    {
+      "id": "N.countable.q3",
+      "concept": "N.countable",
+      "level": "M",
+      "type": "apply",
+      "question": "She drank ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "two glasses of milk",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "two glass of milk",
+          "misconception": "N.countable.unit_plural"
+        },
+        {
+          "id": "c",
+          "text": "two milks",
+          "misconception": "N.countable.plural_s"
+        }
+      ],
+      "explanation": "셀 수 없는 milk는 단위(glass)로 세고, 여러 개면 단위를 복수로 써요."
+    },
+    {
+      "id": "N.countable.q4",
+      "concept": "N.countable",
+      "level": "M",
+      "type": "apply",
+      "question": "I have a lot of ___ today.",
+      "options": [
+        {
+          "id": "a",
+          "text": "homework",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "homeworks",
+          "misconception": "N.countable.plural_s"
+        },
+        {
+          "id": "c",
+          "text": "a homework",
+          "misconception": "N.countable.a_with_uncount"
+        }
+      ],
+      "explanation": "homework(숙제)는 셀 수 없는 명사예요."
+    },
+    {
+      "id": "N.countable.q5",
+      "concept": "N.countable",
+      "level": "M",
+      "type": "apply",
+      "question": "The news ___ very surprising.",
+      "options": [
+        {
+          "id": "a",
+          "text": "was",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "were",
+          "misconception": "N.countable.verb"
+        },
+        {
+          "id": "c",
+          "text": "are",
+          "misconception": "N.countable.verb"
+        }
+      ],
+      "explanation": "news는 -s로 끝나지만 셀 수 없는 명사라서 단수 취급해요."
+    },
+    {
+      "id": "N.countable.q6",
+      "concept": "N.countable",
+      "level": "M",
+      "type": "apply",
+      "question": "He gave me ___ good advice.",
+      "options": [
+        {
+          "id": "a",
+          "text": "some",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a",
+          "misconception": "N.countable.a_with_uncount"
+        },
+        {
+          "id": "c",
+          "text": "many",
+          "misconception": "N.quantifier.many_much"
+        }
+      ],
+      "explanation": "advice(조언)는 셀 수 없어서 a나 many를 쓰지 않아요."
+    },
+    {
+      "id": "N.countable.q7",
+      "concept": "N.countable",
+      "level": "M",
+      "type": "concept",
+      "question": "다음 중 셀 수 없는 명사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "money",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "coin",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "dollar",
+          "misconception": null
+        }
+      ],
+      "explanation": "money(돈)는 셀 수 없어요. coin(동전), dollar(달러)는 하나, 둘 셀 수 있어요."
+    },
+    {
+      "id": "N.countable.q8",
+      "concept": "N.countable",
+      "level": "M",
+      "type": "concept",
+      "question": "셀 수 없는 명사 paper를 바르게 센 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "a piece of paper",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a paper of piece",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "papers two",
+          "misconception": "N.countable.plural_s"
+        }
+      ],
+      "explanation": "종이 한 장은 a piece of paper, 두 장은 two pieces of paper예요."
+    },
+    {
+      "id": "N.countable.q9",
+      "concept": "N.countable",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 매일 아침 우유 한 잔을 마신다.",
+      "tokens": [
+        "I",
+        "drink",
+        "a glass of milk",
+        "every morning."
+      ],
+      "answer": [
+        "I",
+        "drink",
+        "a glass of milk",
+        "every morning."
+      ],
+      "misconception": null,
+      "explanation": "셀 수 없는 milk는 a glass of로 세요."
+    },
+    {
+      "id": "N.countable.q10",
+      "concept": "N.countable",
+      "level": "M",
+      "type": "reason",
+      "question": "I bought some bread. 에서 a bread라고 하지 않는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "bread는 셀 수 없는 명사라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "bread가 모음 소리로 시작해서",
+          "misconception": "N.article_basic.a_an_sound"
+        },
+        {
+          "id": "c",
+          "text": "빵을 여러 개 사서",
+          "misconception": null
+        }
+      ],
+      "explanation": "bread는 셀 수 없는 명사라서 a를 붙이지 않아요. 하나를 말하려면 a loaf of bread(빵 한 덩어리)처럼 단위를 써요."
+    },
+    {
+      "id": "N.quantifier.q1",
+      "concept": "N.quantifier",
+      "level": "M",
+      "type": "apply",
+      "question": "How ___ books do you have?",
+      "options": [
+        {
+          "id": "a",
+          "text": "many",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "much",
+          "misconception": "N.quantifier.many_much"
+        },
+        {
+          "id": "c",
+          "text": "lot",
+          "misconception": null
+        }
+      ],
+      "explanation": "books는 셀 수 있는 명사라서 How many예요."
+    },
+    {
+      "id": "N.quantifier.q2",
+      "concept": "N.quantifier",
+      "level": "M",
+      "type": "apply",
+      "question": "I don't have ___ money.",
+      "options": [
+        {
+          "id": "a",
+          "text": "much",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "many",
+          "misconception": "N.quantifier.many_much"
+        },
+        {
+          "id": "c",
+          "text": "a few",
+          "misconception": "N.quantifier.many_much"
+        }
+      ],
+      "explanation": "money는 셀 수 없는 명사라서 much예요."
+    },
+    {
+      "id": "N.quantifier.q3",
+      "concept": "N.quantifier",
+      "level": "M",
+      "type": "apply",
+      "question": "There is ___ milk left, so I can make a cup of tea.",
+      "options": [
+        {
+          "id": "a",
+          "text": "a little",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "little",
+          "misconception": "N.quantifier.few_afew"
+        },
+        {
+          "id": "c",
+          "text": "a few",
+          "misconception": "N.quantifier.many_much"
+        }
+      ],
+      "explanation": "차를 만들 수 있을 만큼 \"조금 있다\"는 뜻이라 a little이에요. milk는 셀 수 없어서 a few는 안 돼요."
+    },
+    {
+      "id": "N.quantifier.q4",
+      "concept": "N.quantifier",
+      "level": "M",
+      "type": "apply",
+      "question": "He has ___ friends, so he often feels lonely.",
+      "options": [
+        {
+          "id": "a",
+          "text": "few",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a few",
+          "misconception": "N.quantifier.few_afew"
+        },
+        {
+          "id": "c",
+          "text": "little",
+          "misconception": "N.quantifier.many_much"
+        }
+      ],
+      "explanation": "외로움을 느낀다는 것은 친구가 \"거의 없다\"는 뜻이라 few예요."
+    },
+    {
+      "id": "N.quantifier.q5",
+      "concept": "N.quantifier",
+      "level": "M",
+      "type": "apply",
+      "question": "I don't have ___ brothers.",
+      "options": [
+        {
+          "id": "a",
+          "text": "any",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "some",
+          "misconception": "N.quantifier.some_any"
+        },
+        {
+          "id": "c",
+          "text": "much",
+          "misconception": "N.quantifier.many_much"
+        }
+      ],
+      "explanation": "부정문에는 any를 써요."
+    },
+    {
+      "id": "N.quantifier.q6",
+      "concept": "N.quantifier",
+      "level": "M",
+      "type": "apply",
+      "question": "Would you like ___ cookies?",
+      "options": [
+        {
+          "id": "a",
+          "text": "some",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "any",
+          "misconception": "N.quantifier.some_any"
+        },
+        {
+          "id": "c",
+          "text": "much",
+          "misconception": "N.quantifier.many_much"
+        }
+      ],
+      "explanation": "무언가를 권하는 의문문에는 some을 써요."
+    },
+    {
+      "id": "N.quantifier.q7",
+      "concept": "N.quantifier",
+      "level": "M",
+      "type": "apply",
+      "question": "I met a few ___ at the park.",
+      "options": [
+        {
+          "id": "a",
+          "text": "friends",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "friend",
+          "misconception": "N.quantifier.plural_after"
+        },
+        {
+          "id": "c",
+          "text": "friendes",
+          "misconception": "N.plural.spelling"
+        }
+      ],
+      "explanation": "a few 뒤에는 셀 수 있는 명사의 복수형이 와요."
+    },
+    {
+      "id": "N.quantifier.q8",
+      "concept": "N.quantifier",
+      "level": "M",
+      "type": "concept",
+      "question": "셀 수 있는 명사와 셀 수 없는 명사 모두에 쓸 수 있는 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "a lot of",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "many",
+          "misconception": "N.quantifier.many_much"
+        },
+        {
+          "id": "c",
+          "text": "much",
+          "misconception": "N.quantifier.many_much"
+        }
+      ],
+      "explanation": "a lot of는 a lot of books, a lot of water처럼 둘 다에 써요."
+    },
+    {
+      "id": "N.quantifier.q9",
+      "concept": "N.quantifier",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 시간이 많지 않다.",
+      "tokens": [
+        "I",
+        "don't have",
+        "much",
+        "time."
+      ],
+      "answer": [
+        "I",
+        "don't have",
+        "much",
+        "time."
+      ],
+      "misconception": null,
+      "explanation": "time은 셀 수 없어서 much를 써요. 부정문이라 much가 자연스러워요."
+    },
+    {
+      "id": "N.quantifier.q10",
+      "concept": "N.quantifier",
+      "level": "M",
+      "type": "reason",
+      "question": "I have a few friends. 와 I have few friends. 의 차이는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "앞은 \"몇 명 있다\", 뒤는 \"거의 없다\"",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "두 문장의 뜻이 같다",
+          "misconception": "N.quantifier.few_afew"
+        },
+        {
+          "id": "c",
+          "text": "앞은 \"거의 없다\", 뒤는 \"몇 명 있다\"",
+          "misconception": "N.quantifier.few_afew"
+        }
+      ],
+      "explanation": "a few는 긍정(조금 있다), few는 부정(거의 없다)이에요."
+    },
+    {
+      "id": "N.agreement.q1",
+      "concept": "N.agreement",
+      "level": "M",
+      "type": "apply",
+      "question": "Every student ___ a locker.",
+      "options": [
+        {
+          "id": "a",
+          "text": "has",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "have",
+          "misconception": "N.agreement.every_plural"
+        },
+        {
+          "id": "c",
+          "text": "having",
+          "misconception": null
+        }
+      ],
+      "explanation": "every + 단수 명사는 단수 취급이라 has예요."
+    },
+    {
+      "id": "N.agreement.q2",
+      "concept": "N.agreement",
+      "level": "M",
+      "type": "apply",
+      "question": "Everyone ___ here.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "are",
+          "misconception": "N.agreement.every_plural"
+        },
+        {
+          "id": "c",
+          "text": "be",
+          "misconception": null
+        }
+      ],
+      "explanation": "everyone은 단수 취급이라 is예요."
+    },
+    {
+      "id": "N.agreement.q3",
+      "concept": "N.agreement",
+      "level": "M",
+      "type": "apply",
+      "question": "Tom and his sister ___ in the same class.",
+      "options": [
+        {
+          "id": "a",
+          "text": "are",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is",
+          "misconception": "N.agreement.and_singular"
+        },
+        {
+          "id": "c",
+          "text": "be",
+          "misconception": null
+        }
+      ],
+      "explanation": "A and B는 두 사람이라 복수 취급이에요."
+    },
+    {
+      "id": "N.agreement.q4",
+      "concept": "N.agreement",
+      "level": "M",
+      "type": "apply",
+      "question": "The color of the flowers ___ beautiful.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "are",
+          "misconception": "N.agreement.modifier"
+        },
+        {
+          "id": "c",
+          "text": "be",
+          "misconception": null
+        }
+      ],
+      "explanation": "진짜 주어는 The color(단수)예요. of the flowers는 수식어예요."
+    },
+    {
+      "id": "N.agreement.q5",
+      "concept": "N.agreement",
+      "level": "M",
+      "type": "apply",
+      "question": "Each of the boys ___ a bike.",
+      "options": [
+        {
+          "id": "a",
+          "text": "has",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "have",
+          "misconception": "N.agreement.modifier"
+        },
+        {
+          "id": "c",
+          "text": "having",
+          "misconception": null
+        }
+      ],
+      "explanation": "Each of ~는 \"각각\"이라 단수 취급해요."
+    },
+    {
+      "id": "N.agreement.q6",
+      "concept": "N.agreement",
+      "level": "H",
+      "type": "apply",
+      "question": "A number of people ___ waiting outside.",
+      "options": [
+        {
+          "id": "a",
+          "text": "are",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is",
+          "misconception": "N.agreement.number"
+        },
+        {
+          "id": "c",
+          "text": "was",
+          "misconception": "N.agreement.number"
+        }
+      ],
+      "explanation": "a number of는 \"많은\"이라는 뜻이라 진짜 주어는 people(복수)이에요."
+    },
+    {
+      "id": "N.agreement.q7",
+      "concept": "N.agreement",
+      "level": "H",
+      "type": "apply",
+      "question": "The number of cars ___ increasing.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "are",
+          "misconception": "N.agreement.number"
+        },
+        {
+          "id": "c",
+          "text": "were",
+          "misconception": "N.agreement.number"
+        }
+      ],
+      "explanation": "the number of는 \"~의 수\"라서 진짜 주어 number(단수)에 맞춰요."
+    },
+    {
+      "id": "N.agreement.q8",
+      "concept": "N.agreement",
+      "level": "H",
+      "type": "apply",
+      "question": "Playing computer games ___ fun.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "are",
+          "misconception": "N.agreement.gerund"
+        },
+        {
+          "id": "c",
+          "text": "be",
+          "misconception": null
+        }
+      ],
+      "explanation": "동명사(Playing ~) 주어는 하나의 일이라 단수 취급해요."
+    },
+    {
+      "id": "N.agreement.q9",
+      "concept": "N.agreement",
+      "level": "M",
+      "type": "concept",
+      "question": "단수 동사(is)를 써야 하는 주어는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Everybody",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "My parents",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "Tom and I",
+          "misconception": "N.agreement.and_singular"
+        }
+      ],
+      "explanation": "everybody는 단수 취급이에요. My parents와 Tom and I는 복수예요."
+    },
+    {
+      "id": "N.agreement.q10",
+      "concept": "N.agreement",
+      "level": "M",
+      "type": "reason",
+      "question": "The list of names is long. 에서 is를 쓴 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "진짜 주어 The list가 단수라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "names가 복수라서",
+          "misconception": "N.agreement.modifier"
+        },
+        {
+          "id": "c",
+          "text": "long이 형용사라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "of names는 수식어예요. 동사는 진짜 주어 The list(단수)에 맞춰요."
+    },
+    {
+      "id": "N.reflexive.q1",
+      "concept": "N.reflexive",
+      "level": "M",
+      "type": "apply",
+      "question": "I cut ___ while cooking.",
+      "options": [
+        {
+          "id": "a",
+          "text": "myself",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "me",
+          "misconception": "N.reflexive.object"
+        },
+        {
+          "id": "c",
+          "text": "mine",
+          "misconception": null
+        }
+      ],
+      "explanation": "주어 I가 자기 자신을 벤 것이라 myself예요."
+    },
+    {
+      "id": "N.reflexive.q2",
+      "concept": "N.reflexive",
+      "level": "M",
+      "type": "apply",
+      "question": "She looked at ___ in the mirror.",
+      "options": [
+        {
+          "id": "a",
+          "text": "herself",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "her",
+          "misconception": "N.reflexive.object"
+        },
+        {
+          "id": "c",
+          "text": "hers",
+          "misconception": null
+        }
+      ],
+      "explanation": "거울 속 자기 자신을 본 것이라 herself예요."
+    },
+    {
+      "id": "N.reflexive.q3",
+      "concept": "N.reflexive",
+      "level": "M",
+      "type": "apply",
+      "question": "He made the model airplane ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "himself",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "hisself",
+          "misconception": "N.reflexive.form"
+        },
+        {
+          "id": "c",
+          "text": "his",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"직접 만들었다\"는 강조예요. he의 재귀대명사는 himself예요."
+    },
+    {
+      "id": "N.reflexive.q4",
+      "concept": "N.reflexive",
+      "level": "M",
+      "type": "apply",
+      "question": "They enjoyed ___ at the party.",
+      "options": [
+        {
+          "id": "a",
+          "text": "themselves",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "theirselves",
+          "misconception": "N.reflexive.form"
+        },
+        {
+          "id": "c",
+          "text": "them",
+          "misconception": "N.reflexive.object"
+        }
+      ],
+      "explanation": "enjoy oneself(즐거운 시간을 보내다). they의 재귀대명사는 themselves예요."
+    },
+    {
+      "id": "N.reflexive.q5",
+      "concept": "N.reflexive",
+      "level": "M",
+      "type": "apply",
+      "question": "Children, help ___ to the snacks.",
+      "options": [
+        {
+          "id": "a",
+          "text": "yourselves",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "yourself",
+          "misconception": "N.reflexive.number"
+        },
+        {
+          "id": "c",
+          "text": "you",
+          "misconception": "N.reflexive.object"
+        }
+      ],
+      "explanation": "아이들(여럿)에게 하는 말이라 yourselves예요."
+    },
+    {
+      "id": "N.reflexive.q6",
+      "concept": "N.reflexive",
+      "level": "M",
+      "type": "apply",
+      "question": "My grandma lives by ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "herself",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "her",
+          "misconception": "N.reflexive.object"
+        },
+        {
+          "id": "c",
+          "text": "she",
+          "misconception": null
+        }
+      ],
+      "explanation": "by oneself = 혼자서. 할머니라서 herself예요."
+    },
+    {
+      "id": "N.reflexive.q7",
+      "concept": "N.reflexive",
+      "level": "M",
+      "type": "apply",
+      "question": "We should take care of ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "ourselves",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "us",
+          "misconception": "N.reflexive.object"
+        },
+        {
+          "id": "c",
+          "text": "ourself",
+          "misconception": "N.reflexive.number"
+        }
+      ],
+      "explanation": "주어 We 자신을 돌보는 것이라 ourselves예요. 복수라 -selves예요."
+    },
+    {
+      "id": "N.reflexive.q8",
+      "concept": "N.reflexive",
+      "level": "M",
+      "type": "concept",
+      "question": "I made this cake myself. 에서 myself의 역할은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "\"직접\"이라는 뜻의 강조 (빼도 문장이 됨)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "동사의 목적어",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "문장의 주어",
+          "misconception": null
+        }
+      ],
+      "explanation": "이 문장의 목적어는 this cake예요. myself는 \"내가 직접\"이라고 강조하는 말이에요."
+    },
+    {
+      "id": "N.reflexive.q9",
+      "concept": "N.reflexive",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 거울 속 자신을 보았다.",
+      "tokens": [
+        "He",
+        "looked at",
+        "himself",
+        "in the mirror."
+      ],
+      "answer": [
+        "He",
+        "looked at",
+        "himself",
+        "in the mirror."
+      ],
+      "misconception": null,
+      "explanation": "주어 He 자신을 본 것이라 himself예요."
+    },
+    {
+      "id": "N.reflexive.q10",
+      "concept": "N.reflexive",
+      "level": "M",
+      "type": "reason",
+      "question": "He hurt him. 과 He hurt himself. 의 차이는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "앞은 다른 남자를, 뒤는 자기 자신을 다치게 했다",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "두 문장의 뜻이 같다",
+          "misconception": "N.reflexive.object"
+        },
+        {
+          "id": "c",
+          "text": "앞은 자기 자신을, 뒤는 다른 사람을 다치게 했다",
+          "misconception": "N.reflexive.object"
+        }
+      ],
+      "explanation": "주어와 같은 사람이면 재귀대명사(himself), 다른 사람이면 목적격(him)이에요."
+    },
+    {
+      "id": "N.indefinite.q1",
+      "concept": "N.indefinite",
+      "level": "M",
+      "type": "apply",
+      "question": "I have two sisters. One is a teacher, and ___ is a nurse.",
+      "options": [
+        {
+          "id": "a",
+          "text": "the other",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "another",
+          "misconception": "N.indefinite.another_other"
+        },
+        {
+          "id": "c",
+          "text": "other",
+          "misconception": null
+        }
+      ],
+      "explanation": "둘 중 남은 마지막 하나는 the other예요."
+    },
+    {
+      "id": "N.indefinite.q2",
+      "concept": "N.indefinite",
+      "level": "M",
+      "type": "apply",
+      "question": "This cake is delicious. Can I have ___ piece?",
+      "options": [
+        {
+          "id": "a",
+          "text": "another",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "the other",
+          "misconception": "N.indefinite.another_other"
+        },
+        {
+          "id": "c",
+          "text": "other",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"하나 더\"는 another예요."
+    },
+    {
+      "id": "N.indefinite.q3",
+      "concept": "N.indefinite",
+      "level": "M",
+      "type": "apply",
+      "question": "I lost my phone. I have to buy a new ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "one",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "it",
+          "misconception": "N.indefinite.one_it"
+        },
+        {
+          "id": "c",
+          "text": "other",
+          "misconception": null
+        }
+      ],
+      "explanation": "잃어버린 그 폰이 아니라 같은 종류의 새 폰이라서 one이에요."
+    },
+    {
+      "id": "N.indefinite.q4",
+      "concept": "N.indefinite",
+      "level": "M",
+      "type": "apply",
+      "question": "I lost my bag yesterday, but I found ___ today.",
+      "options": [
+        {
+          "id": "a",
+          "text": "it",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "one",
+          "misconception": "N.indefinite.one_it"
+        },
+        {
+          "id": "c",
+          "text": "another",
+          "misconception": null
+        }
+      ],
+      "explanation": "잃어버린 바로 그 가방을 찾은 것이라 it이에요."
+    },
+    {
+      "id": "N.indefinite.q5",
+      "concept": "N.indefinite",
+      "level": "M",
+      "type": "apply",
+      "question": "Some people like summer, and ___ like winter.",
+      "options": [
+        {
+          "id": "a",
+          "text": "others",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "another",
+          "misconception": "N.indefinite.another_plural"
+        },
+        {
+          "id": "c",
+          "text": "other",
+          "misconception": null
+        }
+      ],
+      "explanation": "여럿 중 일부(some)와 다른 일부는 others예요."
+    },
+    {
+      "id": "N.indefinite.q6",
+      "concept": "N.indefinite",
+      "level": "M",
+      "type": "apply",
+      "question": "There are five students. Two are boys, and ___ are girls.",
+      "options": [
+        {
+          "id": "a",
+          "text": "the others",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "others",
+          "misconception": "N.indefinite.others_the_others"
+        },
+        {
+          "id": "c",
+          "text": "another",
+          "misconception": "N.indefinite.another_plural"
+        }
+      ],
+      "explanation": "다섯 명 중 두 명을 빼고 남은 세 명 전부라서 the others예요."
+    },
+    {
+      "id": "N.indefinite.q7",
+      "concept": "N.indefinite",
+      "level": "M",
+      "type": "apply",
+      "question": "I have three pets. One is a dog, ___ is a cat, and the other is a rabbit.",
+      "options": [
+        {
+          "id": "a",
+          "text": "another",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "the other",
+          "misconception": "N.indefinite.another_other"
+        },
+        {
+          "id": "c",
+          "text": "others",
+          "misconception": "N.indefinite.another_plural"
+        }
+      ],
+      "explanation": "셋 중 두 번째는 another, 마지막은 the other예요."
+    },
+    {
+      "id": "N.indefinite.q8",
+      "concept": "N.indefinite",
+      "level": "M",
+      "type": "concept",
+      "question": "the other가 가리키는 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "정해진 것 중 남은 마지막 하나",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "아무거나 또 하나",
+          "misconception": "N.indefinite.another_other"
+        },
+        {
+          "id": "c",
+          "text": "다른 것들 중 일부",
+          "misconception": "N.indefinite.others_the_others"
+        }
+      ],
+      "explanation": "the가 붙어서 \"남은 것이 딱 하나로 정해져 있다\"는 뜻이에요."
+    },
+    {
+      "id": "N.indefinite.q9",
+      "concept": "N.indefinite",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 다른 것을 하나 보여 주세요.",
+      "tokens": [
+        "Please",
+        "show",
+        "me",
+        "another one."
+      ],
+      "answer": [
+        "Please",
+        "show",
+        "me",
+        "another one."
+      ],
+      "misconception": null,
+      "explanation": "\"다른 하나\"는 another one이에요. show + 사람 + 물건 순서예요."
+    },
+    {
+      "id": "N.indefinite.q10",
+      "concept": "N.indefinite",
+      "level": "M",
+      "type": "reason",
+      "question": "I lost my umbrella, so I bought one. 에서 it이 아니라 one을 쓴 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "잃어버린 그 우산이 아니라 같은 종류의 다른 우산이라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "우산이 하나라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "one이 it보다 공손한 말이라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "one은 같은 종류의 아무거나 하나, it은 바로 그것이에요."
+    },
+    {
+      "id": "N.it.q1",
+      "concept": "N.it",
+      "level": "M",
+      "type": "apply",
+      "question": "___ is raining outside.",
+      "options": [
+        {
+          "id": "a",
+          "text": "It",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "This",
+          "misconception": "N.it.wrong_word"
+        },
+        {
+          "id": "c",
+          "text": "There",
+          "misconception": "N.it.wrong_word"
+        }
+      ],
+      "explanation": "날씨를 말할 때는 비인칭 it을 주어로 써요."
+    },
+    {
+      "id": "N.it.q2",
+      "concept": "N.it",
+      "level": "M",
+      "type": "apply",
+      "question": "What time is ___ now?",
+      "options": [
+        {
+          "id": "a",
+          "text": "it",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "this",
+          "misconception": "N.it.wrong_word"
+        },
+        {
+          "id": "c",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "N.it.missing"
+        }
+      ],
+      "explanation": "시간을 물을 때도 비인칭 it을 써요."
+    },
+    {
+      "id": "N.it.q3",
+      "concept": "N.it",
+      "level": "M",
+      "type": "apply",
+      "question": "___ is Sunday today.",
+      "options": [
+        {
+          "id": "a",
+          "text": "It",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "This",
+          "misconception": "N.it.wrong_word"
+        },
+        {
+          "id": "c",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "N.it.missing"
+        }
+      ],
+      "explanation": "요일을 말할 때도 비인칭 it을 주어로 써요."
+    },
+    {
+      "id": "N.it.q4",
+      "concept": "N.it",
+      "level": "M",
+      "type": "apply",
+      "question": "It is important ___ breakfast.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to eat",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "eat",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "eats",
+          "misconception": null
+        }
+      ],
+      "explanation": "가주어 It의 진짜 주어는 to + 동사원형이에요. \"아침을 먹는 것은 중요하다\"예요."
+    },
+    {
+      "id": "N.it.q5",
+      "concept": "N.it",
+      "level": "M",
+      "type": "apply",
+      "question": "It is true ___ he won the race.",
+      "options": [
+        {
+          "id": "a",
+          "text": "that",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "what",
+          "misconception": null
+        }
+      ],
+      "explanation": "진짜 주어가 \"주어 + 동사\"가 있는 문장이면 that절로 써요."
+    },
+    {
+      "id": "N.it.q6",
+      "concept": "N.it",
+      "level": "M",
+      "type": "concept",
+      "question": "It is fun to play soccer. 에서 It의 역할은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "뒤의 to play soccer를 대신하는 가주어 (해석하지 않음)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "\"그것\"이라는 뜻의 대명사",
+          "misconception": "N.it.translate"
+        },
+        {
+          "id": "c",
+          "text": "날씨를 나타내는 it",
+          "misconception": null
+        }
+      ],
+      "explanation": "진짜 주어는 to play soccer(축구를 하는 것)예요."
+    },
+    {
+      "id": "N.it.q7",
+      "concept": "N.it",
+      "level": "M",
+      "type": "concept",
+      "question": "다음 중 비인칭 it이 쓰인 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It is two o'clock.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "It is my pencil.",
+          "misconception": "N.it.translate"
+        },
+        {
+          "id": "c",
+          "text": "It is hard to swim.",
+          "misconception": null
+        }
+      ],
+      "explanation": "시간을 말하는 it이 비인칭 it이에요. my pencil의 it은 \"그것\", hard to swim의 it은 가주어예요."
+    },
+    {
+      "id": "N.it.q8",
+      "concept": "N.it",
+      "level": "M",
+      "type": "apply",
+      "question": "To learn a new language is difficult. 를 가주어 it으로 바르게 바꾼 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It is difficult to learn a new language.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "It is to learn a new language difficult.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "That is difficult to learn a new language.",
+          "misconception": "N.it.wrong_word"
+        }
+      ],
+      "explanation": "긴 주어(to learn a new language)를 뒤로 보내고 It으로 자리를 채워요."
+    },
+    {
+      "id": "N.it.q9",
+      "concept": "N.it",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 오늘은 매우 춥다.",
+      "tokens": [
+        "It",
+        "is",
+        "very cold",
+        "today."
+      ],
+      "answer": [
+        "It",
+        "is",
+        "very cold",
+        "today."
+      ],
+      "misconception": null,
+      "explanation": "날씨는 비인칭 it을 주어로 써요."
+    },
+    {
+      "id": "N.it.q10",
+      "concept": "N.it",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 책을 읽는 것은 재미있다.",
+      "tokens": [
+        "It",
+        "is",
+        "fun",
+        "to read books."
+      ],
+      "answer": [
+        "It",
+        "is",
+        "fun",
+        "to read books."
+      ],
+      "misconception": null,
+      "explanation": "가주어 It + is + 형용사 + 진짜 주어(to read books) 순서예요."
+    },
+    {
+      "id": "N.article_adv.q1",
+      "concept": "N.article_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "We play ___ soccer after school.",
+      "options": [
+        {
+          "id": "a",
+          "text": "(아무것도 쓰지 않음)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "the",
+          "misconception": "N.article_adv.meals_sports"
+        },
+        {
+          "id": "c",
+          "text": "a",
+          "misconception": "N.article_adv.meals_sports"
+        }
+      ],
+      "explanation": "운동 이름 앞에는 관사를 쓰지 않아요. play soccer예요."
+    },
+    {
+      "id": "N.article_adv.q2",
+      "concept": "N.article_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "She plays ___ violin.",
+      "options": [
+        {
+          "id": "a",
+          "text": "the",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "N.article_adv.instrument"
+        },
+        {
+          "id": "c",
+          "text": "a",
+          "misconception": "N.article_adv.instrument"
+        }
+      ],
+      "explanation": "악기를 연주할 때는 play the + 악기예요."
+    },
+    {
+      "id": "N.article_adv.q3",
+      "concept": "N.article_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "I go to school by ___ bus.",
+      "options": [
+        {
+          "id": "a",
+          "text": "(아무것도 쓰지 않음)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a",
+          "misconception": "N.article_adv.transport"
+        },
+        {
+          "id": "c",
+          "text": "the",
+          "misconception": "N.article_adv.transport"
+        }
+      ],
+      "explanation": "by + 교통수단에는 관사를 쓰지 않아요."
+    },
+    {
+      "id": "N.article_adv.q4",
+      "concept": "N.article_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "What time do you have ___ breakfast?",
+      "options": [
+        {
+          "id": "a",
+          "text": "(아무것도 쓰지 않음)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a",
+          "misconception": "N.article_adv.meals_sports"
+        },
+        {
+          "id": "c",
+          "text": "the",
+          "misconception": "N.article_adv.meals_sports"
+        }
+      ],
+      "explanation": "식사 이름 앞에는 관사를 쓰지 않아요."
+    },
+    {
+      "id": "N.article_adv.q5",
+      "concept": "N.article_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "It's late. Go to ___ bed.",
+      "options": [
+        {
+          "id": "a",
+          "text": "(아무것도 쓰지 않음)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "the",
+          "misconception": "N.article_adv.purpose"
+        },
+        {
+          "id": "c",
+          "text": "a",
+          "misconception": "N.article_adv.purpose"
+        }
+      ],
+      "explanation": "자러 가는 것(침대의 본래 목적)이라 관사 없이 go to bed예요."
+    },
+    {
+      "id": "N.article_adv.q6",
+      "concept": "N.article_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "___ Han River flows through Seoul.",
+      "options": [
+        {
+          "id": "a",
+          "text": "The",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "A",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": null
+        }
+      ],
+      "explanation": "강 이름 앞에는 the를 써요."
+    },
+    {
+      "id": "N.article_adv.q7",
+      "concept": "N.article_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "He is ___ tallest boy in our class.",
+      "options": [
+        {
+          "id": "a",
+          "text": "the",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": null
+        }
+      ],
+      "explanation": "최상급(tallest) 앞에는 the를 써요."
+    },
+    {
+      "id": "N.article_adv.q8",
+      "concept": "N.article_adv",
+      "level": "H",
+      "type": "apply",
+      "question": "\"개는 충성스러운 동물이다.\" → ___ are loyal animals.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Dogs",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Dog",
+          "misconception": "N.article_adv.generic"
+        },
+        {
+          "id": "c",
+          "text": "The dogs",
+          "misconception": null
+        }
+      ],
+      "explanation": "종류 전체를 말할 때는 복수 무관사가 가장 자연스러워요. The dogs는 특정한 개들이에요."
+    },
+    {
+      "id": "N.article_adv.q9",
+      "concept": "N.article_adv",
+      "level": "H",
+      "type": "apply",
+      "question": "The rich ___ not always happy.",
+      "options": [
+        {
+          "id": "a",
+          "text": "are",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is",
+          "misconception": "N.article_adv.the_adj"
+        },
+        {
+          "id": "c",
+          "text": "be",
+          "misconception": null
+        }
+      ],
+      "explanation": "the rich는 \"부자들\"이라는 뜻이라 복수 취급해요."
+    },
+    {
+      "id": "N.article_adv.q10",
+      "concept": "N.article_adv",
+      "level": "M",
+      "type": "reason",
+      "question": "Mom went to the school to meet my teacher. 에서 the를 쓴 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "공부하러 간 것이 아니라 그 건물을 방문한 것이라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "학교가 하나뿐이라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "school 앞에는 항상 the를 써서",
+          "misconception": "N.article_adv.purpose"
+        }
+      ],
+      "explanation": "본래 목적(공부)으로 가면 go to school, 다른 목적으로 건물에 가면 go to the school이에요."
+    }
+  ]
+}
