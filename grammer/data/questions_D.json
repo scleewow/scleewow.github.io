@@ -1,0 +1,1971 @@
+{
+  "area": "D",
+  "types": {
+    "concept": "개념 확인",
+    "apply": "적용",
+    "reason": "이유 확인",
+    "order": "문장 만들기"
+  },
+  "questions": [
+    {
+      "id": "D.adj.q1",
+      "concept": "D.adj",
+      "level": "E",
+      "type": "apply",
+      "question": "I have a ___ dog.",
+      "options": [
+        {
+          "id": "a",
+          "text": "big",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "bigs",
+          "misconception": "D.adj.plural_s"
+        },
+        {
+          "id": "c",
+          "text": "bigly",
+          "misconception": null
+        }
+      ],
+      "explanation": "명사 dog 앞에서 꾸미는 형용사 big이에요."
+    },
+    {
+      "id": "D.adj.q2",
+      "concept": "D.adj",
+      "level": "E",
+      "type": "apply",
+      "question": "She has two ___ cats.",
+      "options": [
+        {
+          "id": "a",
+          "text": "black",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "blacks",
+          "misconception": "D.adj.plural_s"
+        },
+        {
+          "id": "c",
+          "text": "a black",
+          "misconception": null
+        }
+      ],
+      "explanation": "형용사에는 -s를 붙이지 않아요. 복수는 명사(cats)에만 표시해요."
+    },
+    {
+      "id": "D.adj.q3",
+      "concept": "D.adj",
+      "level": "E",
+      "type": "apply",
+      "question": "\"빨간 사과 하나\"를 바르게 쓴 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "a red apple",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "an apple red",
+          "misconception": "D.adj.order"
+        },
+        {
+          "id": "c",
+          "text": "a apple red",
+          "misconception": "D.adj.order"
+        }
+      ],
+      "explanation": "형용사는 명사 앞에 와요. a + 형용사 + 명사 순서예요."
+    },
+    {
+      "id": "D.adj.q4",
+      "concept": "D.adj",
+      "level": "E",
+      "type": "apply",
+      "question": "It is ___ old car.",
+      "options": [
+        {
+          "id": "a",
+          "text": "an",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a",
+          "misconception": "D.adj.a_an"
+        },
+        {
+          "id": "c",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": null
+        }
+      ],
+      "explanation": "a/an은 바로 뒤 단어의 소리로 골라요. old가 모음 소리로 시작해서 an이에요."
+    },
+    {
+      "id": "D.adj.q5",
+      "concept": "D.adj",
+      "level": "E",
+      "type": "apply",
+      "question": "The soup is ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "hot",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "hotly",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "a hot",
+          "misconception": null
+        }
+      ],
+      "explanation": "be동사 뒤에서 주어(The soup)를 설명하는 형용사 hot이에요."
+    },
+    {
+      "id": "D.adj.q6",
+      "concept": "D.adj",
+      "level": "E",
+      "type": "apply",
+      "question": "Do you want ___?",
+      "options": [
+        {
+          "id": "a",
+          "text": "something cold",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "cold something",
+          "misconception": "D.adj.thing_order"
+        },
+        {
+          "id": "c",
+          "text": "a cold something",
+          "misconception": "D.adj.thing_order"
+        }
+      ],
+      "explanation": "-thing으로 끝나는 말은 형용사가 뒤에서 꾸며요."
+    },
+    {
+      "id": "D.adj.q7",
+      "concept": "D.adj",
+      "level": "E",
+      "type": "concept",
+      "question": "The tall boy is my brother. 에서 형용사 tall이 꾸미는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "boy",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "brother",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "is",
+          "misconception": null
+        }
+      ],
+      "explanation": "형용사는 바로 뒤의 명사를 꾸며요. tall(키가 큰)이 boy를 꾸며요."
+    },
+    {
+      "id": "D.adj.q8",
+      "concept": "D.adj",
+      "level": "E",
+      "type": "concept",
+      "question": "다음 중 형용사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "kind",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "kindly",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "kindness",
+          "misconception": null
+        }
+      ],
+      "explanation": "kind(친절한)는 형용사예요. kindly는 부사, kindness는 명사예요."
+    },
+    {
+      "id": "D.adj.q9",
+      "concept": "D.adj",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그 꽃들은 아름답다.",
+      "tokens": [
+        "The flowers",
+        "are",
+        "beautiful."
+      ],
+      "answer": [
+        "The flowers",
+        "are",
+        "beautiful."
+      ],
+      "misconception": null,
+      "explanation": "be동사 뒤에 형용사가 와서 주어를 설명해요."
+    },
+    {
+      "id": "D.adj.q10",
+      "concept": "D.adj",
+      "level": "E",
+      "type": "reason",
+      "question": "The girl is happy. 에서 happy의 역할은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "be동사 뒤에서 주어 The girl을 설명한다",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "명사를 앞에서 꾸민다",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "문장의 동사이다",
+          "misconception": "S.be.missing"
+        }
+      ],
+      "explanation": "형용사는 be동사 뒤에서 주어가 어떤지 설명할 수 있어요. 동사는 is예요."
+    },
+    {
+      "id": "D.adv.q1",
+      "concept": "D.adv",
+      "level": "E",
+      "type": "apply",
+      "question": "He runs very ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "fast",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "fastly",
+          "misconception": "D.adv.ly_only"
+        },
+        {
+          "id": "c",
+          "text": "fasting",
+          "misconception": null
+        }
+      ],
+      "explanation": "fast는 형용사와 부사의 모양이 같아요. fastly라는 말은 없어요."
+    },
+    {
+      "id": "D.adv.q2",
+      "concept": "D.adv",
+      "level": "E",
+      "type": "apply",
+      "question": "She smiled ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "happily",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "happyly",
+          "misconception": "D.adv.spelling"
+        },
+        {
+          "id": "c",
+          "text": "happy",
+          "misconception": null
+        }
+      ],
+      "explanation": "동사 smiled를 꾸미니 부사예요. happy는 y를 i로 바꾸고 -ly를 붙여요."
+    },
+    {
+      "id": "D.adv.q3",
+      "concept": "D.adv",
+      "level": "E",
+      "type": "apply",
+      "question": "He plays the piano ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "well",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "good",
+          "misconception": "D.adv.good_well"
+        },
+        {
+          "id": "c",
+          "text": "goodly",
+          "misconception": "D.adv.good_well"
+        }
+      ],
+      "explanation": "동사를 꾸미는 \"잘\"은 well이에요. good은 형용사예요."
+    },
+    {
+      "id": "D.adv.q4",
+      "concept": "D.adv",
+      "level": "E",
+      "type": "apply",
+      "question": "Please drive ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "carefully",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "carefuly",
+          "misconception": "D.adv.spelling"
+        },
+        {
+          "id": "c",
+          "text": "careful",
+          "misconception": null
+        }
+      ],
+      "explanation": "동사 drive를 꾸미는 부사예요. careful + ly = carefully (l이 두 개)예요."
+    },
+    {
+      "id": "D.adv.q5",
+      "concept": "D.adv",
+      "level": "E",
+      "type": "apply",
+      "question": "The test was ___ easy.",
+      "options": [
+        {
+          "id": "a",
+          "text": "very",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "much",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "veryly",
+          "misconception": null
+        }
+      ],
+      "explanation": "형용사 easy를 꾸미는 \"아주\"는 very예요."
+    },
+    {
+      "id": "D.adv.q6",
+      "concept": "D.adv",
+      "level": "E",
+      "type": "concept",
+      "question": "다음 중 부사가 아닌 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "friendly",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "quickly",
+          "misconception": "D.adv.friendly"
+        },
+        {
+          "id": "c",
+          "text": "slowly",
+          "misconception": "D.adv.friendly"
+        }
+      ],
+      "explanation": "friendly(친절한)는 -ly로 끝나지만 형용사예요."
+    },
+    {
+      "id": "D.adv.q7",
+      "concept": "D.adv",
+      "level": "M",
+      "type": "apply",
+      "question": "He studies ___, so he always gets good grades.",
+      "options": [
+        {
+          "id": "a",
+          "text": "hard",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "hardly",
+          "misconception": "D.adv.hardly"
+        },
+        {
+          "id": "c",
+          "text": "hardy",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"열심히\"는 hard예요. hardly는 \"거의 ~않다\"예요."
+    },
+    {
+      "id": "D.adv.q8",
+      "concept": "D.adv",
+      "level": "M",
+      "type": "apply",
+      "question": "I can ___ hear you. Please speak louder.",
+      "options": [
+        {
+          "id": "a",
+          "text": "hardly",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "hard",
+          "misconception": "D.adv.hardly"
+        },
+        {
+          "id": "c",
+          "text": "hardest",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"거의 안 들린다\"는 hardly예요. 그래서 더 크게 말해 달라고 해요."
+    },
+    {
+      "id": "D.adv.q9",
+      "concept": "D.adv",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그녀는 영어를 아주 잘한다.",
+      "tokens": [
+        "She",
+        "speaks",
+        "English",
+        "very well."
+      ],
+      "answer": [
+        "She",
+        "speaks",
+        "English",
+        "very well."
+      ],
+      "misconception": null,
+      "explanation": "동사 + 목적어 뒤에 부사(very well)가 와요."
+    },
+    {
+      "id": "D.adv.q10",
+      "concept": "D.adv",
+      "level": "E",
+      "type": "reason",
+      "question": "He runs fast. 에서 fast가 부사인 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "동사 runs를 꾸며서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "-ly로 끝나지 않아서",
+          "misconception": "D.adv.ly_only"
+        },
+        {
+          "id": "c",
+          "text": "명사 앞에 있어서",
+          "misconception": null
+        }
+      ],
+      "explanation": "품사는 모양보다 하는 일로 정해져요. 동사를 꾸미니까 부사예요."
+    },
+    {
+      "id": "D.prep.q1",
+      "concept": "D.prep",
+      "level": "E",
+      "type": "apply",
+      "question": "I get up ___ 7 o'clock.",
+      "options": [
+        {
+          "id": "a",
+          "text": "at",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "on",
+          "misconception": "D.prep.time"
+        },
+        {
+          "id": "c",
+          "text": "in",
+          "misconception": "D.prep.time"
+        }
+      ],
+      "explanation": "정확한 시각 앞에는 at이에요."
+    },
+    {
+      "id": "D.prep.q2",
+      "concept": "D.prep",
+      "level": "E",
+      "type": "apply",
+      "question": "My birthday is ___ May.",
+      "options": [
+        {
+          "id": "a",
+          "text": "in",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "on",
+          "misconception": "D.prep.time"
+        },
+        {
+          "id": "c",
+          "text": "at",
+          "misconception": "D.prep.time"
+        }
+      ],
+      "explanation": "월 앞에는 in이에요."
+    },
+    {
+      "id": "D.prep.q3",
+      "concept": "D.prep",
+      "level": "E",
+      "type": "apply",
+      "question": "We have music class ___ Monday.",
+      "options": [
+        {
+          "id": "a",
+          "text": "on",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "in",
+          "misconception": "D.prep.time"
+        },
+        {
+          "id": "c",
+          "text": "at",
+          "misconception": "D.prep.time"
+        }
+      ],
+      "explanation": "요일 앞에는 on이에요."
+    },
+    {
+      "id": "D.prep.q4",
+      "concept": "D.prep",
+      "level": "E",
+      "type": "apply",
+      "question": "\"고양이가 상자 안에서 자고 있다.\" → The cat is sleeping ___ the box.",
+      "options": [
+        {
+          "id": "a",
+          "text": "in",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "on",
+          "misconception": "D.prep.place"
+        },
+        {
+          "id": "c",
+          "text": "at",
+          "misconception": "D.prep.place"
+        }
+      ],
+      "explanation": "공간 안은 in이에요. on은 상자 위예요."
+    },
+    {
+      "id": "D.prep.q5",
+      "concept": "D.prep",
+      "level": "E",
+      "type": "apply",
+      "question": "There is a picture ___ the wall.",
+      "options": [
+        {
+          "id": "a",
+          "text": "on",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "in",
+          "misconception": "D.prep.place"
+        },
+        {
+          "id": "c",
+          "text": "at",
+          "misconception": "D.prep.place"
+        }
+      ],
+      "explanation": "벽에 붙어 있는 것은 표면이라 on이에요."
+    },
+    {
+      "id": "D.prep.q6",
+      "concept": "D.prep",
+      "level": "E",
+      "type": "apply",
+      "question": "I'll meet you ___ the bus stop.",
+      "options": [
+        {
+          "id": "a",
+          "text": "at",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "in",
+          "misconception": "D.prep.place"
+        },
+        {
+          "id": "c",
+          "text": "on",
+          "misconception": "D.prep.place"
+        }
+      ],
+      "explanation": "버스 정류장처럼 한 지점은 at이에요."
+    },
+    {
+      "id": "D.prep.q7",
+      "concept": "D.prep",
+      "level": "E",
+      "type": "apply",
+      "question": "The bank is ___ the post office and the library.",
+      "options": [
+        {
+          "id": "a",
+          "text": "between",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "among",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "next",
+          "misconception": null
+        }
+      ],
+      "explanation": "between A and B = A와 B 사이에."
+    },
+    {
+      "id": "D.prep.q8",
+      "concept": "D.prep",
+      "level": "M",
+      "type": "apply",
+      "question": "The books on the table ___ mine.",
+      "options": [
+        {
+          "id": "a",
+          "text": "are",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is",
+          "misconception": "D.prep.subject_in_phrase"
+        },
+        {
+          "id": "c",
+          "text": "be",
+          "misconception": null
+        }
+      ],
+      "explanation": "on the table은 전치사구예요. 진짜 주어 The books가 복수라 are예요."
+    },
+    {
+      "id": "D.prep.q9",
+      "concept": "D.prep",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 내 가방은 의자 밑에 있다.",
+      "tokens": [
+        "My bag",
+        "is",
+        "under the chair."
+      ],
+      "answer": [
+        "My bag",
+        "is",
+        "under the chair."
+      ],
+      "misconception": null,
+      "explanation": "\"~ 밑에\"는 under예요. be동사 뒤에 전치사구가 와서 위치를 말해요."
+    },
+    {
+      "id": "D.prep.q10",
+      "concept": "D.prep",
+      "level": "E",
+      "type": "reason",
+      "question": "in summer / on Sunday / at 3 p.m. 에서 전치사가 다른 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "시간의 범위가 달라서 (넓은 기간 in, 하루 on, 시각 at)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "아무거나 써도 돼서",
+          "misconception": "D.prep.time"
+        },
+        {
+          "id": "c",
+          "text": "단어의 첫 글자에 따라 정해져서",
+          "misconception": null
+        }
+      ],
+      "explanation": "좁은 시각은 at, 하루는 on, 넓은 기간은 in이에요."
+    },
+    {
+      "id": "D.adj_vs_adv.q1",
+      "concept": "D.adj_vs_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "She looks ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "sad",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "sadly",
+          "misconception": "D.adj_vs_adv.adv_complement"
+        },
+        {
+          "id": "c",
+          "text": "sadness",
+          "misconception": null
+        }
+      ],
+      "explanation": "look(~해 보이다) 뒤는 주어를 설명하는 보어 자리라서 형용사예요."
+    },
+    {
+      "id": "D.adj_vs_adv.q2",
+      "concept": "D.adj_vs_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "He drives ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "carefully",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "careful",
+          "misconception": "D.adj_vs_adv.adj_modifier"
+        },
+        {
+          "id": "c",
+          "text": "care",
+          "misconception": null
+        }
+      ],
+      "explanation": "동사 drives를 꾸미는 자리라서 부사예요."
+    },
+    {
+      "id": "D.adj_vs_adv.q3",
+      "concept": "D.adj_vs_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "He is a ___ driver.",
+      "options": [
+        {
+          "id": "a",
+          "text": "careful",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "carefully",
+          "misconception": "D.adj_vs_adv.adv_noun"
+        },
+        {
+          "id": "c",
+          "text": "care",
+          "misconception": null
+        }
+      ],
+      "explanation": "명사 driver를 꾸미는 자리라서 형용사예요."
+    },
+    {
+      "id": "D.adj_vs_adv.q4",
+      "concept": "D.adj_vs_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "The music sounds ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "beautiful",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "beautifully",
+          "misconception": "D.adj_vs_adv.adv_complement"
+        },
+        {
+          "id": "c",
+          "text": "beauty",
+          "misconception": null
+        }
+      ],
+      "explanation": "sound(~하게 들리다) 뒤는 보어 자리라서 형용사예요."
+    },
+    {
+      "id": "D.adj_vs_adv.q5",
+      "concept": "D.adj_vs_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "She sings ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "beautifully",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "beautiful",
+          "misconception": "D.adj_vs_adv.adj_modifier"
+        },
+        {
+          "id": "c",
+          "text": "beauty",
+          "misconception": null
+        }
+      ],
+      "explanation": "동사 sings를 꾸미는 자리라서 부사예요."
+    },
+    {
+      "id": "D.adj_vs_adv.q6",
+      "concept": "D.adj_vs_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "The baby is sleeping. Please talk ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "quietly",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "quiet",
+          "misconception": "D.adj_vs_adv.adj_modifier"
+        },
+        {
+          "id": "c",
+          "text": "quietness",
+          "misconception": null
+        }
+      ],
+      "explanation": "동사 talk를 꾸미는 자리라서 부사예요."
+    },
+    {
+      "id": "D.adj_vs_adv.q7",
+      "concept": "D.adj_vs_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "This bread smells ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "good",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "well",
+          "misconception": "D.adj_vs_adv.adv_complement"
+        },
+        {
+          "id": "c",
+          "text": "goodly",
+          "misconception": null
+        }
+      ],
+      "explanation": "smell(냄새가 나다) 뒤는 보어 자리라서 형용사 good이에요."
+    },
+    {
+      "id": "D.adj_vs_adv.q8",
+      "concept": "D.adj_vs_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "He looked at me ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "angrily",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "angry",
+          "misconception": "D.adj_vs_adv.adj_modifier"
+        },
+        {
+          "id": "c",
+          "text": "anger",
+          "misconception": null
+        }
+      ],
+      "explanation": "look at(~을 보다)은 동작이라, 그 동작을 꾸미는 부사 angrily를 써요."
+    },
+    {
+      "id": "D.adj_vs_adv.q9",
+      "concept": "D.adj_vs_adv",
+      "level": "M",
+      "type": "reason",
+      "question": "She looks happy. 에서 happily가 아니라 happy를 쓰는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "주어 She를 설명하는 보어 자리라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "\"~하게\"로 해석되면 형용사를 써서",
+          "misconception": "D.adj_vs_adv.ko_translation"
+        },
+        {
+          "id": "c",
+          "text": "동사 looks를 꾸미는 자리라서",
+          "misconception": "D.adj_vs_adv.adv_complement"
+        }
+      ],
+      "explanation": "look(~해 보이다)은 2형식 동사라 뒤에 주어를 설명하는 형용사 보어가 와요."
+    },
+    {
+      "id": "D.adj_vs_adv.q10",
+      "concept": "D.adj_vs_adv",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 아주 빠르게 달린다.",
+      "tokens": [
+        "He",
+        "runs",
+        "very",
+        "fast."
+      ],
+      "answer": [
+        "He",
+        "runs",
+        "very",
+        "fast."
+      ],
+      "misconception": null,
+      "explanation": "동사 runs를 꾸미는 부사 fast, 그 앞에 정도를 꾸미는 very가 와요."
+    },
+    {
+      "id": "D.freq.q1",
+      "concept": "D.freq",
+      "level": "M",
+      "type": "apply",
+      "question": "어법상 맞는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "I always get up early.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I get always up early.",
+          "misconception": "D.freq.after_verb"
+        },
+        {
+          "id": "c",
+          "text": "I get up always early.",
+          "misconception": "D.freq.after_verb"
+        }
+      ],
+      "explanation": "빈도부사는 일반동사 앞에 와요."
+    },
+    {
+      "id": "D.freq.q2",
+      "concept": "D.freq",
+      "level": "M",
+      "type": "apply",
+      "question": "She ___ late for school.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is never",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "never is",
+          "misconception": "D.freq.before_be"
+        },
+        {
+          "id": "c",
+          "text": "is not never",
+          "misconception": "D.freq.double_neg"
+        }
+      ],
+      "explanation": "be동사 문장에서는 be동사 뒤에 빈도부사가 와요. never는 not과 함께 쓰지 않아요."
+    },
+    {
+      "id": "D.freq.q3",
+      "concept": "D.freq",
+      "level": "M",
+      "type": "apply",
+      "question": "He ___ to school.",
+      "options": [
+        {
+          "id": "a",
+          "text": "usually walks",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "walks usually",
+          "misconception": "D.freq.after_verb"
+        },
+        {
+          "id": "c",
+          "text": "is usually walk",
+          "misconception": null
+        }
+      ],
+      "explanation": "일반동사 walks 앞에 빈도부사 usually가 와요."
+    },
+    {
+      "id": "D.freq.q4",
+      "concept": "D.freq",
+      "level": "M",
+      "type": "apply",
+      "question": "I will ___ forget your kindness.",
+      "options": [
+        {
+          "id": "a",
+          "text": "never",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "not never",
+          "misconception": "D.freq.double_neg"
+        },
+        {
+          "id": "c",
+          "text": "don't never",
+          "misconception": "D.freq.double_neg"
+        }
+      ],
+      "explanation": "조동사 will 뒤에 never가 와요. never는 그 자체로 부정이에요."
+    },
+    {
+      "id": "D.freq.q5",
+      "concept": "D.freq",
+      "level": "M",
+      "type": "concept",
+      "question": "빈도가 가장 높은 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "always",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "often",
+          "misconception": "D.freq.meaning"
+        },
+        {
+          "id": "c",
+          "text": "sometimes",
+          "misconception": "D.freq.meaning"
+        }
+      ],
+      "explanation": "always(항상)가 가장 높고 never(절대 ~않는)가 가장 낮아요."
+    },
+    {
+      "id": "D.freq.q6",
+      "concept": "D.freq",
+      "level": "M",
+      "type": "apply",
+      "question": "I ___ eat breakfast. I'm too busy in the morning.",
+      "options": [
+        {
+          "id": "a",
+          "text": "rarely",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "always",
+          "misconception": "D.freq.meaning"
+        },
+        {
+          "id": "c",
+          "text": "usually",
+          "misconception": "D.freq.meaning"
+        }
+      ],
+      "explanation": "아침에 너무 바빠서 \"거의 먹지 않는다\"는 뜻이라 rarely예요."
+    },
+    {
+      "id": "D.freq.q7",
+      "concept": "D.freq",
+      "level": "M",
+      "type": "apply",
+      "question": "How ___ do you go swimming?",
+      "options": [
+        {
+          "id": "a",
+          "text": "often",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "many",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "much",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"얼마나 자주\"는 How often이에요."
+    },
+    {
+      "id": "D.freq.q8",
+      "concept": "D.freq",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 항상 친절하다.",
+      "tokens": [
+        "He",
+        "is",
+        "always",
+        "kind."
+      ],
+      "answer": [
+        "He",
+        "is",
+        "always",
+        "kind."
+      ],
+      "misconception": null,
+      "explanation": "be동사 문장이라 빈도부사가 is 뒤에 와요."
+    },
+    {
+      "id": "D.freq.q9",
+      "concept": "D.freq",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그녀는 절대 거짓말을 하지 않는다.",
+      "tokens": [
+        "She",
+        "never",
+        "tells",
+        "lies."
+      ],
+      "answer": [
+        "She",
+        "never",
+        "tells",
+        "lies."
+      ],
+      "misconception": null,
+      "explanation": "일반동사 tells 앞에 빈도부사 never가 와요."
+    },
+    {
+      "id": "D.freq.q10",
+      "concept": "D.freq",
+      "level": "M",
+      "type": "reason",
+      "question": "She is always kind. 에서 always가 is 뒤에 오는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "빈도부사는 be동사 뒤에 오기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "형용사 kind를 꾸미기 때문에",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "빈도부사는 아무 데나 와도 되기 때문에",
+          "misconception": "D.freq.after_verb"
+        }
+      ],
+      "explanation": "빈도부사는 be동사·조동사 뒤, 일반동사 앞에 와요."
+    },
+    {
+      "id": "D.compare.q1",
+      "concept": "D.compare",
+      "level": "M",
+      "type": "apply",
+      "question": "Tom is ___ than his brother.",
+      "options": [
+        {
+          "id": "a",
+          "text": "taller",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "more taller",
+          "misconception": "D.compare.double"
+        },
+        {
+          "id": "c",
+          "text": "tallest",
+          "misconception": null
+        }
+      ],
+      "explanation": "둘을 비교하니 비교급 taller예요. more를 또 붙이지 않아요."
+    },
+    {
+      "id": "D.compare.q2",
+      "concept": "D.compare",
+      "level": "M",
+      "type": "apply",
+      "question": "This box is ___ than that one.",
+      "options": [
+        {
+          "id": "a",
+          "text": "bigger",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "biger",
+          "misconception": "D.compare.spelling"
+        },
+        {
+          "id": "c",
+          "text": "more big",
+          "misconception": "D.compare.long_er"
+        }
+      ],
+      "explanation": "big은 짧은 모음 + 자음 하나라서 g를 한 번 더 써요."
+    },
+    {
+      "id": "D.compare.q3",
+      "concept": "D.compare",
+      "level": "M",
+      "type": "apply",
+      "question": "Math is ___ than science for me.",
+      "options": [
+        {
+          "id": "a",
+          "text": "easier",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "easyer",
+          "misconception": "D.compare.spelling"
+        },
+        {
+          "id": "c",
+          "text": "more easy",
+          "misconception": "D.compare.long_er"
+        }
+      ],
+      "explanation": "easy는 자음 + y라서 y를 i로 바꾸고 -er을 붙여요."
+    },
+    {
+      "id": "D.compare.q4",
+      "concept": "D.compare",
+      "level": "M",
+      "type": "apply",
+      "question": "This movie is ___ than the book.",
+      "options": [
+        {
+          "id": "a",
+          "text": "more interesting",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "interestinger",
+          "misconception": "D.compare.long_er"
+        },
+        {
+          "id": "c",
+          "text": "most interesting",
+          "misconception": null
+        }
+      ],
+      "explanation": "interesting은 긴 단어라서 more를 써요."
+    },
+    {
+      "id": "D.compare.q5",
+      "concept": "D.compare",
+      "level": "M",
+      "type": "apply",
+      "question": "Your idea is ___ than mine.",
+      "options": [
+        {
+          "id": "a",
+          "text": "better",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "gooder",
+          "misconception": "D.compare.irregular"
+        },
+        {
+          "id": "c",
+          "text": "more good",
+          "misconception": "D.compare.irregular"
+        }
+      ],
+      "explanation": "good의 비교급은 불규칙으로 better예요."
+    },
+    {
+      "id": "D.compare.q6",
+      "concept": "D.compare",
+      "level": "M",
+      "type": "apply",
+      "question": "She is ___ student in our class.",
+      "options": [
+        {
+          "id": "a",
+          "text": "the smartest",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "smartest",
+          "misconception": "D.compare.no_the"
+        },
+        {
+          "id": "c",
+          "text": "the most smart",
+          "misconception": "D.compare.long_er"
+        }
+      ],
+      "explanation": "반 전체에서 최고라서 최상급이고, 앞에 the가 필요해요."
+    },
+    {
+      "id": "D.compare.q7",
+      "concept": "D.compare",
+      "level": "M",
+      "type": "apply",
+      "question": "Today is the ___ day of the year.",
+      "options": [
+        {
+          "id": "a",
+          "text": "hottest",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "hotest",
+          "misconception": "D.compare.spelling"
+        },
+        {
+          "id": "c",
+          "text": "most hot",
+          "misconception": "D.compare.long_er"
+        }
+      ],
+      "explanation": "hot은 짧은 모음 + 자음 하나라서 t를 한 번 더 써요."
+    },
+    {
+      "id": "D.compare.q8",
+      "concept": "D.compare",
+      "level": "M",
+      "type": "apply",
+      "question": "He is the tallest ___ the three boys.",
+      "options": [
+        {
+          "id": "a",
+          "text": "of",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "in",
+          "misconception": "D.compare.in_of"
+        },
+        {
+          "id": "c",
+          "text": "than",
+          "misconception": null
+        }
+      ],
+      "explanation": "복수 명사(the three boys) 앞에는 of예요. 장소·집단(my class) 앞에는 in이에요."
+    },
+    {
+      "id": "D.compare.q9",
+      "concept": "D.compare",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 서울은 부산보다 크다.",
+      "tokens": [
+        "Seoul",
+        "is",
+        "bigger",
+        "than Busan."
+      ],
+      "answer": [
+        "Seoul",
+        "is",
+        "bigger",
+        "than Busan."
+      ],
+      "misconception": null,
+      "explanation": "비교급 + than + 비교 대상 순서예요."
+    },
+    {
+      "id": "D.compare.q10",
+      "concept": "D.compare",
+      "level": "M",
+      "type": "reason",
+      "question": "beautiful의 최상급이 the most beautiful인 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "beautiful이 긴 단어라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "\"아주 아름답다\"는 뜻이라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "모든 단어에 most를 쓸 수 있어서",
+          "misconception": "D.compare.long_er"
+        }
+      ],
+      "explanation": "긴 단어는 -est를 붙이지 않고 the most를 앞에 써요."
+    },
+    {
+      "id": "D.as_as.q1",
+      "concept": "D.as_as",
+      "level": "M",
+      "type": "apply",
+      "question": "My sister is as ___ as my mom.",
+      "options": [
+        {
+          "id": "a",
+          "text": "tall",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "taller",
+          "misconception": "D.as_as.comparative_inside"
+        },
+        {
+          "id": "c",
+          "text": "tallest",
+          "misconception": "D.as_as.comparative_inside"
+        }
+      ],
+      "explanation": "as와 as 사이에는 원급이 와요."
+    },
+    {
+      "id": "D.as_as.q2",
+      "concept": "D.as_as",
+      "level": "M",
+      "type": "apply",
+      "question": "This bag is as heavy ___ that one.",
+      "options": [
+        {
+          "id": "a",
+          "text": "as",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "than",
+          "misconception": "D.as_as.than"
+        },
+        {
+          "id": "c",
+          "text": "so",
+          "misconception": null
+        }
+      ],
+      "explanation": "as + 원급 + as예요. than은 비교급과 함께 써요."
+    },
+    {
+      "id": "D.as_as.q3",
+      "concept": "D.as_as",
+      "level": "M",
+      "type": "apply",
+      "question": "This room is ___ that one.",
+      "options": [
+        {
+          "id": "a",
+          "text": "twice as big as",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "as twice big as",
+          "misconception": "D.as_as.multiplier_position"
+        },
+        {
+          "id": "c",
+          "text": "twice bigger as",
+          "misconception": "D.as_as.comparative_inside"
+        }
+      ],
+      "explanation": "배수사 twice가 맨 앞, 그 뒤에 as + 원급 + as예요."
+    },
+    {
+      "id": "D.as_as.q4",
+      "concept": "D.as_as",
+      "level": "M",
+      "type": "apply",
+      "question": "He runs as ___ as a horse.",
+      "options": [
+        {
+          "id": "a",
+          "text": "fast",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "faster",
+          "misconception": "D.as_as.comparative_inside"
+        },
+        {
+          "id": "c",
+          "text": "fastly",
+          "misconception": "D.adv.ly_only"
+        }
+      ],
+      "explanation": "부사도 as ~ as 사이에 원급으로 써요. fast는 부사도 fast예요."
+    },
+    {
+      "id": "D.as_as.q5",
+      "concept": "D.as_as",
+      "level": "M",
+      "type": "concept",
+      "question": "I am not as tall as my brother. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "형이 나보다 키가 크다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "내가 형보다 키가 크다.",
+          "misconception": "D.as_as.not_meaning"
+        },
+        {
+          "id": "c",
+          "text": "나와 형은 키가 같다.",
+          "misconception": "D.as_as.not_meaning"
+        }
+      ],
+      "explanation": "not as ~ as는 \"~만큼 …하지 않다\"라서 내가 형보다 작다는 뜻이에요."
+    },
+    {
+      "id": "D.as_as.q6",
+      "concept": "D.as_as",
+      "level": "M",
+      "type": "apply",
+      "question": "Please call me as ___ as possible.",
+      "options": [
+        {
+          "id": "a",
+          "text": "soon",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "sooner",
+          "misconception": "D.as_as.comparative_inside"
+        },
+        {
+          "id": "c",
+          "text": "soonest",
+          "misconception": "D.as_as.comparative_inside"
+        }
+      ],
+      "explanation": "as soon as possible = 가능한 한 빨리."
+    },
+    {
+      "id": "D.as_as.q7",
+      "concept": "D.as_as",
+      "level": "M",
+      "type": "apply",
+      "question": "Run as fast as you ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "can",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "are",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "do",
+          "misconception": null
+        }
+      ],
+      "explanation": "as + 원급 + as + 주어 + can = 최대한 ~하게."
+    },
+    {
+      "id": "D.as_as.q8",
+      "concept": "D.as_as",
+      "level": "M",
+      "type": "apply",
+      "question": "This book is not ___ interesting as that one.",
+      "options": [
+        {
+          "id": "a",
+          "text": "as",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "more",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "than",
+          "misconception": "D.as_as.than"
+        }
+      ],
+      "explanation": "not as + 원급 + as예요."
+    },
+    {
+      "id": "D.as_as.q9",
+      "concept": "D.as_as",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 그의 아버지만큼 키가 크다.",
+      "tokens": [
+        "He",
+        "is",
+        "as tall as",
+        "his father."
+      ],
+      "answer": [
+        "He",
+        "is",
+        "as tall as",
+        "his father."
+      ],
+      "misconception": null,
+      "explanation": "as + 원급 + as 뒤에 비교 대상이 와요."
+    },
+    {
+      "id": "D.as_as.q10",
+      "concept": "D.as_as",
+      "level": "M",
+      "type": "reason",
+      "question": "This tree is three times as tall as that one. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "이 나무가 저 나무보다 세 배 크다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "저 나무가 이 나무보다 세 배 크다.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "두 나무의 키가 같다.",
+          "misconception": "D.as_as.not_meaning"
+        }
+      ],
+      "explanation": "배수사 + as ~ as는 \"~보다 몇 배 …하다\"예요. 주어(This tree)가 세 배 커요."
+    },
+    {
+      "id": "D.compare_adv.q1",
+      "concept": "D.compare_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "This phone is ___ better than that one.",
+      "options": [
+        {
+          "id": "a",
+          "text": "much",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "very",
+          "misconception": "D.compare_adv.very"
+        },
+        {
+          "id": "c",
+          "text": "more",
+          "misconception": "D.compare.double"
+        }
+      ],
+      "explanation": "비교급 better를 강조하는 말은 much예요. very는 원급을 꾸며요."
+    },
+    {
+      "id": "D.compare_adv.q2",
+      "concept": "D.compare_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "The more you read, ___ you know.",
+      "options": [
+        {
+          "id": "a",
+          "text": "the more",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "more",
+          "misconception": "D.compare_adv.the_the"
+        },
+        {
+          "id": "c",
+          "text": "the much",
+          "misconception": null
+        }
+      ],
+      "explanation": "The + 비교급 ~, the + 비교급 … 구문이라 뒤에도 the가 필요해요."
+    },
+    {
+      "id": "D.compare_adv.q3",
+      "concept": "D.compare_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "It's getting ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "colder and colder",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "cold and cold",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "more cold and cold",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"점점 더 ~해지다\"는 비교급 and 비교급이에요."
+    },
+    {
+      "id": "D.compare_adv.q4",
+      "concept": "D.compare_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "Seoul is bigger than any other ___ in Korea.",
+      "options": [
+        {
+          "id": "a",
+          "text": "city",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "cities",
+          "misconception": "D.compare_adv.any_other_plural"
+        },
+        {
+          "id": "c",
+          "text": "the city",
+          "misconception": null
+        }
+      ],
+      "explanation": "than any other 뒤에는 단수 명사가 와요."
+    },
+    {
+      "id": "D.compare_adv.q5",
+      "concept": "D.compare_adv",
+      "level": "M",
+      "type": "apply",
+      "question": "No other student in my class is ___ than Jina.",
+      "options": [
+        {
+          "id": "a",
+          "text": "taller",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "tallest",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "the tallest",
+          "misconception": null
+        }
+      ],
+      "explanation": "No other ~ + 비교급 + than 구문으로 최상급의 뜻을 나타내요."
+    },
+    {
+      "id": "D.compare_adv.q6",
+      "concept": "D.compare_adv",
+      "level": "M",
+      "type": "concept",
+      "question": "Jina is the tallest student in my class. 와 같은 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "No other student in my class is taller than Jina.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Jina is taller than any other students in my class.",
+          "misconception": "D.compare_adv.any_other_plural"
+        },
+        {
+          "id": "c",
+          "text": "Jina is very taller than other students.",
+          "misconception": "D.compare_adv.very"
+        }
+      ],
+      "explanation": "No other + 단수 명사 + 비교급 + than = 최상급의 뜻이에요."
+    },
+    {
+      "id": "D.compare_adv.q7",
+      "concept": "D.compare_adv",
+      "level": "H",
+      "type": "apply",
+      "question": "He is one of the best ___ in the world.",
+      "options": [
+        {
+          "id": "a",
+          "text": "players",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "player",
+          "misconception": "D.compare_adv.one_of_singular"
+        },
+        {
+          "id": "c",
+          "text": "the player",
+          "misconception": null
+        }
+      ],
+      "explanation": "one of the + 최상급 뒤에는 복수 명사가 와요."
+    },
+    {
+      "id": "D.compare_adv.q8",
+      "concept": "D.compare_adv",
+      "level": "H",
+      "type": "apply",
+      "question": "This is the most delicious food I have ___ eaten.",
+      "options": [
+        {
+          "id": "a",
+          "text": "ever",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "never",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "yet",
+          "misconception": null
+        }
+      ],
+      "explanation": "최상급 + (that) + 주어 + have ever p.p. = 지금까지 먹어 본 것 중 가장 ~한."
+    },
+    {
+      "id": "D.compare_adv.q9",
+      "concept": "D.compare_adv",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 연습할수록 더 잘하게 된다.",
+      "tokens": [
+        "The more",
+        "you practice,",
+        "the better",
+        "you get."
+      ],
+      "answer": [
+        "The more",
+        "you practice,",
+        "the better",
+        "you get."
+      ],
+      "misconception": "D.compare_adv.the_the",
+      "explanation": "The + 비교급 + 주어 + 동사, the + 비교급 + 주어 + 동사 순서예요."
+    },
+    {
+      "id": "D.compare_adv.q10",
+      "concept": "D.compare_adv",
+      "level": "M",
+      "type": "reason",
+      "question": "very taller가 틀린 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "very는 원급을 꾸미고, 비교급은 much·even·far 등으로 강조해서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "taller가 형용사가 아니라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "very는 부사가 아니라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "비교급 강조에는 much, even, far, a lot을 써요."
+    }
+  ]
+}
