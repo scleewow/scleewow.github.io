@@ -504,7 +504,8 @@
     const qc = MAP && MAP.byId[q.concept];
     app.innerHTML = `${session.mode === 'review' ? crumbs([['복습']])
       : crumbs([[MAP.areaTitle[qc.area], '#/area/' + qc.area], [qc.name, '#/learn/' + q.concept], ['문제']])}
-      <h1>${title}</h1>
+      <div class="title-row"><h1>${title}</h1>
+        <button class="btn small ghost" id="restart" ${session.idx === 0 && !session.answers.length ? 'disabled' : ''}>처음부터 다시 풀기</button></div>
       <div class="stepbar">
         <span class="stepbar-side"></span>
         <div class="stepbar-mid">
@@ -522,6 +523,11 @@
 
     if (q.type === 'order') bindOrder(q, area);
     else app.querySelectorAll('.option').forEach(btn => { btn.onclick = () => answer(q, area, btn.dataset.id); });
+    if (session.retrying) {
+      document.querySelector('.question').insertAdjacentHTML('beforebegin',
+        '<div class="retry-note">다시 풀어 보는 중이에요. 점수에는 처음 고른 답만 들어가요.</div>');
+      enableNext(); // 이미 한 번 답한 문제라 건너뛰고 다음으로 가도 돼요
+    }
   }
 
   // 단어 배열: 처음 보이는 순서가 정답과 같지 않도록 섞음
@@ -579,22 +585,36 @@
   }
 
   function finishAnswer(q, ok, mis, extraHtml) {
-    session.answers.push({ qid: q.id, correct: ok, mis: mis ? mis.id : null });
-    recordReview(q.id, ok);
-    if (mis) state.mis[mis.id] = (state.mis[mis.id] || 0) + 1;
-    save();
+    // 점수·복습 기록은 처음 푼 답으로만 (이 문제 다시 풀기는 연습용)
+    if (!session.retrying) {
+      session.answers.push({ qid: q.id, correct: ok, mis: mis ? mis.id : null });
+      recordReview(q.id, ok);
+      if (mis) state.mis[mis.id] = (state.mis[mis.id] || 0) + 1;
+      save();
+    }
 
-    let fb = `<div class="feedback ${ok ? 'good' : 'bad'}"><strong>${ok ? '맞았어요!' : '아쉬워요.'}</strong> ${esc(q.explanation)}${extraHtml}`;
+    const head = ok ? (session.retrying ? '이번엔 맞았어요!' : '맞았어요!') : '아쉬워요.';
+    let fb = `<div class="feedback ${ok ? 'good' : 'bad'}"><strong>${head}</strong> ${esc(q.explanation)}${extraHtml}`;
     if (mis) {
       fb += `<div class="mis">헷갈린 부분: ${esc(mis.desc)}<br>
         <span class="wrong-ex">${esc(mis.wrong)}</span> → <span class="right-ex">${esc(mis.right)}</span></div>`;
     }
     fb += `</div>`;
+    if (!ok) fb += `<div class="btn-row"><button class="btn ghost" id="retry-q">이 문제 다시 풀기</button></div>`;
     document.getElementById('fb').innerHTML = fb;
-    // 위쪽 고정 막대의 버튼을 눌러지게 바꿈 (답하기 전에는 흐리게)
+    const retry = document.getElementById('retry-q');
+    if (retry) retry.onclick = () => { session.retrying = true; renderQuestion(); };
+    enableNext();
+  }
+
+  // 위쪽 고정 막대의 버튼을 눌러지게 바꿈 (답하기 전에는 흐리게)
+  function enableNext() {
     const next = document.getElementById('next');
     next.disabled = false;
+    const restart = document.getElementById('restart');
+    if (restart) restart.disabled = false;
     next.onclick = () => {
+      session.retrying = false;
       session.idx++;
       if (session.idx < session.list.length) renderQuestion();
       else renderResult();
@@ -861,6 +881,17 @@
     if (e.target === toc || e.target.closest('a')) closeToc(); // 바깥을 누르거나 링크를 누르면 닫힘
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !toc.hidden) closeToc(); });
+
+  // 문제 풀이 중 '처음부터 다시 풀기': 같은 문제들을 새로 섞어 1번부터 다시
+  app.addEventListener('click', e => {
+    if (!e.target.closest('#restart') || !session) return;
+    session.list = shuffle(session.list);
+    session.idx = 0;
+    session.answers = [];
+    session.retrying = false;
+    renderQuestion();
+    window.scrollTo(0, 0);
+  });
 
   // 고정 막대가 위쪽 메뉴 바로 아래에 붙도록 메뉴 높이를 알려 줌
   function setBarTop() {
