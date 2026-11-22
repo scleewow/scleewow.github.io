@@ -420,30 +420,35 @@
     const nexts = (MAP.next[id] || []).map(conceptLink).join(' ');
     const weak = concept.prerequisites.filter(p => isReadyConcept(p) && statusOf(p) !== 'good');
 
+    // 고정 막대: [이전] 진행 막대 + n/전체 [다음] — 내용 길이와 상관없이 항상 같은 자리
+    const last = i === steps.length;
     let html = `<a href="#/area/${esc(area.code)}">← ${esc(area.title)}</a>
       <h1>${esc(concept.name)}</h1>
-      <p class="prereq">먼저 알아야 할 개념: ${prereqs || '없음'}</p>`;
-    if (i === total - 1 && nexts) html += `<p class="prereq">다음에 이어지는 개념: ${nexts}</p>`;
+      <div class="stepbar">
+        <button class="btn ghost" ${i === 0 ? 'disabled' : ''} data-go="${i - 1}">이전</button>
+        <div class="stepbar-mid">
+          <div class="progress-steps">${Array.from({ length: total }, (_, k) => `<span class="${k <= i ? 'on' : ''}"></span>`).join('')}</div>
+          <span class="step-count">${i + 1} / ${total}</span>
+        </div>
+        ${last ? `<a class="btn" href="#/quiz/${esc(id)}">문제 풀기</a>` : `<button class="btn" data-go="${i + 1}">다음</button>`}
+      </div>`;
+
+    if (!last) {
+      const s = steps[i];
+      html += `<div class="card"><div class="step-label">${esc(s.label)}</div>${s.html}</div>`;
+    } else {
+      html += `<div class="card"><div class="step-label">이해했는지 확인해요</div>
+        <p>문제를 풀면서 개념이 잘 잡혔는지 확인해요. 틀리면 어떤 부분을 헷갈렸는지 알려 줄게요.</p>
+        <a class="btn" href="#/quiz/${esc(id)}">확인 문제 풀기</a></div>`;
+    }
+    // 안내 문구와 연결 개념은 내용 아래에 (버튼 위치가 흔들리지 않도록)
     if (lv.aboveMe) {
       html += `<div class="notice">이 개념은 ${LEVELS[lv.lowest]} 단계예요. 지금 단계보다 높지만 미리 볼 수 있어요.</div>`;
     } else if (weak.length && i === 0) {
       html += `<div class="notice">먼저 알아야 할 개념 중 아직 '이해함'이 아닌 것이 있어요. 막히면 그 개념부터 확인해 보세요.</div>`;
     }
-    html += `<div class="progress-steps">${Array.from({ length: total }, (_, k) => `<span class="${k <= i ? 'on' : ''}"></span>`).join('')}</div>`;
-
-    if (i < steps.length) {
-      const s = steps[i];
-      html += `<div class="card"><div class="step-label">${esc(s.label)}</div>${s.html}</div>
-        <div class="btn-row">
-          <button class="btn ghost" ${i === 0 ? 'disabled' : ''} data-go="${i - 1}">이전</button>
-          <button class="btn" data-go="${i + 1}">다음</button>
-        </div>`;
-    } else {
-      html += `<div class="card"><div class="step-label">이해했는지 확인해요</div>
-        <p>문제를 풀면서 개념이 잘 잡혔는지 확인해요. 틀리면 어떤 부분을 헷갈렸는지 알려 줄게요.</p>
-        <a class="btn" href="#/quiz/${esc(id)}">확인 문제 풀기</a></div>
-        <div class="btn-row"><button class="btn ghost" data-go="${i - 1}">이전</button></div>`;
-    }
+    html += `<p class="prereq">먼저 알아야 할 개념: ${prereqs || '없음'}</p>`;
+    if (last && nexts) html += `<p class="prereq">다음에 이어지는 개념: ${nexts}</p>`;
     app.innerHTML = html;
     app.querySelectorAll('[data-go]').forEach(b => {
       b.onclick = () => { location.hash = `#/learn/${id}/${b.dataset.go}`; };
@@ -488,7 +493,14 @@
 
     app.innerHTML = `<a href="${session.mode === 'review' ? '#/' : '#/learn/' + esc(q.concept)}">← 그만하기</a>
       <h1>${title}</h1>
-      <p class="sub">${session.idx + 1} / ${session.list.length}</p>
+      <div class="stepbar">
+        <span class="stepbar-side"></span>
+        <div class="stepbar-mid">
+          <div class="progress-steps">${session.list.map((_, k) => `<span class="${k <= session.idx ? 'on' : ''}"></span>`).join('')}</div>
+          <span class="step-count">${session.idx + 1} / ${session.list.length}</span>
+        </div>
+        <button class="btn" id="next" disabled>${session.idx + 1 < session.list.length ? '다음 문제' : '결과 보기'}</button>
+      </div>
       <div class="card">
         <div class="q-meta">${levelBadge(q.level)}<span class="badge">${esc(concept.name)}</span>${typeLabel}</div>
         <div class="question">${esc(q.question)}</div>
@@ -565,9 +577,12 @@
       fb += `<div class="mis">헷갈린 부분: ${esc(mis.desc)}<br>
         <span class="wrong-ex">${esc(mis.wrong)}</span> → <span class="right-ex">${esc(mis.right)}</span></div>`;
     }
-    fb += `</div><div class="btn-row"><span></span><button class="btn" id="next">${session.idx + 1 < session.list.length ? '다음 문제' : '결과 보기'}</button></div>`;
+    fb += `</div>`;
     document.getElementById('fb').innerHTML = fb;
-    document.getElementById('next').onclick = () => {
+    // 위쪽 고정 막대의 버튼을 눌러지게 바꿈 (답하기 전에는 흐리게)
+    const next = document.getElementById('next');
+    next.disabled = false;
+    next.onclick = () => {
       session.idx++;
       if (session.idx < session.list.length) renderQuestion();
       else renderResult();
@@ -788,6 +803,23 @@
     window.scrollTo(0, 0);
   }
 
+  // 고정 막대가 위쪽 메뉴 바로 아래에 붙도록 메뉴 높이를 알려 줌
+  function setBarTop() {
+    const bar = document.querySelector('.topbar');
+    document.documentElement.style.setProperty('--bar-top', (bar ? bar.offsetHeight : 0) + 'px');
+  }
+  window.addEventListener('resize', setBarTop);
+  setBarTop();
+
   window.addEventListener('hashchange', route);
+  // 지금 주소와 같은 곳으로 가는 링크(예: 결과 화면의 "다시 풀기", 복습 중 "복습" 메뉴)는
+  // 주소가 바뀌지 않아 hashchange가 일어나지 않으므로 직접 화면을 다시 그림
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const target = a.getAttribute('href');
+    const current = location.hash || '#/';
+    if (target === current) { e.preventDefault(); route(); }
+  });
   route();
 })();
