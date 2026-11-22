@@ -95,6 +95,15 @@
     return `<a href="${esc(conceptHref(id))}">${esc(name)}</a>${isReadyConcept(id) ? statusBadge(id) : '<span class="badge">준비 중</span>'}`;
   }
 
+  // ---------- 경로 표시: 개념 지도 › 영역 › 개념 (원하는 곳을 바로 누름) ----------
+  // items: [[이름, 주소], ...] — 마지막 항목은 주소가 없으면 지금 위치
+  function crumbs(items) {
+    const all = [['개념 지도', '#/'], ...items];
+    return `<nav class="crumbs">${all.map(([name, href], k) =>
+      (k ? '<span class="sep">›</span>' : '') +
+      (href ? `<a href="${esc(href)}">${esc(name)}</a>` : `<span class="here">${esc(name)}</span>`)).join('')}</nav>`;
+  }
+
   // ---------- 도우미 ----------
   const app = document.getElementById('app');
   const esc = s => String(s == null ? '' : s)
@@ -162,8 +171,7 @@
       ['E', 'M', 'H'].forEach(band => {
         const items = list.filter(c => startBand(c.stages) === band);
         if (!items.length) return;
-        const above = LEVEL_ORDER[band] > LEVEL_ORDER[state.level];
-        html += `<div class="band ${above ? 'above' : ''}"><span class="band-label">${LEVELS[band]}</span><div class="band-chips">
+        html += `<div class="band"><span class="band-label">${LEVELS[band]}</span><div class="band-chips">
           ${items.map(c => {
             const cls = isReadyConcept(c.id) ? `ready ${statusOf(c.id)}` : 'soon';
             return `<a class="cchip ${cls}" href="${esc(conceptHref(c.id))}">${esc(c.name)}</a>`;
@@ -179,7 +187,7 @@
     await Promise.all([loadMap(), loadReadyAreas()]);
     const meta = MAP.areas.find(a => a.code === code);
     if (!meta) { app.innerHTML = '<p>영역을 찾을 수 없어요.</p>'; return; }
-    let html = `<a href="#/">← 개념 지도</a><h1>${esc(meta.title)}</h1>`;
+    let html = `${crumbs([[meta.title]])}<h1>${esc(meta.title)}</h1>`;
     if (isReadyArea(code)) {
       const area = cache[code];
       html += `<p class="sub">${esc(area.intro)}</p>
@@ -187,10 +195,10 @@
         <ul class="concept-list">`;
       area.concepts.forEach(c => {
         const lv = levelsFor(c);
-        html += `<li><a href="#/learn/${esc(c.id)}">
+        html += `<li class="with-quiz"><a href="#/learn/${esc(c.id)}">
           <i class="dot ${statusOf(c.id) === 'none' ? '' : statusOf(c.id)}"></i>
-          <span class="name ${lv.aboveMe ? 'locked' : ''}">${esc(c.name)}</span>
-          ${levelBadge(lv.lowest)}</a></li>`;
+          <span class="name">${esc(c.name)}</span>
+          ${levelBadge(lv.lowest)}</a><a class="qlink" href="#/quiz/${esc(c.id)}">문제</a></li>`;
       });
       html += `</ul></div>`;
     } else {
@@ -214,7 +222,7 @@
     if (!c) { app.innerHTML = '<p>개념을 찾을 수 없어요.</p>'; return; }
     const pre = c.prerequisites.map(conceptLink).join(' ') || '없음';
     const nxt = MAP.next[id].map(conceptLink).join(' ') || '없음';
-    app.innerHTML = `<a href="#/area/${esc(c.area)}">← ${esc(MAP.areaTitle[c.area])}</a>
+    app.innerHTML = `${crumbs([[MAP.areaTitle[c.area], '#/area/' + c.area], [c.name]])}
       <h1>${esc(c.name)}</h1>
       <p class="sub">${esc(MAP.areaTitle[c.area])} · ${levelBadge(startBand(c.stages))}</p>
       <div class="notice">이 개념의 설명과 문제는 아직 준비 중이에요.</div>
@@ -422,8 +430,9 @@
 
     // 고정 막대: [이전] 진행 막대 + n/전체 [다음] — 내용 길이와 상관없이 항상 같은 자리
     const last = i === steps.length;
-    let html = `<a href="#/area/${esc(area.code)}">← ${esc(area.title)}</a>
-      <h1>${esc(concept.name)}</h1>
+    let html = `${crumbs([[area.title, '#/area/' + area.code], [concept.name]])}
+      <div class="title-row"><h1>${esc(concept.name)}</h1>
+        <a class="btn small ghost" href="#/quiz/${esc(id)}">문제 바로 풀기</a></div>
       <div class="stepbar">
         <button class="btn ghost" ${i === 0 ? 'disabled' : ''} data-go="${i - 1}">이전</button>
         <div class="stepbar-mid">
@@ -460,6 +469,7 @@
   let session = null;
 
   async function startQuiz(id) {
+    await loadMap(); // 경로 표시(영역 이름)에 필요
     const area = await loadArea(areaOf(id));
     const list = shuffle(questionsFor(area, id)).map(q => q.id);
     session = { mode: 'quiz', conceptId: id, list, idx: 0, answers: [] };
@@ -491,7 +501,9 @@
       body = `<div class="options">${shuffle(q.options).map(o => `<button class="option" data-id="${esc(o.id)}">${esc(o.text)}</button>`).join('')}</div>`;
     }
 
-    app.innerHTML = `<a href="${session.mode === 'review' ? '#/' : '#/learn/' + esc(q.concept)}">← 그만하기</a>
+    const qc = MAP && MAP.byId[q.concept];
+    app.innerHTML = `${session.mode === 'review' ? crumbs([['복습']])
+      : crumbs([[MAP.areaTitle[qc.area], '#/area/' + qc.area], [qc.name, '#/learn/' + q.concept], ['문제']])}
       <h1>${title}</h1>
       <div class="stepbar">
         <span class="stepbar-side"></span>
@@ -621,7 +633,7 @@
       state.progress[id] = { status, attempts: p.attempts + 1, best: Math.max(p.best || 0, ratio) };
       save();
       const concept = cache[areaOf(id)].conceptMap[id];
-      html += `<a href="#/">← 개념 지도</a><h1>${esc(concept.name)} 결과</h1>
+      html += `${crumbs([[MAP.areaTitle[areaOf(id)], '#/area/' + areaOf(id)], [concept.name, '#/learn/' + id], ['결과']])}<h1>${esc(concept.name)} 결과</h1>
         <div class="card"><div class="result-score">${correct} / ${total}</div>
         <p>이 개념은 지금 ${statusBadge(id)} 상태예요.</p>
         ${status === 'good'
@@ -629,7 +641,7 @@
           : '<p>틀린 문제는 내일 복습 목록에 들어가요. 아래 헷갈린 부분을 확인하고 개념을 한 번 더 봐요.</p>'}
         </div>`;
     } else {
-      html += `<a href="#/">← 개념 지도</a><h1>복습 결과</h1>
+      html += `${crumbs([['복습 결과']])}<h1>복습 결과</h1>
         <div class="card"><div class="result-score">${correct} / ${total}</div>
         <p>맞힌 문제는 복습 간격이 늘어나고, 세 번 연속 맞히면 복습 목록에서 빠져요.</p></div>`;
     }
@@ -655,7 +667,7 @@
   function renderReviewEmpty() {
     const count = Object.keys(state.review).length;
     const top = Object.entries(state.mis).sort((a, b) => b[1] - a[1]).slice(0, 5);
-    let html = `<a href="#/">← 개념 지도</a><h1>복습</h1>
+    let html = `${crumbs([['복습']])}<h1>복습</h1>
       <div class="card"><p>지금 복습할 문제가 없어요.${count ? ` 복습 대기 중인 문제는 ${count}개예요.` : ''}</p></div>`;
     if (top.length) {
       html += `<div class="card"><h3>자주 헷갈리는 부분</h3><ul class="mis-list">${top.map(([mid, n]) => {
@@ -733,7 +745,7 @@
   async function renderNotes() {
     await loadReadyAreas();
     const ids = Object.keys(state.notes).filter(id => state.notes[id]);
-    let html = `<a href="#/">← 개념 지도</a><h1>개념 노트</h1>
+    let html = `${crumbs([['개념 노트']])}<h1>개념 노트</h1>
       <p class="sub">문제를 푼 뒤 내 말로 정리한 내용이 모여요.</p>`;
     if (!ids.length) html += '<div class="card"><p>아직 저장한 정리가 없어요.</p></div>';
     ids.forEach(id => {
@@ -748,7 +760,7 @@
 
   // ---------- 설정 ----------
   function renderSettings() {
-    app.innerHTML = `<a href="#/">← 개념 지도</a><h1>설정</h1>
+    app.innerHTML = `${crumbs([['설정']])}<h1>설정</h1>
       <div class="card">
         <label for="level">내 단계</label>
         <select id="level">${Object.keys(LEVELS).map(k => `<option value="${k}" ${state.level === k ? 'selected' : ''}>${LEVELS[k]}</option>`).join('')}</select>
@@ -802,6 +814,53 @@
     updateNav();
     window.scrollTo(0, 0);
   }
+
+  // ---------- 전체 목차: 어느 화면에서든 원하는 개념이나 문제로 바로 이동 ----------
+  const toc = document.getElementById('toc');
+  function currentConceptId() {
+    const parts = (location.hash.replace(/^#\/?/, '') || '').split('/');
+    if (['learn', 'quiz', 'concept'].includes(parts[0])) return decodeURIComponent(parts[1] || '');
+    if (session && session.mode === 'quiz' && parts[0] === 'quiz') return session.conceptId;
+    return '';
+  }
+  async function openToc() {
+    await Promise.all([loadMap(), loadReadyAreas()]);
+    const cur = currentConceptId();
+    const parts = (location.hash.replace(/^#\/?/, '') || '').split('/');
+    const curArea = cur ? MAP.byId[cur] && MAP.byId[cur].area : (parts[0] === 'area' ? parts[1] : '');
+    let html = `<div class="toc-panel" role="dialog" aria-label="전체 목차">
+      <div class="toc-head"><strong>전체 목차</strong><button class="toc-close" aria-label="닫기">✕</button></div>
+      <a class="toc-home" href="#/">개념 지도</a>`;
+    MAP.areas.forEach(a => {
+      const list = MAP.concepts.filter(c => c.area === a.code);
+      const good = list.filter(c => isReadyConcept(c.id) && statusOf(c.id) === 'good').length;
+      html += `<details ${a.code === curArea ? 'open' : ''}><summary>${esc(a.title)}<span class="toc-count">${good} / ${list.length}</span></summary>
+        <ul>${list.map(c => {
+          const ready = isReadyConcept(c.id);
+          const st = statusOf(c.id);
+          return `<li class="${c.id === cur ? 'current' : ''}">
+            <a class="toc-name" href="${esc(conceptHref(c.id))}"><i class="dot ${ready ? (st === 'none' ? '' : st) : 'soon'}"></i>${esc(c.name)}</a>
+            ${ready ? `<a class="qlink" href="#/quiz/${esc(c.id)}">문제</a>` : ''}</li>`;
+        }).join('')}</ul></details>`;
+    });
+    html += `</div>`;
+    toc.innerHTML = html;
+    toc.hidden = false;
+    document.body.classList.add('toc-open');
+    const curEl = toc.querySelector('li.current');
+    if (curEl) curEl.scrollIntoView({ block: 'center' });
+    toc.querySelector('.toc-close').onclick = closeToc;
+  }
+  function closeToc() {
+    toc.hidden = true;
+    toc.innerHTML = '';
+    document.body.classList.remove('toc-open');
+  }
+  document.getElementById('toc-btn').addEventListener('click', () => (toc.hidden ? openToc() : closeToc()));
+  toc.addEventListener('click', e => {
+    if (e.target === toc || e.target.closest('a')) closeToc(); // 바깥을 누르거나 링크를 누르면 닫힘
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !toc.hidden) closeToc(); });
 
   // 고정 막대가 위쪽 메뉴 바로 아래에 붙도록 메뉴 높이를 알려 줌
   function setBarTop() {
