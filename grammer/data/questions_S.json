@@ -1,0 +1,2673 @@
+{
+  "area": "S",
+  "types": {
+    "concept": "개념 확인",
+    "apply": "적용",
+    "reason": "이유 확인",
+    "order": "문장 만들기"
+  },
+  "questions": [
+    {
+      "id": "S.sv.q1",
+      "concept": "S.sv",
+      "level": "E",
+      "type": "apply",
+      "question": "\"나는 사과를 좋아한다.\"를 바르게 쓴 영어 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "I like apples.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I apples like.",
+          "misconception": "S.sv.korean_order"
+        },
+        {
+          "id": "c",
+          "text": "Like I apples.",
+          "misconception": null
+        }
+      ],
+      "explanation": "영어는 주어(I) 바로 뒤에 동사(like)가 오고, 그다음에 목적어(apples)가 와요."
+    },
+    {
+      "id": "S.sv.q2",
+      "concept": "S.sv",
+      "level": "E",
+      "type": "concept",
+      "question": "My dog runs fast. 이 문장의 주어는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "My dog",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "runs",
+          "misconception": "S.sv.subject_verb"
+        },
+        {
+          "id": "c",
+          "text": "fast",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"누가?\"에 해당하는 말이 주어예요. 달리는 것은 우리 개(My dog)예요."
+    },
+    {
+      "id": "S.sv.q3",
+      "concept": "S.sv",
+      "level": "E",
+      "type": "concept",
+      "question": "Tom plays the piano. 이 문장의 동사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "plays",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Tom",
+          "misconception": "S.sv.subject_verb"
+        },
+        {
+          "id": "c",
+          "text": "the piano",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"한다?\"에 해당하는 말이 동사예요. 주어 Tom 바로 뒤의 plays가 동사예요."
+    },
+    {
+      "id": "S.sv.q4",
+      "concept": "S.sv",
+      "level": "E",
+      "type": "apply",
+      "question": "어법상 맞는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It is cold today.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Is cold today.",
+          "misconception": "S.sv.no_subject"
+        },
+        {
+          "id": "c",
+          "text": "Cold is today.",
+          "misconception": null
+        }
+      ],
+      "explanation": "영어는 주어를 빼지 않아요. 날씨를 말할 때는 It을 주어로 써요."
+    },
+    {
+      "id": "S.sv.q5",
+      "concept": "S.sv",
+      "level": "E",
+      "type": "apply",
+      "question": "어법상 맞는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "She is my sister.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "She my sister.",
+          "misconception": "S.sv.no_verb"
+        },
+        {
+          "id": "c",
+          "text": "She is sister my.",
+          "misconception": null
+        }
+      ],
+      "explanation": "영어 문장에는 동사가 꼭 있어야 해요. \"~이다\"는 be동사 is로 나타내요."
+    },
+    {
+      "id": "S.sv.q6",
+      "concept": "S.sv",
+      "level": "E",
+      "type": "concept",
+      "question": "주어와 동사가 모두 있는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Birds sing.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Very beautiful.",
+          "misconception": "S.sv.no_verb"
+        },
+        {
+          "id": "c",
+          "text": "In the morning.",
+          "misconception": null
+        }
+      ],
+      "explanation": "Birds(주어) + sing(동사)으로 된 완전한 문장이에요. 나머지는 주어도 동사도 없어요."
+    },
+    {
+      "id": "S.sv.q7",
+      "concept": "S.sv",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 학교에 간다.",
+      "tokens": [
+        "I",
+        "go",
+        "to school."
+      ],
+      "answer": [
+        "I",
+        "go",
+        "to school."
+      ],
+      "misconception": "S.sv.korean_order",
+      "explanation": "주어(I) + 동사(go) 다음에 장소(to school)가 와요."
+    },
+    {
+      "id": "S.sv.q8",
+      "concept": "S.sv",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 우리는 축구를 좋아한다.",
+      "tokens": [
+        "We",
+        "like",
+        "soccer."
+      ],
+      "answer": [
+        "We",
+        "like",
+        "soccer."
+      ],
+      "misconception": "S.sv.korean_order",
+      "explanation": "주어(We) + 동사(like) + 목적어(soccer) 순서예요."
+    },
+    {
+      "id": "S.sv.q9",
+      "concept": "S.sv",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그 새는 높이 난다.",
+      "tokens": [
+        "The bird",
+        "flies",
+        "high."
+      ],
+      "answer": [
+        "The bird",
+        "flies",
+        "high."
+      ],
+      "misconception": "S.sv.korean_order",
+      "explanation": "주어(The bird) + 동사(flies) 다음에 꾸미는 말(high)이 와요."
+    },
+    {
+      "id": "S.sv.q10",
+      "concept": "S.sv",
+      "level": "E",
+      "type": "reason",
+      "question": "I like pizza. 에서 like가 I 바로 뒤에 오는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "영어는 주어 바로 뒤에 동사가 오기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "like가 가장 중요한 단어라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "pizza보다 짧은 단어라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "영어 문장은 \"주어 + 동사\"로 시작해요. 이 순서가 영어 문장의 가장 기본 규칙이에요."
+    },
+    {
+      "id": "S.be.q1",
+      "concept": "S.be",
+      "level": "E",
+      "type": "apply",
+      "question": "I ___ a student.",
+      "options": [
+        {
+          "id": "a",
+          "text": "am",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is",
+          "misconception": "S.be.agreement"
+        },
+        {
+          "id": "c",
+          "text": "are",
+          "misconception": "S.be.agreement"
+        }
+      ],
+      "explanation": "주어가 I면 be동사는 am이에요."
+    },
+    {
+      "id": "S.be.q2",
+      "concept": "S.be",
+      "level": "E",
+      "type": "apply",
+      "question": "They ___ my friends.",
+      "options": [
+        {
+          "id": "a",
+          "text": "are",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is",
+          "misconception": "S.be.agreement"
+        },
+        {
+          "id": "c",
+          "text": "am",
+          "misconception": "S.be.agreement"
+        }
+      ],
+      "explanation": "주어가 They(여럿)면 are예요."
+    },
+    {
+      "id": "S.be.q3",
+      "concept": "S.be",
+      "level": "E",
+      "type": "apply",
+      "question": "My mom ___ a teacher.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "are",
+          "misconception": "S.be.agreement"
+        },
+        {
+          "id": "c",
+          "text": "am",
+          "misconception": "S.be.agreement"
+        }
+      ],
+      "explanation": "My mom은 한 사람이라 is예요."
+    },
+    {
+      "id": "S.be.q4",
+      "concept": "S.be",
+      "level": "E",
+      "type": "apply",
+      "question": "어법상 맞는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "She is happy.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "She happy.",
+          "misconception": "S.be.missing"
+        },
+        {
+          "id": "c",
+          "text": "She is happily.",
+          "misconception": null
+        }
+      ],
+      "explanation": "happy는 동사가 아니라서 be동사 is가 꼭 필요해요."
+    },
+    {
+      "id": "S.be.q5",
+      "concept": "S.be",
+      "level": "E",
+      "type": "apply",
+      "question": "The books ___ on the desk.",
+      "options": [
+        {
+          "id": "a",
+          "text": "are",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is",
+          "misconception": "S.be.agreement"
+        },
+        {
+          "id": "c",
+          "text": "be",
+          "misconception": null
+        }
+      ],
+      "explanation": "The books는 여러 권이라 are예요."
+    },
+    {
+      "id": "S.be.q6",
+      "concept": "S.be",
+      "level": "E",
+      "type": "apply",
+      "question": "\"나는 배고프지 않다.\" → I ___ hungry.",
+      "options": [
+        {
+          "id": "a",
+          "text": "am not",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "amn't",
+          "misconception": "S.be.neg_form"
+        },
+        {
+          "id": "c",
+          "text": "don't",
+          "misconception": "S.be_vs_verb.do_with_be"
+        }
+      ],
+      "explanation": "be동사의 부정은 be동사 뒤에 not을 붙여요. I am not(I'm not)이에요."
+    },
+    {
+      "id": "S.be.q7",
+      "concept": "S.be",
+      "level": "E",
+      "type": "apply",
+      "question": "___ you tired?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Are",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Do",
+          "misconception": "S.be_vs_verb.do_with_be"
+        },
+        {
+          "id": "c",
+          "text": "Is",
+          "misconception": "S.be.agreement"
+        }
+      ],
+      "explanation": "tired(피곤한)는 상태라서 be동사 문장이에요. 의문문은 Are를 주어 앞으로 보내요."
+    },
+    {
+      "id": "S.be.q8",
+      "concept": "S.be",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그 책은 책상 위에 있다.",
+      "tokens": [
+        "The book",
+        "is",
+        "on the desk."
+      ],
+      "answer": [
+        "The book",
+        "is",
+        "on the desk."
+      ],
+      "misconception": null,
+      "explanation": "\"~에 있다\"는 be동사로 나타내요. 주어 + is + 장소 순서예요."
+    },
+    {
+      "id": "S.be.q9",
+      "concept": "S.be",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 너는 행복하니?",
+      "tokens": [
+        "Are",
+        "you",
+        "happy?"
+      ],
+      "answer": [
+        "Are",
+        "you",
+        "happy?"
+      ],
+      "misconception": null,
+      "explanation": "be동사 의문문은 be동사(Are)를 주어 앞으로 보내요."
+    },
+    {
+      "id": "S.be.q10",
+      "concept": "S.be",
+      "level": "E",
+      "type": "reason",
+      "question": "The cat is under the table. 에서 is의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "~에 있다",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "~이다",
+          "misconception": "S.be.meaning"
+        },
+        {
+          "id": "c",
+          "text": "~한다",
+          "misconception": null
+        }
+      ],
+      "explanation": "be동사 뒤에 장소(under the table)가 오면 \"~에 있다\"라는 뜻이에요."
+    },
+    {
+      "id": "S.verb.q1",
+      "concept": "S.verb",
+      "level": "E",
+      "type": "concept",
+      "question": "다음 중 일반동사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "run",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "happy",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "is",
+          "misconception": null
+        }
+      ],
+      "explanation": "run(달리다)은 행동을 나타내는 일반동사예요. happy는 형용사, is는 be동사예요."
+    },
+    {
+      "id": "S.verb.q2",
+      "concept": "S.verb",
+      "level": "E",
+      "type": "concept",
+      "question": "다음 중 마음·상태를 나타내는 일반동사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "know",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "jump",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "tall",
+          "misconception": null
+        }
+      ],
+      "explanation": "know(알다)는 눈에 보이지 않는 상태를 나타내는 일반동사예요."
+    },
+    {
+      "id": "S.verb.q3",
+      "concept": "S.verb",
+      "level": "E",
+      "type": "apply",
+      "question": "어법상 맞는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "I like music.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I am like music.",
+          "misconception": "S.verb.with_be"
+        },
+        {
+          "id": "c",
+          "text": "I music like.",
+          "misconception": "S.sv.korean_order"
+        }
+      ],
+      "explanation": "like가 동사라서 am이 필요 없어요. 주어 + 동사 + 목적어 순서예요."
+    },
+    {
+      "id": "S.verb.q4",
+      "concept": "S.verb",
+      "level": "E",
+      "type": "apply",
+      "question": "We ___ soccer after school.",
+      "options": [
+        {
+          "id": "a",
+          "text": "play",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "are play",
+          "misconception": "S.verb.with_be"
+        },
+        {
+          "id": "c",
+          "text": "playing",
+          "misconception": "T.progressive.no_be"
+        }
+      ],
+      "explanation": "play가 동사예요. be동사를 같이 쓰지 않아요."
+    },
+    {
+      "id": "S.verb.q5",
+      "concept": "S.verb",
+      "level": "E",
+      "type": "apply",
+      "question": "She ___ a cute cat.",
+      "options": [
+        {
+          "id": "a",
+          "text": "has",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is have",
+          "misconception": "S.verb.with_be"
+        },
+        {
+          "id": "c",
+          "text": "have",
+          "misconception": "T.3sg.missing"
+        }
+      ],
+      "explanation": "\"가지고 있다\"는 일반동사 have예요. 주어 She에는 has를 써요."
+    },
+    {
+      "id": "S.verb.q6",
+      "concept": "S.verb",
+      "level": "E",
+      "type": "concept",
+      "question": "Tom eats an apple every day. 이 문장의 동사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "eats",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "apple",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "every day",
+          "misconception": null
+        }
+      ],
+      "explanation": "주어 Tom이 하는 일(먹다)을 나타내는 eats가 동사예요."
+    },
+    {
+      "id": "S.verb.q7",
+      "concept": "S.verb",
+      "level": "E",
+      "type": "apply",
+      "question": "어법상 맞는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "I want a new bag.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I am want a new bag.",
+          "misconception": "S.verb.with_be"
+        },
+        {
+          "id": "c",
+          "text": "I want buy a new bag.",
+          "misconception": "S.verb.two_verbs"
+        }
+      ],
+      "explanation": "한 문장의 기본 동사는 하나예요. want 하나로 충분해요."
+    },
+    {
+      "id": "S.verb.q8",
+      "concept": "S.verb",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 매일 책을 읽는다.",
+      "tokens": [
+        "I",
+        "read",
+        "books",
+        "every day."
+      ],
+      "answer": [
+        "I",
+        "read",
+        "books",
+        "every day."
+      ],
+      "misconception": null,
+      "explanation": "주어 + 동사 + 목적어, 그리고 every day는 맨 끝에 와요."
+    },
+    {
+      "id": "S.verb.q9",
+      "concept": "S.verb",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그들은 피아노를 친다.",
+      "tokens": [
+        "They",
+        "play",
+        "the piano."
+      ],
+      "answer": [
+        "They",
+        "play",
+        "the piano."
+      ],
+      "misconception": null,
+      "explanation": "주어(They) + 동사(play) + 목적어(the piano) 순서예요."
+    },
+    {
+      "id": "S.verb.q10",
+      "concept": "S.verb",
+      "level": "E",
+      "type": "reason",
+      "question": "I am like pizza. 가 틀린 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "like가 동사라서 be동사 am이 필요 없기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "like 뒤에 -s가 없어서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "pizza 앞에 a가 없어서",
+          "misconception": null
+        }
+      ],
+      "explanation": "한 문장의 기본 동사는 하나예요. 일반동사 like가 있으니 be동사를 빼야 해요."
+    },
+    {
+      "id": "S.be_vs_verb.q1",
+      "concept": "S.be_vs_verb",
+      "level": "E",
+      "type": "apply",
+      "question": "\"그녀는 피곤하지 않다.\" → She ___ tired.",
+      "options": [
+        {
+          "id": "a",
+          "text": "isn't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "doesn't",
+          "misconception": "S.be_vs_verb.do_with_be"
+        },
+        {
+          "id": "c",
+          "text": "not",
+          "misconception": null
+        }
+      ],
+      "explanation": "tired는 상태라서 be동사 문장이에요. be동사 is에 not을 붙여요."
+    },
+    {
+      "id": "S.be_vs_verb.q2",
+      "concept": "S.be_vs_verb",
+      "level": "E",
+      "type": "apply",
+      "question": "He ___ like carrots.",
+      "options": [
+        {
+          "id": "a",
+          "text": "doesn't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "isn't",
+          "misconception": "S.be_vs_verb.be_with_verb"
+        },
+        {
+          "id": "c",
+          "text": "not",
+          "misconception": "S.be_vs_verb.not_with_verb"
+        }
+      ],
+      "explanation": "like는 일반동사라서 doesn't + 동사원형으로 부정문을 만들어요."
+    },
+    {
+      "id": "S.be_vs_verb.q3",
+      "concept": "S.be_vs_verb",
+      "level": "E",
+      "type": "apply",
+      "question": "___ they your friends?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Are",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Do",
+          "misconception": "S.be_vs_verb.do_with_be"
+        },
+        {
+          "id": "c",
+          "text": "Does",
+          "misconception": "S.be_vs_verb.do_with_be"
+        }
+      ],
+      "explanation": "\"그들은 너의 친구니?\"는 be동사 문장이에요. Are를 주어 앞으로 보내요."
+    },
+    {
+      "id": "S.be_vs_verb.q4",
+      "concept": "S.be_vs_verb",
+      "level": "E",
+      "type": "apply",
+      "question": "___ your brother play the guitar?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Does",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Is",
+          "misconception": "S.be_vs_verb.be_with_verb"
+        },
+        {
+          "id": "c",
+          "text": "Do",
+          "misconception": "T.3sg.do_for_does"
+        }
+      ],
+      "explanation": "play는 일반동사라서 Do/Does로 물어요. 주어 your brother는 한 사람이라 Does예요."
+    },
+    {
+      "id": "S.be_vs_verb.q5",
+      "concept": "S.be_vs_verb",
+      "level": "E",
+      "type": "apply",
+      "question": "어법상 맞는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "I don't eat fish.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I not eat fish.",
+          "misconception": "S.be_vs_verb.not_with_verb"
+        },
+        {
+          "id": "c",
+          "text": "I am not eat fish.",
+          "misconception": "S.be_vs_verb.be_with_verb"
+        }
+      ],
+      "explanation": "eat은 일반동사라서 don't + 동사원형으로 부정해요."
+    },
+    {
+      "id": "S.be_vs_verb.q6",
+      "concept": "S.be_vs_verb",
+      "level": "M",
+      "type": "apply",
+      "question": "\"우리는 어제 집에 없었다.\" → We ___ at home yesterday.",
+      "options": [
+        {
+          "id": "a",
+          "text": "weren't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "didn't",
+          "misconception": "S.be_vs_verb.do_with_be"
+        },
+        {
+          "id": "c",
+          "text": "don't",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"집에 있다\"는 be동사 문장이에요. 과거이고 주어가 We라서 weren't예요."
+    },
+    {
+      "id": "S.be_vs_verb.q7",
+      "concept": "S.be_vs_verb",
+      "level": "M",
+      "type": "apply",
+      "question": "___ you see the movie last night?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Did",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Were",
+          "misconception": "S.be_vs_verb.be_with_verb"
+        },
+        {
+          "id": "c",
+          "text": "Do",
+          "misconception": null
+        }
+      ],
+      "explanation": "see는 일반동사이고 last night는 과거라서 Did로 물어요."
+    },
+    {
+      "id": "S.be_vs_verb.q8",
+      "concept": "S.be_vs_verb",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 의사가 아니다.",
+      "tokens": [
+        "He",
+        "isn't",
+        "a doctor."
+      ],
+      "answer": [
+        "He",
+        "isn't",
+        "a doctor."
+      ],
+      "misconception": null,
+      "explanation": "\"의사이다\"는 be동사 문장이라 isn't로 부정해요."
+    },
+    {
+      "id": "S.be_vs_verb.q9",
+      "concept": "S.be_vs_verb",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 너는 우유를 좋아하니?",
+      "tokens": [
+        "Do",
+        "you",
+        "like",
+        "milk?"
+      ],
+      "answer": [
+        "Do",
+        "you",
+        "like",
+        "milk?"
+      ],
+      "misconception": null,
+      "explanation": "like는 일반동사라서 Do + 주어 + 동사원형으로 물어요."
+    },
+    {
+      "id": "S.be_vs_verb.q10",
+      "concept": "S.be_vs_verb",
+      "level": "E",
+      "type": "reason",
+      "question": "Is she a teacher? 는 Is로, Does she teach English? 는 Does로 시작하는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "첫 문장은 be동사 문장이고, 둘째는 일반동사 문장이라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "아무거나 써도 되기 때문에",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "주어가 서로 달라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "문장의 동사 종류에 따라 의문문 만드는 방법이 달라요."
+    },
+    {
+      "id": "S.pos.q1",
+      "concept": "S.pos",
+      "level": "E",
+      "type": "concept",
+      "question": "다음 중 명사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "school",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "run",
+          "misconception": "S.pos.noun_verb"
+        },
+        {
+          "id": "c",
+          "text": "happy",
+          "misconception": null
+        }
+      ],
+      "explanation": "school(학교)은 장소의 이름이라 명사예요."
+    },
+    {
+      "id": "S.pos.q2",
+      "concept": "S.pos",
+      "level": "E",
+      "type": "concept",
+      "question": "다음 중 형용사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "big",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "quickly",
+          "misconception": "S.pos.adj_adv"
+        },
+        {
+          "id": "c",
+          "text": "jump",
+          "misconception": null
+        }
+      ],
+      "explanation": "big(큰)은 명사의 모양을 설명하는 형용사예요."
+    },
+    {
+      "id": "S.pos.q3",
+      "concept": "S.pos",
+      "level": "E",
+      "type": "concept",
+      "question": "다음 중 부사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "slowly",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "slow",
+          "misconception": "S.pos.adj_adv"
+        },
+        {
+          "id": "c",
+          "text": "dog",
+          "misconception": null
+        }
+      ],
+      "explanation": "slowly(천천히)는 동작을 꾸미는 부사예요. slow(느린)는 형용사예요."
+    },
+    {
+      "id": "S.pos.q4",
+      "concept": "S.pos",
+      "level": "E",
+      "type": "concept",
+      "question": "She sings very well. 에서 well의 품사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "부사",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "형용사",
+          "misconception": "S.pos.adj_adv"
+        },
+        {
+          "id": "c",
+          "text": "명사",
+          "misconception": null
+        }
+      ],
+      "explanation": "well(잘)이 동사 sings를 꾸미니까 부사예요."
+    },
+    {
+      "id": "S.pos.q5",
+      "concept": "S.pos",
+      "level": "E",
+      "type": "concept",
+      "question": "I have a red bag. 에서 형용사 red가 꾸미는 말은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "bag",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "have",
+          "misconception": null
+        }
+      ],
+      "explanation": "형용사는 명사를 꾸며요. red(빨간)가 bag(가방)을 꾸며요."
+    },
+    {
+      "id": "S.pos.q6",
+      "concept": "S.pos",
+      "level": "E",
+      "type": "concept",
+      "question": "The dog runs fast. 에서 동사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "runs",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "dog",
+          "misconception": "S.pos.noun_verb"
+        },
+        {
+          "id": "c",
+          "text": "fast",
+          "misconception": null
+        }
+      ],
+      "explanation": "runs(달린다)가 주어 The dog의 움직임을 나타내는 동사예요."
+    },
+    {
+      "id": "S.pos.q7",
+      "concept": "S.pos",
+      "level": "M",
+      "type": "concept",
+      "question": "다음 중 대명사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "they",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Tom",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "and",
+          "misconception": null
+        }
+      ],
+      "explanation": "they(그들)는 명사 대신 쓰는 대명사예요. Tom은 명사, and는 접속사예요."
+    },
+    {
+      "id": "S.pos.q8",
+      "concept": "S.pos",
+      "level": "M",
+      "type": "concept",
+      "question": "다음 중 전치사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "under",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "because",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "happy",
+          "misconception": null
+        }
+      ],
+      "explanation": "under(~ 아래에)는 명사 앞에서 장소를 나타내는 전치사예요."
+    },
+    {
+      "id": "S.pos.q9",
+      "concept": "S.pos",
+      "level": "M",
+      "type": "concept",
+      "question": "다음 중 접속사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "but",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "in",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "very",
+          "misconception": null
+        }
+      ],
+      "explanation": "but(그러나)은 말과 말을 이어 주는 접속사예요."
+    },
+    {
+      "id": "S.pos.q10",
+      "concept": "S.pos",
+      "level": "M",
+      "type": "reason",
+      "question": "I play soccer. / We watched a play. 에서 play의 품사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "앞은 동사, 뒤는 명사",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "둘 다 동사",
+          "misconception": "S.pos.fixed"
+        },
+        {
+          "id": "c",
+          "text": "둘 다 명사",
+          "misconception": "S.pos.fixed"
+        }
+      ],
+      "explanation": "앞의 play는 \"경기하다\"라는 동작(동사), 뒤의 play는 a 뒤에서 \"연극\"이라는 이름(명사)이에요."
+    },
+    {
+      "id": "S.component.q1",
+      "concept": "S.component",
+      "level": "M",
+      "type": "concept",
+      "question": "My brother plays soccer. 에서 목적어는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "soccer",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "My brother",
+          "misconception": "S.component.pos_role"
+        },
+        {
+          "id": "c",
+          "text": "plays",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"무엇을?\"에 해당하는 soccer가 목적어예요."
+    },
+    {
+      "id": "S.component.q2",
+      "concept": "S.component",
+      "level": "M",
+      "type": "concept",
+      "question": "She is a nurse. 에서 a nurse의 성분은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "보어",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "목적어",
+          "misconception": "S.component.object_complement"
+        },
+        {
+          "id": "c",
+          "text": "주어",
+          "misconception": null
+        }
+      ],
+      "explanation": "She = a nurse 관계라서 주어를 설명하는 보어예요."
+    },
+    {
+      "id": "S.component.q3",
+      "concept": "S.component",
+      "level": "M",
+      "type": "concept",
+      "question": "I met Tom in the park yesterday. 에서 수식어를 모두 고르면?",
+      "options": [
+        {
+          "id": "a",
+          "text": "in the park, yesterday",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Tom",
+          "misconception": "S.component.modifier"
+        },
+        {
+          "id": "c",
+          "text": "met",
+          "misconception": null
+        }
+      ],
+      "explanation": "in the park(어디서)와 yesterday(언제)는 빼도 문장이 되는 수식어예요. Tom은 목적어예요."
+    },
+    {
+      "id": "S.component.q4",
+      "concept": "S.component",
+      "level": "M",
+      "type": "concept",
+      "question": "Jane likes Tom. 에서 주어는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Jane",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Tom",
+          "misconception": "S.component.pos_role"
+        },
+        {
+          "id": "c",
+          "text": "likes",
+          "misconception": null
+        }
+      ],
+      "explanation": "동사 likes 앞에 있는 Jane이 주어예요."
+    },
+    {
+      "id": "S.component.q5",
+      "concept": "S.component",
+      "level": "M",
+      "type": "concept",
+      "question": "He became a doctor. 에서 a doctor의 성분은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "보어",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "목적어",
+          "misconception": "S.component.object_complement"
+        },
+        {
+          "id": "c",
+          "text": "수식어",
+          "misconception": "S.component.modifier"
+        }
+      ],
+      "explanation": "He = a doctor 관계라서 보어예요."
+    },
+    {
+      "id": "S.component.q6",
+      "concept": "S.component",
+      "level": "M",
+      "type": "concept",
+      "question": "다음 중 보어가 있는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "The soup smells good.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I ate the soup.",
+          "misconception": "S.component.object_complement"
+        },
+        {
+          "id": "c",
+          "text": "I ate quickly.",
+          "misconception": "S.component.modifier"
+        }
+      ],
+      "explanation": "good이 주어 The soup의 상태를 설명하는 보어예요."
+    },
+    {
+      "id": "S.component.q7",
+      "concept": "S.component",
+      "level": "M",
+      "type": "concept",
+      "question": "목적어 자리에 올 수 있는 품사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "명사·대명사",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "형용사",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "부사",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"무엇을, 누구를\"에 해당하는 목적어에는 명사나 대명사가 와요."
+    },
+    {
+      "id": "S.component.q8",
+      "concept": "S.component",
+      "level": "M",
+      "type": "concept",
+      "question": "I read a book in my room. 에서 빼도 문장이 성립하는 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "in my room",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a book",
+          "misconception": "S.component.modifier"
+        },
+        {
+          "id": "c",
+          "text": "read",
+          "misconception": null
+        }
+      ],
+      "explanation": "in my room은 장소를 덧붙이는 수식어라서 빼도 돼요."
+    },
+    {
+      "id": "S.component.q9",
+      "concept": "S.component",
+      "level": "M",
+      "type": "reason",
+      "question": "Tom likes Jane. 과 Jane likes Tom. 의 뜻이 다른 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "영어는 자리(순서)로 주어와 목적어가 정해지기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "likes의 모양이 달라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "이름의 순서는 상관없기 때문에",
+          "misconception": "S.component.pos_role"
+        }
+      ],
+      "explanation": "동사 앞은 주어, 동사 뒤는 목적어예요. 자리가 바뀌면 역할이 바뀌어요."
+    },
+    {
+      "id": "S.component.q10",
+      "concept": "S.component",
+      "level": "M",
+      "type": "concept",
+      "question": "They are happy. 에서 happy의 성분은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "보어",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "목적어",
+          "misconception": "S.component.object_complement"
+        },
+        {
+          "id": "c",
+          "text": "수식어",
+          "misconception": "S.component.modifier"
+        }
+      ],
+      "explanation": "happy가 주어 They의 상태를 설명하는 보어예요."
+    },
+    {
+      "id": "S.form1_2.q1",
+      "concept": "S.form1_2",
+      "level": "M",
+      "type": "apply",
+      "question": "You look ___ today.",
+      "options": [
+        {
+          "id": "a",
+          "text": "happy",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "happily",
+          "misconception": "S.form1_2.adverb_complement"
+        },
+        {
+          "id": "c",
+          "text": "happiness",
+          "misconception": null
+        }
+      ],
+      "explanation": "look(~해 보이다) 뒤에는 주어를 설명하는 형용사 보어가 와요."
+    },
+    {
+      "id": "S.form1_2.q2",
+      "concept": "S.form1_2",
+      "level": "M",
+      "type": "apply",
+      "question": "This soup tastes ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "good",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "well",
+          "misconception": "S.form1_2.adverb_complement"
+        },
+        {
+          "id": "c",
+          "text": "nicely",
+          "misconception": "S.form1_2.adverb_complement"
+        }
+      ],
+      "explanation": "taste(맛이 나다) 뒤에는 형용사 보어 good이 와요. well, nicely는 부사예요."
+    },
+    {
+      "id": "S.form1_2.q3",
+      "concept": "S.form1_2",
+      "level": "M",
+      "type": "apply",
+      "question": "\"그녀는 엄마를 닮았다(엄마처럼 보인다).\" → She looks ___ her mother.",
+      "options": [
+        {
+          "id": "a",
+          "text": "like",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "as",
+          "misconception": "S.form1_2.look_like"
+        },
+        {
+          "id": "c",
+          "text": "likes",
+          "misconception": null
+        }
+      ],
+      "explanation": "감각동사 뒤에 명사를 쓰려면 like를 넣어요."
+    },
+    {
+      "id": "S.form1_2.q4",
+      "concept": "S.form1_2",
+      "level": "M",
+      "type": "apply",
+      "question": "We arrived ___ the airport at seven.",
+      "options": [
+        {
+          "id": "a",
+          "text": "at",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "(아무것도 쓰지 않는다)",
+          "misconception": "S.form1_2.no_prep"
+        },
+        {
+          "id": "c",
+          "text": "on",
+          "misconception": null
+        }
+      ],
+      "explanation": "arrive는 1형식 동사라서 장소 앞에 전치사 at이 필요해요."
+    },
+    {
+      "id": "S.form1_2.q5",
+      "concept": "S.form1_2",
+      "level": "M",
+      "type": "concept",
+      "question": "다음 중 2형식 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "He became a pilot.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "He flew a plane.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "He flew high.",
+          "misconception": null
+        }
+      ],
+      "explanation": "He = a pilot 관계라서 a pilot이 보어인 2형식이에요."
+    },
+    {
+      "id": "S.form1_2.q6",
+      "concept": "S.form1_2",
+      "level": "M",
+      "type": "concept",
+      "question": "다음 중 1형식 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "The baby smiled.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "The baby is cute.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "The baby drank milk.",
+          "misconception": null
+        }
+      ],
+      "explanation": "주어 + 동사만으로 완성된 1형식이에요. cute는 보어(2형식), milk는 목적어(3형식)예요."
+    },
+    {
+      "id": "S.form1_2.q7",
+      "concept": "S.form1_2",
+      "level": "M",
+      "type": "apply",
+      "question": "It is getting ___ outside.",
+      "options": [
+        {
+          "id": "a",
+          "text": "dark",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "darkly",
+          "misconception": "S.form1_2.adverb_complement"
+        },
+        {
+          "id": "c",
+          "text": "darkness",
+          "misconception": null
+        }
+      ],
+      "explanation": "get(~하게 되다)은 2형식 동사라서 형용사 보어 dark가 와요."
+    },
+    {
+      "id": "S.form1_2.q8",
+      "concept": "S.form1_2",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그 노래는 아름답게 들린다.",
+      "tokens": [
+        "The song",
+        "sounds",
+        "beautiful."
+      ],
+      "answer": [
+        "The song",
+        "sounds",
+        "beautiful."
+      ],
+      "misconception": null,
+      "explanation": "sound(들리다) 뒤에는 형용사 보어가 와요. 한국어는 \"아름답게\"지만 영어는 beautiful이에요."
+    },
+    {
+      "id": "S.form1_2.q9",
+      "concept": "S.form1_2",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나의 할아버지는 시골에 사신다.",
+      "tokens": [
+        "My grandfather",
+        "lives",
+        "in the country."
+      ],
+      "answer": [
+        "My grandfather",
+        "lives",
+        "in the country."
+      ],
+      "misconception": null,
+      "explanation": "live는 1형식 동사라서 장소 앞에 전치사(in)가 필요해요."
+    },
+    {
+      "id": "S.form1_2.q10",
+      "concept": "S.form1_2",
+      "level": "M",
+      "type": "reason",
+      "question": "That sounds great. 에서 great(형용사)를 쓰는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "sound 뒤에는 주어를 설명하는 보어가 오기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "sound를 꾸미는 부사가 필요해서",
+          "misconception": "S.form1_2.adverb_complement"
+        },
+        {
+          "id": "c",
+          "text": "great가 명사라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "감각동사는 2형식 동사라서 주어(That)의 상태를 설명하는 형용사 보어가 와요."
+    },
+    {
+      "id": "S.form3.q1",
+      "concept": "S.form3",
+      "level": "M",
+      "type": "apply",
+      "question": "They discussed ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "the problem",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "about the problem",
+          "misconception": "S.form3.extra_prep"
+        },
+        {
+          "id": "c",
+          "text": "with the problem",
+          "misconception": "S.form3.extra_prep"
+        }
+      ],
+      "explanation": "discuss는 \"~에 대해 토론하다\"라는 뜻이지만 목적어를 바로 써요."
+    },
+    {
+      "id": "S.form3.q2",
+      "concept": "S.form3",
+      "level": "M",
+      "type": "apply",
+      "question": "He married ___ last year.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Jane",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "with Jane",
+          "misconception": "S.form3.extra_prep"
+        },
+        {
+          "id": "c",
+          "text": "to Jane",
+          "misconception": "S.form3.extra_prep"
+        }
+      ],
+      "explanation": "marry는 \"~와 결혼하다\"지만 전치사 없이 목적어를 바로 써요."
+    },
+    {
+      "id": "S.form3.q3",
+      "concept": "S.form3",
+      "level": "M",
+      "type": "apply",
+      "question": "I like listening ___ music.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "at",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "on",
+          "misconception": null
+        }
+      ],
+      "explanation": "listen은 전치사 to와 함께 써요. listen to = ~을 듣다."
+    },
+    {
+      "id": "S.form3.q4",
+      "concept": "S.form3",
+      "level": "M",
+      "type": "apply",
+      "question": "어법상 맞는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "I'm waiting for my mom.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I'm waiting my mom.",
+          "misconception": "S.form3.missing_prep"
+        },
+        {
+          "id": "c",
+          "text": "I'm waiting to my mom.",
+          "misconception": null
+        }
+      ],
+      "explanation": "wait은 for와 짝이에요. wait for = ~을 기다리다."
+    },
+    {
+      "id": "S.form3.q5",
+      "concept": "S.form3",
+      "level": "M",
+      "type": "apply",
+      "question": "I like ___ very much.",
+      "options": [
+        {
+          "id": "a",
+          "text": "her",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "she",
+          "misconception": "S.form3.subject_pronoun"
+        },
+        {
+          "id": "c",
+          "text": "hers",
+          "misconception": null
+        }
+      ],
+      "explanation": "목적어 자리에는 목적격 대명사 her를 써요."
+    },
+    {
+      "id": "S.form3.q6",
+      "concept": "S.form3",
+      "level": "M",
+      "type": "apply",
+      "question": "We entered ___ quietly.",
+      "options": [
+        {
+          "id": "a",
+          "text": "the room",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "into the room",
+          "misconception": "S.form3.extra_prep"
+        },
+        {
+          "id": "c",
+          "text": "to the room",
+          "misconception": "S.form3.extra_prep"
+        }
+      ],
+      "explanation": "enter는 \"~에 들어가다\"지만 목적어를 바로 써요."
+    },
+    {
+      "id": "S.form3.q7",
+      "concept": "S.form3",
+      "level": "M",
+      "type": "concept",
+      "question": "다음 중 3형식 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "I read a book.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I read every night.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "The book is interesting.",
+          "misconception": null
+        }
+      ],
+      "explanation": "a book이 \"무엇을\"에 해당하는 목적어라서 3형식이에요."
+    },
+    {
+      "id": "S.form3.q8",
+      "concept": "S.form3",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 우리는 그 문제를 토론했다.",
+      "tokens": [
+        "We",
+        "discussed",
+        "the problem."
+      ],
+      "answer": [
+        "We",
+        "discussed",
+        "the problem."
+      ],
+      "misconception": null,
+      "explanation": "discuss 뒤에는 전치사 없이 목적어가 바로 와요."
+    },
+    {
+      "id": "S.form3.q9",
+      "concept": "S.form3",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그녀는 그를 매우 좋아한다.",
+      "tokens": [
+        "She",
+        "likes",
+        "him",
+        "very much."
+      ],
+      "answer": [
+        "She",
+        "likes",
+        "him",
+        "very much."
+      ],
+      "misconception": null,
+      "explanation": "주어 + 동사 + 목적어(목적격 him), 꾸미는 말 very much는 맨 끝이에요."
+    },
+    {
+      "id": "S.form3.q10",
+      "concept": "S.form3",
+      "level": "M",
+      "type": "reason",
+      "question": "He reached the station. 에서 the station 앞에 전치사가 없는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "reach는 목적어를 바로 쓰는 동사라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "station이 장소가 아니라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "전치사는 아무 때나 빼도 돼서",
+          "misconception": "S.form3.missing_prep"
+        }
+      ],
+      "explanation": "reach(~에 도착하다)는 3형식 동사라서 목적어를 바로 써요. arrive는 at이 필요하지만 reach는 필요 없어요."
+    },
+    {
+      "id": "S.form4.q1",
+      "concept": "S.form4",
+      "level": "M",
+      "type": "apply",
+      "question": "My dad bought a bike ___ me.",
+      "options": [
+        {
+          "id": "a",
+          "text": "for",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to",
+          "misconception": "S.form4.prep_choice"
+        },
+        {
+          "id": "c",
+          "text": "of",
+          "misconception": "S.form4.prep_choice"
+        }
+      ],
+      "explanation": "buy는 상대를 위해 해 주는 동사라서 for를 써요."
+    },
+    {
+      "id": "S.form4.q2",
+      "concept": "S.form4",
+      "level": "M",
+      "type": "apply",
+      "question": "She sent a letter ___ her friend.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "for",
+          "misconception": "S.form4.prep_choice"
+        },
+        {
+          "id": "c",
+          "text": "of",
+          "misconception": "S.form4.prep_choice"
+        }
+      ],
+      "explanation": "send는 상대에게 전달하는 동사라서 to를 써요."
+    },
+    {
+      "id": "S.form4.q3",
+      "concept": "S.form4",
+      "level": "M",
+      "type": "apply",
+      "question": "He asked a question ___ the teacher.",
+      "options": [
+        {
+          "id": "a",
+          "text": "of",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to",
+          "misconception": "S.form4.prep_choice"
+        },
+        {
+          "id": "c",
+          "text": "for",
+          "misconception": "S.form4.prep_choice"
+        }
+      ],
+      "explanation": "ask는 3형식으로 바꿀 때 of를 써요."
+    },
+    {
+      "id": "S.form4.q4",
+      "concept": "S.form4",
+      "level": "M",
+      "type": "apply",
+      "question": "어법상 맞는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "He showed me his photos.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "He showed his photos me.",
+          "misconception": "S.form4.order"
+        },
+        {
+          "id": "c",
+          "text": "He showed to me his photos.",
+          "misconception": "S.form4.order"
+        }
+      ],
+      "explanation": "4형식은 사람(me) → 물건(his photos) 순서예요."
+    },
+    {
+      "id": "S.form4.q5",
+      "concept": "S.form4",
+      "level": "M",
+      "type": "apply",
+      "question": "Can you lend ___?",
+      "options": [
+        {
+          "id": "a",
+          "text": "me your pen",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "your pen me",
+          "misconception": "S.form4.order"
+        },
+        {
+          "id": "c",
+          "text": "to me your pen",
+          "misconception": "S.form4.order"
+        }
+      ],
+      "explanation": "4형식은 사람 → 물건 순서예요. 3형식으로 쓰려면 lend your pen to me예요."
+    },
+    {
+      "id": "S.form4.q6",
+      "concept": "S.form4",
+      "level": "M",
+      "type": "apply",
+      "question": "자연스러운 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Please give it to me.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Please give me it.",
+          "misconception": "S.form4.pronoun_thing"
+        },
+        {
+          "id": "c",
+          "text": "Please give to me it.",
+          "misconception": "S.form4.order"
+        }
+      ],
+      "explanation": "물건이 it 같은 대명사면 3형식(give it to me)으로 써요."
+    },
+    {
+      "id": "S.form4.q7",
+      "concept": "S.form4",
+      "level": "M",
+      "type": "concept",
+      "question": "My mom cooked us dinner. 를 3형식으로 바르게 바꾼 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "My mom cooked dinner for us.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "My mom cooked dinner to us.",
+          "misconception": "S.form4.prep_choice"
+        },
+        {
+          "id": "c",
+          "text": "My mom cooked us for dinner.",
+          "misconception": null
+        }
+      ],
+      "explanation": "cook은 for를 쓰는 동사예요. 물건(dinner) + for + 사람(us)이에요."
+    },
+    {
+      "id": "S.form4.q8",
+      "concept": "S.form4",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 선생님이 우리에게 이야기를 해 주셨다.",
+      "tokens": [
+        "The teacher",
+        "told",
+        "us",
+        "a story."
+      ],
+      "answer": [
+        "The teacher",
+        "told",
+        "us",
+        "a story."
+      ],
+      "misconception": "S.form4.order",
+      "explanation": "4형식은 동사 다음에 사람(us), 그다음 물건(a story)이에요."
+    },
+    {
+      "id": "S.form4.q9",
+      "concept": "S.form4",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그가 나에게 길을 알려 주었다.",
+      "tokens": [
+        "He",
+        "showed",
+        "me",
+        "the way."
+      ],
+      "answer": [
+        "He",
+        "showed",
+        "me",
+        "the way."
+      ],
+      "misconception": "S.form4.order",
+      "explanation": "동사 showed 다음에 사람(me) → 물건(the way) 순서예요."
+    },
+    {
+      "id": "S.form4.q10",
+      "concept": "S.form4",
+      "level": "M",
+      "type": "reason",
+      "question": "He gave me a book. 에서 me와 a book의 순서 규칙은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "사람(~에게) 다음에 물건(~을)이 온다",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "물건 다음에 사람이 온다",
+          "misconception": "S.form4.order"
+        },
+        {
+          "id": "c",
+          "text": "순서는 상관없다",
+          "misconception": "S.form4.order"
+        }
+      ],
+      "explanation": "4형식은 항상 간접목적어(사람) → 직접목적어(물건) 순서예요."
+    },
+    {
+      "id": "S.form5.q1",
+      "concept": "S.form5",
+      "level": "M",
+      "type": "apply",
+      "question": "The movie made me ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "sad",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "sadly",
+          "misconception": "S.form5.adverb"
+        },
+        {
+          "id": "c",
+          "text": "sadness",
+          "misconception": null
+        }
+      ],
+      "explanation": "목적어 me의 상태를 설명하는 형용사 보어 sad가 와요."
+    },
+    {
+      "id": "S.form5.q2",
+      "concept": "S.form5",
+      "level": "M",
+      "type": "apply",
+      "question": "Please keep the door ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "open",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "openly",
+          "misconception": "S.form5.adverb"
+        },
+        {
+          "id": "c",
+          "text": "opening",
+          "misconception": null
+        }
+      ],
+      "explanation": "문(the door)의 상태를 설명하는 형용사 open이 와요."
+    },
+    {
+      "id": "S.form5.q3",
+      "concept": "S.form5",
+      "level": "M",
+      "type": "apply",
+      "question": "We call our dog ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Max",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to Max",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "as Max",
+          "misconception": null
+        }
+      ],
+      "explanation": "call + 목적어 + 이름: ~를 …라고 부르다. 사이에 전치사가 없어요."
+    },
+    {
+      "id": "S.form5.q4",
+      "concept": "S.form5",
+      "level": "M",
+      "type": "apply",
+      "question": "\"나는 그 시험이 쉽다는 것을 알게 되었다.\" → I found the test ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "easy",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "easily",
+          "misconception": "S.form5.adverb"
+        },
+        {
+          "id": "c",
+          "text": "ease",
+          "misconception": null
+        }
+      ],
+      "explanation": "시험(the test)이 쉬운 상태라는 뜻이라 형용사 easy예요. easily를 쓰면 \"쉽게 찾았다\"는 다른 뜻이 돼요."
+    },
+    {
+      "id": "S.form5.q5",
+      "concept": "S.form5",
+      "level": "M",
+      "type": "concept",
+      "question": "다음 중 5형식 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "They elected him captain.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "They gave him a cup.",
+          "misconception": "S.form5.vs_form4"
+        },
+        {
+          "id": "c",
+          "text": "They met him yesterday.",
+          "misconception": null
+        }
+      ],
+      "explanation": "him = captain 관계라서 5형식이에요. him ≠ a cup이라 둘째는 4형식이에요."
+    },
+    {
+      "id": "S.form5.q6",
+      "concept": "S.form5",
+      "level": "M",
+      "type": "reason",
+      "question": "She made me a cake. 와 She made me happy. 의 차이는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "앞은 4형식(나에게 케이크를), 뒤는 5형식(나를 행복하게)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "둘 다 4형식이다",
+          "misconception": "S.form5.vs_form4"
+        },
+        {
+          "id": "c",
+          "text": "둘 다 5형식이다",
+          "misconception": "S.form5.vs_form4"
+        }
+      ],
+      "explanation": "me ≠ a cake라서 4형식, me = happy라서 5형식이에요."
+    },
+    {
+      "id": "S.form5.q7",
+      "concept": "S.form5",
+      "level": "M",
+      "type": "concept",
+      "question": "He left the window open. 에서 open의 역할은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "목적어 the window의 상태를 설명하는 목적격 보어",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "동사 left를 꾸미는 부사",
+          "misconception": "S.form5.adverb"
+        },
+        {
+          "id": "c",
+          "text": "두 번째 목적어",
+          "misconception": "S.form5.vs_form4"
+        }
+      ],
+      "explanation": "창문이 \"열린 상태\"라는 뜻이라 open은 목적격 보어예요."
+    },
+    {
+      "id": "S.form5.q8",
+      "concept": "S.form5",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그 소식은 우리를 행복하게 했다.",
+      "tokens": [
+        "The news",
+        "made",
+        "us",
+        "happy."
+      ],
+      "answer": [
+        "The news",
+        "made",
+        "us",
+        "happy."
+      ],
+      "misconception": "S.form5.order",
+      "explanation": "주어 + made + 목적어(us) + 목적격 보어(happy) 순서예요."
+    },
+    {
+      "id": "S.form5.q9",
+      "concept": "S.form5",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 우리는 그를 반장으로 뽑았다.",
+      "tokens": [
+        "We",
+        "elected",
+        "him",
+        "class president."
+      ],
+      "answer": [
+        "We",
+        "elected",
+        "him",
+        "class president."
+      ],
+      "misconception": "S.form5.order",
+      "explanation": "elect + 목적어 + 명사 보어: ~를 …로 뽑다."
+    },
+    {
+      "id": "S.form5.q10",
+      "concept": "S.form5",
+      "level": "M",
+      "type": "apply",
+      "question": "어법상 맞는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Keep your hands clean.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Keep clean your hands.",
+          "misconception": "S.form5.order"
+        },
+        {
+          "id": "c",
+          "text": "Keep your hands cleanly.",
+          "misconception": "S.form5.adverb"
+        }
+      ],
+      "explanation": "목적어(your hands) 다음에 목적격 보어(clean)가 와요."
+    },
+    {
+      "id": "S.parse.q1",
+      "concept": "S.parse",
+      "level": "H",
+      "type": "concept",
+      "question": "The girl with long hair is my cousin. 의 주어는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "The girl",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "long hair",
+          "misconception": "S.parse.nearest_noun"
+        },
+        {
+          "id": "c",
+          "text": "my cousin",
+          "misconception": null
+        }
+      ],
+      "explanation": "with long hair는 수식어(전치사구)예요. 괄호를 치면 The girl is my cousin.이 남아요."
+    },
+    {
+      "id": "S.parse.q2",
+      "concept": "S.parse",
+      "level": "H",
+      "type": "concept",
+      "question": "The students who live near the school walk to class. 의 진짜 동사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "walk",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "live",
+          "misconception": "S.parse.modifier_verb"
+        },
+        {
+          "id": "c",
+          "text": "near",
+          "misconception": null
+        }
+      ],
+      "explanation": "who live near the school은 관계사절(수식어)이에요. 그 밖의 동사 walk가 진짜 동사예요."
+    },
+    {
+      "id": "S.parse.q3",
+      "concept": "S.parse",
+      "level": "H",
+      "type": "apply",
+      "question": "The box of old books ___ very heavy.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "are",
+          "misconception": "S.parse.nearest_noun"
+        },
+        {
+          "id": "c",
+          "text": "be",
+          "misconception": null
+        }
+      ],
+      "explanation": "진짜 주어는 The box(단수)예요. of old books는 수식어라서 is를 써요."
+    },
+    {
+      "id": "S.parse.q4",
+      "concept": "S.parse",
+      "level": "H",
+      "type": "concept",
+      "question": "The man standing by the door is my uncle. 의 진짜 동사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "standing",
+          "misconception": "S.parse.ing_verb"
+        },
+        {
+          "id": "c",
+          "text": "door",
+          "misconception": null
+        }
+      ],
+      "explanation": "standing by the door는 분사구(수식어)예요. 시제가 있는 is가 진짜 동사예요."
+    },
+    {
+      "id": "S.parse.q5",
+      "concept": "S.parse",
+      "level": "H",
+      "type": "concept",
+      "question": "The cake that my mom made yesterday was delicious. 에서 괄호로 묶을 수식어는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "that my mom made yesterday",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "The cake",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "was delicious",
+          "misconception": null
+        }
+      ],
+      "explanation": "that절은 The cake를 꾸미는 관계사절이에요. 걷어 내면 The cake was delicious.가 남아요."
+    },
+    {
+      "id": "S.parse.q6",
+      "concept": "S.parse",
+      "level": "H",
+      "type": "concept",
+      "question": "Many people in this city use the subway. 의 뼈대는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Many people use the subway.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "This city uses the subway.",
+          "misconception": "S.parse.nearest_noun"
+        },
+        {
+          "id": "c",
+          "text": "People in this city.",
+          "misconception": null
+        }
+      ],
+      "explanation": "in this city는 수식어예요. 주어 Many people + 동사 use + 목적어 the subway가 뼈대예요."
+    },
+    {
+      "id": "S.parse.q7",
+      "concept": "S.parse",
+      "level": "H",
+      "type": "apply",
+      "question": "The letters written by my grandfather ___ in the box.",
+      "options": [
+        {
+          "id": "a",
+          "text": "are",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is",
+          "misconception": "S.parse.nearest_noun"
+        },
+        {
+          "id": "c",
+          "text": "was",
+          "misconception": "S.parse.nearest_noun"
+        }
+      ],
+      "explanation": "written by my grandfather는 분사구(수식어)예요. 진짜 주어 The letters가 복수라 are를 써요."
+    },
+    {
+      "id": "S.parse.q8",
+      "concept": "S.parse",
+      "level": "H",
+      "type": "concept",
+      "question": "The boy who is playing the piano is my brother. 의 진짜 동사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "두 번째 is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is playing",
+          "misconception": "S.parse.modifier_verb"
+        },
+        {
+          "id": "c",
+          "text": "playing",
+          "misconception": "S.parse.ing_verb"
+        }
+      ],
+      "explanation": "who is playing the piano는 관계사절(수식어)이에요. 그 뒤의 is가 진짜 동사예요."
+    },
+    {
+      "id": "S.parse.q9",
+      "concept": "S.parse",
+      "level": "H",
+      "type": "reason",
+      "question": "긴 문장을 읽을 때 가장 먼저 하면 좋은 일은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "문장의 진짜 동사를 찾는다",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "첫 번째 명사를 무조건 주어로 정한다",
+          "misconception": "S.parse.nearest_noun"
+        },
+        {
+          "id": "c",
+          "text": "모르는 단어부터 모두 찾는다",
+          "misconception": null
+        }
+      ],
+      "explanation": "진짜 동사를 찾으면 그 앞은 주어, 뒤는 목적어·보어로 구조가 나뉘어요."
+    },
+    {
+      "id": "S.parse.q10",
+      "concept": "S.parse",
+      "level": "H",
+      "type": "apply",
+      "question": "The number of students in my class ___ thirty.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "are",
+          "misconception": "S.parse.nearest_noun"
+        },
+        {
+          "id": "c",
+          "text": "be",
+          "misconception": null
+        }
+      ],
+      "explanation": "진짜 주어는 The number(수, 단수)예요. of students in my class는 수식어라 is를 써요."
+    }
+  ]
+}
