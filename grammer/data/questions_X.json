@@ -1,0 +1,2459 @@
+{
+  "area": "X",
+  "types": {
+    "concept": "개념 확인",
+    "apply": "적용",
+    "reason": "이유 확인",
+    "order": "문장 만들기"
+  },
+  "questions": [
+    {
+      "id": "X.negative.q1",
+      "concept": "X.negative",
+      "level": "E",
+      "type": "apply",
+      "question": "I ___ hungry.",
+      "options": [
+        {
+          "id": "a",
+          "text": "am not",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "don't",
+          "misconception": "X.negative.be_do"
+        },
+        {
+          "id": "c",
+          "text": "not",
+          "misconception": "X.negative.be_do"
+        }
+      ],
+      "explanation": "hungry는 형용사라 be동사 문장이에요."
+    },
+    {
+      "id": "X.negative.q2",
+      "concept": "X.negative",
+      "level": "E",
+      "type": "apply",
+      "question": "He ___ soccer.",
+      "options": [
+        {
+          "id": "a",
+          "text": "doesn't play",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "doesn't plays",
+          "misconception": "X.negative.verb_form"
+        },
+        {
+          "id": "c",
+          "text": "don't play",
+          "misconception": "X.negative.do_agree"
+        }
+      ],
+      "explanation": "3인칭 단수는 doesn't + 원형이에요."
+    },
+    {
+      "id": "X.negative.q3",
+      "concept": "X.negative",
+      "level": "E",
+      "type": "apply",
+      "question": "We ___ him yesterday.",
+      "options": [
+        {
+          "id": "a",
+          "text": "didn't see",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "didn't saw",
+          "misconception": "X.negative.verb_form"
+        },
+        {
+          "id": "c",
+          "text": "weren't see",
+          "misconception": "X.negative.be_do"
+        }
+      ],
+      "explanation": "과거 부정은 didn't + 원형이에요."
+    },
+    {
+      "id": "X.negative.q4",
+      "concept": "X.negative",
+      "level": "E",
+      "type": "apply",
+      "question": "She ___ like carrots.",
+      "options": [
+        {
+          "id": "a",
+          "text": "doesn't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "don't",
+          "misconception": "X.negative.do_agree"
+        },
+        {
+          "id": "c",
+          "text": "isn't",
+          "misconception": "X.negative.be_do"
+        }
+      ],
+      "explanation": "like는 일반동사이고 주어가 she라 doesn't예요."
+    },
+    {
+      "id": "X.negative.q5",
+      "concept": "X.negative",
+      "level": "E",
+      "type": "apply",
+      "question": "They ___ at school now.",
+      "options": [
+        {
+          "id": "a",
+          "text": "aren't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "don't",
+          "misconception": "X.negative.be_do"
+        },
+        {
+          "id": "c",
+          "text": "isn't",
+          "misconception": null
+        }
+      ],
+      "explanation": "at school(장소)이 오는 be동사 문장이에요."
+    },
+    {
+      "id": "X.negative.q6",
+      "concept": "X.negative",
+      "level": "E",
+      "type": "apply",
+      "question": "I ___ swim.",
+      "options": [
+        {
+          "id": "a",
+          "text": "can't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "don't can",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "can't to",
+          "misconception": null
+        }
+      ],
+      "explanation": "조동사는 바로 뒤에 not을 붙여요."
+    },
+    {
+      "id": "X.negative.q7",
+      "concept": "X.negative",
+      "level": "E",
+      "type": "concept",
+      "question": "바른 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "My dad doesn't drink coffee.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "My dad doesn't drinks coffee.",
+          "misconception": "X.negative.verb_form"
+        },
+        {
+          "id": "c",
+          "text": "My dad not drink coffee.",
+          "misconception": "X.negative.be_do"
+        }
+      ],
+      "explanation": "doesn't + 원형이에요."
+    },
+    {
+      "id": "X.negative.q8",
+      "concept": "X.negative",
+      "level": "E",
+      "type": "concept",
+      "question": "I am not tired. 를 일반동사 부정문과 비교했을 때 다른 점은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "do 없이 be동사 뒤에 not만 붙인다",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "do not을 앞에 넣는다",
+          "misconception": "X.negative.be_do"
+        },
+        {
+          "id": "c",
+          "text": "tired를 원형으로 바꾼다",
+          "misconception": null
+        }
+      ],
+      "explanation": "be동사는 not만 붙여요."
+    },
+    {
+      "id": "X.negative.q9",
+      "concept": "X.negative",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그녀는 어제 학교에 가지 않았다.",
+      "tokens": [
+        "She",
+        "didn't go",
+        "to school",
+        "yesterday."
+      ],
+      "answer": [
+        "She",
+        "didn't go",
+        "to school",
+        "yesterday."
+      ],
+      "misconception": null,
+      "explanation": "didn't + 원형 go예요."
+    },
+    {
+      "id": "X.negative.q10",
+      "concept": "X.negative",
+      "level": "E",
+      "type": "reason",
+      "question": "He doesn't like it.에서 like에 -s가 없는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "does가 이미 3인칭 단수 표시(-s)를 가져가서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "부정문에는 원래 -s가 없어서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "it이 목적어라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "does = do + -s라서 동사는 원형이에요."
+    },
+    {
+      "id": "X.question.q1",
+      "concept": "X.question",
+      "level": "E",
+      "type": "apply",
+      "question": "___ you hungry?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Are",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Do",
+          "misconception": "X.negative.be_do"
+        },
+        {
+          "id": "c",
+          "text": "Is",
+          "misconception": null
+        }
+      ],
+      "explanation": "hungry는 형용사라 be동사 의문문이에요."
+    },
+    {
+      "id": "X.question.q2",
+      "concept": "X.question",
+      "level": "E",
+      "type": "apply",
+      "question": "Does she ___ cats?",
+      "options": [
+        {
+          "id": "a",
+          "text": "like",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "likes",
+          "misconception": "X.question.verb_form"
+        },
+        {
+          "id": "c",
+          "text": "liked",
+          "misconception": "X.question.verb_form"
+        }
+      ],
+      "explanation": "Does 뒤에는 원형이에요."
+    },
+    {
+      "id": "X.question.q3",
+      "concept": "X.question",
+      "level": "E",
+      "type": "apply",
+      "question": "___ you eat breakfast this morning?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Did",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Do",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "Were",
+          "misconception": "X.negative.be_do"
+        }
+      ],
+      "explanation": "과거의 일이라 Did예요."
+    },
+    {
+      "id": "X.question.q4",
+      "concept": "X.question",
+      "level": "E",
+      "type": "apply",
+      "question": "Where ___ you live?",
+      "options": [
+        {
+          "id": "a",
+          "text": "do",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "X.question.no_inversion"
+        },
+        {
+          "id": "c",
+          "text": "are",
+          "misconception": "X.negative.be_do"
+        }
+      ],
+      "explanation": "일반동사 live가 있으니 do가 필요해요."
+    },
+    {
+      "id": "X.question.q5",
+      "concept": "X.question",
+      "level": "E",
+      "type": "apply",
+      "question": "Is he your brother? - Yes, he ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "does",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "do",
+          "misconception": null
+        }
+      ],
+      "explanation": "be동사로 물으면 be동사로 대답해요."
+    },
+    {
+      "id": "X.question.q6",
+      "concept": "X.question",
+      "level": "E",
+      "type": "apply",
+      "question": "What ___ your name?",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "do",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "are",
+          "misconception": null
+        }
+      ],
+      "explanation": "name이 단수라 is예요."
+    },
+    {
+      "id": "X.question.q7",
+      "concept": "X.question",
+      "level": "E",
+      "type": "concept",
+      "question": "바른 의문문은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Can you swim?",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "You can swim?",
+          "misconception": "X.question.no_inversion"
+        },
+        {
+          "id": "c",
+          "text": "Do you can swim?",
+          "misconception": null
+        }
+      ],
+      "explanation": "조동사는 주어 앞으로 나가요."
+    },
+    {
+      "id": "X.question.q8",
+      "concept": "X.question",
+      "level": "M",
+      "type": "apply",
+      "question": "Who ___ the window?",
+      "options": [
+        {
+          "id": "a",
+          "text": "broke",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "did break",
+          "misconception": "X.question.subject_wh"
+        },
+        {
+          "id": "c",
+          "text": "did he break",
+          "misconception": "X.question.subject_wh"
+        }
+      ],
+      "explanation": "의문사 Who가 주어라 do 없이 동사가 바로 와요."
+    },
+    {
+      "id": "X.question.q9",
+      "concept": "X.question",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 너는 어디에 사니?",
+      "tokens": [
+        "Where",
+        "do",
+        "you",
+        "live?"
+      ],
+      "answer": [
+        "Where",
+        "do",
+        "you",
+        "live?"
+      ],
+      "misconception": "X.question.no_inversion",
+      "explanation": "의문사 + do + 주어 + 원형이에요."
+    },
+    {
+      "id": "X.question.q10",
+      "concept": "X.question",
+      "level": "E",
+      "type": "reason",
+      "question": "Does she like cats?에서 like에 -s가 없는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Does가 이미 -s를 가져가서 뒤 동사는 원형이 되기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "의문문에는 원래 -s를 쓰지 않아서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "cats가 복수라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "Does = Do + -s예요."
+    },
+    {
+      "id": "X.imperative.q1",
+      "concept": "X.imperative",
+      "level": "E",
+      "type": "apply",
+      "question": "___ the door, please.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Open",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Opens",
+          "misconception": "X.imperative.form"
+        },
+        {
+          "id": "c",
+          "text": "Opening",
+          "misconception": "X.imperative.form"
+        }
+      ],
+      "explanation": "명령문은 동사원형으로 시작해요."
+    },
+    {
+      "id": "X.imperative.q2",
+      "concept": "X.imperative",
+      "level": "E",
+      "type": "apply",
+      "question": "___ quiet in the library.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Be",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Are",
+          "misconception": "X.imperative.form"
+        },
+        {
+          "id": "c",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "X.imperative.no_be"
+        }
+      ],
+      "explanation": "형용사 명령은 Be로 시작해요."
+    },
+    {
+      "id": "X.imperative.q3",
+      "concept": "X.imperative",
+      "level": "E",
+      "type": "apply",
+      "question": "___ run in the hallway.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Don't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Not",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "Doesn't",
+          "misconception": null
+        }
+      ],
+      "explanation": "부정 명령은 Don't + 원형이에요."
+    },
+    {
+      "id": "X.imperative.q4",
+      "concept": "X.imperative",
+      "level": "E",
+      "type": "apply",
+      "question": "Don't ___ late.",
+      "options": [
+        {
+          "id": "a",
+          "text": "be",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "(아무것도 쓰지 않음)",
+          "misconception": "X.imperative.no_be"
+        },
+        {
+          "id": "c",
+          "text": "are",
+          "misconception": "X.imperative.form"
+        }
+      ],
+      "explanation": "late는 형용사라 be가 필요해요."
+    },
+    {
+      "id": "X.imperative.q5",
+      "concept": "X.imperative",
+      "level": "E",
+      "type": "apply",
+      "question": "Let's ___ soccer after school.",
+      "options": [
+        {
+          "id": "a",
+          "text": "play",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "plays",
+          "misconception": "X.imperative.form"
+        },
+        {
+          "id": "c",
+          "text": "to play",
+          "misconception": null
+        }
+      ],
+      "explanation": "Let's + 원형이에요."
+    },
+    {
+      "id": "X.imperative.q6",
+      "concept": "X.imperative",
+      "level": "E",
+      "type": "apply",
+      "question": "Let's ___ time.",
+      "options": [
+        {
+          "id": "a",
+          "text": "not waste",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "don't waste",
+          "misconception": "X.imperative.lets_not"
+        },
+        {
+          "id": "c",
+          "text": "waste not",
+          "misconception": "X.imperative.lets_not"
+        }
+      ],
+      "explanation": "제안의 부정은 Let's not + 원형이에요."
+    },
+    {
+      "id": "X.imperative.q7",
+      "concept": "X.imperative",
+      "level": "E",
+      "type": "concept",
+      "question": "Let's go to the park. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "공원에 가자.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "공원에 가라.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "공원에 가지 마라.",
+          "misconception": null
+        }
+      ],
+      "explanation": "Let's = 같이 ~하자."
+    },
+    {
+      "id": "X.imperative.q8",
+      "concept": "X.imperative",
+      "level": "E",
+      "type": "concept",
+      "question": "바른 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Be careful!",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Careful!",
+          "misconception": "X.imperative.no_be"
+        },
+        {
+          "id": "c",
+          "text": "Are careful!",
+          "misconception": "X.imperative.form"
+        }
+      ],
+      "explanation": "형용사 앞에 Be를 붙여요."
+    },
+    {
+      "id": "X.imperative.q9",
+      "concept": "X.imperative",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그것을 만지지 마.",
+      "tokens": [
+        "Don't",
+        "touch",
+        "it."
+      ],
+      "answer": [
+        "Don't",
+        "touch",
+        "it."
+      ],
+      "misconception": null,
+      "explanation": "Don't + 원형 + 목적어예요."
+    },
+    {
+      "id": "X.imperative.q10",
+      "concept": "X.imperative",
+      "level": "E",
+      "type": "reason",
+      "question": "명령문에 주어가 없는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "듣는 사람(you)에게 하는 말이라 주어를 생략해서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "명령문에는 동사도 없어서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "주어가 맨 뒤에 와서",
+          "misconception": null
+        }
+      ],
+      "explanation": "명령문은 you가 생략된 문장이에요."
+    },
+    {
+      "id": "X.there.q1",
+      "concept": "X.there",
+      "level": "E",
+      "type": "apply",
+      "question": "There ___ a cat on the sofa.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "are",
+          "misconception": "X.there.agree"
+        },
+        {
+          "id": "c",
+          "text": "have",
+          "misconception": "X.there.have"
+        }
+      ],
+      "explanation": "a cat(단수)이라 is예요."
+    },
+    {
+      "id": "X.there.q2",
+      "concept": "X.there",
+      "level": "E",
+      "type": "apply",
+      "question": "There ___ many people in the park.",
+      "options": [
+        {
+          "id": "a",
+          "text": "are",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is",
+          "misconception": "X.there.agree"
+        },
+        {
+          "id": "c",
+          "text": "has",
+          "misconception": null
+        }
+      ],
+      "explanation": "many people(복수)이라 are예요."
+    },
+    {
+      "id": "X.there.q3",
+      "concept": "X.there",
+      "level": "E",
+      "type": "apply",
+      "question": "There ___ some milk in the fridge.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "are",
+          "misconception": "X.there.uncountable"
+        },
+        {
+          "id": "c",
+          "text": "have",
+          "misconception": "X.there.have"
+        }
+      ],
+      "explanation": "milk는 셀 수 없어서 단수 취급이에요."
+    },
+    {
+      "id": "X.there.q4",
+      "concept": "X.there",
+      "level": "E",
+      "type": "apply",
+      "question": "There ___ three apples yesterday.",
+      "options": [
+        {
+          "id": "a",
+          "text": "were",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "was",
+          "misconception": "X.there.agree"
+        },
+        {
+          "id": "c",
+          "text": "are",
+          "misconception": null
+        }
+      ],
+      "explanation": "과거이고 복수라 were예요."
+    },
+    {
+      "id": "X.there.q5",
+      "concept": "X.there",
+      "level": "E",
+      "type": "apply",
+      "question": "___ there a bank near here?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Does",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "Are",
+          "misconception": "X.there.agree"
+        }
+      ],
+      "explanation": "a bank(단수)라 Is there ~?예요."
+    },
+    {
+      "id": "X.there.q6",
+      "concept": "X.there",
+      "level": "E",
+      "type": "apply",
+      "question": "There ___ any chairs in the room.",
+      "options": [
+        {
+          "id": "a",
+          "text": "aren't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "isn't",
+          "misconception": "X.there.agree"
+        },
+        {
+          "id": "c",
+          "text": "don't",
+          "misconception": null
+        }
+      ],
+      "explanation": "chairs(복수)라 aren't예요."
+    },
+    {
+      "id": "X.there.q7",
+      "concept": "X.there",
+      "level": "E",
+      "type": "concept",
+      "question": "There are two dogs. 에서 진짜 주어는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "two dogs",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "There",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "are",
+          "misconception": null
+        }
+      ],
+      "explanation": "There는 자리만 채우는 말이에요."
+    },
+    {
+      "id": "X.there.q8",
+      "concept": "X.there",
+      "level": "M",
+      "type": "concept",
+      "question": "자연스러운 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "There is a key on the table.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "There is my key on the table.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "Have a key on the table.",
+          "misconception": "X.there.have"
+        }
+      ],
+      "explanation": "There is는 처음 알려 주는 새로운 것에 써요."
+    },
+    {
+      "id": "X.there.q9",
+      "concept": "X.there",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 책상 위에 책이 두 권 있다.",
+      "tokens": [
+        "There are",
+        "two books",
+        "on the desk."
+      ],
+      "answer": [
+        "There are",
+        "two books",
+        "on the desk."
+      ],
+      "misconception": null,
+      "explanation": "There are + 복수 명사 + 장소예요."
+    },
+    {
+      "id": "X.there.q10",
+      "concept": "X.there",
+      "level": "E",
+      "type": "reason",
+      "question": "There are two cats.에서 are를 쓰는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "진짜 주어 two cats가 복수라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "There가 복수라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "cats가 동물이라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "be동사는 뒤의 진짜 주어에 맞춰요."
+    },
+    {
+      "id": "X.tag.q1",
+      "concept": "X.tag",
+      "level": "M",
+      "type": "apply",
+      "question": "It is hot today, ___?",
+      "options": [
+        {
+          "id": "a",
+          "text": "isn't it",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is it",
+          "misconception": "X.tag.same_polarity"
+        },
+        {
+          "id": "c",
+          "text": "doesn't it",
+          "misconception": "X.tag.wrong_aux"
+        }
+      ],
+      "explanation": "긍정 be동사 문장이라 isn't it?이에요."
+    },
+    {
+      "id": "X.tag.q2",
+      "concept": "X.tag",
+      "level": "M",
+      "type": "apply",
+      "question": "She plays the piano, ___?",
+      "options": [
+        {
+          "id": "a",
+          "text": "doesn't she",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "isn't she",
+          "misconception": "X.tag.wrong_aux"
+        },
+        {
+          "id": "c",
+          "text": "does she",
+          "misconception": "X.tag.same_polarity"
+        }
+      ],
+      "explanation": "일반동사 현재 3인칭이라 doesn't she?예요."
+    },
+    {
+      "id": "X.tag.q3",
+      "concept": "X.tag",
+      "level": "M",
+      "type": "apply",
+      "question": "He didn't come to school, ___?",
+      "options": [
+        {
+          "id": "a",
+          "text": "did he",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "didn't he",
+          "misconception": "X.tag.same_polarity"
+        },
+        {
+          "id": "c",
+          "text": "was he",
+          "misconception": "X.tag.wrong_aux"
+        }
+      ],
+      "explanation": "부정 과거 문장이라 did he?예요."
+    },
+    {
+      "id": "X.tag.q4",
+      "concept": "X.tag",
+      "level": "M",
+      "type": "apply",
+      "question": "You can swim, ___?",
+      "options": [
+        {
+          "id": "a",
+          "text": "can't you",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "don't you",
+          "misconception": "X.tag.wrong_aux"
+        },
+        {
+          "id": "c",
+          "text": "can you",
+          "misconception": "X.tag.same_polarity"
+        }
+      ],
+      "explanation": "조동사 can 문장이라 can't you?예요."
+    },
+    {
+      "id": "X.tag.q5",
+      "concept": "X.tag",
+      "level": "M",
+      "type": "apply",
+      "question": "Tom is kind, ___?",
+      "options": [
+        {
+          "id": "a",
+          "text": "isn't he",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "isn't Tom",
+          "misconception": "X.tag.noun_subject"
+        },
+        {
+          "id": "c",
+          "text": "is he",
+          "misconception": "X.tag.same_polarity"
+        }
+      ],
+      "explanation": "주어 Tom은 대명사 he로 바꿔요."
+    },
+    {
+      "id": "X.tag.q6",
+      "concept": "X.tag",
+      "level": "M",
+      "type": "apply",
+      "question": "Let's go to the movies, ___?",
+      "options": [
+        {
+          "id": "a",
+          "text": "shall we",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "will you",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "don't we",
+          "misconception": null
+        }
+      ],
+      "explanation": "Let's 문장의 꼬리는 shall we?예요."
+    },
+    {
+      "id": "X.tag.q7",
+      "concept": "X.tag",
+      "level": "M",
+      "type": "apply",
+      "question": "Close the door, ___?",
+      "options": [
+        {
+          "id": "a",
+          "text": "will you",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "shall we",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "don't you",
+          "misconception": null
+        }
+      ],
+      "explanation": "명령문의 꼬리는 will you?예요."
+    },
+    {
+      "id": "X.tag.q8",
+      "concept": "X.tag",
+      "level": "M",
+      "type": "apply",
+      "question": "The movie wasn't fun, ___?",
+      "options": [
+        {
+          "id": "a",
+          "text": "was it",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "wasn't it",
+          "misconception": "X.tag.same_polarity"
+        },
+        {
+          "id": "c",
+          "text": "was the movie",
+          "misconception": "X.tag.noun_subject"
+        }
+      ],
+      "explanation": "부정 문장이라 긍정 꼬리, the movie는 it으로 바꿔요."
+    },
+    {
+      "id": "X.tag.q9",
+      "concept": "X.tag",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 너는 피곤하지 않지, 그렇지?",
+      "tokens": [
+        "You aren't tired,",
+        "are",
+        "you?"
+      ],
+      "answer": [
+        "You aren't tired,",
+        "are",
+        "you?"
+      ],
+      "misconception": "X.tag.same_polarity",
+      "explanation": "부정 문장 뒤에는 긍정 꼬리예요."
+    },
+    {
+      "id": "X.tag.q10",
+      "concept": "X.tag",
+      "level": "M",
+      "type": "reason",
+      "question": "She plays the piano, doesn't she?에서 doesn't를 쓰는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "앞 문장이 일반동사 현재(3인칭 단수) 긍정이라서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "she가 여자라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "piano가 단수라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "앞 문장의 동사 종류와 시제에 맞춰 do를 골라요."
+    },
+    {
+      "id": "X.exclamation.q1",
+      "concept": "X.exclamation",
+      "level": "M",
+      "type": "apply",
+      "question": "___ a nice day it is!",
+      "options": [
+        {
+          "id": "a",
+          "text": "What",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "How",
+          "misconception": "X.exclamation.what_how"
+        },
+        {
+          "id": "c",
+          "text": "Very",
+          "misconception": null
+        }
+      ],
+      "explanation": "명사 day가 있으니 What이에요."
+    },
+    {
+      "id": "X.exclamation.q2",
+      "concept": "X.exclamation",
+      "level": "M",
+      "type": "apply",
+      "question": "___ fast he runs!",
+      "options": [
+        {
+          "id": "a",
+          "text": "How",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "What",
+          "misconception": "X.exclamation.what_how"
+        },
+        {
+          "id": "c",
+          "text": "What a",
+          "misconception": "X.exclamation.what_how"
+        }
+      ],
+      "explanation": "부사 fast만 있으니 How예요."
+    },
+    {
+      "id": "X.exclamation.q3",
+      "concept": "X.exclamation",
+      "level": "M",
+      "type": "apply",
+      "question": "What ___ puppy!",
+      "options": [
+        {
+          "id": "a",
+          "text": "a cute",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "cute",
+          "misconception": "X.exclamation.article"
+        },
+        {
+          "id": "c",
+          "text": "cute a",
+          "misconception": null
+        }
+      ],
+      "explanation": "단수 명사라 a + 형용사 + 명사예요."
+    },
+    {
+      "id": "X.exclamation.q4",
+      "concept": "X.exclamation",
+      "level": "M",
+      "type": "apply",
+      "question": "What ___ flowers they are!",
+      "options": [
+        {
+          "id": "a",
+          "text": "beautiful",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a beautiful",
+          "misconception": "X.exclamation.article"
+        },
+        {
+          "id": "c",
+          "text": "an beautiful",
+          "misconception": "X.exclamation.article"
+        }
+      ],
+      "explanation": "복수 명사라 a를 쓰지 않아요."
+    },
+    {
+      "id": "X.exclamation.q5",
+      "concept": "X.exclamation",
+      "level": "M",
+      "type": "apply",
+      "question": "How well ___!",
+      "options": [
+        {
+          "id": "a",
+          "text": "she sings",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "does she sing",
+          "misconception": "X.exclamation.order"
+        },
+        {
+          "id": "c",
+          "text": "sings she",
+          "misconception": "X.exclamation.order"
+        }
+      ],
+      "explanation": "감탄문은 끝이 주어 + 동사 순서예요."
+    },
+    {
+      "id": "X.exclamation.q6",
+      "concept": "X.exclamation",
+      "level": "M",
+      "type": "apply",
+      "question": "What a big house ___!",
+      "options": [
+        {
+          "id": "a",
+          "text": "it is",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is it",
+          "misconception": "X.exclamation.order"
+        },
+        {
+          "id": "c",
+          "text": "it does",
+          "misconception": null
+        }
+      ],
+      "explanation": "주어 + 동사 순서예요."
+    },
+    {
+      "id": "X.exclamation.q7",
+      "concept": "X.exclamation",
+      "level": "M",
+      "type": "apply",
+      "question": "What ___ weather!",
+      "options": [
+        {
+          "id": "a",
+          "text": "nice",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "a nice",
+          "misconception": "X.exclamation.article"
+        },
+        {
+          "id": "c",
+          "text": "nicely",
+          "misconception": null
+        }
+      ],
+      "explanation": "weather는 셀 수 없어서 a가 없어요."
+    },
+    {
+      "id": "X.exclamation.q8",
+      "concept": "X.exclamation",
+      "level": "M",
+      "type": "concept",
+      "question": "He is a very tall boy. 를 감탄문으로 바꾸면?",
+      "options": [
+        {
+          "id": "a",
+          "text": "What a tall boy he is!",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "How a tall boy he is!",
+          "misconception": "X.exclamation.what_how"
+        },
+        {
+          "id": "c",
+          "text": "What a tall boy is he!",
+          "misconception": "X.exclamation.order"
+        }
+      ],
+      "explanation": "명사 boy가 있으니 What a + 형용사 + 명사 + 주어 + 동사예요."
+    },
+    {
+      "id": "X.exclamation.q9",
+      "concept": "X.exclamation",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그녀는 정말 친절하구나!",
+      "tokens": [
+        "How",
+        "kind",
+        "she is!"
+      ],
+      "answer": [
+        "How",
+        "kind",
+        "she is!"
+      ],
+      "misconception": null,
+      "explanation": "How + 형용사 + 주어 + 동사예요."
+    },
+    {
+      "id": "X.exclamation.q10",
+      "concept": "X.exclamation",
+      "level": "M",
+      "type": "reason",
+      "question": "How a nice day!가 틀린 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "명사 day가 있으면 How가 아니라 What을 써야 해서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "day는 셀 수 없어서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "감탄문에는 a를 쓸 수 없어서",
+          "misconception": "X.exclamation.article"
+        }
+      ],
+      "explanation": "명사가 있으면 What, 없으면 How예요."
+    },
+    {
+      "id": "X.ellipsis.q1",
+      "concept": "X.ellipsis",
+      "level": "M",
+      "type": "apply",
+      "question": "I like pizza. - So ___ I.",
+      "options": [
+        {
+          "id": "a",
+          "text": "do",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "am",
+          "misconception": "X.ellipsis.wrong_aux"
+        },
+        {
+          "id": "c",
+          "text": "like",
+          "misconception": null
+        }
+      ],
+      "explanation": "일반동사 현재라 do예요."
+    },
+    {
+      "id": "X.ellipsis.q2",
+      "concept": "X.ellipsis",
+      "level": "M",
+      "type": "apply",
+      "question": "I'm tired. - So ___ I.",
+      "options": [
+        {
+          "id": "a",
+          "text": "am",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "do",
+          "misconception": "X.ellipsis.wrong_aux"
+        },
+        {
+          "id": "c",
+          "text": "is",
+          "misconception": null
+        }
+      ],
+      "explanation": "be동사 문장이라 am이에요."
+    },
+    {
+      "id": "X.ellipsis.q3",
+      "concept": "X.ellipsis",
+      "level": "M",
+      "type": "apply",
+      "question": "I can't swim. - ___ can I.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Neither",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "So",
+          "misconception": "X.ellipsis.so_neither"
+        },
+        {
+          "id": "c",
+          "text": "Either",
+          "misconception": null
+        }
+      ],
+      "explanation": "부정 문장에 \"나도 못 해\"는 Neither예요."
+    },
+    {
+      "id": "X.ellipsis.q4",
+      "concept": "X.ellipsis",
+      "level": "M",
+      "type": "apply",
+      "question": "He went home early. - So ___ I.",
+      "options": [
+        {
+          "id": "a",
+          "text": "did",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "do",
+          "misconception": "X.ellipsis.wrong_aux"
+        },
+        {
+          "id": "c",
+          "text": "was",
+          "misconception": "X.ellipsis.wrong_aux"
+        }
+      ],
+      "explanation": "일반동사 과거라 did예요."
+    },
+    {
+      "id": "X.ellipsis.q5",
+      "concept": "X.ellipsis",
+      "level": "M",
+      "type": "apply",
+      "question": "I don't like horror movies. - ___",
+      "options": [
+        {
+          "id": "a",
+          "text": "Neither do I.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "So do I.",
+          "misconception": "X.ellipsis.so_neither"
+        },
+        {
+          "id": "c",
+          "text": "Neither I do.",
+          "misconception": "X.ellipsis.order"
+        }
+      ],
+      "explanation": "부정 문장에 맞장구는 Neither + do + I예요."
+    },
+    {
+      "id": "X.ellipsis.q6",
+      "concept": "X.ellipsis",
+      "level": "M",
+      "type": "apply",
+      "question": "She runs faster than I ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "do",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "am",
+          "misconception": "X.ellipsis.wrong_aux"
+        },
+        {
+          "id": "c",
+          "text": "run do",
+          "misconception": null
+        }
+      ],
+      "explanation": "앞의 runs를 대동사 do로 받아요."
+    },
+    {
+      "id": "X.ellipsis.q7",
+      "concept": "X.ellipsis",
+      "level": "M",
+      "type": "concept",
+      "question": "I'm hungry. - So am I. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "나도 배고파.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "나는 정말 배고파.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "나는 배고프지 않아.",
+          "misconception": "X.ellipsis.so_neither"
+        }
+      ],
+      "explanation": "So + be + 주어 = 나도 그래."
+    },
+    {
+      "id": "X.ellipsis.q8",
+      "concept": "X.ellipsis",
+      "level": "H",
+      "type": "apply",
+      "question": "When ___ young, I lived in Busan.",
+      "options": [
+        {
+          "id": "a",
+          "text": "I was",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I was being",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "was I",
+          "misconception": "X.ellipsis.order"
+        }
+      ],
+      "explanation": "When young에서 생략된 \"주어 + be동사\"는 I was예요."
+    },
+    {
+      "id": "X.ellipsis.q9",
+      "concept": "X.ellipsis",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: (나는 축구를 좋아해.) 나도 그래.",
+      "tokens": [
+        "So",
+        "do",
+        "I."
+      ],
+      "answer": [
+        "So",
+        "do",
+        "I."
+      ],
+      "misconception": "X.ellipsis.order",
+      "explanation": "So + do + 주어 순서예요."
+    },
+    {
+      "id": "X.ellipsis.q10",
+      "concept": "X.ellipsis",
+      "level": "M",
+      "type": "reason",
+      "question": "I'm tired. - So do I.가 틀린 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "앞 문장이 be동사라서 be동사(am)로 받아야 해서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "So 뒤에는 동사가 올 수 없어서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "tired가 과거분사라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "대동사는 앞 문장의 동사 종류를 따라가요."
+    },
+    {
+      "id": "X.speech.q1",
+      "concept": "X.speech",
+      "level": "H",
+      "type": "apply",
+      "question": "He said, \"I am tired.\" → He said that he ___ tired.",
+      "options": [
+        {
+          "id": "a",
+          "text": "was",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is",
+          "misconception": "X.speech.tense"
+        },
+        {
+          "id": "c",
+          "text": "am",
+          "misconception": "X.speech.person"
+        }
+      ],
+      "explanation": "전달동사 said가 과거라 am → was예요."
+    },
+    {
+      "id": "X.speech.q2",
+      "concept": "X.speech",
+      "level": "H",
+      "type": "apply",
+      "question": "She said to me, \"Where do you live?\" → She asked me where ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "I lived",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "did I live",
+          "misconception": "X.speech.q_order"
+        },
+        {
+          "id": "c",
+          "text": "you lived",
+          "misconception": "X.speech.person"
+        }
+      ],
+      "explanation": "의문사 + 주어 + 동사, you → I, 과거로 바꿔요."
+    },
+    {
+      "id": "X.speech.q3",
+      "concept": "X.speech",
+      "level": "H",
+      "type": "apply",
+      "question": "Mom said to me, \"Clean your room.\" → Mom told me ___ my room.",
+      "options": [
+        {
+          "id": "a",
+          "text": "to clean",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "that clean",
+          "misconception": "X.speech.imperative"
+        },
+        {
+          "id": "c",
+          "text": "clean",
+          "misconception": "X.speech.imperative"
+        }
+      ],
+      "explanation": "명령문은 tell + 사람 + to부정사예요."
+    },
+    {
+      "id": "X.speech.q4",
+      "concept": "X.speech",
+      "level": "H",
+      "type": "apply",
+      "question": "He said to me, \"Don't run.\" → He told me ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "not to run",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "to not run",
+          "misconception": "V.to_noun.not_place"
+        },
+        {
+          "id": "c",
+          "text": "don't run",
+          "misconception": "X.speech.imperative"
+        }
+      ],
+      "explanation": "부정 명령은 not to + 원형이에요."
+    },
+    {
+      "id": "X.speech.q5",
+      "concept": "X.speech",
+      "level": "H",
+      "type": "apply",
+      "question": "She said to me, \"Are you OK?\" → She asked me ___ I was OK.",
+      "options": [
+        {
+          "id": "a",
+          "text": "if",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "that",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "are",
+          "misconception": "X.speech.q_order"
+        }
+      ],
+      "explanation": "Yes/No 의문문은 if / whether로 이어요."
+    },
+    {
+      "id": "X.speech.q6",
+      "concept": "X.speech",
+      "level": "H",
+      "type": "apply",
+      "question": "She said, \"I'm busy today.\" → She said she was busy ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "that day",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "today",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "tomorrow",
+          "misconception": null
+        }
+      ],
+      "explanation": "today는 that day로 바꿔요."
+    },
+    {
+      "id": "X.speech.q7",
+      "concept": "X.speech",
+      "level": "H",
+      "type": "apply",
+      "question": "Tom said to me, \"I like you.\" → Tom told me that he ___ me.",
+      "options": [
+        {
+          "id": "a",
+          "text": "liked",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "likes you",
+          "misconception": "X.speech.person"
+        },
+        {
+          "id": "c",
+          "text": "liked you",
+          "misconception": "X.speech.person"
+        }
+      ],
+      "explanation": "시제는 과거로, you는 전하는 사람인 me로 바꿔요."
+    },
+    {
+      "id": "X.speech.q8",
+      "concept": "X.speech",
+      "level": "H",
+      "type": "concept",
+      "question": "시제를 바꾸지 않아도 되는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "The teacher said that the earth is round.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "He said that he is tired yesterday.",
+          "misconception": "X.speech.tense"
+        },
+        {
+          "id": "c",
+          "text": "She said that she is busy that day.",
+          "misconception": "X.speech.tense"
+        }
+      ],
+      "explanation": "변하지 않는 진리는 현재형을 그대로 써요."
+    },
+    {
+      "id": "X.speech.q9",
+      "concept": "X.speech",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 나에게 무엇을 원하는지 물었다.",
+      "tokens": [
+        "He",
+        "asked me",
+        "what",
+        "I wanted."
+      ],
+      "answer": [
+        "He",
+        "asked me",
+        "what",
+        "I wanted."
+      ],
+      "misconception": "X.speech.q_order",
+      "explanation": "ask + 사람 + 의문사 + 주어 + 동사예요."
+    },
+    {
+      "id": "X.speech.q10",
+      "concept": "X.speech",
+      "level": "H",
+      "type": "reason",
+      "question": "He said, \"I am tired.\"를 He said he was tired.로 바꿀 때 am이 was가 되는 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "전달동사가 과거라서 전한 내용도 그 시점에 맞춰 과거로 옮기기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "he가 3인칭이라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "tired가 과거분사라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "시제 일치 규칙이에요."
+    },
+    {
+      "id": "X.inversion.q1",
+      "concept": "X.inversion",
+      "level": "H",
+      "type": "apply",
+      "question": "Never ___ such a big fish.",
+      "options": [
+        {
+          "id": "a",
+          "text": "have I seen",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I have seen",
+          "misconception": "X.inversion.no_inv"
+        },
+        {
+          "id": "c",
+          "text": "I saw",
+          "misconception": "X.inversion.no_inv"
+        }
+      ],
+      "explanation": "부정어 Never가 앞에 오면 have + 주어 + p.p.예요."
+    },
+    {
+      "id": "X.inversion.q2",
+      "concept": "X.inversion",
+      "level": "H",
+      "type": "apply",
+      "question": "Little ___ the truth.",
+      "options": [
+        {
+          "id": "a",
+          "text": "did he know",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "he knew",
+          "misconception": "X.inversion.no_inv"
+        },
+        {
+          "id": "c",
+          "text": "did he knew",
+          "misconception": "X.inversion.do_form"
+        }
+      ],
+      "explanation": "일반동사는 did + 주어 + 원형이에요."
+    },
+    {
+      "id": "X.inversion.q3",
+      "concept": "X.inversion",
+      "level": "H",
+      "type": "apply",
+      "question": "Only then ___ my mistake.",
+      "options": [
+        {
+          "id": "a",
+          "text": "did I realize",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I realized",
+          "misconception": "X.inversion.no_inv"
+        },
+        {
+          "id": "c",
+          "text": "realized I",
+          "misconception": "X.inversion.do_form"
+        }
+      ],
+      "explanation": "Only + 부사구가 앞에 오면 의문문 어순이에요."
+    },
+    {
+      "id": "X.inversion.q4",
+      "concept": "X.inversion",
+      "level": "H",
+      "type": "apply",
+      "question": "On the hill ___ an old church.",
+      "options": [
+        {
+          "id": "a",
+          "text": "stands",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "it stands",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "does stand",
+          "misconception": null
+        }
+      ],
+      "explanation": "장소 부사구 + 동사 + 주어(명사)예요."
+    },
+    {
+      "id": "X.inversion.q5",
+      "concept": "X.inversion",
+      "level": "H",
+      "type": "apply",
+      "question": "Here ___!",
+      "options": [
+        {
+          "id": "a",
+          "text": "comes the bus",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "the bus comes does",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "does the bus come",
+          "misconception": "X.inversion.do_form"
+        }
+      ],
+      "explanation": "장소 도치는 동사 + 명사 주어예요."
+    },
+    {
+      "id": "X.inversion.q6",
+      "concept": "X.inversion",
+      "level": "H",
+      "type": "apply",
+      "question": "Look! Here ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "he comes",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "comes he",
+          "misconception": "X.inversion.pronoun"
+        },
+        {
+          "id": "c",
+          "text": "does he come",
+          "misconception": null
+        }
+      ],
+      "explanation": "주어가 대명사면 도치하지 않아요."
+    },
+    {
+      "id": "X.inversion.q7",
+      "concept": "X.inversion",
+      "level": "H",
+      "type": "apply",
+      "question": "Not only ___ smart, but she is also kind.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is she",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "she is",
+          "misconception": "X.inversion.no_inv"
+        },
+        {
+          "id": "c",
+          "text": "does she",
+          "misconception": "X.inversion.do_form"
+        }
+      ],
+      "explanation": "Not only가 앞에 오면 be + 주어예요."
+    },
+    {
+      "id": "X.inversion.q8",
+      "concept": "X.inversion",
+      "level": "H",
+      "type": "concept",
+      "question": "Hardly did I sleep last night. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "나는 어젯밤 거의 자지 못했다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "나는 어젯밤 열심히 잤다.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "나는 어젯밤 잤니?",
+          "misconception": null
+        }
+      ],
+      "explanation": "hardly = 거의 ~않다. 의문문이 아니라 강조 도치예요."
+    },
+    {
+      "id": "X.inversion.q9",
+      "concept": "X.inversion",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 그렇게 아름다운 곳을 본 적이 없다.",
+      "tokens": [
+        "Never",
+        "have I seen",
+        "such a beautiful place."
+      ],
+      "answer": [
+        "Never",
+        "have I seen",
+        "such a beautiful place."
+      ],
+      "misconception": "X.inversion.no_inv",
+      "explanation": "Never + have + 주어 + p.p. 순서예요."
+    },
+    {
+      "id": "X.inversion.q10",
+      "concept": "X.inversion",
+      "level": "H",
+      "type": "reason",
+      "question": "Never have I seen it.에서 have가 I 앞에 온 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "부정어 Never가 맨 앞에 와서 뒤가 의문문 어순으로 바뀌었기 때문에",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "의문문이라서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "have가 강조되어서",
+          "misconception": null
+        }
+      ],
+      "explanation": "부정어 강조 도치예요."
+    },
+    {
+      "id": "X.emphasis.q1",
+      "concept": "X.emphasis",
+      "level": "H",
+      "type": "apply",
+      "question": "___ Tom that broke the window yesterday.",
+      "options": [
+        {
+          "id": "a",
+          "text": "It was",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "It is",
+          "misconception": "X.emphasis.tense"
+        },
+        {
+          "id": "c",
+          "text": "There was",
+          "misconception": null
+        }
+      ],
+      "explanation": "원래 문장이 과거(broke)라서 It was예요."
+    },
+    {
+      "id": "X.emphasis.q2",
+      "concept": "X.emphasis",
+      "level": "H",
+      "type": "apply",
+      "question": "It was in Seoul ___ I met her.",
+      "options": [
+        {
+          "id": "a",
+          "text": "that",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "which",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "what",
+          "misconception": null
+        }
+      ],
+      "explanation": "강조 구문은 It was ~ that이에요."
+    },
+    {
+      "id": "X.emphasis.q3",
+      "concept": "X.emphasis",
+      "level": "H",
+      "type": "apply",
+      "question": "I ___ my homework! Believe me.",
+      "options": [
+        {
+          "id": "a",
+          "text": "did finish",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "did finished",
+          "misconception": "X.emphasis.do_form"
+        },
+        {
+          "id": "c",
+          "text": "do finished",
+          "misconception": "X.emphasis.do_form"
+        }
+      ],
+      "explanation": "동사 강조는 did + 원형이에요."
+    },
+    {
+      "id": "X.emphasis.q4",
+      "concept": "X.emphasis",
+      "level": "H",
+      "type": "apply",
+      "question": "She ___ like you. She just doesn't show it.",
+      "options": [
+        {
+          "id": "a",
+          "text": "does",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "did",
+          "misconception": null
+        }
+      ],
+      "explanation": "현재 3인칭 동사 강조는 does + 원형이에요."
+    },
+    {
+      "id": "X.emphasis.q5",
+      "concept": "X.emphasis",
+      "level": "H",
+      "type": "concept",
+      "question": "Tom met Jane in the park. 에서 in the park를 강조한 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It was in the park that Tom met Jane.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "It is in the park that Tom met Jane.",
+          "misconception": "X.emphasis.tense"
+        },
+        {
+          "id": "c",
+          "text": "It was in the park that Tom met Jane in.",
+          "misconception": null
+        }
+      ],
+      "explanation": "강조할 말만 It was ~ that 사이로 옮겨요."
+    },
+    {
+      "id": "X.emphasis.q6",
+      "concept": "X.emphasis",
+      "level": "H",
+      "type": "concept",
+      "question": "강조 구문은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It was my sister that made this cake.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "It is important that we save water.",
+          "misconception": "X.emphasis.vs_dummy"
+        },
+        {
+          "id": "c",
+          "text": "It is true that he moved.",
+          "misconception": "X.emphasis.vs_dummy"
+        }
+      ],
+      "explanation": "It was, that을 빼면 My sister made this cake.로 완전해요."
+    },
+    {
+      "id": "X.emphasis.q7",
+      "concept": "X.emphasis",
+      "level": "H",
+      "type": "apply",
+      "question": "It was the vase ___ Tom broke.",
+      "options": [
+        {
+          "id": "a",
+          "text": "that",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "who",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "what",
+          "misconception": null
+        }
+      ],
+      "explanation": "목적어(사물) 강조는 that이에요."
+    },
+    {
+      "id": "X.emphasis.q8",
+      "concept": "X.emphasis",
+      "level": "H",
+      "type": "concept",
+      "question": "It was yesterday that I lost my bag. 의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "내가 가방을 잃어버린 것은 바로 어제였다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "어제는 내가 가방을 잃어버린 날이 아니었다.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "어제 가방이 나를 잃어버렸다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"바로 ~이다\"라고 yesterday를 강조해요."
+    },
+    {
+      "id": "X.emphasis.q9",
+      "concept": "X.emphasis",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그 창문을 깬 것은 바로 톰이었다.",
+      "tokens": [
+        "It was",
+        "Tom",
+        "that broke",
+        "the window."
+      ],
+      "answer": [
+        "It was",
+        "Tom",
+        "that broke",
+        "the window."
+      ],
+      "misconception": null,
+      "explanation": "It was + 강조할 말 + that + 나머지예요."
+    },
+    {
+      "id": "X.emphasis.q10",
+      "concept": "X.emphasis",
+      "level": "H",
+      "type": "reason",
+      "question": "It was Tom that broke it.이 강조 구문인 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It was와 that을 빼도 Tom broke it.이라는 완전한 문장이 남아서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "It이 Tom을 가리켜서",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "that이 관계대명사라서",
+          "misconception": null
+        }
+      ],
+      "explanation": "빼고 남는 문장이 완전하면 강조 구문이에요."
+    }
+  ]
+}

@@ -1,0 +1,1142 @@
+{
+  "area": "X",
+  "title": "특수 구문",
+  "intro": "부정·의문·명령·감탄·도치·강조처럼 기본 어순(주어 + 동사)을 일부러 바꾸거나 덧붙이는 구문이에요. \"무엇을 앞으로 보내는가\"로 묶어서 이해해요.",
+  "concepts": [
+    {
+      "id": "X.negative",
+      "name": "부정문",
+      "stages": "E",
+      "prerequisites": [
+        "S.be_vs_verb"
+      ],
+      "levels": {
+        "E": {
+          "why": "\"나는 배고프지 않아\", \"그는 축구를 안 해\"처럼 아니라고 말할 때 필요해요. be동사와 일반동사의 부정 방법이 달라요.",
+          "core": "be동사와 조동사는 바로 뒤에 not을 붙여요. 일반동사는 앞에 do not(don't), does not(doesn't), did not(didn't)을 넣고 동사를 원형으로 바꿔요.",
+          "slots": [
+            {
+              "label": "be동사",
+              "cells": [
+                {
+                  "role": "주어",
+                  "text": "I"
+                },
+                {
+                  "role": "be동사",
+                  "text": "am not"
+                },
+                {
+                  "role": "설명",
+                  "text": "hungry"
+                }
+              ]
+            },
+            {
+              "label": "일반동사",
+              "cells": [
+                {
+                  "role": "주어",
+                  "text": "He"
+                },
+                {
+                  "role": "동사",
+                  "text": "doesn't play"
+                },
+                {
+                  "role": "목적어",
+                  "text": "soccer"
+                }
+              ]
+            },
+            {
+              "label": "과거",
+              "cells": [
+                {
+                  "role": "주어",
+                  "text": "They"
+                },
+                {
+                  "role": "동사",
+                  "text": "didn't go"
+                },
+                {
+                  "role": "수식어",
+                  "text": "to school"
+                }
+              ]
+            }
+          ],
+          "diagram": "be동사는 not만 붙이고, 일반동사는 do·does·did의 도움을 받아요.",
+          "form": {
+            "note": "does와 did가 -s와 과거를 가져가서 뒤의 동사는 원형이 돼요.",
+            "rows": [
+              {
+                "label": "be동사",
+                "pattern": "am / is / are + not",
+                "example": "She isn't at home."
+              },
+              {
+                "label": "일반동사 현재",
+                "pattern": "don't / doesn't + 원형",
+                "example": "I don't like milk. / He doesn't like milk."
+              },
+              {
+                "label": "일반동사 과거",
+                "pattern": "didn't + 원형",
+                "example": "We didn't see him."
+              },
+              {
+                "label": "조동사",
+                "pattern": "can't / won't / shouldn't + 원형",
+                "example": "I can't swim."
+              }
+            ],
+            "tip": "He doesn't likes (X) → He doesn't like (O). -s는 does가 이미 가져갔어요."
+          },
+          "contrast": {
+            "a": {
+              "en": "She is not tired.",
+              "ko": "be동사 + not"
+            },
+            "b": {
+              "en": "She does not run.",
+              "ko": "does not + 원형"
+            },
+            "point": "be동사 문장에 don't를 쓰지 않고, 일반동사 문장에 not만 붙이지 않아요."
+          },
+          "summary_prompt": "be동사와 일반동사의 부정문 만드는 법을 비교해 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "X.negative.verb_form",
+          "desc": "doesn't·didn't 뒤에 -s나 과거형을 씀",
+          "wrong": "He doesn't likes it. / I didn't went.",
+          "right": "He doesn't like it. / I didn't go."
+        },
+        {
+          "id": "X.negative.be_do",
+          "desc": "be동사 문장에 don't를, 일반동사에 not만 씀",
+          "wrong": "I don't hungry. / I not like it.",
+          "right": "I'm not hungry. / I don't like it."
+        },
+        {
+          "id": "X.negative.do_agree",
+          "desc": "주어에 맞지 않는 don't / doesn't를 씀",
+          "wrong": "She don't like it.",
+          "right": "She doesn't like it."
+        }
+      ]
+    },
+    {
+      "id": "X.question",
+      "name": "의문문 (Yes/No, 의문사)",
+      "stages": "E→M1",
+      "prerequisites": [
+        "S.be_vs_verb"
+      ],
+      "levels": {
+        "E": {
+          "why": "\"너 배고파?\", \"어디 살아?\"처럼 물어볼 때 영어는 단어 순서를 바꿔요. 한국어처럼 끝만 올리면 안 돼요.",
+          "core": "be동사·조동사는 주어 앞으로 나가요. 일반동사는 Do/Does/Did를 맨 앞에 두고 동사를 원형으로 바꿔요. 의문사는 그 맨 앞에 붙어요.",
+          "slots": [
+            {
+              "label": "be동사",
+              "cells": [
+                {
+                  "role": "be동사",
+                  "text": "Are"
+                },
+                {
+                  "role": "주어",
+                  "text": "you"
+                },
+                {
+                  "role": "설명",
+                  "text": "hungry?"
+                }
+              ]
+            },
+            {
+              "label": "일반동사",
+              "cells": [
+                {
+                  "role": "동사",
+                  "text": "Does"
+                },
+                {
+                  "role": "주어",
+                  "text": "she"
+                },
+                {
+                  "role": "동사",
+                  "text": "like"
+                },
+                {
+                  "role": "목적어",
+                  "text": "cats?"
+                }
+              ]
+            },
+            {
+              "label": "의문사",
+              "cells": [
+                {
+                  "role": "수식어",
+                  "text": "Where"
+                },
+                {
+                  "role": "동사",
+                  "text": "do"
+                },
+                {
+                  "role": "주어",
+                  "text": "you"
+                },
+                {
+                  "role": "동사",
+                  "text": "live?"
+                }
+              ]
+            }
+          ],
+          "diagram": "동사(또는 do)가 주어 앞으로 나가고, 의문사는 그 앞 맨 처음에 와요.",
+          "form": {
+            "note": "대답도 같은 동사로 해요.",
+            "rows": [
+              {
+                "label": "be동사",
+                "pattern": "Be + 주어 ~?",
+                "example": "Is he your brother? - Yes, he is."
+              },
+              {
+                "label": "일반동사",
+                "pattern": "Do / Does / Did + 주어 + 원형?",
+                "example": "Did you eat lunch? - No, I didn't."
+              },
+              {
+                "label": "조동사",
+                "pattern": "조동사 + 주어 + 원형?",
+                "example": "Can you swim? - Yes, I can."
+              },
+              {
+                "label": "의문사",
+                "pattern": "의문사 + (be / do / 조동사) + 주어 ~?",
+                "example": "What do you want? / Where is she?"
+              }
+            ],
+            "tip": "Does she likes? (X) → Does she like? (O)"
+          },
+          "contrast": {
+            "a": {
+              "en": "You are hungry.",
+              "ko": "평서문: 주어 + be"
+            },
+            "b": {
+              "en": "Are you hungry?",
+              "ko": "의문문: be + 주어"
+            },
+            "point": "영어 의문문은 동사가 주어 앞으로 나가요."
+          },
+          "summary_prompt": "be동사, 일반동사, 의문사 의문문 만드는 법을 정리해 보세요."
+        },
+        "M": {
+          "core": "의문사가 주어일 때(Who, What)는 do 없이 평서문 순서 그대로 써요.",
+          "extra": "Who broke the window? (Who did break X) / What happened? / Who likes pizza? (3인칭 단수 취급)"
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "X.question.no_inversion",
+          "desc": "의문문인데 평서문 순서를 그대로 씀",
+          "wrong": "You are hungry? / Where you live?",
+          "right": "Are you hungry? / Where do you live?"
+        },
+        {
+          "id": "X.question.verb_form",
+          "desc": "Does·Did 의문문에서 동사를 원형으로 바꾸지 않음",
+          "wrong": "Does she likes cats? / Did you went?",
+          "right": "Does she like cats? / Did you go?"
+        },
+        {
+          "id": "X.question.subject_wh",
+          "desc": "의문사가 주어인데 do를 넣음",
+          "wrong": "Who did break the window?",
+          "right": "Who broke the window?"
+        }
+      ]
+    },
+    {
+      "id": "X.imperative",
+      "name": "명령문·제안문",
+      "stages": "E",
+      "prerequisites": [
+        "S.verb"
+      ],
+      "levels": {
+        "E": {
+          "why": "\"문 닫아\", \"뛰지 마\", \"같이 가자\"처럼 시키거나 제안할 때 쓰는 문장이에요. 주어 없이 동사로 시작해요.",
+          "core": "명령문은 주어(you)를 빼고 동사원형으로 시작해요. 부정 명령은 Don't + 원형, 제안은 Let's + 원형이에요.",
+          "groups": [
+            {
+              "title": "명령",
+              "items": [
+                "Open the door.",
+                "Be quiet."
+              ],
+              "example": "동사원형으로 시작"
+            },
+            {
+              "title": "부정 명령",
+              "items": [
+                "Don't run.",
+                "Don't be late."
+              ],
+              "example": "Don't + 원형"
+            },
+            {
+              "title": "제안",
+              "tone": "good",
+              "items": [
+                "Let's go.",
+                "Let's not fight."
+              ],
+              "example": "Let's + 원형"
+            }
+          ],
+          "diagram": "명령문은 주어 you가 생략된 문장이에요.",
+          "form": {
+            "note": "be동사 명령은 Be로 시작해요.",
+            "rows": [
+              {
+                "label": "일반동사",
+                "pattern": "동사원형 ~.",
+                "example": "Close the window, please."
+              },
+              {
+                "label": "be동사",
+                "pattern": "Be + 형용사",
+                "example": "Be careful!"
+              },
+              {
+                "label": "부정",
+                "pattern": "Don't + 원형",
+                "example": "Don't touch it. / Don't be sad."
+              },
+              {
+                "label": "제안",
+                "pattern": "Let's + 원형",
+                "example": "Let's play soccer."
+              },
+              {
+                "label": "제안 부정",
+                "pattern": "Let's not + 원형",
+                "example": "Let's not waste time."
+              }
+            ],
+            "tip": "Be quiet.를 Are quiet. / Quiet.로 쓰지 않아요. 형용사 앞에는 Be를 붙여요."
+          },
+          "contrast": {
+            "a": {
+              "en": "Don't be late.",
+              "ko": "늦지 마 (부정 명령)"
+            },
+            "b": {
+              "en": "Let's not be late.",
+              "ko": "우리 늦지 말자 (부정 제안)"
+            },
+            "point": "명령의 부정은 Don't, 제안의 부정은 Let's not이에요."
+          },
+          "summary_prompt": "명령문, 부정 명령문, 제안문의 모양을 정리해 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "X.imperative.form",
+          "desc": "명령문을 원형이 아닌 모양으로 시작함",
+          "wrong": "Opens the door. / Are quiet.",
+          "right": "Open the door. / Be quiet."
+        },
+        {
+          "id": "X.imperative.no_be",
+          "desc": "형용사 명령에 Be를 빼먹음",
+          "wrong": "Careful! / Don't late.",
+          "right": "Be careful! / Don't be late."
+        },
+        {
+          "id": "X.imperative.lets_not",
+          "desc": "Let's의 부정 위치를 틀림",
+          "wrong": "Don't let's go. / Let's don't go.",
+          "right": "Let's not go."
+        }
+      ]
+    },
+    {
+      "id": "X.there",
+      "name": "There is / are",
+      "stages": "E→M1",
+      "prerequisites": [
+        "S.be",
+        "N.plural"
+      ],
+      "levels": {
+        "E": {
+          "why": "\"책상 위에 책이 있다\"처럼 무언가가 어디에 있다고 처음 알려 줄 때 There is / are를 써요.",
+          "core": "There is / are는 \"~이 있다\"예요. 진짜 주어는 be동사 뒤의 명사라서, 그 명사가 단수면 is, 복수면 are예요.",
+          "slots": [
+            {
+              "label": "단수",
+              "cells": [
+                {
+                  "role": "수식어",
+                  "text": "There"
+                },
+                {
+                  "role": "be동사",
+                  "text": "is"
+                },
+                {
+                  "role": "주어",
+                  "text": "a cat"
+                },
+                {
+                  "role": "수식어",
+                  "text": "on the sofa"
+                }
+              ]
+            },
+            {
+              "label": "복수",
+              "cells": [
+                {
+                  "role": "수식어",
+                  "text": "There"
+                },
+                {
+                  "role": "be동사",
+                  "text": "are"
+                },
+                {
+                  "role": "주어",
+                  "text": "two cats"
+                },
+                {
+                  "role": "수식어",
+                  "text": "on the sofa"
+                }
+              ]
+            }
+          ],
+          "diagram": "There는 자리만 채우는 말이고, 진짜 주어는 be동사 뒤에 있어요.",
+          "form": {
+            "note": "뒤의 명사를 보고 is / are를 골라요.",
+            "rows": [
+              {
+                "label": "단수 / 셀 수 없는 명사",
+                "pattern": "There is + 명사",
+                "example": "There is a book. / There is some milk."
+              },
+              {
+                "label": "복수",
+                "pattern": "There are + 복수 명사",
+                "example": "There are many people."
+              },
+              {
+                "label": "과거",
+                "pattern": "There was / were",
+                "example": "There were three apples."
+              },
+              {
+                "label": "부정",
+                "pattern": "There isn't / aren't",
+                "example": "There aren't any chairs."
+              },
+              {
+                "label": "의문",
+                "pattern": "Is / Are there ~?",
+                "example": "Is there a bank near here? - Yes, there is."
+              }
+            ],
+            "tip": "셀 수 없는 명사(milk, water)는 단수 취급해서 There is예요."
+          },
+          "contrast": {
+            "a": {
+              "en": "There is a pen.",
+              "ko": "펜이 (하나) 있다"
+            },
+            "b": {
+              "en": "There are pens.",
+              "ko": "펜들이 있다"
+            },
+            "point": "There 뒤 be동사는 뒤에 오는 명사에 맞춰요."
+          },
+          "summary_prompt": "There is와 There are를 고르는 기준을 설명해 보세요."
+        },
+        "M": {
+          "core": "There is / are는 처음 알려 주는 새로운 것에 써요. the나 my가 붙은 이미 아는 것에는 잘 쓰지 않아요.",
+          "extra": "There is a key on the table. (O) / My key is on the table. (There is my key ~ 는 어색)"
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "X.there.agree",
+          "desc": "뒤의 명사와 be동사의 수를 맞추지 않음",
+          "wrong": "There is two cats. / There are a cat.",
+          "right": "There are two cats. / There is a cat."
+        },
+        {
+          "id": "X.there.uncountable",
+          "desc": "셀 수 없는 명사에 are를 씀",
+          "wrong": "There are some water.",
+          "right": "There is some water."
+        },
+        {
+          "id": "X.there.have",
+          "desc": "\"~이 있다\"를 have로 씀",
+          "wrong": "Have a book on the desk.",
+          "right": "There is a book on the desk."
+        }
+      ]
+    },
+    {
+      "id": "X.tag",
+      "name": "부가의문문",
+      "stages": "M2",
+      "prerequisites": [
+        "X.question",
+        "X.negative"
+      ],
+      "levels": {
+        "M": {
+          "why": "\"날씨 좋다, 그렇지?\", \"너 안 피곤하지, 그렇지?\"처럼 문장 끝에 짧게 확인하는 말을 붙일 때 써요.",
+          "core": "부가의문문은 앞 문장이 긍정이면 부정으로, 부정이면 긍정으로 붙여요. 동사는 앞 문장의 be동사·조동사·do를 쓰고, 주어는 대명사로 바꿔요.",
+          "groups": [
+            {
+              "title": "긍정 문장 → 부정 꼬리",
+              "items": [
+                "It is hot, isn't it?",
+                "You like it, don't you?"
+              ]
+            },
+            {
+              "title": "부정 문장 → 긍정 꼬리",
+              "tone": "good",
+              "items": [
+                "She can't swim, can she?",
+                "He didn't come, did he?"
+              ]
+            }
+          ],
+          "diagram": "앞과 꼬리는 늘 반대(긍정 ↔ 부정)이고, 주어는 대명사로 바꿔요.",
+          "form": {
+            "note": "부가의문문의 부정은 항상 줄임말(isn't, don't)이에요.",
+            "rows": [
+              {
+                "label": "be동사",
+                "pattern": "~ be ~, be + not + 대명사?",
+                "example": "Tom is kind, isn't he?"
+              },
+              {
+                "label": "일반동사",
+                "pattern": "~ 동사 ~, don't / doesn't / didn't + 대명사?",
+                "example": "She plays the piano, doesn't she?"
+              },
+              {
+                "label": "조동사",
+                "pattern": "~ 조동사 ~, 조동사 + not + 대명사?",
+                "example": "You can swim, can't you?"
+              },
+              {
+                "label": "명령문",
+                "pattern": "명령문, will you?",
+                "example": "Close the door, will you?"
+              },
+              {
+                "label": "Let's",
+                "pattern": "Let's ~, shall we?",
+                "example": "Let's go, shall we?"
+              }
+            ],
+            "tip": "주어가 명사(Tom, the movie)면 꼬리에서는 대명사(he, it)로 바꿔요."
+          },
+          "contrast": {
+            "a": {
+              "en": "You are tired, aren't you?",
+              "ko": "긍정 → 부정 꼬리"
+            },
+            "b": {
+              "en": "You aren't tired, are you?",
+              "ko": "부정 → 긍정 꼬리"
+            },
+            "point": "앞 문장과 꼬리는 항상 반대예요."
+          },
+          "summary_prompt": "부가의문문 만드는 순서를 정리해 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "X.tag.same_polarity",
+          "desc": "앞 문장과 같은 긍정·부정으로 꼬리를 씀",
+          "wrong": "It is hot, is it? / He didn't come, didn't he?",
+          "right": "It is hot, isn't it? / He didn't come, did he?"
+        },
+        {
+          "id": "X.tag.wrong_aux",
+          "desc": "앞 문장과 다른 동사로 꼬리를 씀",
+          "wrong": "She plays well, isn't she?",
+          "right": "She plays well, doesn't she?"
+        },
+        {
+          "id": "X.tag.noun_subject",
+          "desc": "꼬리에 명사 주어를 그대로 씀",
+          "wrong": "Tom is kind, isn't Tom?",
+          "right": "Tom is kind, isn't he?"
+        }
+      ]
+    },
+    {
+      "id": "X.exclamation",
+      "name": "감탄문 (What / How)",
+      "stages": "M2",
+      "prerequisites": [
+        "D.adj",
+        "N.article_basic"
+      ],
+      "levels": {
+        "M": {
+          "why": "\"정말 멋진 날이구나!\", \"정말 빠르구나!\"처럼 놀라거나 감탄할 때 쓰는 문장이에요. What과 How 중 무엇을 쓸지가 핵심이에요.",
+          "core": "뒤에 명사가 있으면 What, 형용사·부사만 있으면 How예요. What + (a/an) + 형용사 + 명사 + 주어 + 동사!, How + 형용사/부사 + 주어 + 동사!",
+          "groups": [
+            {
+              "title": "What + 명사",
+              "items": [
+                "What a nice day (it is)!",
+                "What beautiful flowers (they are)!"
+              ],
+              "example": "명사가 있음"
+            },
+            {
+              "title": "How + 형용사/부사",
+              "tone": "good",
+              "items": [
+                "How nice (it is)!",
+                "How fast he runs!"
+              ],
+              "example": "명사가 없음"
+            }
+          ],
+          "diagram": "감탄하는 대상에 명사가 들어 있는지부터 확인해요.",
+          "form": {
+            "note": "주어 + 동사는 자주 생략해요.",
+            "rows": [
+              {
+                "label": "What (단수 명사)",
+                "pattern": "What + a/an + 형용사 + 명사 (+ 주어 + 동사)!",
+                "example": "What a cute puppy (it is)!"
+              },
+              {
+                "label": "What (복수·셀 수 없는)",
+                "pattern": "What + 형용사 + 명사 (a 없음)",
+                "example": "What tall trees! / What nice weather!"
+              },
+              {
+                "label": "How",
+                "pattern": "How + 형용사/부사 (+ 주어 + 동사)!",
+                "example": "How cute (it is)! / How well she sings!"
+              },
+              {
+                "label": "평서문에서 바꾸기",
+                "pattern": "It is a very nice day. → What a nice day it is!",
+                "example": "He runs very fast. → How fast he runs!"
+              }
+            ],
+            "tip": "감탄문은 의문문이 아니라서 끝이 주어 + 동사 순서예요. What a nice day is it! (X)"
+          },
+          "contrast": {
+            "a": {
+              "en": "What a nice car!",
+              "ko": "명사 car가 있어서 What"
+            },
+            "b": {
+              "en": "How nice the car is!",
+              "ko": "형용사 nice만 앞에 있어서 How"
+            },
+            "point": "같은 감탄이어도 앞으로 나간 덩어리에 명사가 있는지로 정해요."
+          },
+          "summary_prompt": "What 감탄문과 How 감탄문을 고르는 기준을 설명해 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "X.exclamation.what_how",
+          "desc": "명사가 있는데 How를, 없는데 What을 씀",
+          "wrong": "How a nice day! / What beautiful!",
+          "right": "What a nice day! / How beautiful!"
+        },
+        {
+          "id": "X.exclamation.article",
+          "desc": "What 감탄문에서 a/an을 빼거나 복수·셀 수 없는 명사에 붙임",
+          "wrong": "What nice day! / What a beautiful flowers!",
+          "right": "What a nice day! / What beautiful flowers!"
+        },
+        {
+          "id": "X.exclamation.order",
+          "desc": "감탄문 끝을 의문문 순서로 씀",
+          "wrong": "How fast does he run! / What a big house is it!",
+          "right": "How fast he runs! / What a big house it is!"
+        }
+      ]
+    },
+    {
+      "id": "X.ellipsis",
+      "name": "생략·대동사 (so do I)",
+      "stages": "M3→H",
+      "prerequisites": [
+        "X.question",
+        "X.negative"
+      ],
+      "levels": {
+        "M": {
+          "why": "\"나도 그래\", \"나도 아니야\"처럼 앞에 나온 말을 반복하지 않고 짧게 맞장구칠 때 쓰는 표현이에요.",
+          "core": "앞 문장의 동사를 다시 쓰지 않고 be동사·조동사·do로 대신해요(대동사). 긍정에 맞장구는 So + 동사 + 주어, 부정에 맞장구는 Neither + 동사 + 주어예요.",
+          "groups": [
+            {
+              "title": "긍정에 \"나도\"",
+              "items": [
+                "I like pizza. - So do I.",
+                "I'm tired. - So am I."
+              ]
+            },
+            {
+              "title": "부정에 \"나도 아니야\"",
+              "tone": "good",
+              "items": [
+                "I don't like it. - Neither do I.",
+                "I can't swim. - Neither can I."
+              ]
+            }
+          ],
+          "diagram": "앞 문장의 동사 종류(be / 조동사 / 일반동사)와 시제를 그대로 따라가요.",
+          "form": {
+            "note": "So / Neither 뒤는 \"동사 + 주어\" 순서(도치)예요.",
+            "rows": [
+              {
+                "label": "be동사",
+                "pattern": "So / Neither + be + 주어",
+                "example": "She is hungry. - So am I."
+              },
+              {
+                "label": "일반동사",
+                "pattern": "So / Neither + do / does / did + 주어",
+                "example": "He went home. - So did I."
+              },
+              {
+                "label": "조동사",
+                "pattern": "So / Neither + 조동사 + 주어",
+                "example": "I can't drive. - Neither can I."
+              },
+              {
+                "label": "대동사 do",
+                "pattern": "앞의 일반동사를 do로 대신",
+                "example": "She runs faster than I do."
+              },
+              {
+                "label": "Me too / Me neither",
+                "pattern": "말할 때의 짧은 표현",
+                "example": "Me too. / Me neither."
+              }
+            ],
+            "tip": "So I am.은 \"정말 그래(맞아)\"라는 다른 뜻이에요. \"나도\"는 So am I.예요."
+          },
+          "contrast": {
+            "a": {
+              "en": "I like it. - So do I.",
+              "ko": "나도 좋아해 (긍정)"
+            },
+            "b": {
+              "en": "I don't like it. - Neither do I.",
+              "ko": "나도 안 좋아해 (부정)"
+            },
+            "point": "긍정에는 So, 부정에는 Neither예요."
+          },
+          "summary_prompt": "So do I와 Neither do I를 쓰는 경우와 동사 고르는 법을 정리해 보세요."
+        },
+        "H": {
+          "core": "반복되는 말은 생략할 수 있어요. 비교 대상, to부정사의 동사, 부사절의 주어 + be동사 등이 자주 생략돼요.",
+          "extra": "I wanted to go, but I couldn't (go). / You can come if you want to (come). / When (I was) young, I lived in Busan. / Though (he was) tired, he kept working."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "X.ellipsis.so_neither",
+          "desc": "부정 문장에 So, 긍정 문장에 Neither를 씀",
+          "wrong": "I don't like it. - So do I.",
+          "right": "I don't like it. - Neither do I."
+        },
+        {
+          "id": "X.ellipsis.wrong_aux",
+          "desc": "앞 문장과 다른 동사(be / do)로 받음",
+          "wrong": "I'm tired. - So do I.",
+          "right": "I'm tired. - So am I."
+        },
+        {
+          "id": "X.ellipsis.order",
+          "desc": "So / Neither 뒤를 주어 + 동사 순서로 씀",
+          "wrong": "So I do. / Neither I can.",
+          "right": "So do I. / Neither can I."
+        }
+      ]
+    },
+    {
+      "id": "X.speech",
+      "name": "화법 전환",
+      "stages": "H",
+      "prerequisites": [
+        "T.sequence",
+        "C.indirect_q"
+      ],
+      "levels": {
+        "H": {
+          "why": "\"그는 '나 피곤해'라고 말했다\"를 \"그는 자기가 피곤하다고 말했다\"로 바꾸어 전하면, 인칭, 시제, 시간 표현이 모두 달라져요.",
+          "core": "직접화법(따옴표)을 간접화법(that절)으로 바꿀 때는 ① 전달동사 바꾸기(say to → tell) ② 인칭을 전하는 사람 기준으로 ③ 전달동사가 과거면 시제 한 칸 과거로 ④ 시간·장소 표현 바꾸기를 해요.",
+          "groups": [
+            {
+              "title": "평서문",
+              "items": [
+                "He said, \"I am tired.\"",
+                "→ He said (that) he was tired."
+              ]
+            },
+            {
+              "title": "의문문",
+              "items": [
+                "She said to me, \"Where do you live?\"",
+                "→ She asked me where I lived."
+              ]
+            },
+            {
+              "title": "명령문",
+              "tone": "good",
+              "items": [
+                "Mom said to me, \"Clean your room.\"",
+                "→ Mom told me to clean my room."
+              ]
+            }
+          ],
+          "diagram": "따옴표 안의 말을 \"지금 전하는 사람\"의 입장에서 다시 말한다고 생각해요.",
+          "form": {
+            "note": "시간·장소 표현도 함께 바꿔요.",
+            "rows": [
+              {
+                "label": "평서문",
+                "pattern": "say(that) / tell + 사람 + that",
+                "example": "He said to me, \"I like you.\" → He told me that he liked me."
+              },
+              {
+                "label": "의문사 의문문",
+                "pattern": "ask + (사람) + 의문사 + 주어 + 동사",
+                "example": "\"What do you want?\" → He asked me what I wanted."
+              },
+              {
+                "label": "Yes/No 의문문",
+                "pattern": "ask + (사람) + if/whether + 주어 + 동사",
+                "example": "\"Are you OK?\" → She asked if I was OK."
+              },
+              {
+                "label": "명령문",
+                "pattern": "tell / ask + 사람 + to부정사 (부정: not to)",
+                "example": "\"Don't run.\" → He told me not to run."
+              },
+              {
+                "label": "시간·장소",
+                "pattern": "now → then, today → that day, tomorrow → the next day, here → there",
+                "example": "\"I'm busy today.\" → She said she was busy that day."
+              }
+            ],
+            "tip": "변하지 않는 진리나 지금도 사실인 일은 시제를 바꾸지 않아도 돼요. He said (that) the earth is round."
+          },
+          "contrast": {
+            "a": {
+              "en": "He said, \"I am busy now.\"",
+              "ko": "직접화법: 그의 말 그대로"
+            },
+            "b": {
+              "en": "He said that he was busy then.",
+              "ko": "간접화법: 인칭·시제·시간 표현 바뀜"
+            },
+            "point": "I → he, am → was, now → then으로 함께 바뀌어요."
+          },
+          "summary_prompt": "직접화법을 간접화법으로 바꾸는 순서 네 가지를 써 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "X.speech.tense",
+          "desc": "전달동사가 과거인데 시제를 그대로 둠",
+          "wrong": "He said that he is tired. (그때 피곤했다는 뜻으로)",
+          "right": "He said that he was tired."
+        },
+        {
+          "id": "X.speech.person",
+          "desc": "인칭을 전하는 사람 기준으로 바꾸지 않음",
+          "wrong": "She said, \"I love you.\" → She said that I loved you.",
+          "right": "→ She told me that she loved me."
+        },
+        {
+          "id": "X.speech.q_order",
+          "desc": "간접화법 의문문에 의문문 어순을 그대로 씀",
+          "wrong": "He asked me where did I live.",
+          "right": "He asked me where I lived."
+        },
+        {
+          "id": "X.speech.imperative",
+          "desc": "명령문을 that절로 바꾸거나 to부정사를 쓰지 않음",
+          "wrong": "He told me that clean my room.",
+          "right": "He told me to clean my room."
+        }
+      ]
+    },
+    {
+      "id": "X.inversion",
+      "name": "도치",
+      "stages": "H",
+      "prerequisites": [
+        "X.question"
+      ],
+      "levels": {
+        "H": {
+          "why": "\"절대 나는 그런 걸 본 적이 없다\"처럼 부정어나 장소를 강조하려고 문장 맨 앞으로 보내면, 뒤의 주어와 동사 순서가 바뀌어요.",
+          "core": "부정어(Never, Little, Hardly, Not only 등)나 only + 부사구가 문장 맨 앞에 오면 뒤는 의문문 어순(조동사/be/do + 주어)이 돼요. 장소·방향 부사구가 앞에 오면 \"동사 + 주어\"로 바뀌어요.",
+          "groups": [
+            {
+              "title": "부정어 도치",
+              "tone": "good",
+              "items": [
+                "Never have I seen it.",
+                "Little did he know the truth."
+              ],
+              "example": "의문문 어순"
+            },
+            {
+              "title": "장소 도치",
+              "items": [
+                "On the hill stands a church.",
+                "Here comes the bus."
+              ],
+              "example": "동사 + 주어"
+            },
+            {
+              "title": "so / neither 도치",
+              "items": [
+                "So do I.",
+                "Neither can I."
+              ],
+              "example": "맞장구"
+            }
+          ],
+          "diagram": "강조할 말을 맨 앞으로 보내면, 그 표시로 주어와 동사 자리가 바뀌어요.",
+          "form": {
+            "note": "일반동사 문장의 부정어 도치는 do / does / did를 써요.",
+            "rows": [
+              {
+                "label": "부정어 + 완료",
+                "pattern": "Never / Rarely + have + 주어 + p.p.",
+                "example": "Never have I seen such a big fish."
+              },
+              {
+                "label": "부정어 + 일반동사",
+                "pattern": "Little / Hardly + do/does/did + 주어 + 원형",
+                "example": "Little did I dream of winning."
+              },
+              {
+                "label": "Not only",
+                "pattern": "Not only + 조동사/do + 주어 ~, but also ~",
+                "example": "Not only is she smart, but she is also kind."
+              },
+              {
+                "label": "Only + 부사구",
+                "pattern": "Only then / Only after ~ + do + 주어 + 원형",
+                "example": "Only then did I realize my mistake."
+              },
+              {
+                "label": "장소·방향",
+                "pattern": "장소 부사구 + 동사 + 주어(명사)",
+                "example": "On the hill stands an old church. / Here comes the bus."
+              }
+            ],
+            "tip": "장소 도치는 주어가 대명사면 바뀌지 않아요. Here it comes. (O) / Here comes it. (X)"
+          },
+          "contrast": {
+            "a": {
+              "en": "I have never seen it.",
+              "ko": "보통 순서"
+            },
+            "b": {
+              "en": "Never have I seen it.",
+              "ko": "부정어 강조 → have + 주어"
+            },
+            "point": "부정어를 앞으로 보내면 뒤는 의문문 어순이에요."
+          },
+          "summary_prompt": "부정어 도치와 장소 도치의 어순 차이를 설명해 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "X.inversion.no_inv",
+          "desc": "부정어를 앞에 두고도 어순을 바꾸지 않음",
+          "wrong": "Never I have seen it. / Little he knew.",
+          "right": "Never have I seen it. / Little did he know."
+        },
+        {
+          "id": "X.inversion.do_form",
+          "desc": "일반동사 도치에서 do를 빼거나 동사를 원형으로 바꾸지 않음",
+          "wrong": "Little knew he the truth. / Little did he knew.",
+          "right": "Little did he know the truth."
+        },
+        {
+          "id": "X.inversion.pronoun",
+          "desc": "장소 도치에서 대명사 주어도 뒤로 보냄",
+          "wrong": "Here comes he.",
+          "right": "Here he comes."
+        }
+      ]
+    },
+    {
+      "id": "X.emphasis",
+      "name": "강조 (It is ~ that)",
+      "stages": "H",
+      "prerequisites": [
+        "N.it",
+        "C.noun_clause"
+      ],
+      "levels": {
+        "H": {
+          "why": "\"어제 창문을 깬 건 바로 톰이었다\"처럼 문장의 한 부분을 콕 집어 강조하고 싶을 때 쓰는 구문이에요.",
+          "core": "강조하고 싶은 말을 It is / was와 that 사이에 넣어요. 나머지는 that 뒤에 그대로 둬요. 동사를 강조할 때는 do / does / did + 원형을 써요.",
+          "slots": [
+            {
+              "label": "원래",
+              "cells": [
+                {
+                  "role": "주어",
+                  "text": "Tom"
+                },
+                {
+                  "role": "동사",
+                  "text": "broke"
+                },
+                {
+                  "role": "목적어",
+                  "text": "the window"
+                },
+                {
+                  "role": "수식어",
+                  "text": "yesterday"
+                }
+              ]
+            },
+            {
+              "label": "주어 강조",
+              "cells": [
+                {
+                  "role": "수식어",
+                  "text": "It was"
+                },
+                {
+                  "role": "주어",
+                  "text": "Tom"
+                },
+                {
+                  "role": "수식어",
+                  "text": "that broke the window yesterday"
+                }
+              ]
+            },
+            {
+              "label": "시간 강조",
+              "cells": [
+                {
+                  "role": "수식어",
+                  "text": "It was"
+                },
+                {
+                  "role": "수식어",
+                  "text": "yesterday"
+                },
+                {
+                  "role": "수식어",
+                  "text": "that Tom broke the window"
+                }
+              ]
+            }
+          ],
+          "diagram": "강조할 덩어리 하나만 It was ~ that 사이로 옮기고, 나머지는 순서대로 that 뒤에 둬요.",
+          "form": {
+            "note": "시제는 원래 문장에 맞춰 It is / It was를 써요.",
+            "rows": [
+              {
+                "label": "주어 강조",
+                "pattern": "It is/was + 주어 + that(who) + 동사 ~",
+                "example": "It was Tom that(who) broke the window."
+              },
+              {
+                "label": "목적어 강조",
+                "pattern": "It is/was + 목적어 + that + 주어 + 동사",
+                "example": "It was the window that Tom broke."
+              },
+              {
+                "label": "부사(구) 강조",
+                "pattern": "It is/was + 부사구 + that ~",
+                "example": "It was yesterday that Tom broke it."
+              },
+              {
+                "label": "동사 강조",
+                "pattern": "do / does / did + 원형 (정말 ~하다)",
+                "example": "I did finish my homework!"
+              },
+              {
+                "label": "가주어 구문과 구별",
+                "pattern": "It ~ that을 빼도 완전한 문장이면 강조",
+                "example": "It was Tom that broke it. → Tom broke it. (O)"
+              }
+            ],
+            "tip": "that 뒤를 원래 문장으로 되돌려 보면 강조 구문인지 가주어 구문인지 알 수 있어요."
+          },
+          "contrast": {
+            "a": {
+              "en": "It is true that he won.",
+              "ko": "가주어 구문: true that he won은 원래 문장이 아님"
+            },
+            "b": {
+              "en": "It was he that won.",
+              "ko": "강조 구문: It was, that을 빼면 He won. (완전)"
+            },
+            "point": "It is/was와 that을 지웠을 때 완전한 문장이 남으면 강조 구문이에요."
+          },
+          "summary_prompt": "강조 구문 It is ~ that과 가주어 구문을 구별하는 방법을 써 보세요."
+        }
+      },
+      "misconceptions": [
+        {
+          "id": "X.emphasis.tense",
+          "desc": "원래 문장이 과거인데 It is를 씀",
+          "wrong": "It is Tom that broke the window yesterday.",
+          "right": "It was Tom that broke the window yesterday."
+        },
+        {
+          "id": "X.emphasis.do_form",
+          "desc": "동사 강조에서 do / did 뒤에 원형을 쓰지 않음",
+          "wrong": "I did finished it. / She does likes it.",
+          "right": "I did finish it. / She does like it."
+        },
+        {
+          "id": "X.emphasis.vs_dummy",
+          "desc": "강조 구문과 가주어 구문을 구별하지 못함",
+          "wrong": "It is important that you rest. = 강조 구문",
+          "right": "= 가주어 구문 (It ~ that을 빼면 문장이 안 됨)"
+        }
+      ]
+    }
+  ]
+}
