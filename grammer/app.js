@@ -5,17 +5,8 @@
   'use strict';
 
   // ---------- 설정 ----------
-  const AREAS = [
-    { code: 'S', title: '문장의 뼈대', ready: false },
-    { code: 'T', title: '동사의 시간', ready: true },
-    { code: 'A', title: '동사의 태도', ready: false },
-    { code: 'P', title: '동사의 방향', ready: false },
-    { code: 'N', title: '명사 주변', ready: false },
-    { code: 'D', title: '꾸미는 말', ready: false },
-    { code: 'V', title: '준동사', ready: false },
-    { code: 'C', title: '문장 연결', ready: false },
-    { code: 'X', title: '특수 구문', ready: false }
-  ];
+  // ready는 시작할 때 data 폴더의 파일을 확인해서 자동으로 정해짐 (detectAreas)
+  const AREAS = ['S', 'T', 'A', 'P', 'N', 'D', 'V', 'C', 'X'].map(code => ({ code, ready: false }));
   const LEVELS = { E: '초등', M: '중등', H: '고등' };
   const LEVEL_ORDER = { E: 0, M: 1, H: 2 };
   const REVIEW_DAYS = [1, 3, 7];      // 오답 복습 간격 (일)
@@ -47,10 +38,9 @@
   const cache = {};
   async function loadArea(code) {
     if (cache[code]) return cache[code];
-    const [c, q] = await Promise.all([
-      fetch(`data/concepts_${code}.json`).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }),
-      fetch(`data/questions_${code}.json`).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    ]);
+    // 개념 파일이 없으면(아직 준비 중인 영역) 문제 파일은 요청하지 않음
+    const c = await fetch(`data/concepts_${code}.json`).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+    const q = await fetch(`data/questions_${code}.json`).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
     const area = {
       code, title: c.title, intro: c.intro,
       concepts: c.concepts,
@@ -65,8 +55,19 @@
     cache[code] = area;
     return area;
   }
+  // data 폴더에 concepts_<영역>.json, questions_<영역>.json이 있는 영역을 자동으로 켬
+  let detecting = null;
+  function detectAreas() {
+    if (!detecting) {
+      detecting = Promise.all(AREAS.map(a =>
+        loadArea(a.code).then(() => { a.ready = true; }).catch(() => { a.ready = false; })
+      ));
+    }
+    return detecting;
+  }
   async function loadReadyAreas() {
-    return Promise.all(AREAS.filter(a => a.ready).map(a => loadArea(a.code)));
+    await detectAreas();
+    return AREAS.filter(a => a.ready).map(a => cache[a.code]);
   }
   const areaOf = id => id.split('.')[0];
   const isReadyArea = code => AREAS.some(a => a.code === code && a.ready);
@@ -388,6 +389,7 @@
   }
 
   async function renderLearn(id, stepIdx) {
+    await detectAreas();
     if (!isReadyArea(areaOf(id))) { location.hash = `#/concept/${id}`; return; }
     const [area] = await Promise.all([loadArea(areaOf(id)), loadMap(), loadReadyAreas()]);
     const concept = area.conceptMap[id];
