@@ -15,20 +15,6 @@
           "why": "매일 하는 일, 늘 그런 사실, 지금의 마음이나 상태를 말할 때 필요해요.",
           "core": "현재시제는 '지금 이 순간'이 아니라 반복되는 습관, 변하지 않는 사실, 지금의 상태를 말해요.",
           "diagram": "점이 어제·오늘·내일에 계속 찍혀 있어요. 현재시제는 '늘 그래요'라는 뜻이에요.",
-          "examples": [
-            {
-              "en": "I walk to school every day.",
-              "ko": "나는 매일 걸어서 학교에 가요. (습관)"
-            },
-            {
-              "en": "The sun rises in the east.",
-              "ko": "해는 동쪽에서 떠요. (변하지 않는 사실)"
-            },
-            {
-              "en": "I like pizza.",
-              "ko": "나는 피자를 좋아해요. (지금의 상태)"
-            }
-          ],
           "contrast": null,
           "summary_prompt": "현재시제는 언제 쓰는지 내 말로 한 줄로 써 보세요.",
           "timeline": [
@@ -47,6 +33,125 @@
               "sub": "어제도, 오늘도, 내일도",
               "row": 1
             }
+          ],
+          "form": {
+            "note": "일반동사의 현재시제는 동사원형을 그대로 써요. 주어가 he·she·it처럼 한 사람·한 개면 동사에 -s를 붙여요.",
+            "rows": [
+              {
+                "label": "긍정",
+                "pattern": "주어 + 동사원형 (he·she·it은 동사 + -s)",
+                "example": "I play. / She plays."
+              },
+              {
+                "label": "부정",
+                "pattern": "주어 + don't / doesn't + 동사원형",
+                "example": "I don't play. / She doesn't play."
+              },
+              {
+                "label": "의문",
+                "pattern": "Do / Does + 주어 + 동사원형 ~?",
+                "example": "Do you play? / Does she play?"
+              },
+              {
+                "label": "짧은 대답",
+                "pattern": "Yes, 주어 + do/does. / No, 주어 + don't/doesn't.",
+                "example": "Yes, I do. / No, she doesn't."
+              }
+            ],
+            "tip": "be동사(am/are/is) 문장은 do를 쓰지 않아요. I am not tired. / Are you tired?"
+          },
+          "uses": [
+            {
+              "name": "습관",
+              "meaning": "늘 하는 일, 버릇",
+              "desc": "매일, 매주처럼 되풀이해서 하는 일이에요.",
+              "signals": [
+                "every day (매일)",
+                "always (항상)",
+                "usually (보통)",
+                "often (자주)",
+                "sometimes (가끔)",
+                "on Sundays (일요일마다)"
+              ],
+              "examples": [
+                {
+                  "en": "I get up at seven every day.",
+                  "ko": "나는 매일 7시에 일어나요."
+                },
+                {
+                  "en": "He usually walks to school.",
+                  "ko": "그는 보통 걸어서 학교에 가요."
+                },
+                {
+                  "en": "We play soccer on Sundays.",
+                  "ko": "우리는 일요일마다 축구를 해요."
+                }
+              ]
+            },
+            {
+              "name": "사실",
+              "meaning": "언제나 맞는 사실",
+              "desc": "시간이 지나도 바뀌지 않는 사실이에요. 과학 사실이나 일반적인 사실을 말할 때 써요.",
+              "signals": [
+                "신호어 없음: 내용으로 판단"
+              ],
+              "examples": [
+                {
+                  "en": "Water boils at 100°C.",
+                  "ko": "물은 100도에서 끓어요."
+                },
+                {
+                  "en": "The earth goes around the sun.",
+                  "ko": "지구는 태양 주위를 돌아요."
+                },
+                {
+                  "en": "Cats have four legs.",
+                  "ko": "고양이는 다리가 네 개예요."
+                }
+              ]
+            },
+            {
+              "name": "상태",
+              "meaning": "지금의 마음·상태",
+              "desc": "좋아하다, 알다, 살다처럼 움직임이 아니라 상태를 나타내는 동사는 지금의 일도 현재시제로 써요.",
+              "signals": [
+                "like, love (좋아하다)",
+                "know (알다)",
+                "want (원하다)",
+                "have (가지고 있다)",
+                "live (살다)"
+              ],
+              "examples": [
+                {
+                  "en": "I like pizza.",
+                  "ko": "나는 피자를 좋아해요."
+                },
+                {
+                  "en": "She knows my name.",
+                  "ko": "그녀는 내 이름을 알아요."
+                },
+                {
+                  "en": "We live in Seoul.",
+                  "ko": "우리는 서울에 살아요."
+                }
+              ]
+            }
+          ],
+          "notes": [
+            {
+              "title": "정해진 시간표",
+              "text": "버스·기차 출발 시간, 수업 시간처럼 시간표로 정해진 일은 미래의 일이어도 현재시제로 쓸 수 있어요.",
+              "examples": [
+                {
+                  "en": "The bus leaves at 8:00.",
+                  "ko": "버스는 8시에 출발해요."
+                },
+                {
+                  "en": "School starts next Monday.",
+                  "ko": "학교는 다음 주 월요일에 시작해요."
+                }
+              ]
+            }
           ]
         }
       },
@@ -62,6 +167,18 @@
           "desc": "매일 하는 습관을 진행형으로 씀",
           "wrong": "I am drinking milk every morning.",
           "right": "I drink milk every morning."
+        },
+        {
+          "id": "T.present.be_with_verb",
+          "desc": "일반동사 문장의 의문·부정에 be동사를 씀",
+          "wrong": "Are you like apples?",
+          "right": "Do you like apples?"
+        },
+        {
+          "id": "T.present.do_does",
+          "desc": "주어에 맞지 않게 do/does를 고름",
+          "wrong": "I doesn't like it.",
+          "right": "I don't like it."
         }
       ]
     },
@@ -124,11 +241,83 @@
               ],
               "example": "They play."
             }
+          ],
+          "form": {
+            "note": "대부분은 동사 끝에 -s만 붙이지만, 끝 글자에 따라 붙이는 방법이 조금씩 달라요.",
+            "rows": [
+              {
+                "label": "대부분",
+                "pattern": "동사 + s",
+                "example": "play → plays, like → likes"
+              },
+              {
+                "label": "-s, -sh, -ch, -x, -o",
+                "pattern": "동사 + es",
+                "example": "watch → watches, go → goes, fix → fixes"
+              },
+              {
+                "label": "자음 + y",
+                "pattern": "y를 i로 바꾸고 + es",
+                "example": "study → studies, cry → cries"
+              },
+              {
+                "label": "모음 + y",
+                "pattern": "동사 + s",
+                "example": "play → plays, buy → buys"
+              },
+              {
+                "label": "특별한 동사",
+                "pattern": "have → has",
+                "example": "She has a dog."
+              }
+            ],
+            "tip": "부정문·의문문에서는 does(doesn't)가 -s를 가져가요. 그래서 뒤의 동사는 원형이에요."
+          },
+          "uses": [
+            {
+              "name": "-s를 붙이는 주어",
+              "meaning": "한 사람·한 개",
+              "desc": "he, she, it, 그리고 한 사람이나 한 개를 가리키는 말(Tom, my mom, the dog)이 주어면 -s를 붙여요.",
+              "signals": [
+                "he / she / it",
+                "Tom, my sister",
+                "the dog, this book"
+              ],
+              "examples": [
+                {
+                  "en": "My mom drives a car.",
+                  "ko": "엄마는 차를 운전해요."
+                },
+                {
+                  "en": "The dog barks at night.",
+                  "ko": "그 개는 밤에 짖어요."
+                }
+              ]
+            },
+            {
+              "name": "-s를 붙이지 않는 주어",
+              "meaning": "나·너·여럿",
+              "desc": "I, you, we, they, 그리고 둘 이상(Tom and Jerry, my friends)이 주어면 동사원형 그대로예요.",
+              "signals": [
+                "I / you",
+                "we / they",
+                "Tom and Jerry, my friends"
+              ],
+              "examples": [
+                {
+                  "en": "My friends play games.",
+                  "ko": "내 친구들은 게임을 해요."
+                },
+                {
+                  "en": "You speak English well.",
+                  "ko": "너는 영어를 잘 말해."
+                }
+              ]
+            }
           ]
         },
         "M": {
-          "core": "부정문·의문문에서는 does가 -s를 가져가요. 그래서 뒤의 동사는 원형이에요. (He doesn't like it. / Does she play?)",
-          "extra": "철자 규칙: -s, -sh, -ch, -x, -o로 끝나면 -es (watches, goes), 자음+y는 y를 i로 바꾸고 -es (studies), have는 has."
+          "core": "부정문·의문문에서는 does가 -s를 가져가요. 그래서 뒤의 동사는 원형이에요. (He doesn't like it. / Does she play?)"
         }
       },
       "misconceptions": [
@@ -149,6 +338,18 @@
           "desc": "does/doesn't 뒤의 동사에도 -s를 붙임",
           "wrong": "He doesn't likes milk.",
           "right": "He doesn't like milk."
+        },
+        {
+          "id": "T.3sg.spelling",
+          "desc": "-s/-es를 붙이는 철자 규칙을 틀림",
+          "wrong": "He studys hard.",
+          "right": "He studies hard."
+        },
+        {
+          "id": "T.3sg.do_for_does",
+          "desc": "3인칭 단수 주어인데 의문·부정문에 do를 씀",
+          "wrong": "Do she like it?",
+          "right": "Does she like it?"
         }
       ]
     },
@@ -165,16 +366,6 @@
           "why": "말하는 바로 지금 무엇을 하고 있는지 말하려면 필요해요.",
           "core": "be동사(am/are/is) + 동사-ing = 말하는 지금 하고 있는 중인 일",
           "diagram": "물결은 '하는 중'이라는 표시예요. 현재진행은 바로 지금 그 순간에 물결이 있어요.",
-          "examples": [
-            {
-              "en": "I am reading a book.",
-              "ko": "나는 책을 읽고 있어요."
-            },
-            {
-              "en": "They are playing outside.",
-              "ko": "그들은 밖에서 놀고 있어요."
-            }
-          ],
           "contrast": {
             "a": {
               "en": "I eat breakfast every day.",
@@ -196,6 +387,93 @@
               "sub": "지금 하는 중",
               "row": 1
             }
+          ],
+          "form": {
+            "note": "be동사(am/are/is)는 주어에 맞추고, 동사에는 -ing를 붙여요.",
+            "rows": [
+              {
+                "label": "긍정",
+                "pattern": "주어 + am/are/is + 동사-ing",
+                "example": "I am eating. / They are eating."
+              },
+              {
+                "label": "부정",
+                "pattern": "주어 + am/are/is + not + 동사-ing",
+                "example": "She isn't eating."
+              },
+              {
+                "label": "의문",
+                "pattern": "Am/Are/Is + 주어 + 동사-ing ~?",
+                "example": "Are you eating?"
+              },
+              {
+                "label": "-ing 만들기 ①",
+                "pattern": "대부분은 + ing",
+                "example": "play → playing, read → reading"
+              },
+              {
+                "label": "-ing 만들기 ②",
+                "pattern": "e로 끝나면 e를 빼고 + ing",
+                "example": "make → making, write → writing"
+              },
+              {
+                "label": "-ing 만들기 ③",
+                "pattern": "짧은 모음 + 자음 하나로 끝나면 자음을 한 번 더",
+                "example": "run → running, swim → swimming"
+              },
+              {
+                "label": "-ing 만들기 ④",
+                "pattern": "ie로 끝나면 ie를 y로",
+                "example": "lie → lying, die → dying"
+              }
+            ],
+            "tip": "진행형의 의문문·부정문은 be동사로 만들어요. do는 쓰지 않아요."
+          },
+          "uses": [
+            {
+              "name": "지금 하는 중",
+              "meaning": "말하는 바로 지금 하고 있는 일",
+              "desc": "말하는 순간에 하고 있는 동작이에요.",
+              "signals": [
+                "now (지금)",
+                "right now (바로 지금)",
+                "Look! (봐!)",
+                "Listen! (들어 봐!)"
+              ],
+              "examples": [
+                {
+                  "en": "Look! It is snowing.",
+                  "ko": "봐! 눈이 오고 있어."
+                },
+                {
+                  "en": "Listen! The baby is crying.",
+                  "ko": "들어 봐! 아기가 울고 있어."
+                },
+                {
+                  "en": "I am talking on the phone now.",
+                  "ko": "나는 지금 통화 중이야."
+                }
+              ]
+            },
+            {
+              "name": "요즘 하는 중",
+              "meaning": "요즘 계속 하고 있는 일",
+              "desc": "바로 이 순간은 아니어도 요즘 한동안 진행 중인 일에도 써요.",
+              "signals": [
+                "these days (요즘)",
+                "this week (이번 주)"
+              ],
+              "examples": [
+                {
+                  "en": "I am reading a good book these days.",
+                  "ko": "나는 요즘 좋은 책을 읽고 있어요."
+                },
+                {
+                  "en": "She is learning Chinese this year.",
+                  "ko": "그녀는 올해 중국어를 배우고 있어요."
+                }
+              ]
+            }
           ]
         },
         "M": {
@@ -215,6 +493,30 @@
           "desc": "상태동사를 진행형으로 씀",
           "wrong": "I am knowing the answer.",
           "right": "I know the answer."
+        },
+        {
+          "id": "T.progressive.be_agree",
+          "desc": "주어에 맞지 않는 be동사를 씀",
+          "wrong": "They is playing.",
+          "right": "They are playing."
+        },
+        {
+          "id": "T.progressive.no_ing",
+          "desc": "be동사 뒤에 -ing 없이 동사를 씀",
+          "wrong": "She is write a letter.",
+          "right": "She is writing a letter."
+        },
+        {
+          "id": "T.progressive.spelling",
+          "desc": "-ing를 붙이는 철자 규칙을 틀림",
+          "wrong": "He is swiming.",
+          "right": "He is swimming."
+        },
+        {
+          "id": "T.progressive.do_question",
+          "desc": "진행형 의문문·부정문에 do를 씀",
+          "wrong": "Do you listening?",
+          "right": "Are you listening?"
         }
       ]
     },
@@ -230,16 +532,6 @@
           "why": "어제, 지난주처럼 이미 끝난 일을 말하려면 필요해요.",
           "core": "과거시제는 이미 끝난 일이에요. 보통 동사에 -ed를 붙이지만, 모양이 완전히 바뀌는 동사도 있어요.",
           "diagram": "점이 '지금'보다 왼쪽에 있고, 지금과 선으로 이어져 있지 않아요. 이미 끝난 일이에요.",
-          "examples": [
-            {
-              "en": "I played soccer yesterday.",
-              "ko": "나는 어제 축구를 했어요."
-            },
-            {
-              "en": "She went to Busan last week.",
-              "ko": "그녀는 지난주에 부산에 갔어요. (go → went)"
-            }
-          ],
           "contrast": {
             "a": {
               "en": "I play soccer every day.",
@@ -259,6 +551,93 @@
               "label": "I played soccer.",
               "sub": "어제, 이미 끝남",
               "row": 1
+            }
+          ],
+          "form": {
+            "note": "과거시제는 주어가 누구든 같은 모양이에요. 3인칭 단수 -s도 붙이지 않아요.",
+            "rows": [
+              {
+                "label": "긍정",
+                "pattern": "주어 + 동사의 과거형",
+                "example": "I played. / She went."
+              },
+              {
+                "label": "부정",
+                "pattern": "주어 + didn't + 동사원형",
+                "example": "I didn't play. / She didn't go."
+              },
+              {
+                "label": "의문",
+                "pattern": "Did + 주어 + 동사원형 ~?",
+                "example": "Did you play? / Did she go?"
+              },
+              {
+                "label": "be동사",
+                "pattern": "I·he·she·it → was / you·we·they → were",
+                "example": "I was tired. / They were at home."
+              },
+              {
+                "label": "-ed 만들기",
+                "pattern": "대부분 + ed / e로 끝나면 + d / 자음 + y는 y를 i로 + ed / 짧은 모음 + 자음은 자음 한 번 더",
+                "example": "played, liked, studied, stopped"
+              }
+            ],
+            "tip": "didn't와 Did가 과거를 표시하니까, 그 뒤의 동사는 원형으로 써요."
+          },
+          "uses": [
+            {
+              "name": "끝난 일",
+              "meaning": "과거에 이미 끝난 일",
+              "desc": "과거의 어느 때에 일어나고 끝난 일이에요. 지금과는 이어져 있지 않아요.",
+              "signals": [
+                "yesterday (어제)",
+                "last ~ (지난 ~)",
+                "~ ago (~ 전에)",
+                "in 2020 (2020년에)",
+                "then (그때)"
+              ],
+              "examples": [
+                {
+                  "en": "I visited my grandma last Sunday.",
+                  "ko": "나는 지난 일요일에 할머니 댁에 갔어요."
+                },
+                {
+                  "en": "He bought a new bike two days ago.",
+                  "ko": "그는 이틀 전에 새 자전거를 샀어요."
+                },
+                {
+                  "en": "We were at the beach yesterday.",
+                  "ko": "우리는 어제 해변에 있었어요."
+                }
+              ]
+            }
+          ],
+          "notes": [
+            {
+              "title": "자주 쓰는 불규칙동사",
+              "text": "불규칙동사는 -ed를 붙이지 않고 모양이 바뀌어서 따로 외워야 해요. 자주 쓰는 것부터 익혀요.",
+              "examples": [
+                {
+                  "en": "go → went, come → came",
+                  "ko": "가다 → 갔다, 오다 → 왔다"
+                },
+                {
+                  "en": "eat → ate, drink → drank",
+                  "ko": "먹다 → 먹었다, 마시다 → 마셨다"
+                },
+                {
+                  "en": "see → saw, have → had",
+                  "ko": "보다 → 봤다, 가지다 → 가졌다"
+                },
+                {
+                  "en": "make → made, buy → bought",
+                  "ko": "만들다 → 만들었다, 사다 → 샀다"
+                },
+                {
+                  "en": "write → wrote, read → read",
+                  "ko": "쓰다 → 썼다, 읽다 → 읽었다 (read는 모양은 같고 발음만 [레드])"
+                }
+              ]
             }
           ]
         },
@@ -285,6 +664,18 @@
           "desc": "did/didn't 뒤의 동사도 과거형으로 씀",
           "wrong": "Did you went there?",
           "right": "Did you go there?"
+        },
+        {
+          "id": "T.past.was_were",
+          "desc": "주어에 맞지 않는 was/were를 씀",
+          "wrong": "They was at home.",
+          "right": "They were at home."
+        },
+        {
+          "id": "T.past.spelling",
+          "desc": "-ed를 붙이는 철자 규칙을 틀림",
+          "wrong": "I studyed English.",
+          "right": "I studied English."
         }
       ]
     },
@@ -300,20 +691,6 @@
           "why": "앞으로 할 일이나 일어날 일을 말하려면 필요해요.",
           "core": "will + 동사원형은 말하는 순간 정한 의지나 예측, be going to + 동사원형은 이미 정해 둔 계획이에요.",
           "diagram": "점이 '지금'보다 오른쪽에 있어요. 아직 일어나지 않은 앞으로의 일이에요.",
-          "examples": [
-            {
-              "en": "It will rain tomorrow.",
-              "ko": "내일 비가 올 거예요. (예측)"
-            },
-            {
-              "en": "A: The phone is ringing. B: I'll get it.",
-              "ko": "A: 전화 온다. B: 내가 받을게. (지금 결정)"
-            },
-            {
-              "en": "I'm going to visit my grandma this weekend.",
-              "ko": "이번 주말에 할머니 댁에 갈 거예요. (미리 세운 계획)"
-            }
-          ],
           "contrast": {
             "a": {
               "en": "I'll help you.",
@@ -334,6 +711,125 @@
               "sub": "앞으로 할 일",
               "row": 1
             }
+          ],
+          "form": {
+            "note": "will과 be going to 모두 뒤에 동사원형이 와요. be going to의 be는 주어에 맞춰 am/are/is로 바뀌어요.",
+            "rows": [
+              {
+                "label": "will 긍정",
+                "pattern": "주어 + will + 동사원형",
+                "example": "I will go. (줄임말 I'll go.)"
+              },
+              {
+                "label": "will 부정",
+                "pattern": "주어 + won't (will not) + 동사원형",
+                "example": "I won't go."
+              },
+              {
+                "label": "will 의문",
+                "pattern": "Will + 주어 + 동사원형 ~?",
+                "example": "Will you go?"
+              },
+              {
+                "label": "be going to 긍정",
+                "pattern": "주어 + am/are/is + going to + 동사원형",
+                "example": "She is going to go."
+              },
+              {
+                "label": "be going to 부정",
+                "pattern": "주어 + am/are/is + not + going to + 동사원형",
+                "example": "She isn't going to go."
+              },
+              {
+                "label": "be going to 의문",
+                "pattern": "Am/Are/Is + 주어 + going to + 동사원형 ~?",
+                "example": "Is she going to go?"
+              }
+            ],
+            "tip": "will의 부정은 won't예요. willn't나 don't will이라고 쓰지 않아요."
+          },
+          "uses": [
+            {
+              "name": "will ① 즉석 결정",
+              "meaning": "말하는 순간 정한 일",
+              "desc": "미리 생각하지 않았는데 말하면서 바로 정한 일이에요.",
+              "signals": [
+                "A: 상황 → B: I'll ~"
+              ],
+              "examples": [
+                {
+                  "en": "A: It's cold. B: I'll close the window.",
+                  "ko": "A: 춥다. B: 내가 창문 닫을게."
+                },
+                {
+                  "en": "I'll have a hamburger, please.",
+                  "ko": "(주문하면서) 햄버거로 할게요."
+                }
+              ]
+            },
+            {
+              "name": "will ② 예측·약속",
+              "meaning": "생각으로 하는 예측, 약속·제안",
+              "desc": "\"~일 것 같다\"는 예측이나 \"~할게\"라는 약속, \"~해 줄래?\"라는 부탁에 써요.",
+              "signals": [
+                "I think ~ will (~할 것 같아)",
+                "I promise (약속해)",
+                "Will you ~? (~해 줄래?)"
+              ],
+              "examples": [
+                {
+                  "en": "I think it will be sunny tomorrow.",
+                  "ko": "내일은 맑을 것 같아요."
+                },
+                {
+                  "en": "I will call you tonight. I promise.",
+                  "ko": "오늘 밤에 전화할게. 약속해."
+                },
+                {
+                  "en": "Will you open the door?",
+                  "ko": "문 좀 열어 줄래?"
+                }
+              ]
+            },
+            {
+              "name": "be going to ① 계획",
+              "meaning": "미리 정해 둔 계획",
+              "desc": "말하기 전부터 하기로 정해 둔 일이에요.",
+              "signals": [
+                "this weekend (이번 주말)",
+                "tomorrow (내일)",
+                "next ~ (다음 ~)"
+              ],
+              "examples": [
+                {
+                  "en": "I'm going to visit my grandma this weekend.",
+                  "ko": "이번 주말에 할머니 댁에 갈 거예요."
+                },
+                {
+                  "en": "We are going to buy a new car next year.",
+                  "ko": "우리는 내년에 새 차를 살 거예요."
+                }
+              ]
+            },
+            {
+              "name": "be going to ② 증거가 있는 예측",
+              "meaning": "눈앞의 증거를 보고 하는 예측",
+              "desc": "지금 보이는 증거 때문에 곧 일어날 것이 분명한 일이에요.",
+              "signals": [
+                "Look! (봐!)",
+                "지금 보이는 상황"
+              ],
+              "examples": [
+                {
+                  "en": "Look at those clouds! It's going to rain.",
+                  "ko": "저 구름 좀 봐! 비가 오겠어."
+                },
+                {
+                  "en": "Be careful! You're going to fall.",
+                  "ko": "조심해! 넘어지겠어."
+                }
+              ]
+            }
           ]
         }
       },
@@ -346,15 +842,27 @@
         },
         {
           "id": "T.future.will_s",
-          "desc": "will 뒤의 동사에 -s를 붙임",
-          "wrong": "She will goes.",
-          "right": "She will go."
+          "desc": "will·be going to 뒤의 동사에 -s를 붙임",
+          "wrong": "She will goes. / She is going to visits.",
+          "right": "She will go. / She is going to visit."
         },
         {
           "id": "T.future.choice",
           "desc": "will과 be going to의 쓰임(즉석 결정 vs 미리 계획)을 구분하지 못함",
           "wrong": "방금 결정한 일을 '오래전부터 계획한 일'로 이해",
           "right": "방금 결정한 일에는 will"
+        },
+        {
+          "id": "T.future.neg",
+          "desc": "will 부정문의 형태를 틀림",
+          "wrong": "I willn't go. / I don't will go.",
+          "right": "I won't go."
+        },
+        {
+          "id": "T.future.going_form",
+          "desc": "be going to에서 be나 to를 빠뜨림",
+          "wrong": "It going to rain. / It is going rain.",
+          "right": "It is going to rain."
         }
       ]
     },
@@ -371,16 +879,6 @@
           "why": "과거의 어느 순간에 하고 있던 일, 그리고 그때 일어난 사건을 함께 말하려면 필요해요.",
           "core": "was/were + -ing = 과거의 한 시점에 하고 있던 중인 일. 다른 사건이 일어난 배경이 돼요.",
           "diagram": "과거에 계속되던 일(물결) 사이에 다른 일(점)이 툭 일어났어요. 배경은 과거진행, 사건은 과거시제예요.",
-          "examples": [
-            {
-              "en": "I was sleeping at 10 last night.",
-              "ko": "어젯밤 10시에 나는 자고 있었어요."
-            },
-            {
-              "en": "When you called, I was taking a shower.",
-              "ko": "네가 전화했을 때 나는 샤워하는 중이었어."
-            }
-          ],
           "contrast": {
             "a": {
               "en": "When he arrived, I cooked dinner.",
@@ -409,6 +907,73 @@
               "sub": "그 사이 일어난 일",
               "row": 0
             }
+          ],
+          "form": {
+            "note": "be동사의 과거형(was/were)은 주어에 맞추고, 동사에는 -ing를 붙여요.",
+            "rows": [
+              {
+                "label": "긍정",
+                "pattern": "주어 + was/were + 동사-ing",
+                "example": "I was reading. / They were reading."
+              },
+              {
+                "label": "부정",
+                "pattern": "주어 + wasn't/weren't + 동사-ing",
+                "example": "He wasn't reading."
+              },
+              {
+                "label": "의문",
+                "pattern": "Was/Were + 주어 + 동사-ing ~?",
+                "example": "Were you reading?"
+              },
+              {
+                "label": "was / were",
+                "pattern": "I·he·she·it → was / you·we·they → were",
+                "example": "She was sleeping. / We were sleeping."
+              }
+            ],
+            "tip": "과거진행의 의문문·부정문은 was/were로 만들어요. did는 쓰지 않아요."
+          },
+          "uses": [
+            {
+              "name": "과거의 한 순간에 하던 일",
+              "meaning": "그때 ~하고 있었다",
+              "desc": "과거의 어느 한 시점에 진행 중이던 일이에요. 그 시점을 함께 말하는 경우가 많아요.",
+              "signals": [
+                "at 9 last night (어젯밤 9시에)",
+                "at that time (그때)",
+                "all day yesterday (어제 하루 종일)"
+              ],
+              "examples": [
+                {
+                  "en": "I was doing my homework at 9 last night.",
+                  "ko": "어젯밤 9시에 나는 숙제를 하고 있었어요."
+                },
+                {
+                  "en": "What were you doing at that time?",
+                  "ko": "그때 너는 무엇을 하고 있었니?"
+                }
+              ]
+            },
+            {
+              "name": "다른 일의 배경",
+              "meaning": "~하고 있을 때 …가 일어났다",
+              "desc": "길게 이어지던 일(과거진행) 중간에 짧은 일(과거시제)이 일어났을 때, 길게 이어지던 일을 과거진행으로 써요.",
+              "signals": [
+                "when + 과거시제 (~했을 때)",
+                "while + 과거진행 (~하는 동안)"
+              ],
+              "examples": [
+                {
+                  "en": "When the phone rang, I was taking a shower.",
+                  "ko": "전화가 울렸을 때 나는 샤워 중이었어요."
+                },
+                {
+                  "en": "While I was walking home, I met Tom.",
+                  "ko": "집에 걸어가는 동안 톰을 만났어요."
+                }
+              ]
+            }
           ]
         }
       },
@@ -424,6 +989,12 @@
           "desc": "주어에 맞지 않는 was/were를 씀",
           "wrong": "They was playing.",
           "right": "They were playing."
+        },
+        {
+          "id": "T.past_prog.did_question",
+          "desc": "과거진행의 의문문·부정문에 did를 씀",
+          "wrong": "What did you doing?",
+          "right": "What were you doing?"
         }
       ]
     },
@@ -492,7 +1063,38 @@
               ],
               "example": "have·be와 씀"
             }
-          ]
+          ],
+          "form": {
+            "note": "규칙동사는 과거형과 과거분사가 똑같이 -ed예요. 불규칙동사는 모양이 바뀌는 방식에 따라 네 가지로 나누어 익히면 쉬워요.",
+            "rows": [
+              {
+                "label": "규칙동사",
+                "pattern": "원형 – 원형+ed – 원형+ed",
+                "example": "play – played – played, stop – stopped – stopped"
+              },
+              {
+                "label": "A–A–A형",
+                "pattern": "세 형태가 모두 같음",
+                "example": "cut – cut – cut, put – put – put, hit – hit – hit"
+              },
+              {
+                "label": "A–B–B형",
+                "pattern": "과거형과 과거분사가 같음",
+                "example": "make – made – made, buy – bought – bought, have – had – had"
+              },
+              {
+                "label": "A–B–A형",
+                "pattern": "원형과 과거분사가 같음",
+                "example": "come – came – come, run – ran – run, become – became – become"
+              },
+              {
+                "label": "A–B–C형",
+                "pattern": "세 형태가 모두 다름",
+                "example": "go – went – gone, eat – ate – eaten, see – saw – seen, write – wrote – written"
+              }
+            ],
+            "tip": "과거분사는 혼자 동사가 될 수 없어요. 꼭 have(완료)나 be(수동)와 함께 써요."
+          }
         }
       },
       "misconceptions": [
@@ -507,6 +1109,12 @@
           "desc": "과거분사를 혼자 동사로 씀",
           "wrong": "I eaten lunch.",
           "right": "I ate lunch. / I have eaten lunch."
+        },
+        {
+          "id": "T.pp_form.regularize",
+          "desc": "불규칙동사의 과거분사에 -ed를 붙임",
+          "wrong": "I have buyed it.",
+          "right": "I have bought it."
         }
       ]
     },
@@ -820,16 +1428,6 @@
           "why": "과거에 일어난 두 가지 일 중 어느 쪽이 더 먼저인지 분명하게 하려면 필요해요.",
           "core": "had + p.p. = 과거의 기준 시점보다 더 먼저 일어난 일",
           "diagram": "점선이 기준이 되는 과거예요. had p.p.는 그 점선보다 왼쪽, 즉 더 먼저 일어난 일이에요.",
-          "examples": [
-            {
-              "en": "When I arrived, the movie had already started.",
-              "ko": "내가 도착했을 때 영화는 이미 시작한 뒤였어요."
-            },
-            {
-              "en": "I lost the pen that my dad had given me.",
-              "ko": "나는 아빠가 (전에) 주신 펜을 잃어버렸어요."
-            }
-          ],
           "contrast": {
             "a": {
               "en": "When I arrived, the movie started.",
@@ -860,6 +1458,75 @@
               "type": "arrow",
               "from": -3,
               "to": -1.5
+            }
+          ],
+          "form": {
+            "note": "과거완료는 주어가 누구든 had를 써요. has나 have로 바뀌지 않아요.",
+            "rows": [
+              {
+                "label": "긍정",
+                "pattern": "주어 + had + p.p.",
+                "example": "I had finished. / She had finished."
+              },
+              {
+                "label": "부정",
+                "pattern": "주어 + hadn't (had not) + p.p.",
+                "example": "He hadn't finished."
+              },
+              {
+                "label": "의문",
+                "pattern": "Had + 주어 + p.p. ~?",
+                "example": "Had you finished?"
+              },
+              {
+                "label": "줄임말",
+                "pattern": "I had → I'd, she had → she'd",
+                "example": "I'd already eaten. (I would의 줄임말 I'd와 모양이 같아서 뒤에 p.p.가 오면 had)"
+              }
+            ],
+            "tip": "과거완료를 쓰려면 기준이 되는 과거 시점이 문장이나 앞뒤 내용에 있어야 해요."
+          },
+          "uses": [
+            {
+              "name": "더 먼저 일어난 일",
+              "meaning": "(그때보다) 이미 ~했었다",
+              "desc": "과거에 일어난 두 일 중 더 먼저 일어난 일을 had + p.p.로 써요. 나중 일은 과거시제예요.",
+              "signals": [
+                "when (~했을 때)",
+                "before (~ 전에)",
+                "already (이미)",
+                "by the time (~할 무렵에는)"
+              ],
+              "examples": [
+                {
+                  "en": "When I got home, Mom had cooked dinner.",
+                  "ko": "내가 집에 왔을 때 엄마는 이미 저녁을 해 놓으셨어요."
+                },
+                {
+                  "en": "The train had left before we arrived.",
+                  "ko": "우리가 도착하기 전에 기차는 떠났어요."
+                }
+              ]
+            },
+            {
+              "name": "과거 기준의 경험·계속·완료",
+              "meaning": "그때까지 ~해 본 적이 있었다 / ~해 왔었다",
+              "desc": "현재완료의 기준점(지금)을 과거의 한 시점으로 옮긴 것이에요. 그 과거 시점까지의 경험, 계속, 완료를 나타내요.",
+              "signals": [
+                "never ~ before (그 전에 한 번도)",
+                "for + 기간",
+                "since + 시점"
+              ],
+              "examples": [
+                {
+                  "en": "I had never seen snow before I went to Canada.",
+                  "ko": "캐나다에 가기 전까지 나는 눈을 본 적이 없었어요."
+                },
+                {
+                  "en": "She had lived in Busan for ten years when she moved to Seoul.",
+                  "ko": "서울로 이사했을 때 그녀는 부산에서 10년째 살고 있었어요."
+                }
+              ]
             }
           ]
         },
@@ -902,16 +1569,6 @@
           "why": "어떤 동작을 얼마나 오래 계속해 왔는지, 그 과정을 강조하려면 필요해요.",
           "core": "have/has been + -ing = 과거부터 지금까지 계속해 오고 있는 동작(과정)을 강조",
           "diagram": "과거부터 '지금'까지 물결이 계속 이어져요. 계속해 온 과정을 강조해요.",
-          "examples": [
-            {
-              "en": "I have been waiting for an hour.",
-              "ko": "나는 한 시간째 기다리고 있어요."
-            },
-            {
-              "en": "It has been raining since morning.",
-              "ko": "아침부터 계속 비가 오고 있어요."
-            }
-          ],
           "contrast": {
             "a": {
               "en": "I have read the book.",
@@ -934,6 +1591,93 @@
               "sub": "과거부터 지금까지 계속",
               "row": 1
             }
+          ],
+          "form": {
+            "note": "현재완료(have/has + p.p.)에 진행(be + -ing)을 합친 모양이라, been이 꼭 들어가요.",
+            "rows": [
+              {
+                "label": "긍정",
+                "pattern": "주어 + have/has been + 동사-ing",
+                "example": "I have been waiting. / She has been waiting."
+              },
+              {
+                "label": "부정",
+                "pattern": "주어 + haven't/hasn't been + 동사-ing",
+                "example": "He hasn't been sleeping well."
+              },
+              {
+                "label": "의문",
+                "pattern": "Have/Has + 주어 + been + 동사-ing ~?",
+                "example": "Have you been waiting long?"
+              },
+              {
+                "label": "과거완료진행",
+                "pattern": "주어 + had been + 동사-ing",
+                "example": "I had been waiting for an hour when he came."
+              }
+            ],
+            "tip": "현재완료진행 = have/has + been + -ing. been을 빠뜨리지 않도록 주의해요."
+          },
+          "uses": [
+            {
+              "name": "지금까지 계속해 온 동작",
+              "meaning": "(지금까지) 계속 ~하고 있다",
+              "desc": "과거에 시작한 동작을 지금까지 계속하고 있고, 그 시간의 길이를 강조해요.",
+              "signals": [
+                "for + 기간",
+                "since + 시점",
+                "all day (하루 종일)",
+                "How long ~? (얼마나 오래)"
+              ],
+              "examples": [
+                {
+                  "en": "I have been studying for three hours.",
+                  "ko": "나는 세 시간째 공부하고 있어요."
+                },
+                {
+                  "en": "It has been snowing since last night.",
+                  "ko": "어젯밤부터 계속 눈이 오고 있어요."
+                },
+                {
+                  "en": "How long have you been learning the piano?",
+                  "ko": "피아노를 배운 지 얼마나 됐어?"
+                }
+              ]
+            },
+            {
+              "name": "방금까지 하던 일의 흔적",
+              "meaning": "(그래서 지금) ~하다",
+              "desc": "방금까지 계속하던 동작 때문에 지금 그 흔적이 보일 때 써요.",
+              "signals": [
+                "지금 보이는 흔적 (wet, tired, red eyes)"
+              ],
+              "examples": [
+                {
+                  "en": "You're wet. Have you been swimming?",
+                  "ko": "너 젖었네. 수영하고 있었어?"
+                },
+                {
+                  "en": "I'm tired because I've been running.",
+                  "ko": "계속 뛰어서 피곤해요."
+                }
+              ]
+            }
+          ],
+          "notes": [
+            {
+              "title": "상태동사는 현재완료로",
+              "text": "know, like, have(가지고 있다)처럼 상태를 나타내는 동사는 진행형으로 쓰지 않아서, 계속된 상태도 완료진행 대신 현재완료로 써요.",
+              "examples": [
+                {
+                  "en": "I have known him for ten years.",
+                  "ko": "나는 그를 10년째 알고 지내요."
+                },
+                {
+                  "en": "She has had this bag since 2020.",
+                  "ko": "그녀는 2020년부터 이 가방을 가지고 있어요."
+                }
+              ]
+            }
           ]
         }
       },
@@ -955,6 +1699,12 @@
           "desc": "for + 기간과 함께 현재진행을 씀",
           "wrong": "I am waiting for an hour.",
           "right": "I have been waiting for an hour."
+        },
+        {
+          "id": "T.perf_prog.stative",
+          "desc": "상태동사를 완료진행으로 씀",
+          "wrong": "I have been knowing him for ten years.",
+          "right": "I have known him for ten years."
         }
       ]
     },
@@ -971,16 +1721,6 @@
           "why": "미래의 어느 시점에는 이미 끝나 있을 일을 말하려면 필요해요.",
           "core": "will have + p.p. = 미래의 기준 시점까지 완료돼 있을 일",
           "diagram": "점선이 기준이 되는 미래예요. 그 점선에 도착하기 전에 이미 끝나 있는 일이에요.",
-          "examples": [
-            {
-              "en": "By next June, I will have graduated.",
-              "ko": "내년 6월이면 나는 졸업해 있을 거예요."
-            },
-            {
-              "en": "I will have finished it by 6 p.m.",
-              "ko": "오후 6시까지는 그걸 끝내 놓을 거예요."
-            }
-          ],
           "contrast": {
             "a": {
               "en": "I will finish it at 6.",
@@ -1012,6 +1752,90 @@
               "sub": "그 전에 이미 끝남",
               "row": 1
             }
+          ],
+          "form": {
+            "note": "미래를 나타내는 will에 완료(have + p.p.)를 합친 모양이에요. will 뒤라서 주어와 상관없이 have예요.",
+            "rows": [
+              {
+                "label": "긍정",
+                "pattern": "주어 + will have + p.p.",
+                "example": "I will have finished. / She will have finished."
+              },
+              {
+                "label": "부정",
+                "pattern": "주어 + won't have + p.p.",
+                "example": "He won't have finished."
+              },
+              {
+                "label": "의문",
+                "pattern": "Will + 주어 + have + p.p. ~?",
+                "example": "Will you have finished?"
+              }
+            ],
+            "tip": "will 뒤에는 원형이 오니까 will has가 아니라 항상 will have예요."
+          },
+          "uses": [
+            {
+              "name": "완료",
+              "meaning": "(그때까지) ~해 놓을 것이다",
+              "desc": "미래의 기준 시점까지 끝나 있을 일이에요.",
+              "signals": [
+                "by + 미래 시점 (~까지)",
+                "by the time + 주어 + 현재형 (~할 무렵에는)"
+              ],
+              "examples": [
+                {
+                  "en": "I will have finished it by 6 p.m.",
+                  "ko": "오후 6시까지는 그걸 끝내 놓을 거예요."
+                },
+                {
+                  "en": "By the time you arrive, I will have cleaned the room.",
+                  "ko": "네가 도착할 무렵에는 방을 다 치워 놓을 거야."
+                }
+              ]
+            },
+            {
+              "name": "경험",
+              "meaning": "(그때까지) ~한 셈이 될 것이다",
+              "desc": "미래의 기준 시점까지 몇 번 하게 되는지를 말해요.",
+              "signals": [
+                "~ times (~번)",
+                "if + 현재형"
+              ],
+              "examples": [
+                {
+                  "en": "If I visit Jeju again, I will have been there three times.",
+                  "ko": "제주도에 또 가면 세 번 가 본 셈이 될 거예요."
+                }
+              ]
+            },
+            {
+              "name": "계속",
+              "meaning": "(그때가 되면) ~해 온 셈이 될 것이다",
+              "desc": "지금 하고 있는 일이 미래의 기준 시점까지 얼마나 계속되는지를 말해요.",
+              "signals": [
+                "by + 미래 시점",
+                "for + 기간"
+              ],
+              "examples": [
+                {
+                  "en": "By next March, I will have lived here for five years.",
+                  "ko": "내년 3월이면 나는 여기서 5년째 살게 돼요."
+                }
+              ]
+            }
+          ],
+          "notes": [
+            {
+              "title": "by the time 뒤는 현재형",
+              "text": "by the time(~할 무렵에는)도 시간 부사절이라, 미래의 일이어도 현재시제로 써요. 미래 표시는 주절의 will have가 맡아요.",
+              "examples": [
+                {
+                  "en": "By the time he comes, we will have left.",
+                  "ko": "그가 올 무렵에는 우리는 이미 떠났을 거예요."
+                }
+              ]
+            }
           ]
         }
       },
@@ -1020,6 +1844,12 @@
           "id": "T.future_perf.present_perfect",
           "desc": "미래 시점 표현과 함께 현재완료를 씀",
           "wrong": "By next year, I have finished it.",
+          "right": "By next year, I will have finished it."
+        },
+        {
+          "id": "T.future_perf.simple_future",
+          "desc": "기준 시점까지 완료된다는 뜻인데 will + 원형을 씀",
+          "wrong": "By next year, I will finish it. (그때 이미 끝나 있음을 말할 때)",
           "right": "By next year, I will have finished it."
         }
       ]
@@ -1037,16 +1867,6 @@
           "why": "'내일 비가 오면'처럼 미래의 조건이나 때를 말할 때, 영어는 특별한 규칙을 따라요.",
           "core": "when, if, before, after, until이 이끄는 시간·조건 부사절에서는 미래 일도 현재시제로 써요. 미래라는 정보는 주절의 will이 맡아요.",
           "diagram": "둘 다 미래의 일이지만, 조건(if·when) 쪽은 현재형으로 쓰고 결과 쪽에만 will을 써요.",
-          "examples": [
-            {
-              "en": "If it rains tomorrow, we will stay home.",
-              "ko": "내일 비가 오면 우리는 집에 있을 거예요."
-            },
-            {
-              "en": "I will call you when I arrive.",
-              "ko": "도착하면 전화할게."
-            }
-          ],
           "contrast": null,
           "summary_prompt": "when이나 if 뒤에 will을 쓰지 않는 이유를 내 말로 써 보세요.",
           "timeline": [
@@ -1063,6 +1883,75 @@
               "label": "we will stay home.",
               "sub": "결과: will",
               "row": 0
+            }
+          ],
+          "form": {
+            "note": "부사절(때·조건)은 현재시제, 주절(결과)은 will이나 명령문을 써요. 미래라는 표시는 주절에만 한 번 해요.",
+            "rows": [
+              {
+                "label": "시간 부사절",
+                "pattern": "when / before / after / until / as soon as + 주어 + 현재형",
+                "example": "I'll call you when I get home."
+              },
+              {
+                "label": "조건 부사절",
+                "pattern": "if / unless + 주어 + 현재형",
+                "example": "If it rains, we'll stay home."
+              },
+              {
+                "label": "주절",
+                "pattern": "주어 + will + 동사원형 (또는 명령문)",
+                "example": "Call me when you arrive."
+              },
+              {
+                "label": "순서 바꾸기",
+                "pattern": "부사절이 앞에 오면 쉼표(,)를 찍어요",
+                "example": "When I get home, I'll call you."
+              }
+            ],
+            "tip": "unless는 \"~하지 않으면\"(= if ~ not)이라는 뜻이에요. Unless you hurry, you'll be late."
+          },
+          "uses": [
+            {
+              "name": "시간",
+              "meaning": "~할 때, ~하기 전에, ~할 때까지",
+              "desc": "미래에 어떤 일이 일어나는 때를 말하는 부분이에요.",
+              "signals": [
+                "when (~할 때)",
+                "before (~하기 전에)",
+                "after (~한 후에)",
+                "until (~할 때까지)",
+                "as soon as (~하자마자)"
+              ],
+              "examples": [
+                {
+                  "en": "I will wait here until you come back.",
+                  "ko": "네가 돌아올 때까지 여기서 기다릴게."
+                },
+                {
+                  "en": "As soon as she gets home, she will call you.",
+                  "ko": "그녀는 집에 오자마자 너에게 전화할 거야."
+                }
+              ]
+            },
+            {
+              "name": "조건",
+              "meaning": "~하면, ~하지 않으면",
+              "desc": "미래에 일어날 수 있는 일의 조건을 말하는 부분이에요.",
+              "signals": [
+                "if (~하면)",
+                "unless (~하지 않으면)"
+              ],
+              "examples": [
+                {
+                  "en": "If you study hard, you will pass the test.",
+                  "ko": "열심히 공부하면 시험에 붙을 거야."
+                },
+                {
+                  "en": "Unless it stops raining, the game will be canceled.",
+                  "ko": "비가 그치지 않으면 경기는 취소될 거예요."
+                }
+              ]
             }
           ]
         },
@@ -1109,24 +1998,6 @@
           "why": "과거에 누가 한 말이나 생각을 전할 때, 그 안의 시제도 과거 기준으로 맞춰야 해요.",
           "core": "주절 동사가 과거면 종속절 시제도 한 칸 과거 쪽으로 이동해요. (현재→과거, 과거·현재완료→과거완료, will→would) 변하지 않는 사실은 현재시제를 유지해요.",
           "diagram": "말한 때(점선)를 새로운 기준으로 삼아요. 그 전은 had p.p., 그때는 과거형, 그 후는 would예요.",
-          "examples": [
-            {
-              "en": "I thought that he knew the answer.",
-              "ko": "나는 그가 답을 안다고 생각했어요."
-            },
-            {
-              "en": "He told me that he had seen the movie.",
-              "ko": "그는 그 영화를 봤다고 내게 말했어요."
-            },
-            {
-              "en": "She said that she would help me.",
-              "ko": "그녀는 나를 도와주겠다고 말했어요."
-            },
-            {
-              "en": "We learned that water boils at 100°C.",
-              "ko": "우리는 물이 100도에서 끓는다고 배웠어요. (불변의 사실)"
-            }
-          ],
           "contrast": {
             "a": {
               "en": "He says he is busy.",
@@ -1167,6 +2038,48 @@
               "sub": "그 후",
               "row": 0
             }
+          ],
+          "form": {
+            "note": "주절 동사가 과거(said, thought, knew 등)면, 종속절의 시제를 한 칸씩 과거 쪽으로 옮겨요.",
+            "rows": [
+              {
+                "label": "현재 → 과거",
+                "pattern": "is → was, like → liked",
+                "example": "He said, \"I am busy.\" → He said that he was busy."
+              },
+              {
+                "label": "과거·현재완료 → 과거완료",
+                "pattern": "saw / has seen → had seen",
+                "example": "She said, \"I saw it.\" → She said that she had seen it."
+              },
+              {
+                "label": "조동사",
+                "pattern": "will → would, can → could, may → might",
+                "example": "I thought that it would rain."
+              },
+              {
+                "label": "바꾸지 않는 경우",
+                "pattern": "변하지 않는 사실·속담은 현재, 역사적 사실은 과거 그대로",
+                "example": "We learned that the earth is round."
+              }
+            ],
+            "tip": "주절이 현재(says, thinks)면 종속절 시제는 내용 그대로 써요. 시제 일치는 주절이 과거일 때만 해요."
+          },
+          "notes": [
+            {
+              "title": "역사적 사실은 과거 그대로",
+              "text": "역사적 사실은 원래 과거의 일이라, 주절이 과거여도 과거완료로 바꾸지 않고 과거시제 그대로 써요.",
+              "examples": [
+                {
+                  "en": "We learned that the Korean War broke out in 1950.",
+                  "ko": "우리는 한국 전쟁이 1950년에 일어났다고 배웠어요."
+                },
+                {
+                  "en": "The teacher said that World War II ended in 1945.",
+                  "ko": "선생님은 제2차 세계 대전이 1945년에 끝났다고 말씀하셨어요."
+                }
+              ]
+            }
           ]
         }
       },
@@ -1182,6 +2095,12 @@
           "desc": "불변의 사실까지 과거로 바꿈",
           "wrong": "We learned that water boiled at 100°C.",
           "right": "We learned that water boils at 100°C."
+        },
+        {
+          "id": "T.sequence.history",
+          "desc": "역사적 사실을 과거완료로 바꿈",
+          "wrong": "We learned that the war had ended in 1945.",
+          "right": "We learned that the war ended in 1945."
         }
       ]
     }

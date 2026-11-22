@@ -83,6 +83,173 @@
       "explanation": "해가 동쪽에서 뜨는 것은 변하지 않는 사실이에요. 현재시제는 이런 사실을 말할 때 써요."
     },
     {
+      "id": "T.present.q4",
+      "concept": "T.present",
+      "level": "E",
+      "type": "apply",
+      "question": "She ___ to school every day.",
+      "options": [
+        {
+          "id": "a",
+          "text": "walks",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "walk",
+          "misconception": "T.3sg.missing"
+        },
+        {
+          "id": "c",
+          "text": "is walking",
+          "misconception": "T.present.prog_for_habit"
+        }
+      ],
+      "explanation": "every day는 습관이라 현재시제예요. 주어 She는 한 사람이라 walks가 돼요."
+    },
+    {
+      "id": "T.present.q5",
+      "concept": "T.present",
+      "level": "E",
+      "type": "apply",
+      "question": "___ you like apples?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Do",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Are",
+          "misconception": "T.present.be_with_verb"
+        },
+        {
+          "id": "c",
+          "text": "Does",
+          "misconception": "T.present.do_does"
+        }
+      ],
+      "explanation": "like는 일반동사라 의문문에 Do를 써요. 주어 you에는 Does가 아니라 Do예요."
+    },
+    {
+      "id": "T.present.q6",
+      "concept": "T.present",
+      "level": "E",
+      "type": "apply",
+      "question": "I ___ like carrots.",
+      "options": [
+        {
+          "id": "a",
+          "text": "don't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "am not",
+          "misconception": "T.present.be_with_verb"
+        },
+        {
+          "id": "c",
+          "text": "doesn't",
+          "misconception": "T.present.do_does"
+        }
+      ],
+      "explanation": "일반동사 like의 부정문은 don't + 동사원형이에요. 주어가 I면 doesn't가 아니라 don't예요."
+    },
+    {
+      "id": "T.present.q7",
+      "concept": "T.present",
+      "level": "E",
+      "type": "apply",
+      "question": "Water ___ at 0°C.",
+      "options": [
+        {
+          "id": "a",
+          "text": "freezes",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is freezing",
+          "misconception": "T.present.now"
+        },
+        {
+          "id": "c",
+          "text": "freeze",
+          "misconception": "T.3sg.missing"
+        }
+      ],
+      "explanation": "물이 0도에서 어는 것은 언제나 맞는 사실이라 현재시제예요. Water는 셀 수 없는 하나로 보아 freezes가 돼요."
+    },
+    {
+      "id": "T.present.q8",
+      "concept": "T.present",
+      "level": "E",
+      "type": "concept",
+      "question": "다음 중 현재시제로 말하기에 알맞은 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "나는 서울에 산다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "나는 지금 숙제를 하고 있는 중이다.",
+          "misconception": "T.present.now"
+        },
+        {
+          "id": "c",
+          "text": "나는 어제 숙제를 했다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "서울에 사는 것은 지금의 상태라 현재시제(I live in Seoul.)로 써요. 지금 하는 중인 일은 현재진행, 어제 일은 과거시제예요."
+    },
+    {
+      "id": "T.present.q9",
+      "concept": "T.present",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 일요일마다 축구를 한다.",
+      "tokens": [
+        "I",
+        "play",
+        "soccer",
+        "on Sundays."
+      ],
+      "answer": [
+        "I",
+        "play",
+        "soccer",
+        "on Sundays."
+      ],
+      "misconception": null,
+      "explanation": "습관은 현재시제로 써요. 주어 + 동사 + 목적어 순서이고, on Sundays(일요일마다)는 문장 끝에 와요."
+    },
+    {
+      "id": "T.present.q10",
+      "concept": "T.present",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그녀는 고기를 먹지 않는다.",
+      "tokens": [
+        "She",
+        "doesn't",
+        "eat",
+        "meat."
+      ],
+      "answer": [
+        "She",
+        "doesn't",
+        "eat",
+        "meat."
+      ],
+      "misconception": null,
+      "explanation": "주어가 She라서 부정문에 doesn't를 쓰고, 뒤의 동사는 원형 eat이에요."
+    },
+    {
       "id": "T.3sg.q1",
       "concept": "T.3sg",
       "level": "E",
@@ -183,6 +350,152 @@
       "explanation": "-s/-es는 주어에 맞춰 붙어요. 주어 Tom이 한 사람이고 현재시제라서 watches가 돼요. 목적어(TV)나 횟수와는 관계없어요."
     },
     {
+      "id": "T.3sg.q5",
+      "concept": "T.3sg",
+      "level": "E",
+      "type": "apply",
+      "question": "He ___ his homework after dinner.",
+      "options": [
+        {
+          "id": "a",
+          "text": "does",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "do",
+          "misconception": "T.3sg.missing"
+        },
+        {
+          "id": "c",
+          "text": "dos",
+          "misconception": "T.3sg.spelling"
+        }
+      ],
+      "explanation": "주어 He는 한 사람이에요. do는 -o로 끝나서 -es를 붙여 does가 돼요."
+    },
+    {
+      "id": "T.3sg.q6",
+      "concept": "T.3sg",
+      "level": "E",
+      "type": "apply",
+      "question": "My brother ___ math hard.",
+      "options": [
+        {
+          "id": "a",
+          "text": "studies",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "studys",
+          "misconception": "T.3sg.spelling"
+        },
+        {
+          "id": "c",
+          "text": "study",
+          "misconception": "T.3sg.missing"
+        }
+      ],
+      "explanation": "study는 자음 + y로 끝나서 y를 i로 바꾸고 -es를 붙여요."
+    },
+    {
+      "id": "T.3sg.q7",
+      "concept": "T.3sg",
+      "level": "M",
+      "type": "apply",
+      "question": "___ your sister like cats?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Does",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Do",
+          "misconception": "T.3sg.do_for_does"
+        },
+        {
+          "id": "c",
+          "text": "Is",
+          "misconception": "T.present.be_with_verb"
+        }
+      ],
+      "explanation": "주어 your sister는 한 사람이라 의문문에 Does를 써요."
+    },
+    {
+      "id": "T.3sg.q8",
+      "concept": "T.3sg",
+      "level": "E",
+      "type": "apply",
+      "question": "Tom and Jerry ___ TV every evening.",
+      "options": [
+        {
+          "id": "a",
+          "text": "watch",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "watches",
+          "misconception": "T.3sg.plural_s"
+        },
+        {
+          "id": "c",
+          "text": "watchs",
+          "misconception": "T.3sg.spelling"
+        }
+      ],
+      "explanation": "Tom and Jerry는 두 명이라 -s를 붙이지 않아요."
+    },
+    {
+      "id": "T.3sg.q9",
+      "concept": "T.3sg",
+      "level": "E",
+      "type": "apply",
+      "question": "She ___ a big dog.",
+      "options": [
+        {
+          "id": "a",
+          "text": "has",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "haves",
+          "misconception": "T.3sg.spelling"
+        },
+        {
+          "id": "c",
+          "text": "have",
+          "misconception": "T.3sg.missing"
+        }
+      ],
+      "explanation": "have는 특별한 동사라서 주어가 한 사람이면 has가 돼요."
+    },
+    {
+      "id": "T.3sg.q10",
+      "concept": "T.3sg",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 우유를 마시지 않는다.",
+      "tokens": [
+        "He",
+        "doesn't",
+        "drink",
+        "milk."
+      ],
+      "answer": [
+        "He",
+        "doesn't",
+        "drink",
+        "milk."
+      ],
+      "misconception": null,
+      "explanation": "주어가 He라서 doesn't를 쓰고, 뒤의 동사는 원형 drink예요."
+    },
+    {
       "id": "T.progressive.q1",
       "concept": "T.progressive",
       "level": "E",
@@ -256,6 +569,175 @@
         }
       ],
       "explanation": "now(지금)가 있고, 지금 하는 중인 일이라 현재진행을 써요. 매일 하는 습관이었다면 She draws pictures every day.처럼 현재시제를 써요."
+    },
+    {
+      "id": "T.progressive.q4",
+      "concept": "T.progressive",
+      "level": "E",
+      "type": "apply",
+      "question": "They ___ soccer now.",
+      "options": [
+        {
+          "id": "a",
+          "text": "are playing",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is playing",
+          "misconception": "T.progressive.be_agree"
+        },
+        {
+          "id": "c",
+          "text": "play",
+          "misconception": "T.present.now"
+        }
+      ],
+      "explanation": "now(지금) 하는 중인 일이라 현재진행이에요. 주어 They에는 are를 써요."
+    },
+    {
+      "id": "T.progressive.q5",
+      "concept": "T.progressive",
+      "level": "E",
+      "type": "apply",
+      "question": "She is ___ a letter.",
+      "options": [
+        {
+          "id": "a",
+          "text": "writing",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "writeing",
+          "misconception": "T.progressive.spelling"
+        },
+        {
+          "id": "c",
+          "text": "write",
+          "misconception": "T.progressive.no_ing"
+        }
+      ],
+      "explanation": "write는 e로 끝나서 e를 빼고 -ing를 붙여 writing이 돼요."
+    },
+    {
+      "id": "T.progressive.q6",
+      "concept": "T.progressive",
+      "level": "E",
+      "type": "apply",
+      "question": "The boy is ___ in the pool.",
+      "options": [
+        {
+          "id": "a",
+          "text": "swimming",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "swiming",
+          "misconception": "T.progressive.spelling"
+        },
+        {
+          "id": "c",
+          "text": "swims",
+          "misconception": "T.progressive.no_ing"
+        }
+      ],
+      "explanation": "swim은 짧은 모음 + 자음 하나로 끝나서 m을 한 번 더 쓰고 -ing를 붙여요."
+    },
+    {
+      "id": "T.progressive.q7",
+      "concept": "T.progressive",
+      "level": "E",
+      "type": "apply",
+      "question": "___ you listening to me?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Are",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Do",
+          "misconception": "T.progressive.do_question"
+        },
+        {
+          "id": "c",
+          "text": "Is",
+          "misconception": "T.progressive.be_agree"
+        }
+      ],
+      "explanation": "진행형 의문문은 be동사를 주어 앞으로 보내요. 주어 you에는 Are를 써요."
+    },
+    {
+      "id": "T.progressive.q8",
+      "concept": "T.progressive",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 지금 TV를 보고 있지 않다.",
+      "tokens": [
+        "I",
+        "am",
+        "not",
+        "watching",
+        "TV now."
+      ],
+      "answer": [
+        "I",
+        "am",
+        "not",
+        "watching",
+        "TV now."
+      ],
+      "misconception": null,
+      "explanation": "진행형의 부정문은 be동사 뒤에 not을 붙여요. am not + watching이에요."
+    },
+    {
+      "id": "T.progressive.q9",
+      "concept": "T.progressive",
+      "level": "E",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 너는 무엇을 먹고 있니?",
+      "tokens": [
+        "What",
+        "are",
+        "you",
+        "eating?"
+      ],
+      "answer": [
+        "What",
+        "are",
+        "you",
+        "eating?"
+      ],
+      "misconception": null,
+      "explanation": "의문사 What이 맨 앞에 오고, 그 뒤는 be동사 + 주어 + -ing 순서예요."
+    },
+    {
+      "id": "T.progressive.q10",
+      "concept": "T.progressive",
+      "level": "M",
+      "type": "concept",
+      "question": "다음 중 보통 진행형으로 쓰지 않는 동사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "know",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "run",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "eat",
+          "misconception": null
+        }
+      ],
+      "explanation": "know(알다)는 동작이 아니라 상태라서 보통 진행형으로 쓰지 않아요. run, eat은 동작이라 진행형이 가능해요."
     },
     {
       "id": "T.past.q1",
@@ -358,6 +840,152 @@
       "explanation": "last night(어젯밤)은 이미 지나간 시점이에요. 이미 끝난 일은 과거시제로 써요."
     },
     {
+      "id": "T.past.q5",
+      "concept": "T.past",
+      "level": "E",
+      "type": "apply",
+      "question": "She ___ her homework last night.",
+      "options": [
+        {
+          "id": "a",
+          "text": "did",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "does",
+          "misconception": "T.past.no_change"
+        },
+        {
+          "id": "c",
+          "text": "doed",
+          "misconception": "T.past.irregular_ed"
+        }
+      ],
+      "explanation": "last night(어젯밤)는 과거예요. do는 불규칙동사라 did가 돼요."
+    },
+    {
+      "id": "T.past.q6",
+      "concept": "T.past",
+      "level": "E",
+      "type": "apply",
+      "question": "They ___ at the park an hour ago.",
+      "options": [
+        {
+          "id": "a",
+          "text": "were",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "was",
+          "misconception": "T.past.was_were"
+        },
+        {
+          "id": "c",
+          "text": "are",
+          "misconception": "T.past.no_change"
+        }
+      ],
+      "explanation": "an hour ago(한 시간 전)는 과거예요. 주어 They에는 were를 써요."
+    },
+    {
+      "id": "T.past.q7",
+      "concept": "T.past",
+      "level": "E",
+      "type": "apply",
+      "question": "I ___ English yesterday.",
+      "options": [
+        {
+          "id": "a",
+          "text": "studied",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "studyed",
+          "misconception": "T.past.spelling"
+        },
+        {
+          "id": "c",
+          "text": "study",
+          "misconception": "T.past.no_change"
+        }
+      ],
+      "explanation": "study는 자음 + y로 끝나서 y를 i로 바꾸고 -ed를 붙여요."
+    },
+    {
+      "id": "T.past.q8",
+      "concept": "T.past",
+      "level": "M",
+      "type": "apply",
+      "question": "Did she ___ the letter?",
+      "options": [
+        {
+          "id": "a",
+          "text": "write",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "wrote",
+          "misconception": "T.past.did_past"
+        },
+        {
+          "id": "c",
+          "text": "writes",
+          "misconception": null
+        }
+      ],
+      "explanation": "Did가 과거를 표시하니까 뒤의 동사는 원형 write예요."
+    },
+    {
+      "id": "T.past.q9",
+      "concept": "T.past",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 어제 숙제를 하지 않았다.",
+      "tokens": [
+        "I",
+        "didn't",
+        "do",
+        "my homework",
+        "yesterday."
+      ],
+      "answer": [
+        "I",
+        "didn't",
+        "do",
+        "my homework",
+        "yesterday."
+      ],
+      "misconception": null,
+      "explanation": "과거 부정문은 didn't + 동사원형이에요. yesterday는 문장 끝에 와요."
+    },
+    {
+      "id": "T.past.q10",
+      "concept": "T.past",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 너는 지난 주말에 어디에 갔니?",
+      "tokens": [
+        "Where",
+        "did",
+        "you",
+        "go",
+        "last weekend?"
+      ],
+      "answer": [
+        "Where",
+        "did",
+        "you",
+        "go",
+        "last weekend?"
+      ],
+      "misconception": null,
+      "explanation": "의문사 Where가 맨 앞, 그 뒤는 did + 주어 + 동사원형 순서예요."
+    },
+    {
       "id": "T.future.q1",
       "concept": "T.future",
       "level": "M",
@@ -431,6 +1059,177 @@
         }
       ],
       "explanation": "말하는 순간 정한 일에는 will을 써요. 미리 세운 계획이었다면 be going to가 더 자연스러워요."
+    },
+    {
+      "id": "T.future.q4",
+      "concept": "T.future",
+      "level": "M",
+      "type": "apply",
+      "question": "I ___ be late. I promise.",
+      "options": [
+        {
+          "id": "a",
+          "text": "won't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "don't will",
+          "misconception": "T.future.neg"
+        },
+        {
+          "id": "c",
+          "text": "willn't",
+          "misconception": "T.future.neg"
+        }
+      ],
+      "explanation": "will의 부정은 will not, 줄여서 won't예요."
+    },
+    {
+      "id": "T.future.q5",
+      "concept": "T.future",
+      "level": "M",
+      "type": "apply",
+      "question": "Look at those dark clouds! It ___ rain.",
+      "options": [
+        {
+          "id": "a",
+          "text": "is going to",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is going",
+          "misconception": "T.future.going_form"
+        },
+        {
+          "id": "c",
+          "text": "going to",
+          "misconception": "T.future.going_form"
+        }
+      ],
+      "explanation": "눈앞의 구름이라는 증거를 보고 하는 예측이라 be going to를 써요. be와 to 둘 다 있어야 해요."
+    },
+    {
+      "id": "T.future.q6",
+      "concept": "T.future",
+      "level": "M",
+      "type": "apply",
+      "question": "___ you come to my party tomorrow?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Will",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Do",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "Are",
+          "misconception": null
+        }
+      ],
+      "explanation": "미래의 일을 묻는 의문문은 Will + 주어 + 동사원형이에요."
+    },
+    {
+      "id": "T.future.q7",
+      "concept": "T.future",
+      "level": "M",
+      "type": "apply",
+      "question": "She is going to ___ her grandparents.",
+      "options": [
+        {
+          "id": "a",
+          "text": "visit",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "visits",
+          "misconception": "T.future.will_s"
+        },
+        {
+          "id": "c",
+          "text": "visiting",
+          "misconception": null
+        }
+      ],
+      "explanation": "be going to 뒤에는 동사원형이 와요."
+    },
+    {
+      "id": "T.future.q8",
+      "concept": "T.future",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 내가 내일 너에게 전화할게.",
+      "tokens": [
+        "I",
+        "will",
+        "call",
+        "you",
+        "tomorrow."
+      ],
+      "answer": [
+        "I",
+        "will",
+        "call",
+        "you",
+        "tomorrow."
+      ],
+      "misconception": null,
+      "explanation": "will + 동사원형 + 목적어 순서이고, tomorrow는 문장 끝에 와요."
+    },
+    {
+      "id": "T.future.q9",
+      "concept": "T.future",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 우리는 이번 주말에 캠핑을 갈 거예요.",
+      "tokens": [
+        "We",
+        "are",
+        "going to",
+        "go camping",
+        "this weekend."
+      ],
+      "answer": [
+        "We",
+        "are",
+        "going to",
+        "go camping",
+        "this weekend."
+      ],
+      "misconception": null,
+      "explanation": "미리 세운 계획이라 be going to + 동사원형을 써요. 주어 We에는 are예요."
+    },
+    {
+      "id": "T.future.q10",
+      "concept": "T.future",
+      "level": "M",
+      "type": "reason",
+      "question": "A: Why are you buying flour? B: I'm going to bake a cake. B가 be going to를 쓴 이유는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "케이크를 굽기로 미리 계획해서",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "말하는 순간 갑자기 정해서",
+          "misconception": "T.future.choice"
+        },
+        {
+          "id": "c",
+          "text": "이미 케이크를 구워서",
+          "misconception": null
+        }
+      ],
+      "explanation": "밀가루를 사는 것은 이미 케이크를 굽기로 정했기 때문이에요. 미리 정한 계획에는 be going to를 써요."
     },
     {
       "id": "T.past_prog.q1",
@@ -508,6 +1307,177 @@
       "explanation": "was doing은 엄마가 오신 순간에 이미 진행 중이던 일(배경)이에요."
     },
     {
+      "id": "T.past_prog.q4",
+      "concept": "T.past_prog",
+      "level": "M",
+      "type": "apply",
+      "question": "What ___ you doing at 9 last night?",
+      "options": [
+        {
+          "id": "a",
+          "text": "were",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "was",
+          "misconception": "T.past_prog.be_agree"
+        },
+        {
+          "id": "c",
+          "text": "did",
+          "misconception": "T.past_prog.did_question"
+        }
+      ],
+      "explanation": "과거진행 의문문은 was/were를 주어 앞으로 보내요. 주어 you에는 were예요."
+    },
+    {
+      "id": "T.past_prog.q5",
+      "concept": "T.past_prog",
+      "level": "M",
+      "type": "apply",
+      "question": "She ___ sleeping when I came home.",
+      "options": [
+        {
+          "id": "a",
+          "text": "was",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "were",
+          "misconception": "T.past_prog.be_agree"
+        },
+        {
+          "id": "c",
+          "text": "is",
+          "misconception": null
+        }
+      ],
+      "explanation": "내가 집에 왔을 때(과거) 자고 있던 중이라 과거진행이에요. 주어 She에는 was예요."
+    },
+    {
+      "id": "T.past_prog.q6",
+      "concept": "T.past_prog",
+      "level": "M",
+      "type": "apply",
+      "question": "While I ___ to school, I saw an accident.",
+      "options": [
+        {
+          "id": "a",
+          "text": "was walking",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "walked",
+          "misconception": "T.past_prog.swap_bg"
+        },
+        {
+          "id": "c",
+          "text": "am walking",
+          "misconception": null
+        }
+      ],
+      "explanation": "while(~하는 동안) 뒤에는 길게 이어지던 배경이 와서 과거진행을 써요."
+    },
+    {
+      "id": "T.past_prog.q7",
+      "concept": "T.past_prog",
+      "level": "M",
+      "type": "apply",
+      "question": "They ___ watching TV. They were reading books.",
+      "options": [
+        {
+          "id": "a",
+          "text": "weren't",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "didn't",
+          "misconception": "T.past_prog.did_question"
+        },
+        {
+          "id": "c",
+          "text": "wasn't",
+          "misconception": "T.past_prog.be_agree"
+        }
+      ],
+      "explanation": "과거진행의 부정은 was/were 뒤에 not이에요. 주어 They에는 weren't예요."
+    },
+    {
+      "id": "T.past_prog.q8",
+      "concept": "T.past_prog",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그때 너는 무엇을 하고 있었니?",
+      "tokens": [
+        "What",
+        "were",
+        "you",
+        "doing",
+        "at that time?"
+      ],
+      "answer": [
+        "What",
+        "were",
+        "you",
+        "doing",
+        "at that time?"
+      ],
+      "misconception": null,
+      "explanation": "의문사 What + were + 주어 + -ing 순서예요."
+    },
+    {
+      "id": "T.past_prog.q9",
+      "concept": "T.past_prog",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 내가 전화했을 때 그는 자고 있었다.",
+      "tokens": [
+        "He",
+        "was",
+        "sleeping",
+        "when",
+        "I called."
+      ],
+      "answer": [
+        "He",
+        "was",
+        "sleeping",
+        "when",
+        "I called."
+      ],
+      "misconception": null,
+      "explanation": "자고 있던 일이 배경이라 과거진행, 전화한 일은 그 사이에 일어난 일이라 과거시제예요."
+    },
+    {
+      "id": "T.past_prog.q10",
+      "concept": "T.past_prog",
+      "level": "M",
+      "type": "concept",
+      "question": "과거진행(was/were + -ing)으로 말하기에 알맞은 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "어젯밤 9시에 나는 책을 읽고 있었다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "나는 어제 책 한 권을 샀다.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "나는 지금 책을 읽고 있다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "과거의 한 시점(어젯밤 9시)에 진행 중이던 일이라 과거진행이에요. 책을 산 것은 끝난 일이라 과거시제, 지금 하는 일은 현재진행이에요."
+    },
+    {
       "id": "T.pp_form.q1",
       "concept": "T.pp_form",
       "level": "M",
@@ -581,6 +1551,181 @@
         }
       ],
       "explanation": "have 뒤에는 과거분사가 와요. see – saw – seen이라서 seen이에요."
+    },
+    {
+      "id": "T.pp_form.q4",
+      "concept": "T.pp_form",
+      "level": "M",
+      "type": "apply",
+      "question": "I have ___ a new bag.",
+      "options": [
+        {
+          "id": "a",
+          "text": "bought",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "buyed",
+          "misconception": "T.pp_form.regularize"
+        },
+        {
+          "id": "c",
+          "text": "buy",
+          "misconception": null
+        }
+      ],
+      "explanation": "buy는 A–B–B형이라 buy – bought – bought예요."
+    },
+    {
+      "id": "T.pp_form.q5",
+      "concept": "T.pp_form",
+      "level": "M",
+      "type": "apply",
+      "question": "She has ___ her homework.",
+      "options": [
+        {
+          "id": "a",
+          "text": "done",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "did",
+          "misconception": "T.pp_form.past_for_pp"
+        },
+        {
+          "id": "c",
+          "text": "do",
+          "misconception": null
+        }
+      ],
+      "explanation": "do는 A–B–C형이라 do – did – done이에요. has 뒤에는 과거분사 done이 와요."
+    },
+    {
+      "id": "T.pp_form.q6",
+      "concept": "T.pp_form",
+      "level": "M",
+      "type": "apply",
+      "question": "He has ___ home.",
+      "options": [
+        {
+          "id": "a",
+          "text": "come",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "came",
+          "misconception": "T.pp_form.past_for_pp"
+        },
+        {
+          "id": "c",
+          "text": "comed",
+          "misconception": "T.pp_form.regularize"
+        }
+      ],
+      "explanation": "come은 A–B–A형이라 come – came – come이에요. 과거분사는 원형과 같은 come이에요."
+    },
+    {
+      "id": "T.pp_form.q7",
+      "concept": "T.pp_form",
+      "level": "M",
+      "type": "concept",
+      "question": "과거형과 과거분사의 모양이 서로 다른 동사는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "eat",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "play",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "make",
+          "misconception": null
+        }
+      ],
+      "explanation": "eat은 eat – ate – eaten으로 과거형과 과거분사가 달라요. play(played – played)와 make(made – made)는 같아요."
+    },
+    {
+      "id": "T.pp_form.q8",
+      "concept": "T.pp_form",
+      "level": "M",
+      "type": "concept",
+      "question": "come의 세 가지 형태(원형 – 과거형 – 과거분사)로 알맞은 것은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "come – came – come",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "come – came – came",
+          "misconception": "T.pp_form.past_for_pp"
+        },
+        {
+          "id": "c",
+          "text": "come – comed – comed",
+          "misconception": "T.pp_form.regularize"
+        }
+      ],
+      "explanation": "come은 원형과 과거분사가 같은 A–B–A형이에요."
+    },
+    {
+      "id": "T.pp_form.q9",
+      "concept": "T.pp_form",
+      "level": "M",
+      "type": "reason",
+      "question": "I ate lunch. / I have eaten lunch. 에서 ate와 eaten의 차이는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "ate는 혼자 동사가 되고, eaten은 have와 함께 써야 한다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "eaten이 더 먼 과거를 뜻한다.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "둘은 아무 차이가 없다.",
+          "misconception": "T.pp_form.past_for_pp"
+        }
+      ],
+      "explanation": "과거형은 혼자 문장의 동사가 되고, 과거분사는 have나 be와 함께 써야 해요."
+    },
+    {
+      "id": "T.pp_form.q10",
+      "concept": "T.pp_form",
+      "level": "M",
+      "type": "apply",
+      "question": "We have ___ this song many times.",
+      "options": [
+        {
+          "id": "a",
+          "text": "sung",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "sang",
+          "misconception": "T.pp_form.past_for_pp"
+        },
+        {
+          "id": "c",
+          "text": "singed",
+          "misconception": "T.pp_form.regularize"
+        }
+      ],
+      "explanation": "sing은 A–B–C형이라 sing – sang – sung이에요."
     },
     {
       "id": "T.perfect.q1",
@@ -904,6 +2049,179 @@
       "explanation": "비교할 기준 과거가 없으니 단순 과거로 충분해요. 오래전 일이라는 이유만으로 과거완료를 쓰지 않아요."
     },
     {
+      "id": "T.past_perfect.q4",
+      "concept": "T.past_perfect",
+      "level": "M",
+      "type": "apply",
+      "question": "By the time we arrived, the concert ___.",
+      "options": [
+        {
+          "id": "a",
+          "text": "had ended",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "has ended",
+          "misconception": "T.past_perfect.present_perfect"
+        },
+        {
+          "id": "c",
+          "text": "ends",
+          "misconception": null
+        }
+      ],
+      "explanation": "우리가 도착한 과거 시점보다 콘서트가 끝난 일이 더 먼저라 had + p.p.를 써요."
+    },
+    {
+      "id": "T.past_perfect.q5",
+      "concept": "T.past_perfect",
+      "level": "M",
+      "type": "apply",
+      "question": "She ___ never seen the sea before she visited Busan.",
+      "options": [
+        {
+          "id": "a",
+          "text": "had",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "has",
+          "misconception": "T.past_perfect.present_perfect"
+        },
+        {
+          "id": "c",
+          "text": "have",
+          "misconception": null
+        }
+      ],
+      "explanation": "부산에 간 과거 시점까지의 경험이라 had + p.p.예요. 과거완료는 주어와 상관없이 had를 써요."
+    },
+    {
+      "id": "T.past_perfect.q6",
+      "concept": "T.past_perfect",
+      "level": "M",
+      "type": "apply",
+      "question": "I couldn't open the door because I ___ my key.",
+      "options": [
+        {
+          "id": "a",
+          "text": "had lost",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "have lost",
+          "misconception": "T.past_perfect.present_perfect"
+        },
+        {
+          "id": "c",
+          "text": "lose",
+          "misconception": null
+        }
+      ],
+      "explanation": "문을 못 연 과거 시점보다 열쇠를 잃어버린 일이 더 먼저예요."
+    },
+    {
+      "id": "T.past_perfect.q7",
+      "concept": "T.past_perfect",
+      "level": "M",
+      "type": "reason",
+      "question": "When I got to the party, Tom had left. 이 문장의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "내가 도착했을 때 톰은 이미 떠나고 없었다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "내가 도착한 다음에 톰이 떠났다.",
+          "misconception": "T.past_perfect.order"
+        },
+        {
+          "id": "c",
+          "text": "톰과 나는 함께 떠났다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "had left는 내가 도착한 때보다 더 먼저 일어난 일이에요."
+    },
+    {
+      "id": "T.past_perfect.q8",
+      "concept": "T.past_perfect",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 그 전에 그 책을 읽은 적이 있었다.",
+      "tokens": [
+        "He",
+        "had",
+        "read",
+        "the book",
+        "before."
+      ],
+      "answer": [
+        "He",
+        "had",
+        "read",
+        "the book",
+        "before."
+      ],
+      "misconception": null,
+      "explanation": "과거 기준까지의 경험이라 had + p.p.예요. read의 과거분사는 모양이 같은 read예요."
+    },
+    {
+      "id": "T.past_perfect.q9",
+      "concept": "T.past_perfect",
+      "level": "M",
+      "type": "apply",
+      "question": "Had you ever ___ him before that day?",
+      "options": [
+        {
+          "id": "a",
+          "text": "met",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "meeted",
+          "misconception": "T.pp_form.regularize"
+        },
+        {
+          "id": "c",
+          "text": "meet",
+          "misconception": null
+        }
+      ],
+      "explanation": "Had + 주어 + p.p. 순서예요. meet의 과거분사는 met이에요."
+    },
+    {
+      "id": "T.past_perfect.q10",
+      "concept": "T.past_perfect",
+      "level": "H",
+      "type": "apply",
+      "question": "어법상 맞는 문장은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "After he had finished his homework, he went out.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "After he went out, he had finished his homework.",
+          "misconception": "T.past_perfect.order"
+        },
+        {
+          "id": "c",
+          "text": "After he has finished his homework, he went out.",
+          "misconception": "T.past_perfect.present_perfect"
+        }
+      ],
+      "explanation": "숙제를 끝낸 일이 나간 일보다 먼저라 had finished예요. 과거 이야기 안에서 has finished는 쓸 수 없어요."
+    },
+    {
       "id": "T.perf_prog.q1",
       "concept": "T.perf_prog",
       "level": "H",
@@ -954,6 +2272,204 @@
       "explanation": "현재완료(have painted)는 결과, 완료진행(have been painting)은 계속해 온 과정을 강조해요."
     },
     {
+      "id": "T.perf_prog.q3",
+      "concept": "T.perf_prog",
+      "level": "H",
+      "type": "apply",
+      "question": "It ___ since this morning.",
+      "options": [
+        {
+          "id": "a",
+          "text": "has been raining",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is raining",
+          "misconception": "T.perf_prog.progressive_for_duration"
+        },
+        {
+          "id": "c",
+          "text": "has raining",
+          "misconception": "T.perf_prog.form"
+        }
+      ],
+      "explanation": "since this morning(아침부터)처럼 지금까지 계속된 동작이라 has been + -ing를 써요."
+    },
+    {
+      "id": "T.perf_prog.q4",
+      "concept": "T.perf_prog",
+      "level": "H",
+      "type": "apply",
+      "question": "How long ___ you been learning the piano?",
+      "options": [
+        {
+          "id": "a",
+          "text": "have",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "are",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "did",
+          "misconception": null
+        }
+      ],
+      "explanation": "완료진행 의문문은 Have/Has + 주어 + been + -ing예요."
+    },
+    {
+      "id": "T.perf_prog.q5",
+      "concept": "T.perf_prog",
+      "level": "H",
+      "type": "apply",
+      "question": "I ___ him for ten years.",
+      "options": [
+        {
+          "id": "a",
+          "text": "have known",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "have been knowing",
+          "misconception": "T.perf_prog.stative"
+        },
+        {
+          "id": "c",
+          "text": "am knowing",
+          "misconception": "T.progressive.stative"
+        }
+      ],
+      "explanation": "know는 상태동사라 진행형으로 쓰지 않아요. 계속된 상태는 현재완료 have known으로 써요."
+    },
+    {
+      "id": "T.perf_prog.q6",
+      "concept": "T.perf_prog",
+      "level": "H",
+      "type": "apply",
+      "question": "Your eyes are red. ___ you been crying?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Have",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Are",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "Did",
+          "misconception": null
+        }
+      ],
+      "explanation": "방금까지 하던 일의 흔적(빨간 눈)을 보고 묻는 말이라 Have you been -ing?예요."
+    },
+    {
+      "id": "T.perf_prog.q7",
+      "concept": "T.perf_prog",
+      "level": "H",
+      "type": "apply",
+      "question": "She is tired because she ___ all day.",
+      "options": [
+        {
+          "id": "a",
+          "text": "has been working",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "is working",
+          "misconception": "T.perf_prog.progressive_for_duration"
+        },
+        {
+          "id": "c",
+          "text": "has been work",
+          "misconception": "T.perf_prog.form"
+        }
+      ],
+      "explanation": "하루 종일 계속 일해 온 동작이라 has been + -ing를 써요."
+    },
+    {
+      "id": "T.perf_prog.q8",
+      "concept": "T.perf_prog",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 나는 두 시간째 너를 기다리고 있어.",
+      "tokens": [
+        "I",
+        "have",
+        "been",
+        "waiting for you",
+        "for two hours."
+      ],
+      "answer": [
+        "I",
+        "have",
+        "been",
+        "waiting for you",
+        "for two hours."
+      ],
+      "misconception": null,
+      "explanation": "have + been + -ing 순서이고, 기간(for two hours)은 문장 끝에 와요."
+    },
+    {
+      "id": "T.perf_prog.q9",
+      "concept": "T.perf_prog",
+      "level": "H",
+      "type": "reason",
+      "question": "You look tired. – I've been studying all night. 대답의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "밤새 계속 공부해서 지금 피곤하다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "공부를 이제 막 시작했다.",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "내일 밤새 공부할 것이다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "have been + -ing는 지금까지 계속해 온 동작이에요. 밤새 공부한 흔적으로 지금 피곤한 거예요."
+    },
+    {
+      "id": "T.perf_prog.q10",
+      "concept": "T.perf_prog",
+      "level": "H",
+      "type": "concept",
+      "question": "I have read the book. / I have been reading the book. 중 \"책을 다 읽었다\"는 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "첫 번째 문장",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "두 번째 문장",
+          "misconception": "T.perf_prog.result_vs_process"
+        },
+        {
+          "id": "c",
+          "text": "두 문장의 뜻이 같다",
+          "misconception": "T.perf_prog.result_vs_process"
+        }
+      ],
+      "explanation": "현재완료(have read)는 결과(다 읽음), 완료진행(have been reading)은 계속 읽어 온 과정을 강조해요."
+    },
+    {
       "id": "T.future_perf.q1",
       "concept": "T.future_perf",
       "level": "H",
@@ -1002,6 +2518,204 @@
         }
       ],
       "explanation": "will have + p.p.는 미래의 기준 시점(밤 9시)에 이미 완료돼 있는 상태를 말해요."
+    },
+    {
+      "id": "T.future_perf.q3",
+      "concept": "T.future_perf",
+      "level": "H",
+      "type": "apply",
+      "question": "By next March, we ___ here for five years.",
+      "options": [
+        {
+          "id": "a",
+          "text": "will have lived",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "have lived",
+          "misconception": "T.future_perf.present_perfect"
+        },
+        {
+          "id": "c",
+          "text": "lived",
+          "misconception": null
+        }
+      ],
+      "explanation": "내년 3월이라는 미래 시점까지 계속된 일이라 will have + p.p.를 써요."
+    },
+    {
+      "id": "T.future_perf.q4",
+      "concept": "T.future_perf",
+      "level": "H",
+      "type": "apply",
+      "question": "By the time you ___, I will have cleaned the room.",
+      "options": [
+        {
+          "id": "a",
+          "text": "arrive",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "will arrive",
+          "misconception": "T.time_clause.will_in_adv"
+        },
+        {
+          "id": "c",
+          "text": "arrived",
+          "misconception": null
+        }
+      ],
+      "explanation": "by the time은 시간 부사절이라 미래의 일도 현재시제로 써요."
+    },
+    {
+      "id": "T.future_perf.q5",
+      "concept": "T.future_perf",
+      "level": "H",
+      "type": "apply",
+      "question": "She ___ have finished the report by Friday.",
+      "options": [
+        {
+          "id": "a",
+          "text": "will",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "has",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "is",
+          "misconception": null
+        }
+      ],
+      "explanation": "미래완료는 will have + p.p.예요."
+    },
+    {
+      "id": "T.future_perf.q6",
+      "concept": "T.future_perf",
+      "level": "H",
+      "type": "apply",
+      "question": "If I watch this movie again, I ___ it three times.",
+      "options": [
+        {
+          "id": "a",
+          "text": "will have seen",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "have seen",
+          "misconception": "T.future_perf.present_perfect"
+        },
+        {
+          "id": "c",
+          "text": "will see",
+          "misconception": "T.future_perf.simple_future"
+        }
+      ],
+      "explanation": "한 번 더 보면 그때까지 세 번 본 셈이 되는 경험이라 will have + p.p.예요."
+    },
+    {
+      "id": "T.future_perf.q7",
+      "concept": "T.future_perf",
+      "level": "H",
+      "type": "apply",
+      "question": "By the end of this month, I ___ all my savings.",
+      "options": [
+        {
+          "id": "a",
+          "text": "will have spent",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "have spent",
+          "misconception": "T.future_perf.present_perfect"
+        },
+        {
+          "id": "c",
+          "text": "had spent",
+          "misconception": null
+        }
+      ],
+      "explanation": "이번 달 말이라는 미래 시점에는 이미 다 써 버린 상태라 will have + p.p.예요."
+    },
+    {
+      "id": "T.future_perf.q8",
+      "concept": "T.future_perf",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 6시까지 숙제를 끝내 놓을 것이다.",
+      "tokens": [
+        "He",
+        "will have",
+        "finished",
+        "his homework",
+        "by six."
+      ],
+      "answer": [
+        "He",
+        "will have",
+        "finished",
+        "his homework",
+        "by six."
+      ],
+      "misconception": null,
+      "explanation": "will have + p.p. 순서이고, 기준 시점(by six)은 문장 끝에 와요."
+    },
+    {
+      "id": "T.future_perf.q9",
+      "concept": "T.future_perf",
+      "level": "H",
+      "type": "concept",
+      "question": "미래완료와 가장 자주 함께 쓰는 표현은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "by + 미래 시점",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "yesterday",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "~ ago",
+          "misconception": "T.perfect.with_past_time"
+        }
+      ],
+      "explanation": "미래완료는 \"그 미래 시점까지 이미 끝나 있다\"는 뜻이라 by + 미래 시점과 자주 써요."
+    },
+    {
+      "id": "T.future_perf.q10",
+      "concept": "T.future_perf",
+      "level": "H",
+      "type": "reason",
+      "question": "At 9 p.m., I will finish my homework. / By 9 p.m., I will have finished my homework. 두 번째 문장의 뜻은?",
+      "options": [
+        {
+          "id": "a",
+          "text": "밤 9시가 되기 전에 이미 끝나 있다.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "밤 9시 정각에 끝낸다.",
+          "misconception": "T.future_perf.simple_future"
+        },
+        {
+          "id": "c",
+          "text": "어제 이미 끝냈다.",
+          "misconception": null
+        }
+      ],
+      "explanation": "will have + p.p.는 기준 시점(밤 9시)에 이미 완료된 상태를 말해요. 첫 번째 문장은 9시에 끝내는 순간을 말해요."
     },
     {
       "id": "T.time_clause.q1",
@@ -1104,6 +2818,154 @@
       "explanation": "집에 도착하는 것은 미래 일이지만, 시간 부사절 안이라서 현재형 get을 써요. 미래 표시는 주절의 will이 해요."
     },
     {
+      "id": "T.time_clause.q5",
+      "concept": "T.time_clause",
+      "level": "M",
+      "type": "apply",
+      "question": "I'll wait here until you ___ back.",
+      "options": [
+        {
+          "id": "a",
+          "text": "come",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "will come",
+          "misconception": "T.time_clause.will_in_adv"
+        },
+        {
+          "id": "c",
+          "text": "came",
+          "misconception": null
+        }
+      ],
+      "explanation": "until(~할 때까지)이 이끄는 시간 부사절이라 미래 일도 현재시제로 써요."
+    },
+    {
+      "id": "T.time_clause.q6",
+      "concept": "T.time_clause",
+      "level": "M",
+      "type": "apply",
+      "question": "As soon as she ___ home, she will call you.",
+      "options": [
+        {
+          "id": "a",
+          "text": "gets",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "will get",
+          "misconception": "T.time_clause.will_in_adv"
+        },
+        {
+          "id": "c",
+          "text": "get",
+          "misconception": "T.3sg.missing"
+        }
+      ],
+      "explanation": "as soon as(~하자마자) 부사절이라 현재시제예요. 주어 she라서 gets가 돼요."
+    },
+    {
+      "id": "T.time_clause.q7",
+      "concept": "T.time_clause",
+      "level": "M",
+      "type": "apply",
+      "question": "If it ___ tomorrow, the game will be canceled.",
+      "options": [
+        {
+          "id": "a",
+          "text": "rains",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "will rain",
+          "misconception": "T.time_clause.will_in_adv"
+        },
+        {
+          "id": "c",
+          "text": "rained",
+          "misconception": null
+        }
+      ],
+      "explanation": "if 조건 부사절이라 내일 일도 현재시제 rains로 써요."
+    },
+    {
+      "id": "T.time_clause.q8",
+      "concept": "T.time_clause",
+      "level": "H",
+      "type": "apply",
+      "question": "I'm not sure if he ___ us tomorrow.",
+      "options": [
+        {
+          "id": "a",
+          "text": "will help",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "helps",
+          "misconception": "T.time_clause.present_in_noun"
+        },
+        {
+          "id": "c",
+          "text": "helped",
+          "misconception": null
+        }
+      ],
+      "explanation": "여기서 if는 \"~할지\"라는 뜻으로 sure의 내용(명사절)이에요. 명사절에서는 미래를 will로 써요."
+    },
+    {
+      "id": "T.time_clause.q9",
+      "concept": "T.time_clause",
+      "level": "M",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 집에 도착하면 너에게 문자할게.",
+      "tokens": [
+        "I'll",
+        "text you",
+        "when",
+        "I",
+        "get home."
+      ],
+      "answer": [
+        "I'll",
+        "text you",
+        "when",
+        "I",
+        "get home."
+      ],
+      "misconception": null,
+      "explanation": "주절(I'll text you)에 will을 쓰고, when 부사절은 현재시제(get)로 써요."
+    },
+    {
+      "id": "T.time_clause.q10",
+      "concept": "T.time_clause",
+      "level": "H",
+      "type": "concept",
+      "question": "If it rains tomorrow, ~ 와 I don't know if it will rain tomorrow. 에서 if의 차이는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "앞은 \"~하면\"(조건), 뒤는 \"~할지\"(명사절)",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "둘 다 \"~하면\"이다",
+          "misconception": "T.time_clause.present_in_noun"
+        },
+        {
+          "id": "c",
+          "text": "둘 다 \"~할지\"이다",
+          "misconception": null
+        }
+      ],
+      "explanation": "\"~하면\"인 조건 부사절은 현재시제, \"~할지\"인 명사절은 미래를 will로 써요."
+    },
+    {
       "id": "T.sequence.q1",
       "concept": "T.sequence",
       "level": "H",
@@ -1177,6 +3039,179 @@
         }
       ],
       "explanation": "주절 said가 과거라서 원래 말의 will이 한 칸 과거인 would로 바뀌었어요."
+    },
+    {
+      "id": "T.sequence.q4",
+      "concept": "T.sequence",
+      "level": "H",
+      "type": "apply",
+      "question": "When I was young, I thought that I ___ fly.",
+      "options": [
+        {
+          "id": "a",
+          "text": "could",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "can",
+          "misconception": "T.sequence.main_only"
+        },
+        {
+          "id": "c",
+          "text": "will",
+          "misconception": null
+        }
+      ],
+      "explanation": "어렸을 때(과거) 생각한 내용이라 can을 한 칸 과거인 could로 바꿔요."
+    },
+    {
+      "id": "T.sequence.q5",
+      "concept": "T.sequence",
+      "level": "H",
+      "type": "apply",
+      "question": "She said that she ___ the movie the day before.",
+      "options": [
+        {
+          "id": "a",
+          "text": "had seen",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "has seen",
+          "misconception": "T.sequence.main_only"
+        },
+        {
+          "id": "c",
+          "text": "sees",
+          "misconception": null
+        }
+      ],
+      "explanation": "말한 때(과거)보다 더 전에 본 일이라 과거완료 had seen이에요."
+    },
+    {
+      "id": "T.sequence.q6",
+      "concept": "T.sequence",
+      "level": "H",
+      "type": "apply",
+      "question": "Our teacher told us that the sun ___ in the east.",
+      "options": [
+        {
+          "id": "a",
+          "text": "rises",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "rose",
+          "misconception": "T.sequence.truth_exception"
+        },
+        {
+          "id": "c",
+          "text": "had risen",
+          "misconception": "T.sequence.truth_exception"
+        }
+      ],
+      "explanation": "해가 동쪽에서 뜨는 것은 변하지 않는 사실이라 현재시제를 유지해요."
+    },
+    {
+      "id": "T.sequence.q7",
+      "concept": "T.sequence",
+      "level": "H",
+      "type": "apply",
+      "question": "We learned that the Korean War ___ in 1950.",
+      "options": [
+        {
+          "id": "a",
+          "text": "broke out",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "had broken out",
+          "misconception": "T.sequence.history"
+        },
+        {
+          "id": "c",
+          "text": "breaks out",
+          "misconception": null
+        }
+      ],
+      "explanation": "역사적 사실은 주절이 과거여도 과거시제 그대로 써요."
+    },
+    {
+      "id": "T.sequence.q8",
+      "concept": "T.sequence",
+      "level": "H",
+      "type": "apply",
+      "question": "I thought it ___ rain, so I took an umbrella.",
+      "options": [
+        {
+          "id": "a",
+          "text": "would",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "will",
+          "misconception": "T.sequence.main_only"
+        },
+        {
+          "id": "c",
+          "text": "is",
+          "misconception": null
+        }
+      ],
+      "explanation": "생각한 때(thought)가 과거라 will을 would로 바꿔요."
+    },
+    {
+      "id": "T.sequence.q9",
+      "concept": "T.sequence",
+      "level": "H",
+      "type": "order",
+      "question": "단어를 배열해 문장을 만드세요: 그는 나에게 바쁘다고 말했다.",
+      "tokens": [
+        "He",
+        "told",
+        "me",
+        "that",
+        "he was busy."
+      ],
+      "answer": [
+        "He",
+        "told",
+        "me",
+        "that",
+        "he was busy."
+      ],
+      "misconception": null,
+      "explanation": "주절 told가 과거라 종속절도 과거 was로 맞춰요."
+    },
+    {
+      "id": "T.sequence.q10",
+      "concept": "T.sequence",
+      "level": "H",
+      "type": "concept",
+      "question": "주절이 과거여도 종속절 시제를 현재 그대로 쓰는 경우는?",
+      "options": [
+        {
+          "id": "a",
+          "text": "변하지 않는 과학적 사실",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "어제 있었던 일",
+          "misconception": null
+        },
+        {
+          "id": "c",
+          "text": "내일 할 계획",
+          "misconception": null
+        }
+      ],
+      "explanation": "변하지 않는 사실(과학 사실, 속담)은 주절이 과거여도 현재시제를 유지해요."
     }
   ]
 }
