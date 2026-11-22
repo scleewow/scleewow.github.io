@@ -302,7 +302,8 @@
   }
 
   function renderGroups(groups) {
-    return `<div class="groups" style="grid-template-columns: repeat(${groups.length}, 1fr)">${groups.map(g => `
+    const cols = groups.length > 3 ? 2 : groups.length;
+    return `<div class="groups" style="grid-template-columns: repeat(${cols}, 1fr)">${groups.map(g => `
       <div class="group ${g.tone === 'good' ? 'good' : ''}">
         <div class="group-title">${esc(g.title)}</div>
         ${g.items.map(it => `<div class="group-item">${esc(it)}</div>`).join('')}
@@ -310,8 +311,25 @@
       </div>`).join('')}</div>`;
   }
 
+  // 문장 성분 칸 그림: rows = [{ label, cells: [{ role, text }] }]
+  function roleClass(role) {
+    if (role.includes('주어')) return 'r-subj';
+    if (role.includes('동사')) return 'r-verb';
+    if (role.includes('목적격 보어') || role.includes('보어') || role === '설명') return 'r-comp';
+    if (role.includes('목적어')) return 'r-obj';
+    return 'r-mod';
+  }
+  function renderSlots(rows) {
+    return `<div class="slots">${rows.map(r => `
+      <div class="slot-row">${r.label ? `<div class="slot-label">${esc(r.label)}</div>` : ''}
+        <div class="slot-cells">${r.cells.map(c => `
+          <div class="slot ${roleClass(c.role)}"><span class="slot-role">${esc(c.role)}</span><span class="slot-text">${esc(c.text)}</span></div>`).join('')}
+        </div></div>`).join('')}</div>`;
+  }
+
   function renderDiagram(lv) {
     let html = '';
+    if (lv.slots) html += renderSlots(lv.slots);
     if (lv.timeline) html += renderTimeline(lv.timeline);
     if (lv.groups) html += renderGroups(lv.groups);
     if (lv.diagram) html += `<p class="diagram-caption">${esc(lv.diagram)}</p>`;
@@ -325,7 +343,7 @@
     const steps = [];
     if (base.why) steps.push({ label: '왜 필요할까?', html: `<p>${esc(base.why)}</p>` });
     if (base.core) steps.push({ label: '핵심 한 문장', html: `<p class="core">${esc(base.core)}</p>` });
-    if (base.diagram || base.timeline || base.groups) {
+    if (base.diagram || base.timeline || base.groups || base.slots) {
       steps.push({ label: '그림으로 보기', html: renderDiagram(base) });
     }
     const exHtml = list => (list || []).map(e => `<div class="example"><div class="en">${esc(e.en)}</div><div class="ko">${esc(e.ko)}</div></div>`).join('');
