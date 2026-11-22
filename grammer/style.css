@@ -84,6 +84,28 @@ h3 { font-size: 16px; margin: 0 0 8px; }
 .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; background: var(--none); vertical-align: middle; }
 .dot.good { background: var(--good); }
 .dot.warn { background: var(--warn); }
+.dot.soon { background: transparent; border: 1.5px dashed var(--none); width: 10px; height: 10px; box-sizing: border-box; }
+
+/* 전체 개념 지도 */
+.map-area .area-head { gap: 10px; }
+.map-area h2 { margin: 0 0 2px; }
+.map-area h2 a { color: var(--text); }
+.map-area h2 a::after { content: ' ›'; color: var(--muted); }
+.map-area.soon h2 a { color: var(--muted); }
+.band { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px solid var(--line); }
+.band.above { opacity: .55; }
+.band-label { flex: 0 0 34px; font-size: 13px; font-weight: 700; color: var(--muted); padding-top: 5px; }
+.band-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.cchip {
+  font-size: 13.5px; padding: 4px 10px; border-radius: 14px; line-height: 1.4;
+  border: 1.5px solid var(--line); background: var(--card); color: var(--text);
+}
+.cchip.ready.none { border-color: #c5cad6; }
+.cchip.ready.good { border-color: var(--good); background: var(--good-soft); color: var(--good); font-weight: 600; }
+.cchip.ready.warn { border-color: var(--warn); background: var(--warn-soft); color: var(--warn); font-weight: 600; }
+.cchip.soon { border-style: dashed; color: var(--muted); background: transparent; }
+.cchip:hover { border-color: var(--primary); }
+
 .concept-list { list-style: none; padding: 0; margin: 0; }
 .concept-list li { border-top: 1px solid var(--line); }
 .concept-list li:first-child { border-top: none; }
