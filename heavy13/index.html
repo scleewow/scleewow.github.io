@@ -43,7 +43,7 @@
 
         .container {
             width: 100%;
-            max-width: 480px;
+            max-width: 760px;
             background: var(--panel);
             border-radius: 16px;
             padding: 1.25rem;
@@ -124,7 +124,7 @@
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.45; } }
 
         /* 받침대: 검은 적재 공간 + 두꺼운 색 막대 (글자 없이 색으로 구분) */
-        .stands { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.45rem; margin-bottom: 0.9rem; }
+        .stands { display: grid; grid-template-columns: repeat(3, minmax(0, 180px)); justify-content: center; gap: 0.5rem; margin-bottom: 0.9rem; }
         .stand { display: flex; flex-direction: column; text-align: center; position: relative; container-type: inline-size; }
         /* 바위 더미 + 받침판: 장사가 무릎을 굽힌 만큼 같이 내려간다 (--drop: 장사 그림 좌표 = 받침대 폭의 %) */
         .load {
@@ -134,11 +134,11 @@
         }
         .stand.collapse .load { transition: transform 0.35s ease-in 0.15s; }
         .stack {
-            background: #111; border-radius: 8px 8px 0 0; min-height: 150px; padding: 6px 4px;
+            background: #111; border-radius: 8px 8px 0 0; min-height: 150px; padding: 6px max(4px, calc(50% - 62px));
             display: flex; flex-wrap: wrap-reverse; align-content: flex-start; justify-content: center; gap: 5px;
             position: relative; z-index: 2;
         }
-        .stack .cube { flex: 0 0 calc(50% - 5px); max-width: 44px; }
+        .stack .cube { flex: 0 0 calc(50% - 3px); min-width: 0; }   /* 항상 2줄(2개씩) */
         .stand-bar { height: 14px; border-radius: 0 0 6px 6px; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.22); }
         .stand-R .stand-bar { background: var(--R); }
         .stand-G .stand-bar { background: var(--G); }
@@ -228,7 +228,7 @@
         .reveal-row .nm { overflow-wrap: anywhere; font-weight: bold; }
 
         /* 제출 영역 */
-        .pick-row { display: flex; flex-wrap: nowrap; gap: 0.3rem; justify-content: stretch; margin-top: 0.45rem; }
+        .pick-row { display: flex; flex-wrap: nowrap; gap: 0.3rem; justify-content: stretch; margin: 0.45rem auto 0; max-width: 560px; }
         .rock-btn {
             flex: 1 1 0; min-width: 0; width: auto; height: 2.6rem; margin: 0; padding: 0; border-radius: 8px; font-size: 1.15rem; font-weight: 900;
             background: #57534e; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.25); border: 3px solid transparent;
@@ -298,6 +298,19 @@
         .banner-content h2 { font-size: 1.7rem; margin: 0.3rem 0; text-shadow: 0 0 12px rgba(239,68,68,0.9); overflow-wrap: anywhere; }
         .banner-content p { font-size: 1.05rem; }
 
+        #screen-main, #screen-lobby { max-width: 480px; margin: 0 auto; }
+        /* 휴대폰: 바깥 여백을 줄여 화면을 넓게 쓴다 */
+        @media (max-width: 560px) {
+            body { padding: 0.35rem; }
+            .container { padding: 0.75rem 0.6rem; border-radius: 12px; border-width: 1px; }
+            header { margin-bottom: 0.7rem; padding-bottom: 0.5rem; }
+            .card { padding: 0.7rem 0.6rem; }
+            .stands { gap: 0.35rem; }
+        }
+        /* PC 등 넓은 화면: 플레이어 목록을 2열로 */
+        @media (min-width: 700px) {
+            #game-player-list { grid-template-columns: 1fr 1fr; }
+        }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
@@ -469,7 +482,7 @@
         const CONFIG_PATH = '/minus/config.js';
         const FALLBACK_URL = 'https://efjndencakarbucwxfie.supabase.co';
         const FALLBACK_KEY = 'sb_publishable_Lt3gzMPGZTIi4n4GuQZn2g_T3gzTT8c';
-        const GAME_BUILD = 'heavy13-v1.4';
+        const GAME_BUILD = 'heavy13-v1.5';
         let H13_URL = '', H13_KEY = '', H13_CONFIG_SOURCE = '';
         let sb = null;
 
@@ -979,14 +992,9 @@
             const desc = document.getElementById('phase-desc');
             const body = document.getElementById('phase-body');
             const st = seats();
-
-            if (pub.state === 'SUBMIT') {
-                const cnt = st.filter(pid => (pub.submitted || {})[pid]).length;
-                title.innerText = `📤 라운드 ${pub.round} — 제출`;
-                desc.innerText = `바위 카드 1장과 색깔 칩 1개를 비공개로 제출하세요. (제출 ${cnt}/${st.length})`;
-                body.innerHTML = '';
-                return;
-            }
+            // 제출 단계에서는 안내 카드를 숨긴다. (라운드는 상단, 제출 여부는 플레이어 목록에 표시)
+            document.getElementById('phase-card').classList.toggle('hidden', pub.state === 'SUBMIT');
+            if (pub.state === 'SUBMIT') return;
             if (pub.state === 'ENDED') {
                 title.innerText = '🏁 게임 종료';
                 desc.innerText = '14라운드가 모두 끝났습니다.';
