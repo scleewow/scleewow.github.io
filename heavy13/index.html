@@ -483,7 +483,7 @@
         const CONFIG_PATH = '/minus/config.js';
         const FALLBACK_URL = 'https://efjndencakarbucwxfie.supabase.co';
         const FALLBACK_KEY = 'sb_publishable_Lt3gzMPGZTIi4n4GuQZn2g_T3gzTT8c';
-        const GAME_BUILD = 'heavy13-v1.7';
+        const GAME_BUILD = 'heavy13-v1.8';
         let H13_URL = '', H13_KEY = '', H13_CONFIG_SOURCE = '';
         let sb = null;
 
@@ -624,6 +624,10 @@
             };
             sb.channel(`h13-room-${code}-${Math.random().toString(36).slice(2, 8)}`)
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'heavy13_rooms', filter: `code=eq.${code}` }, () => fetchView())
+                // 방 삭제(DELETE)는 필터를 걸 수 없어서 따로 받고, 내 방인지 확인한다.
+                .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'heavy13_rooms' }, (payload) => {
+                    if (payload && payload.old && payload.old.code === code) fetchView();
+                })
                 .subscribe(status => { if (status === 'SUBSCRIBED') fetchView(); });
             fetchView();
             document.addEventListener('visibilitychange', () => { if (!document.hidden) fetchView(); });
