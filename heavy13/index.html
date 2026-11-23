@@ -125,9 +125,16 @@
 
         /* 받침대: 검은 적재 공간 + 두꺼운 색 막대 (글자 없이 색으로 구분) */
         .stands { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.45rem; margin-bottom: 0.9rem; }
-        .stand { display: flex; flex-direction: column; text-align: center; position: relative; }
+        .stand { display: flex; flex-direction: column; text-align: center; position: relative; container-type: inline-size; }
+        /* 바위 더미 + 받침판: 장사가 무릎을 굽힌 만큼 같이 내려간다 (--drop: 장사 그림 좌표 = 받침대 폭의 %) */
+        .load {
+            position: relative; z-index: 3;
+            transform: translateY(calc(var(--drop, 0) * 1cqw)) rotate(var(--tilt, 0deg));
+            transition: transform 0.6s cubic-bezier(0.34, 1.3, 0.64, 1);
+        }
+        .stand.collapse .load { transition: transform 0.35s ease-in 0.15s; }
         .stack {
-            background: #111; border-radius: 8px 8px 0 0; min-height: 178px; padding: 6px 4px;
+            background: #111; border-radius: 8px 8px 0 0; min-height: 150px; padding: 6px 4px;
             display: flex; flex-wrap: wrap-reverse; align-content: flex-start; justify-content: center; gap: 5px;
             position: relative; z-index: 2;
         }
@@ -155,6 +162,39 @@
             100% { transform: translate(var(--x), 230px) rotate(var(--r)); opacity: 0; }
         }
         .stand.hot .stack { animation: shake 0.45s; }
+
+        /* 받침대를 든 장사 */
+        .porter { display: block; width: 100%; height: auto; margin-top: -2px; overflow: visible; position: relative; z-index: 2; }
+        .porter * { transform-box: view-box; }
+        .porter .skin { fill: #d8946a; }
+        .porter .limb { stroke: #d8946a; stroke-linecap: round; fill: none; }
+        .porter .upper, .porter .thigh, .porter .shin, .porter .uarm, .porter .farm {
+            transition: transform 0.6s cubic-bezier(0.34, 1.3, 0.64, 1);
+        }
+        .stand.collapse .porter .upper, .stand.collapse .porter .thigh, .stand.collapse .porter .shin,
+        .stand.collapse .porter .uarm, .stand.collapse .porter .farm { transition: transform 0.35s ease-in 0.15s; }
+        .porter .upper { transform: translateY(calc(var(--hd, 0) * 1px)); }
+        .porter .thigh.l { transform-origin: 44px 52px; transform: rotate(calc(var(--a, 0) * 1deg)); }
+        .porter .shin.l  { transform-origin: 44px 67px; transform: rotate(calc(var(--a, 0) * -2deg)); }
+        .porter .thigh.r { transform-origin: 56px 52px; transform: rotate(calc(var(--a, 0) * -1deg)); }
+        .porter .shin.r  { transform-origin: 56px 67px; transform: rotate(calc(var(--a, 0) * 2deg)); }
+        .porter .uarm.l  { transform-origin: 41px 33px; transform: rotate(calc(var(--b, 0) * -1deg)); }
+        .porter .farm.l  { transform-origin: 37px 19px; transform: rotate(calc(var(--fb, 0) * 1deg)); }
+        .porter .uarm.r  { transform-origin: 59px 33px; transform: rotate(calc(var(--b, 0) * 1deg)); }
+        .porter .farm.r  { transform-origin: 63px 19px; transform: rotate(calc(var(--fb, 0) * -1deg)); }
+        .porter .face-x, .porter .face-strain, .porter .sweat { opacity: 0; transition: opacity 0.3s; }
+        .stand.lv2 .porter .sweat, .stand.lv3 .porter .sweat, .stand.lv4 .porter .sweat { opacity: 1; }
+        .stand.lv3 .porter .face-n, .stand.lv4 .porter .face-n { opacity: 0; }
+        .stand.lv3 .porter .face-strain, .stand.lv4 .porter .face-strain { opacity: 1; }
+        .stand.lv4 .porter .jitter, .stand.lv4 .load .stack { animation: strain 0.35s infinite; }
+        @keyframes strain { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-0.8px); } 75% { transform: translateX(0.8px); } }
+        .stand.collapse .porter .face-n, .stand.collapse .porter .face-strain { opacity: 0; }
+        .stand.collapse .porter .face-x { opacity: 1; }
+        .stand.collapse .porter .jitter { animation: none; }
+        .stand.collapse .load .stack { animation: shake 0.45s; }
+        .stand.collapse .porter { z-index: 4; }   /* 주저앉는 모습이 바위 더미에 가리지 않게 앞으로 */
+        .porter .band { fill: var(--band); }
+        .stand-R { --band: var(--R); } .stand-G { --band: var(--G); } .stand-B { --band: var(--B); }
         @keyframes shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-5px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(3px); } }
 
         /* 칩 표시 */
@@ -429,7 +469,7 @@
         const CONFIG_PATH = '/minus/config.js';
         const FALLBACK_URL = 'https://efjndencakarbucwxfie.supabase.co';
         const FALLBACK_KEY = 'sb_publishable_Lt3gzMPGZTIi4n4GuQZn2g_T3gzTT8c';
-        const GAME_BUILD = 'heavy13-v1.3';
+        const GAME_BUILD = 'heavy13-v1.4';
         let H13_URL = '', H13_KEY = '', H13_CONFIG_SOURCE = '';
         let sb = null;
 
@@ -823,20 +863,85 @@
         }
 
         const COLLAPSE_MS = 1300;
-        let lastStandsHtml = '';
+
+        // 장사 자세: 합이 클수록 무릎(a)과 팔꿈치(b)를 더 굽힌다. 13 이상이 되면 주저앉는다.
+        const POSE = [
+            { a: 0,  b: 0 },    // 0~2
+            { a: 12, b: 8 },    // 3~5
+            { a: 24, b: 16 },   // 6~8
+            { a: 36, b: 26 },   // 9~10
+            { a: 46, b: 34 },   // 11~12
+        ];
+        const COLLAPSE_POSE = { a: 76, b: 150, fb: 25 };   // 다리를 벌리고 주저앉아 팔을 축 늘어뜨림
+        const poseLevel = sum => sum <= 2 ? 0 : sum <= 5 ? 1 : sum <= 8 ? 2 : sum <= 10 ? 3 : 4;
+        const LIMB = 15;   // 장사 그림의 허벅지·정강이·팔 길이
+        function poseVars(p, collapsed) {
+            const rad = d => d * Math.PI / 180;
+            const hd = 2 * LIMB * (1 - Math.cos(rad(p.a)));          // 엉덩이가 내려간 만큼
+            const handDrop = 2 * LIMB * (1 - Math.cos(rad(p.b)));    // 팔꿈치를 굽힌 만큼 손이 내려감
+            return { a: p.a, b: p.b, fb: p.fb !== undefined ? p.fb : p.b * 2, hd: hd.toFixed(2), drop: (collapsed ? hd * 0.6 + 6 : hd + handDrop).toFixed(2) };
+        }
+
+        const PORTER_SVG = `
+            <svg class="porter" viewBox="0 0 100 86" aria-hidden="true">
+                <ellipse cx="50" cy="84" rx="26" ry="2.6" fill="#8b5e34" opacity="0.18"/>
+                <g class="thigh l"><line class="limb" x1="44" y1="52" x2="44" y2="67" stroke-width="7.5"/>
+                    <g class="shin l"><line class="limb" x1="44" y1="67" x2="44" y2="81" stroke-width="7"/><ellipse cx="42" cy="82.5" rx="5.5" ry="2.4" fill="#5b3a1e"/></g></g>
+                <g class="thigh r"><line class="limb" x1="56" y1="52" x2="56" y2="67" stroke-width="7.5"/>
+                    <g class="shin r"><line class="limb" x1="56" y1="67" x2="56" y2="81" stroke-width="7"/><ellipse cx="58" cy="82.5" rx="5.5" ry="2.4" fill="#5b3a1e"/></g></g>
+                <g class="upper"><g class="jitter">
+                    <path d="M41 48 L59 48 L61 57 L52 57 L50 53 L48 57 L39 57 Z" fill="#5b3a1e"/>
+                    <path class="skin" d="M39 32 Q50 29 61 32 L58 50 Q50 52 42 50 Z"/>
+                    <path d="M50 36 L50 48 M43 38 Q47 40 49 38 M57 38 Q53 40 51 38" stroke="#a8693f" stroke-width="1" fill="none" stroke-linecap="round"/>
+                    <g class="uarm l"><line class="limb" x1="41" y1="33" x2="37" y2="19" stroke-width="6.5"/>
+                        <g class="farm l"><line class="limb" x1="37" y1="19" x2="39" y2="4" stroke-width="6"/><circle class="skin" cx="39" cy="3.5" r="3.6"/></g></g>
+                    <g class="uarm r"><line class="limb" x1="59" y1="33" x2="63" y2="19" stroke-width="6.5"/>
+                        <g class="farm r"><line class="limb" x1="63" y1="19" x2="61" y2="4" stroke-width="6"/><circle class="skin" cx="61" cy="3.5" r="3.6"/></g></g>
+                    <rect class="skin" x="47.5" y="26" width="5" height="5"/>
+                    <circle class="skin" cx="50" cy="21" r="7.5"/>
+                    <path d="M42.6 19.5 Q50 15 57.4 19.5 L57.6 21.8 Q50 18 42.4 21.8 Z" class="band"/>
+                    <g class="face-n"><circle cx="47.2" cy="22.5" r="0.9" fill="#2b2118"/><circle cx="52.8" cy="22.5" r="0.9" fill="#2b2118"/>
+                        <path d="M47.5 25.6 Q50 26.6 52.5 25.6" stroke="#2b2118" stroke-width="0.8" fill="none" stroke-linecap="round"/></g>
+                    <g class="face-strain" stroke="#2b2118" stroke-width="0.9" stroke-linecap="round" fill="none">
+                        <path d="M45.8 21.8 L48 22.8 L45.8 23.6 M54.2 21.8 L52 22.8 L54.2 23.6"/>
+                        <rect x="47.4" y="24.8" width="5.2" height="2.2" rx="0.6" fill="#fff"/></g>
+                    <g class="face-x" stroke="#2b2118" stroke-width="0.9" stroke-linecap="round" fill="none">
+                        <path d="M46.2 21.6 L48.2 23.6 M48.2 21.6 L46.2 23.6 M51.8 21.6 L53.8 23.6 M53.8 21.6 L51.8 23.6"/>
+                        <ellipse cx="50" cy="26.2" rx="1.4" ry="1.1"/></g>
+                    <g class="sweat" fill="#60a5fa"><path d="M41 17 q-1.6 2.6 0 3.4 q1.6 -0.8 0 -3.4 Z"/><path d="M59.5 22 q-1.4 2.2 0 3 q1.4 -0.8 0 -3 Z"/></g>
+                </g></g>
+            </svg>`;
+
+        let standCache = {};
+        function ensureStands() {
+            const box = document.getElementById('stands');
+            if (box.dataset.built) return;
+            box.innerHTML = COLORS.map(c => `
+                <div class="stand stand-${c}" data-c="${c}">
+                    <div class="load"><div class="stack"></div><div class="stand-bar"></div></div>
+                    ${PORTER_SVG}
+                    <div class="stand-meta"></div>
+                </div>`).join('');
+            box.dataset.built = '1';
+            standCache = {};
+        }
+
         function renderStands() {
+            ensureStands();
             const ev = pub.lastEvent;
             const age = Date.now() - freshAt;
             const fresh = ev && ev.seq === freshSeq && ev.kind === 'place' && age < 1500;
             const collapsing = fresh && ev.removed > 0 && age < COLLAPSE_MS;
             const cubeHtml = (x, cls, style) => `<span class="cube ${cls || ''}" ${style ? `style="${style}"` : ''} title="${esc(pname(x.p))}">${esc(x.v)}</span>`;
 
-            const html = COLORS.map(c => {
+            COLORS.forEach(c => {
+                const el = document.querySelector(`#stands .stand-${c}`);
                 const arr = (pub.stands || {})[c] || [];
-                let cubes, hot = false;
-                if (collapsing && ev.color === c) {
+                const sum = sumOf(arr);
+                const isCollapse = collapsing && ev.color === c;
+                let cubes;
+                if (isCollapse) {
                     // 무너지기 직전 모습: 기존 바위 위에 방금 놓은 바위가 올라간 뒤, 기존 바위가 쏟아진다.
-                    hot = true;
                     const old = Array.isArray(ev.removedCubes) && ev.removedCubes.length
                         ? ev.removedCubes : Array.from({ length: ev.removed }, () => ({ v: '?', p: '' }));
                     cubes = old.map((x, i) => {
@@ -850,16 +955,23 @@
                         return cubeHtml(x, isNew ? 'new drop' : '');
                     }).join('');
                 }
-                const sum = sumOf(arr);
-                return `<div class="stand stand-${c} ${hot ? 'hot' : ''}">
-                    <div class="stack">${cubes}</div>
-                    <div class="stand-bar"></div>
-                    <div class="stand-meta">합 <b>${sum}</b> / 13</div>
-                </div>`;
-            }).join('');
-            if (html === lastStandsHtml) return;        // 같은 내용이면 다시 그리지 않아 애니메이션이 끊기지 않게 한다.
-            lastStandsHtml = html;
-            document.getElementById('stands').innerHTML = html;
+
+                const lv = isCollapse ? 4 : poseLevel(sum);
+                const v = poseVars(isCollapse ? COLLAPSE_POSE : POSE[lv], isCollapse);
+                const key = `${cubes}|${lv}|${isCollapse}|${sum}`;
+                if (standCache[c] === key) return;      // 같으면 손대지 않아 애니메이션이 끊기지 않게 한다.
+                standCache[c] = key;
+
+                el.querySelector('.stack').innerHTML = cubes;
+                el.querySelector('.stand-meta').innerHTML = `합 <b>${sum}</b> / 13`;
+                el.className = `stand stand-${c} lv${lv}${isCollapse ? ' collapse hot' : ''}`;
+                el.style.setProperty('--a', v.a);
+                el.style.setProperty('--b', v.b);
+                el.style.setProperty('--fb', v.fb);
+                el.style.setProperty('--hd', v.hd);
+                el.style.setProperty('--drop', v.drop);
+                el.style.setProperty('--tilt', isCollapse ? (c === 'B' ? '9deg' : '-9deg') : '0deg');
+            });
         }
 
         function renderPhase(stage) {
