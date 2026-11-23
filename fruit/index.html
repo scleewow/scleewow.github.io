@@ -110,6 +110,29 @@
   .host-sub { margin-top: 10px; height: 44px; font-size: 15px; }
   #btnDelete { margin-top: 10px; }
   .notice { font-size: 13px; color: var(--muted); text-align: center; margin-top: 12px; line-height: 1.5; }
+  .seg { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .seg button {
+    height: 46px; border-radius: 10px; cursor: pointer;
+    background: var(--input); border: 1px solid var(--input-border); color: var(--text);
+    font: 700 16px 'Pretendard', sans-serif;
+  }
+  .seg button.sel { background: var(--gold); border-color: var(--gold); color: #1a1408; }
+  .seg button:disabled { cursor: default; }
+  .seg button:disabled:not(.sel) { opacity: 0.45; }
+  .seg-note { font-size: 12px; color: var(--muted); margin-top: 10px; text-align: center; }
+  select.combo {
+    width: 100%; height: 48px; padding: 0 40px 0 14px; border-radius: 10px;
+    background: var(--input); border: 1px solid var(--input-border); color: var(--text);
+    font: 700 16px 'Pretendard', sans-serif; outline: none; cursor: pointer;
+    -webkit-appearance: none; appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+    background-position: calc(100% - 20px) 21px, calc(100% - 14px) 21px;
+    background-size: 6px 6px; background-repeat: no-repeat;
+  }
+  select.combo:disabled { opacity: 0.6; cursor: default; }
+  select.combo option { background: var(--card); color: var(--text); }
+  .timer.count .t { color: var(--gold); }
+  .timer.count.done .t { color: var(--green); }
 
   /* 게임 상단 */
   .gamebar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
@@ -157,6 +180,9 @@
   .price.sel { background: var(--gold); color: #1a1408; border-color: var(--gold); }
   .slot .state { font-size: 12px; margin-top: 8px; color: var(--muted); min-height: 16px; }
   .slot .state.ok { color: var(--green); }
+  .slot .state.pending { color: var(--gold); }
+  #bidAction { margin-top: 14px; }
+  #bidNote { font-size: 12px; color: var(--muted); text-align: center; margin-top: 8px; line-height: 1.5; }
   .price-unit { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
   /* 능력 */
@@ -326,6 +352,23 @@
       <p class="notice" id="lobbyNotice"></p>
     </div>
 
+    <div class="card">
+      <div class="card-title">라운드 수</div>
+      <div class="seg" id="roundSeg">
+        <button data-rounds="4">4</button>
+        <button data-rounds="5">5</button>
+        <button data-rounds="6">6</button>
+        <button data-rounds="7">7</button>
+      </div>
+      <p class="seg-note" id="roundNote"></p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">협상 시간</div>
+      <select class="combo" id="negotiateSel"><option value="5">5분</option><option value="6">6분</option><option value="7">7분</option><option value="8">8분</option><option value="9">9분</option><option value="10">10분</option><option value="11">11분</option><option value="12">12분</option><option value="13">13분</option><option value="14">14분</option><option value="15">15분</option></select>
+      <p class="seg-note" id="negotiateNote"></p>
+    </div>
+
     <button class="btn btn-gold hidden" id="btnStart">게임 시작</button>
     <button class="link-btn" id="btnLeave">나가기</button>
     <button class="btn btn-danger hidden" id="btnDelete">방 삭제</button>
@@ -340,6 +383,10 @@
     <div class="timer hidden" id="gTimer">
       <div class="lbl">협상 남은 시간</div>
       <div class="t">05:00</div>
+    </div>
+    <div class="timer count hidden" id="gBidCount">
+      <div class="lbl">희망가 제출 현황</div>
+      <div class="t">0 / 0명</div>
     </div>
     <div class="banner" id="gBanner"></div>
 
@@ -359,6 +406,10 @@
     <div class="card" id="cardMine">
       <div class="card-title">내 과일</div>
       <div class="slots" id="mySlots"></div>
+      <div id="bidAction" class="hidden">
+        <button class="btn btn-gold" id="btnSubmitBid">제출하기</button>
+        <p id="bidNote"></p>
+      </div>
     </div>
 
     <!-- 능력 -->
@@ -411,7 +462,7 @@
     <p class="sub">더 지니어스 시즌3 블랙가넷 1화 메인매치</p>
 
     <h3>목표</h3>
-    <p>내가 가진 과일을 팔아 4라운드 동안 가장 많은 수익을 올리세요.</p>
+    <p>내가 가진 과일을 팔아 정해진 라운드 동안 가장 많은 수익을 올리세요. 기본은 4라운드이고, 방장이 대기실에서 4~7라운드 중에 고를 수 있어요.</p>
 
     <h3>내 과일</h3>
     <p>게임이 시작되면 각자 과일 2개를 무작위로 받아요. 받은 과일만 팔 수 있고, 같은 과일을 2개 받을 수도 있어요.</p>
@@ -438,8 +489,8 @@
 
     <h3>라운드 진행</h3>
     <ul>
-      <li><b>협상</b> — 자유롭게 돌아다니며 이야기하세요. 담합도, 거짓말도 자유예요.</li>
-      <li><b>희망가 제시</b> — 내 과일마다 1천~5천 원 중 하나를 몰래 제출해요. 내지 않으면 5천 원으로 처리돼요.</li>
+      <li><b>협상</b> — 자유롭게 돌아다니며 이야기하세요. 담합도, 거짓말도 자유예요. 협상 시간은 방장이 대기실에서 5~15분 중에 정하고(기본 5분), 화면에 남은 시간이 표시돼요.</li>
+      <li><b>희망가 제시</b> — 내 과일마다 1천~5천 원 중 하나를 고르고 <b>제출하기</b>를 눌러요. 마감 전까지는 다시 골라서 다시 제출할 수 있어요. 내지 않으면 5천 원으로 처리돼요. 몇 명이 제출했는지는 모두에게 보여요.</li>
       <li><b>결과 발표</b> — 과일별 판매가, 몇 명이 팔았는지, 판매 수입이 공개돼요. 누가 팔았는지와 각자의 누적 수입은 끝날 때까지 비공개예요.</li>
     </ul>
 
@@ -459,7 +510,7 @@
     </ul>
 
     <h3>승패</h3>
-    <p>4라운드가 끝나면 누적 수입이 공개돼요. 가장 많이 번 사람이 우승, 가장 적게 번 사람이 꼴찌예요.</p>
+    <p>마지막 라운드가 끝나면 누적 수입이 공개돼요. 가장 많이 번 사람이 우승, 가장 적게 번 사람이 꼴찌예요.</p>
 
     <button class="btn btn-dark close" id="btnCloseRules">닫기</button>
   </div>
@@ -480,7 +531,7 @@ const FRUIT_EMOJI = {
 const PHASE_LABEL = { negotiate: '협상', bid: '희망가 제시', result: '결과 발표', finished: '게임 종료' };
 const PHASE_BANNER = {
   negotiate: '자유롭게 돌아다니며 협상하세요. 교체 능력은 지금만 쓸 수 있어요.',
-  bid: '내 과일마다 희망가를 골라주세요. 방장이 마감하기 전까지 바꿀 수 있고, 내지 않으면 5천 원으로 처리돼요.',
+  bid: '내 과일마다 희망가를 고르고 제출하기를 눌러주세요. 방장이 마감하기 전까지 다시 제출할 수 있고, 내지 않으면 5천 원으로 처리돼요.',
   result: '이번 라운드 결과가 나왔어요. 방장이 다음 라운드를 열 때까지 다음 수를 준비하세요.',
   finished: '모든 라운드가 끝났어요. 방장이 대기실로 돌아가면 같은 멤버로 한 판 더 할 수 있어요.',
 };
@@ -489,6 +540,7 @@ function freshState(me = null) {
   return {
     roomId: null, room: null, players: [], me, channel: null, qrFor: null,
     holdings: [], counts: {}, results: [], events: [], bids: [], ability: null, income: [],
+    draft: {}, submitting: false,
     bidStatus: [], viewRound: null, lastRound: null, statusTimer: null, refreshTimer: null,
   };
 }
@@ -718,7 +770,7 @@ function onEvent(ev) {
 // ---------- 협상 타이머 ----------
 // 각 폰이 협상 단계를 처음 본 시각부터 따로 카운트 (안내용, 자동 진행 없음)
 // 시작 시각을 이 폰에 저장해 두어 새로고침해도 처음부터 다시 세지 않음
-const NEGOTIATE_SECONDS = 300;
+const negotiateSeconds = (room) => (room.negotiate_minutes || 5) * 60;
 
 function negotiateStartedAt(room) {
   // 대기실 복귀 후 새 판과 섞이지 않도록 게임 시작 이벤트 id를 키에 포함
@@ -740,7 +792,7 @@ function tickTimer() {
   el.classList.toggle('hidden', !active);
   if (!active) return;
 
-  const endsAt = negotiateStartedAt(room) + NEGOTIATE_SECONDS * 1000;
+  const endsAt = negotiateStartedAt(room) + negotiateSeconds(room) * 1000;
   const left = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
   const mm = String(Math.floor(left / 60)).padStart(2, '0');
   const ss = String(left % 60).padStart(2, '0');
@@ -793,6 +845,22 @@ function renderLobby() {
 
   $('btnStart').classList.toggle('hidden', !isHost);
   $('btnStart').disabled = n < 4 || n > 15;
+
+  const rounds = room.max_rounds || 4;
+  $('roundSeg').querySelectorAll('button').forEach((b) => {
+    b.classList.toggle('sel', Number(b.dataset.rounds) === rounds);
+    b.disabled = !isHost;
+  });
+  const mins = room.negotiate_minutes || 5;
+  $('negotiateSel').value = String(mins);
+  $('negotiateSel').disabled = !isHost;
+  $('negotiateNote').textContent = isHost
+    ? `라운드마다 ${mins}분씩 협상해요. 시간이 끝나도 자동으로 넘어가진 않아요.`
+    : `방장이 정해요 · 라운드마다 ${mins}분`;
+
+  $('roundNote').textContent = isHost
+    ? `기본은 4라운드예요. 지금 ${rounds}라운드로 진행돼요.`
+    : `방장이 정해요 · ${rounds}라운드로 진행돼요`;
   $('btnDelete').classList.toggle('hidden', !isHost);
   $('btnLeave').classList.toggle('hidden', isHost);
 
@@ -825,6 +893,7 @@ function renderGame() {
   renderMarket();
   manageStatusPoll();
   tickTimer();
+  renderBidCount();
 
   $('cardAbility').classList.toggle('hidden', finished);
   $('btnHome').classList.toggle('hidden', !finished);
@@ -839,16 +908,27 @@ const myBid = (slot) => {
   return b ? b.price : null;
 };
 
+// 희망가는 먼저 골라두고(draft) 제출 버튼으로 서버에 보냄
+const draftKey = (slot) => `${state.room.round}-${slot}`;
+const draftOf = (slot) => state.draft[draftKey(slot)] ?? null;
+const chosenOf = (slot) => draftOf(slot) ?? myBid(slot);
+
 function renderMine() {
   const phase = state.room.phase;
-  $('mySlots').innerHTML = myHoldings().map((h) => {
+  const mine = myHoldings();
+  $('mySlots').innerHTML = mine.map((h) => {
     const bid = myBid(h.slot);
+    const chosen = chosenOf(h.slot);
     let bottom = '';
     if (phase === 'bid') {
       const btns = [1, 2, 3, 4, 5].map((p) =>
-        `<button class="price${bid === p ? ' sel' : ''}" data-slot="${h.slot}" data-price="${p}">${p}</button>`).join('');
-      bottom = `<div class="prices">${btns}</div><div class="price-unit">단위: 천 원</div>
-        <div class="state${bid ? ' ok' : ''}">${bid ? `${bid}천 원 제출됨` : '아직 안 냈어요'}</div>`;
+        `<button class="price${chosen === p ? ' sel' : ''}" data-slot="${h.slot}" data-price="${p}">${p}</button>`).join('');
+      let st;
+      if (chosen == null) st = '<div class="state">가격을 골라주세요</div>';
+      else if (bid != null && chosen === bid) st = `<div class="state ok">${bid}천 원 제출됨</div>`;
+      else if (bid != null) st = `<div class="state pending">${chosen}천 원 선택 · 제출 전 (지금 ${bid}천 원)</div>`;
+      else st = `<div class="state pending">${chosen}천 원 선택 · 제출 전</div>`;
+      bottom = `<div class="prices">${btns}</div><div class="price-unit">단위: 천 원</div>${st}`;
     } else if (bid && (phase === 'result' || phase === 'finished')) {
       bottom = `<div class="state">이번 라운드 제시가 ${bid}천 원</div>`;
     }
@@ -859,25 +939,60 @@ function renderMine() {
       ${bottom}
     </div>`;
   }).join('');
+
+  // 제출 버튼
+  const box = $('bidAction');
+  if (phase !== 'bid' || !mine.length) { box.classList.add('hidden'); return; }
+  box.classList.remove('hidden');
+  const allChosen = mine.every((h) => chosenOf(h.slot) != null);
+  const anySubmitted = mine.some((h) => myBid(h.slot) != null);
+  const allSubmitted = mine.every((h) => myBid(h.slot) != null);
+  const changed = mine.some((h) => chosenOf(h.slot) !== myBid(h.slot));
+  const btn = $('btnSubmitBid');
+  btn.disabled = state.submitting || !allChosen || !changed;
+  btn.textContent = state.submitting ? '제출 중…'
+    : (allSubmitted && !changed) ? '제출 완료'
+    : anySubmitted ? '다시 제출하기' : '제출하기';
+  btn.className = 'btn ' + ((allSubmitted && !changed) ? 'btn-dark' : 'btn-gold');
+  $('bidNote').textContent = !allChosen
+    ? '두 과일 모두 가격을 고른 뒤 제출하세요.'
+    : changed
+      ? '아직 제출되지 않았어요. 제출하기를 눌러야 반영돼요.'
+      : '마감 전까지 언제든 바꿔서 다시 제출할 수 있어요.';
 }
 
-$('mySlots').addEventListener('click', async (e) => {
+$('mySlots').addEventListener('click', (e) => {
   const btn = e.target.closest('[data-price]');
   if (!btn || state.room.phase !== 'bid') return;
   const slot = Number(btn.dataset.slot);
-  const price = Number(btn.dataset.price);
-
-  // 화면에 먼저 반영
-  const round = state.room.round;
-  state.bids = state.bids.filter((b) => !(b.round === round && b.slot === slot && b.user_id === state.me));
-  state.bids.push({ round, slot, price, user_id: state.me });
+  state.draft[draftKey(slot)] = Number(btn.dataset.price);
   renderMine();
+});
 
+$('btnSubmitBid').addEventListener('click', async () => {
+  if (state.room.phase !== 'bid' || state.submitting) return;
+  const mine = myHoldings();
+  if (!mine.every((h) => chosenOf(h.slot) != null)) return toast('두 과일 모두 가격을 골라주세요');
+
+  const round = state.room.round;
+  const picks = mine.map((h) => ({ slot: h.slot, price: chosenOf(h.slot) }));
+  state.submitting = true;
+  renderMine();
   try {
-    await rpc('fs_submit_bid', { p_room: state.roomId, p_slot: slot, p_price: price });
+    for (const p of picks) {
+      await rpc('fs_submit_bid', { p_room: state.roomId, p_slot: p.slot, p_price: p.price });
+      state.bids = state.bids.filter((b) => !(b.round === round && b.slot === p.slot && b.user_id === state.me));
+      state.bids.push({ round, slot: p.slot, price: p.price, user_id: state.me });
+      delete state.draft[`${round}-${p.slot}`];
+    }
+    toast('희망가를 제출했어요', true);
+    pollStatus();
   } catch (err) {
     toast(errMsg(err));
     scheduleRefresh();
+  } finally {
+    state.submitting = false;
+    renderMine();
   }
 });
 
@@ -1012,7 +1127,7 @@ async function hostAction(name) {
 }
 
 function manageStatusPoll() {
-  const need = state.room.host_id === state.me && state.room.phase === 'bid';
+  const need = state.room.status === 'playing' && state.room.phase === 'bid';
   if (need && !state.statusTimer) {
     pollStatus();
     state.statusTimer = setInterval(pollStatus, 2000);
@@ -1026,8 +1141,23 @@ function manageStatusPoll() {
 async function pollStatus() {
   try {
     state.bidStatus = (await rpc('fs_bid_status', { p_room: state.roomId })) || [];
-    if (state.room.phase === 'bid') renderHost();
+    if (state.room.phase === 'bid') {
+      if (state.room.host_id === state.me) renderHost();
+      renderBidCount();
+    }
   } catch (e) { console.error(e); }
+}
+
+// 희망가 제출 인원 (모든 참가자에게 표시, 가격은 비공개)
+function renderBidCount() {
+  const el = $('gBidCount');
+  const active = state.room && state.room.status === 'playing' && state.room.phase === 'bid';
+  el.classList.toggle('hidden', !active);
+  if (!active) return;
+  const total = state.players.length;
+  const done = state.bidStatus.filter((s) => s.submitted >= s.total).length;
+  el.querySelector('.t').textContent = `${done} / ${total}명`;
+  el.classList.toggle('done', total > 0 && done === total);
 }
 
 // ---------- 결과 ----------
@@ -1177,8 +1307,40 @@ function renderMarket() {
 }
 
 // ---------- 대기실 버튼 ----------
+$('roundSeg').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-rounds]');
+  if (!b || b.disabled || !state.room || state.room.host_id !== state.me) return;
+  const rounds = Number(b.dataset.rounds);
+  if (rounds === state.room.max_rounds) return;
+  const prev = state.room.max_rounds;
+  state.room = { ...state.room, max_rounds: rounds };   // 화면에 먼저 반영
+  renderLobby();
+  try {
+    await rpc('fs_set_rounds', { p_room: state.roomId, p_rounds: rounds });
+  } catch (err) {
+    state.room = { ...state.room, max_rounds: prev };
+    renderLobby();
+    toast(errMsg(err));
+  }
+});
+
+$('negotiateSel').addEventListener('change', async (e) => {
+  if (!state.room || state.room.host_id !== state.me) return;
+  const minutes = Number(e.target.value);
+  const prev = state.room.negotiate_minutes || 5;
+  state.room = { ...state.room, negotiate_minutes: minutes };
+  renderLobby();
+  try {
+    await rpc('fs_set_negotiate', { p_room: state.roomId, p_minutes: minutes });
+  } catch (err) {
+    state.room = { ...state.room, negotiate_minutes: prev };
+    renderLobby();
+    toast(errMsg(err));
+  }
+});
+
 $('btnStart').onclick = async () => {
-  if (!confirm(`${state.players.length}명으로 게임을 시작할까요? 시작 후에는 더 들어올 수 없어요.`)) return;
+  if (!confirm(`${state.players.length}명, ${state.room.max_rounds}라운드, 협상 ${state.room.negotiate_minutes || 5}분으로 게임을 시작할까요? 시작 후에는 더 들어올 수 없어요.`)) return;
   const btn = $('btnStart');
   btn.disabled = true;
   try {
@@ -1202,6 +1364,7 @@ function leaveRoom() {
 function resetGameState() {
   Object.assign(state, {
     holdings: [], counts: {}, results: [], events: [], bids: [], ability: null, income: [],
+    draft: {}, submitting: false,
     bidStatus: [], viewRound: null, lastRound: null,
   });
   if (state.statusTimer) { clearInterval(state.statusTimer); state.statusTimer = null; }
