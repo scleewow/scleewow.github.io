@@ -441,7 +441,6 @@
       <div class="log hidden" id="changeLog"></div>
     </div>
 
-    <button class="link-btn hidden" id="btnHome">처음 화면으로</button>
   </section>
 </div>
 
@@ -533,7 +532,7 @@ const PHASE_BANNER = {
   negotiate: '자유롭게 돌아다니며 협상하세요. 교체 능력은 지금만 쓸 수 있어요.',
   bid: '내 과일마다 희망가를 고르고 제출하기를 눌러주세요. 방장이 마감하기 전까지 다시 제출할 수 있고, 내지 않으면 5천 원으로 처리돼요.',
   result: '이번 라운드 결과가 나왔어요. 방장이 다음 라운드를 열 때까지 다음 수를 준비하세요.',
-  finished: '모든 라운드가 끝났어요. 방장이 대기실로 돌아가면 같은 멤버로 한 판 더 할 수 있어요.',
+  finished: '모든 라운드가 끝났어요. 방장이 대기실로 이동하면 모두 함께 대기실로 이동해요.',
 };
 
 function freshState(me = null) {
@@ -896,7 +895,6 @@ function renderGame() {
   renderBidCount();
 
   $('cardAbility').classList.toggle('hidden', finished);
-  $('btnHome').classList.toggle('hidden', !finished);
 }
 
 const myHoldings = () => state.holdings
@@ -1080,8 +1078,8 @@ function renderHost() {
   if (!isHost) return;
 
   if (room.status === 'finished') {
-    $('hostBody').innerHTML = `<p class="host-status">같은 멤버로 한 판 더 하려면 대기실로 돌아가세요.</p>
-      <button class="btn btn-gold" id="hostLobby">대기실로 돌아가기</button>`;
+    $('hostBody').innerHTML = `<p class="host-status">대기실로 이동하면 참가자 모두 함께 대기실로 이동해요.</p>
+      <button class="btn btn-gold" id="hostLobby">대기실로 이동</button>`;
     $('hostLobby').onclick = () => hostAction('fs_reset_room');
     return;
   }
@@ -1418,7 +1416,6 @@ $('btnLeave').onclick = async () => {
   try { await rpc('fs_leave_room', { p_room: state.roomId }); } catch (e) { console.error(e); }
   leaveRoom();
 };
-$('btnHome').onclick = leaveRoom;
 
 // ---------- 게임 설명 ----------
 $('btnRules').onclick = () => $('modalRules').classList.remove('hidden');
