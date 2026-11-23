@@ -166,14 +166,15 @@
         /* 받침대를 든 장사 */
         .porter { display: block; width: 100%; height: auto; margin-top: -2px; overflow: visible; position: relative; z-index: 2; }
         .porter * { transform-box: view-box; }
-        .porter .skin { fill: #d8946a; }
-        .porter .limb { stroke: #d8946a; stroke-linecap: round; fill: none; }
-        .porter .upper, .porter .thigh, .porter .shin, .porter .uarm, .porter .farm {
+        .porter .skin { fill: #f7cba6; stroke: #9a6440; stroke-width: 0.9; }
+        .porter .limb { stroke: #f7cba6; stroke-linecap: round; fill: none; }
+        .porter .limb-o { stroke: #9a6440; stroke-linecap: round; fill: none; }
+        .porter .upper, .porter .legs, .porter .thigh, .porter .shin, .porter .uarm, .porter .farm {
             transition: transform 0.6s cubic-bezier(0.34, 1.3, 0.64, 1);
         }
-        .stand.collapse .porter .upper, .stand.collapse .porter .thigh, .stand.collapse .porter .shin,
+        .stand.collapse .porter .upper, .stand.collapse .porter .legs, .stand.collapse .porter .thigh, .stand.collapse .porter .shin,
         .stand.collapse .porter .uarm, .stand.collapse .porter .farm { transition: transform 0.35s ease-in 0.15s; }
-        .porter .upper { transform: translateY(calc(var(--hd, 0) * 1px)); }
+        .porter .upper, .porter .legs { transform: translateY(calc(var(--hd, 0) * 1px)); }
         .porter .thigh.l { transform-origin: 44px 52px; transform: rotate(calc(var(--a, 0) * 1deg)); }
         .porter .shin.l  { transform-origin: 44px 67px; transform: rotate(calc(var(--a, 0) * -2deg)); }
         .porter .thigh.r { transform-origin: 56px 52px; transform: rotate(calc(var(--a, 0) * -1deg)); }
@@ -389,7 +390,7 @@
             <div class="card">
                 <h4 style="text-align:left;">플레이어 <span class="small">(자리 순서 · 시계 방향, 🚩 선 플레이어)</span></h4>
                 <div id="game-player-list" class="player-list"></div>
-                <button class="secondary" style="margin-top:0.6rem;" onclick="openRecordModal()">📜 라운드 기록 보기</button>
+                <button id="record-btn" class="secondary hidden" style="margin-top:0.6rem;" onclick="openRecordModal()">📜 라운드 기록 보기</button>
             </div>
 
             <div id="host-controls" class="hidden">
@@ -482,7 +483,7 @@
         const CONFIG_PATH = '/minus/config.js';
         const FALLBACK_URL = 'https://efjndencakarbucwxfie.supabase.co';
         const FALLBACK_KEY = 'sb_publishable_Lt3gzMPGZTIi4n4GuQZn2g_T3gzTT8c';
-        const GAME_BUILD = 'heavy13-v1.5';
+        const GAME_BUILD = 'heavy13-v1.6';
         let H13_URL = '', H13_KEY = '', H13_CONFIG_SOURCE = '';
         let sb = null;
 
@@ -871,6 +872,7 @@
 
 
             document.getElementById('host-controls').classList.toggle('hidden', !isHost);
+            document.getElementById('record-btn').classList.toggle('hidden', pub.state !== 'ENDED');
             document.getElementById('force-btn').classList.toggle('hidden', !(pub.state === 'SUBMIT' || pub.state === 'PLACE'));
             updateTimer();
         }
@@ -897,31 +899,49 @@
 
         const PORTER_SVG = `
             <svg class="porter" viewBox="0 0 100 86" aria-hidden="true">
-                <ellipse cx="50" cy="84" rx="26" ry="2.6" fill="#8b5e34" opacity="0.18"/>
-                <g class="thigh l"><line class="limb" x1="44" y1="52" x2="44" y2="67" stroke-width="7.5"/>
-                    <g class="shin l"><line class="limb" x1="44" y1="67" x2="44" y2="81" stroke-width="7"/><ellipse cx="42" cy="82.5" rx="5.5" ry="2.4" fill="#5b3a1e"/></g></g>
-                <g class="thigh r"><line class="limb" x1="56" y1="52" x2="56" y2="67" stroke-width="7.5"/>
-                    <g class="shin r"><line class="limb" x1="56" y1="67" x2="56" y2="81" stroke-width="7"/><ellipse cx="58" cy="82.5" rx="5.5" ry="2.4" fill="#5b3a1e"/></g></g>
+                <ellipse cx="50" cy="84" rx="24" ry="2.4" fill="#8b5e34" opacity="0.16"/>
+                <g class="legs">
+                <g class="thigh l"><line class="limb-o" x1="44" y1="52" x2="44" y2="67" stroke-width="9.8"/><line class="limb" x1="44" y1="52" x2="44" y2="67" stroke-width="8"/>
+                    <g class="shin l"><line class="limb-o" x1="44" y1="67" x2="44" y2="80" stroke-width="9.8"/><line class="limb" x1="44" y1="67" x2="44" y2="80" stroke-width="8"/><ellipse cx="42.5" cy="81.8" rx="6" ry="3.2" fill="#7c4a2a" stroke="#4a2c18" stroke-width="0.8"/></g></g>
+                <g class="thigh r"><line class="limb-o" x1="56" y1="52" x2="56" y2="67" stroke-width="9.8"/><line class="limb" x1="56" y1="52" x2="56" y2="67" stroke-width="8"/>
+                    <g class="shin r"><line class="limb-o" x1="56" y1="67" x2="56" y2="80" stroke-width="9.8"/><line class="limb" x1="56" y1="67" x2="56" y2="80" stroke-width="8"/><ellipse cx="57.5" cy="81.8" rx="6" ry="3.2" fill="#7c4a2a" stroke="#4a2c18" stroke-width="0.8"/></g></g>
+                </g>
                 <g class="upper"><g class="jitter">
-                    <path d="M41 48 L59 48 L61 57 L52 57 L50 53 L48 57 L39 57 Z" fill="#5b3a1e"/>
-                    <path class="skin" d="M39 32 Q50 29 61 32 L58 50 Q50 52 42 50 Z"/>
-                    <path d="M50 36 L50 48 M43 38 Q47 40 49 38 M57 38 Q53 40 51 38" stroke="#a8693f" stroke-width="1" fill="none" stroke-linecap="round"/>
-                    <g class="uarm l"><line class="limb" x1="41" y1="33" x2="37" y2="19" stroke-width="6.5"/>
-                        <g class="farm l"><line class="limb" x1="37" y1="19" x2="39" y2="4" stroke-width="6"/><circle class="skin" cx="39" cy="3.5" r="3.6"/></g></g>
-                    <g class="uarm r"><line class="limb" x1="59" y1="33" x2="63" y2="19" stroke-width="6.5"/>
-                        <g class="farm r"><line class="limb" x1="63" y1="19" x2="61" y2="4" stroke-width="6"/><circle class="skin" cx="61" cy="3.5" r="3.6"/></g></g>
-                    <rect class="skin" x="47.5" y="26" width="5" height="5"/>
-                    <circle class="skin" cx="50" cy="21" r="7.5"/>
-                    <path d="M42.6 19.5 Q50 15 57.4 19.5 L57.6 21.8 Q50 18 42.4 21.8 Z" class="band"/>
-                    <g class="face-n"><circle cx="47.2" cy="22.5" r="0.9" fill="#2b2118"/><circle cx="52.8" cy="22.5" r="0.9" fill="#2b2118"/>
-                        <path d="M47.5 25.6 Q50 26.6 52.5 25.6" stroke="#2b2118" stroke-width="0.8" fill="none" stroke-linecap="round"/></g>
-                    <g class="face-strain" stroke="#2b2118" stroke-width="0.9" stroke-linecap="round" fill="none">
-                        <path d="M45.8 21.8 L48 22.8 L45.8 23.6 M54.2 21.8 L52 22.8 L54.2 23.6"/>
-                        <rect x="47.4" y="24.8" width="5.2" height="2.2" rx="0.6" fill="#fff"/></g>
-                    <g class="face-x" stroke="#2b2118" stroke-width="0.9" stroke-linecap="round" fill="none">
-                        <path d="M46.2 21.6 L48.2 23.6 M48.2 21.6 L46.2 23.6 M51.8 21.6 L53.8 23.6 M53.8 21.6 L51.8 23.6"/>
-                        <ellipse cx="50" cy="26.2" rx="1.4" ry="1.1"/></g>
-                    <g class="sweat" fill="#60a5fa"><path d="M41 17 q-1.6 2.6 0 3.4 q1.6 -0.8 0 -3.4 Z"/><path d="M59.5 22 q-1.4 2.2 0 3 q1.4 -0.8 0 -3 Z"/></g>
+                    <g class="uarm l"><line class="limb-o" x1="41" y1="34" x2="37" y2="19" stroke-width="8.8"/><line class="limb" x1="41" y1="34" x2="37" y2="19" stroke-width="7"/>
+                        <g class="farm l"><line class="limb-o" x1="37" y1="19" x2="39" y2="5" stroke-width="8.8"/><line class="limb" x1="37" y1="19" x2="39" y2="5" stroke-width="7"/><circle class="skin" cx="39" cy="4" r="4.4"/></g></g>
+                    <g class="uarm r"><line class="limb-o" x1="59" y1="34" x2="63" y2="19" stroke-width="8.8"/><line class="limb" x1="59" y1="34" x2="63" y2="19" stroke-width="7"/>
+                        <g class="farm r"><line class="limb-o" x1="63" y1="19" x2="61" y2="5" stroke-width="8.8"/><line class="limb" x1="63" y1="19" x2="61" y2="5" stroke-width="7"/><circle class="skin" cx="61" cy="4" r="4.4"/></g></g>
+                    <!-- 통통한 몸 -->
+                    <ellipse class="skin" cx="50" cy="42" rx="11.5" ry="11"/>
+                    <path d="M46.5 41 Q48 42.6 49.4 41 M50.6 41 Q52 42.6 53.5 41" stroke="#d99a72" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+                    <circle cx="50" cy="46" r="0.8" fill="#d99a72"/>
+                    <!-- 반바지 -->
+                    <path d="M39.6 46.5 Q50 50 60.4 46.5 L61.5 55.5 Q56 57 51.5 55.5 L50 52.5 L48.5 55.5 Q44 57 38.5 55.5 Z" fill="#6b4226" stroke="#3f2614" stroke-width="0.8"/>
+                    <rect x="44" y="47.4" width="12" height="2.2" rx="1" fill="#f5b83d"/>
+                    <!-- 큰 머리 -->
+                    <circle class="skin" cx="50" cy="20" r="12"/>
+                    <path d="M44 9.6 Q47 5.4 51 8.4 Q52.5 4.6 56 7.4 Q53.5 8.6 54 10.2 Q50 8.2 44 9.6 Z" fill="#4a2c18"/>
+                    <path d="M38.6 15.6 Q50 9.8 61.4 15.6 L61.8 18.6 Q50 13 38.2 18.6 Z" class="band" stroke="rgba(0,0,0,0.25)" stroke-width="0.6"/>
+                    <path d="M61 16.4 L66.5 13.2 L65.6 18.4 Z M61 16.8 L66 19.6 L62.6 21.4 Z" class="band" stroke="rgba(0,0,0,0.25)" stroke-width="0.6"/>
+                    <ellipse cx="43.4" cy="24.6" rx="2.3" ry="1.4" fill="#f59aa0" opacity="0.75"/>
+                    <ellipse cx="56.6" cy="24.6" rx="2.3" ry="1.4" fill="#f59aa0" opacity="0.75"/>
+                    <g class="face-n">
+                        <ellipse cx="46" cy="21.4" rx="1.7" ry="2.1" fill="#2b2118"/><circle cx="46.6" cy="20.6" r="0.6" fill="#fff"/>
+                        <ellipse cx="54" cy="21.4" rx="1.7" ry="2.1" fill="#2b2118"/><circle cx="54.6" cy="20.6" r="0.6" fill="#fff"/>
+                        <path d="M48.3 25.4 Q50 27.2 51.7 25.4" stroke="#2b2118" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+                    </g>
+                    <g class="face-strain" stroke="#2b2118" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                        <path d="M44.4 20 L47.6 21.6 L44.4 23.2 M55.6 20 L52.4 21.6 L55.6 23.2"/>
+                        <path d="M47.4 26 Q48.3 25 49.2 26 Q50 27 50.8 26 Q51.7 25 52.6 26"/>
+                    </g>
+                    <g class="face-x" stroke="#2b2118" stroke-width="0.9" fill="none" stroke-linecap="round">
+                        <path d="M46 21.4 m-1.6 0 a1.6 1.6 0 1 1 1.6 1.6 a0.9 0.9 0 1 1 -0.9 -0.9"/>
+                        <path d="M54 21.4 m-1.6 0 a1.6 1.6 0 1 1 1.6 1.6 a0.9 0.9 0 1 1 -0.9 -0.9"/>
+                        <ellipse cx="50" cy="26" rx="1.3" ry="1.6" fill="#7a2e2e" stroke="none"/>
+                    </g>
+                    <g class="sweat" fill="#7cc3ff" stroke="#3b82f6" stroke-width="0.4">
+                        <path d="M37 13 q-2 3.2 0 4.2 q2 -1 0 -4.2 Z"/><path d="M63.6 23 q-1.7 2.7 0 3.6 q1.7 -0.9 0 -3.6 Z"/>
+                    </g>
                 </g></g>
             </svg>`;
 
