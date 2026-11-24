@@ -236,6 +236,8 @@
   .tbl .w .me { color: var(--gold); font-weight: 700; }
   .tbl .secret { color: var(--muted); }
   .tbl tr.mine td.f { color: var(--gold); }
+  .pop-tbl { margin-top: 4px; }
+  .pop-tbl .w span { display: inline-block; }
 
   /* 수입 / 순위 */
   .income-total { display: flex; justify-content: space-between; align-items: baseline; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--card-border); }
@@ -426,6 +428,7 @@
         <thead><tr><th>과일</th><th>판매가</th><th>판매 결과</th></tr></thead>
         <tbody id="resultBody"></tbody>
       </table>
+      <button class="btn btn-dark" id="btnRoundDetail" style="margin-top:14px">낙찰자 · 판매수익 보기</button>
     </div>
 
     <!-- 내 수입 -->
@@ -442,6 +445,19 @@
     </div>
 
   </section>
+</div>
+
+<!-- ===== 라운드 결과 팝업 ===== -->
+<div class="modal-bg hidden" id="roundPop">
+  <div class="modal">
+    <h2 id="roundPopTitle"></h2>
+    <p class="sub">과일별 낙찰가와 낙찰자, 낙찰자별 판매수익이에요. 누적 수입은 게임이 끝날 때 공개돼요.</p>
+    <table class="tbl pop-tbl">
+      <thead><tr><th>과일</th><th>낙찰가</th><th>낙찰자 · 판매수익</th></tr></thead>
+      <tbody id="roundPopBody"></tbody>
+    </table>
+    <button class="btn btn-gold close" id="roundPopClose">확인</button>
+  </div>
 </div>
 
 <!-- ===== 선택 시트 (교체 / 비밀) ===== -->
@@ -490,7 +506,7 @@
     <ul>
       <li><b>협상</b> — 자유롭게 돌아다니며 이야기하세요. 담합도, 거짓말도 자유예요. 협상 시간은 방장이 대기실에서 5~15분 중에 정하고(기본 5분), 화면에 남은 시간이 표시돼요.</li>
       <li><b>희망가 제시</b> — 내 과일마다 1천~5천 원 중 하나를 고르고 <b>제출하기</b>를 눌러요. 마감 전까지는 다시 골라서 다시 제출할 수 있어요. 내지 않으면 5천 원으로 처리돼요. 몇 명이 제출했는지는 모두에게 보여요.</li>
-      <li><b>결과 발표</b> — 과일별 판매가, 몇 명이 팔았는지, 판매 수입이 공개돼요. 누가 팔았는지와 각자의 누적 수입은 끝날 때까지 비공개예요.</li>
+      <li><b>결과 발표</b> — 과일별 낙찰가, 낙찰자, 낙찰자별 판매수익이 팝업으로 공개돼요. 각자의 누적 수입은 끝날 때까지 비공개예요.</li>
     </ul>
 
     <h3>판매 규칙</h3>
@@ -504,7 +520,7 @@
 
     <h3>특수 능력 (게임 중 단 한 번, 둘 중 하나만)</h3>
     <ul>
-      <li><b>비밀</b> — 이번 라운드에 원하는 과일 하나의 판매가와 수입을 가려요. 내 과일이 아니어도 되고, 누가 썼는지는 공개되지 않아요.</li>
+      <li><b>비밀</b> — 이번 라운드에 원하는 과일 하나의 낙찰가, 낙찰자, 판매수익을 가려요. 그 과일을 판 사람의 내 수입에서도 빠져 보이고, 게임이 끝나면 공개돼요. 내 과일이 아니어도 되고, 누가 썼는지는 공개되지 않아요.</li>
       <li><b>교체</b> — 내 과일 하나를 다른 과일로 바꿔요. 희망가 제시 전에만 쓸 수 있고, 바꾸는 즉시 누가 무엇을 무엇으로 바꿨는지 모두에게 공개돼요.</li>
     </ul>
 
@@ -539,7 +555,7 @@ function freshState(me = null) {
   return {
     roomId: null, room: null, players: [], me, channel: null, qrFor: null,
     holdings: [], counts: {}, results: [], events: [], bids: [], ability: null, income: [],
-    draft: {}, submitting: false,
+    draft: {}, submitting: false, sales: [],
     bidStatus: [], viewRound: null, lastRound: null, statusTimer: null, refreshTimer: null,
   };
 }
@@ -684,11 +700,13 @@ async function loadGame() {
     sb.from('fs_abilities').select('*').eq('room_id', id).maybeSingle(),
     sb.from('fs_income').select('*').eq('room_id', id),
     sb.rpc('fs_fruit_counts', { p_room: id }),
+    sb.from('fs_sales').select('*').eq('room_id', id),
   ]);
   const bad = res.find((r) => r.error);
   if (bad) throw bad.error;
 
-  const [rm, holdings, results, events, bids, ability, income, counts] = res.map((r) => r.data);
+  const [rm, holdings, results, events, bids, ability, income, counts, sales] = res.map((r) => r.data);
+  state.sales = sales || [];
   state.room = rm;
   state.holdings = holdings || [];   // 진행 중에는 내 것만, 종료 후에는 전체
   state.counts = Object.fromEntries((counts || []).map((c) => [c.fruit, c.sellers]));
@@ -889,6 +907,7 @@ function renderGame() {
   renderAbility();
   renderResults();
   renderIncome();
+  maybeAutoPopup();
   renderMarket();
   manageStatusPoll();
   tickTimer();
@@ -1159,6 +1178,11 @@ function renderBidCount() {
 }
 
 // ---------- 결과 ----------
+const sortByFruit = (a, b) => {
+  const order = state.room.fruits || [];
+  return order.indexOf(a.fruit) - order.indexOf(b.fruit);
+};
+
 function renderResults() {
   const rounds = [...new Set(state.results.map((r) => r.round))].sort((a, b) => a - b);
   $('cardResults').classList.toggle('hidden', rounds.length === 0);
@@ -1174,64 +1198,123 @@ function renderResults() {
     renderResults();
   };
 
-  const rows = state.results.filter((r) => r.round === state.viewRound);
-  const order = state.room.fruits || [];
-  rows.sort((a, b) => order.indexOf(a.fruit) - order.indexOf(b.fruit));
+  const rows = state.results.filter((r) => r.round === state.viewRound).sort(sortByFruit);
 
   $('resultBody').innerHTML = rows.map((r) => {
     const fruitCell = `${fe(r.fruit)} ${escapeHtml(r.fruit)}`;
-    if (r.secret) {
+    if (r.secret && !state.sales.some((x) => x.round === r.round && x.fruit === r.fruit)) {
       return `<tr><td class="f">${fruitCell}</td><td class="p secret">🔒</td>
         <td class="w secret">비밀이 걸렸어요 (판매 ${r.sellers}개)</td></tr>`;
     }
-    const total = (r.share || 0) * (r.winner_slots || 0);
-    let desc;
-    if (r.winner_people === 1) {
-      desc = `1명이 ${r.sellers}개 모두 판매 · ${won(total)}`;
-    } else if (r.winner_people === r.winner_slots) {
-      desc = `${r.winner_people}명이 나눠 판매 · 1인 ${won(r.share)}`;
-    } else {
-      desc = `${r.winner_people}명이 나눠 판매 · 총 ${won(total)}`;
-    }
-    const mySlots = myWinningSlots(r);
-    const mine = mySlots > 0
-      ? `<br><span class="me">내가 팔았어요 +${won(r.share * mySlots)}</span>` : '';
-    return `<tr class="${mySlots ? 'mine' : ''}"><td class="f">${fruitCell}</td>
-      <td class="p">${won(r.price)}</td><td class="w">${desc}${mine}</td></tr>`;
+    const sales = state.sales.filter((x) => x.round === r.round && x.fruit === r.fruit);
+    const price = sales.length ? sales[0].price : r.price;
+    const people = sales.length || r.winner_people;
+    const total = sales.reduce((t, x) => t + x.amount, 0) || (r.share || 0) * (r.winner_slots || 0);
+    const desc = people === 1
+      ? `1명이 ${r.sellers}개 모두 판매 · ${won(total)}`
+      : `${people}명이 나눠 판매 · 총 ${won(total)}`;
+    const my = sales.find((x) => x.user_id === state.me);
+    const mine = my ? `<br><span class="me">내가 팔았어요 +${won(my.amount)}</span>` : '';
+    const lock = r.secret ? ' 🔒' : '';
+    return `<tr class="${my ? 'mine' : ''}"><td class="f">${fruitCell}${lock}</td>
+      <td class="p">${won(price)}</td><td class="w">${desc}${mine}</td></tr>`;
   }).join('');
 }
 
-// 내 희망가가 그 과일의 최저가였던 칸 수 (교체 이력을 반영해 그 라운드의 과일로 판단)
-function myWinningSlots(r) {
-  return [1, 2].filter((slot) => {
-    if (fruitOfSlotAt(slot, r.round) !== r.fruit) return false;
-    const b = state.bids.find((x) => x.round === r.round && x.slot === slot && x.user_id === state.me);
-    const price = b ? b.price : 5;
-    return price * 1000 === r.price;
-  }).length;
+$('btnRoundDetail').onclick = () => openRoundPopup(state.viewRound);
+
+// ---------- 라운드 결과 팝업 (낙찰가·낙찰자·판매수익, 누적합 없음) ----------
+function openRoundPopup(round) {
+  if (round == null) return;
+  const rows = state.results.filter((r) => r.round === round).sort(sortByFruit);
+  $('roundPopTitle').textContent = `${round}라운드 결과`;
+  $('roundPopBody').innerHTML = rows.map((r) => {
+    const fruitCell = `${fe(r.fruit)} ${escapeHtml(r.fruit)}`;
+    const sales = state.sales.filter((x) => x.round === round && x.fruit === r.fruit)
+      .sort((a, b) => b.amount - a.amount);
+    if (!sales.length) {
+      return `<tr><td class="f">${fruitCell}</td><td class="p secret">🔒 비공개</td>
+        <td class="w secret">비밀이 걸려 낙찰자와 수익이 가려졌어요</td></tr>`;
+    }
+    const winners = sales.map((x) => {
+      const me = x.user_id === state.me;
+      return `<span class="${me ? 'me' : ''}">${escapeHtml(nickOf(x.user_id))}${x.slots > 1 ? ` (${x.slots}칸)` : ''} · ${won(x.amount)}</span>`;
+    }).join('<br>');
+    return `<tr class="${sales.some((x) => x.user_id === state.me) ? 'mine' : ''}">
+      <td class="f">${fruitCell}${r.secret ? ' 🔒' : ''}</td>
+      <td class="p">${won(sales[0].price)}</td><td class="w">${winners}</td></tr>`;
+  }).join('');
+  $('roundPop').dataset.round = String(round);
+  $('roundPop').classList.remove('hidden');
 }
 
+function seenKey(round) {
+  const startEv = state.events.find((e) => e.kind === 'start');
+  return `fruitshop_seen_${state.roomId}_${startEv ? startEv.id : 0}_${round}`;
+}
+
+function closeRoundPopup() {
+  const r = $('roundPop').dataset.round;
+  if (r) { try { localStorage.setItem(seenKey(Number(r)), '1'); } catch { /* 저장소 사용 불가 */ } }
+  $('roundPop').classList.add('hidden');
+}
+$('roundPopClose').onclick = closeRoundPopup;
+$('roundPop').onclick = (e) => { if (e.target.id === 'roundPop') closeRoundPopup(); };
+
+// 새 라운드 결과가 나오면 한 번 자동으로 띄움
+function maybeAutoPopup() {
+  if (!state.results.length || !$('roundPop').classList.contains('hidden')) return;
+  const latest = Math.max(...state.results.map((r) => r.round));
+  let seen = false;
+  try { seen = !!localStorage.getItem(seenKey(latest)); } catch { /* 저장소 사용 불가 */ }
+  if (!seen) openRoundPopup(latest);
+}
+
+// 그 라운드에 내 칸이 어떤 과일이었는지 (교체 이력 반영)
 function fruitOfSlotAt(slot, round) {
   const h = state.holdings.find((x) => x.user_id === state.me && x.slot === slot);
   if (!h) return null;
   const ab = state.ability;
-  // 이 칸을 그 라운드 이후에 교체했다면, 그 라운드엔 교체 전 과일이었음
   if (ab && ab.kind === 'change' && ab.slot === slot && round < ab.round) return ab.from_fruit;
   return h.fruit;
 }
 
 // ---------- 수입 ----------
 function renderIncome() {
-  const mine = state.income.filter((i) => i.user_id === state.me).sort((a, b) => a.round - b.round);
-  if (!mine.length) {
+  const finished = state.room.status === 'finished';
+  const rounds = [...new Set(state.results.map((r) => r.round))].sort((a, b) => a - b);
+  if (!rounds.length) {
     $('incomeBody').innerHTML = '<p class="small-note" style="margin:0">첫 라운드 결과가 나오면 여기에 쌓여요.</p>';
     return;
   }
-  const total = mine.reduce((s, i) => s + i.amount, 0);
-  const rows = mine.map((i) =>
-    `<tr><td>${i.round}라운드</td><td style="text-align:right">${won(i.amount)}</td></tr>`).join('');
+
+  if (finished) {
+    // 게임 종료: 비밀 과일까지 포함한 전체 수입
+    const mine = state.income.filter((i) => i.user_id === state.me).sort((a, b) => a.round - b.round);
+    const total = mine.reduce((t, i) => t + i.amount, 0);
+    const rows = mine.map((i) =>
+      `<tr><td>${i.round}라운드</td><td style="text-align:right">${won(i.amount)}</td></tr>`).join('');
+    $('incomeBody').innerHTML = `<table class="tbl"><tbody>${rows}</tbody></table>
+      <div class="income-total"><span>최종 수입</span><b>${won(total)}</b></div>
+      <p class="small-note">비밀이 걸렸던 과일의 수입까지 모두 포함한 금액이에요.</p>`;
+    return;
+  }
+
+  // 진행 중: 비밀이 안 걸린 과일 수입만
+  let anySecret = false;
+  const rows = rounds.map((round) => {
+    const amt = state.sales.filter((x) => x.round === round && x.user_id === state.me && !x.secret)
+      .reduce((t, x) => t + x.amount, 0);
+    const secretFruits = state.results.filter((r) => r.round === round && r.secret).map((r) => r.fruit);
+    const hit = [1, 2].some((slot) => secretFruits.includes(fruitOfSlotAt(slot, round)));
+    if (hit) anySecret = true;
+    return `<tr><td>${round}라운드${hit ? ' <span class="secret">🔒</span>' : ''}</td>
+      <td style="text-align:right">${won(amt)}${hit ? ' + 비밀' : ''}</td></tr>`;
+  }).join('');
+  const total = state.sales.filter((x) => x.user_id === state.me && !x.secret).reduce((t, x) => t + x.amount, 0);
   $('incomeBody').innerHTML = `<table class="tbl"><tbody>${rows}</tbody></table>
-    <div class="income-total"><span>누적 수입</span><b>${won(total)}</b></div>`;
+    <div class="income-total"><span>공개된 수입 합계</span><b>${won(total)}</b></div>
+    ${anySecret ? '<p class="small-note">🔒 비밀이 걸린 내 과일의 수입은 빠져 있어요. 게임이 끝나면 합쳐서 보여줘요.</p>' : ''}`;
 }
 
 // ---------- 최종 순위 ----------
@@ -1362,9 +1445,10 @@ function leaveRoom() {
 function resetGameState() {
   Object.assign(state, {
     holdings: [], counts: {}, results: [], events: [], bids: [], ability: null, income: [],
-    draft: {}, submitting: false,
+    draft: {}, submitting: false, sales: [],
     bidStatus: [], viewRound: null, lastRound: null,
   });
+  if ($('roundPop')) $('roundPop').classList.add('hidden');
   if (state.statusTimer) { clearInterval(state.statusTimer); state.statusTimer = null; }
 }
 
