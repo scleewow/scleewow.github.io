@@ -237,6 +237,14 @@
   .tbl .secret { color: var(--muted); }
   .tbl tr.mine td.f { color: var(--gold); }
   .pop-tbl { margin-top: 4px; }
+  .change-item {
+    background: var(--input); border: 1px solid var(--input-border); border-radius: 12px;
+    padding: 14px; margin-bottom: 10px; text-align: center;
+  }
+  .change-item .who { font-size: 17px; font-weight: 800; }
+  .change-item .who span { font-size: 12px; font-weight: 500; color: var(--muted); margin-left: 6px; }
+  .change-item .swap { font-size: 20px; font-weight: 700; margin-top: 8px; }
+  .change-item .swap b { color: var(--gold); margin: 0 6px; }
   .pop-tbl .w span { display: inline-block; }
 
   /* 수입 / 순위 */
@@ -445,6 +453,16 @@
     </div>
 
   </section>
+</div>
+
+<!-- ===== 교체 알림 팝업 ===== -->
+<div class="modal-bg hidden" id="changePop">
+  <div class="modal">
+    <h2>🔄 과일 교체 알림</h2>
+    <p class="sub">교체한 과일은 게임이 끝날 때까지 유지돼요.</p>
+    <div id="changePopBody"></div>
+    <button class="btn btn-gold close" id="changePopClose">확인</button>
+  </div>
 </div>
 
 <!-- ===== 라운드 결과 팝업 ===== -->
@@ -777,12 +795,46 @@ async function refresh() {
   }
 }
 
-function onEvent(ev) {
-  if (ev.kind === 'change' && ev.payload && ev.payload.user_id !== state.me) {
-    const p = ev.payload;
-    toast(`${p.nickname}님이 ${fe(p.from)}${p.from} → ${fe(p.to)}${p.to} 로 교체했어요`, true);
-  }
+function onEvent() {
+  // 교체 알림은 데이터를 다시 불러온 뒤 팝업으로 띄움 (maybeChangePopup)
 }
+
+// ---------- 교체 알림 팝업 (확인해야 닫힘) ----------
+const changeSeenKey = (id) => `fruitshop_change_seen_${state.roomId}_${id}`;
+function isChangeSeen(id) {
+  try { return !!localStorage.getItem(changeSeenKey(id)); } catch { return false; }
+}
+function markChangeSeen(id) {
+  try { localStorage.setItem(changeSeenKey(id), '1'); } catch { /* 저장소 사용 불가 */ }
+}
+
+function maybeChangePopup() {
+  if (!state.room || state.room.status === 'lobby') return;
+  if (!$('changePop').classList.contains('hidden') || !$('roundPop').classList.contains('hidden')) return;
+  const unseen = state.events.filter((e) => e.kind === 'change' && !isChangeSeen(e.id));
+  // 내가 한 교체는 알릴 필요 없음
+  unseen.filter((e) => e.payload && e.payload.user_id === state.me).forEach((e) => markChangeSeen(e.id));
+  const others = unseen.filter((e) => e.payload && e.payload.user_id !== state.me);
+  if (!others.length) return;
+
+  $('changePopBody').innerHTML = others.map((e) => {
+    const p = e.payload;
+    return `<div class="change-item">
+      <div class="who">${escapeHtml(p.nickname)}<span>${e.round}라운드</span></div>
+      <div class="swap">${fe(p.from)} ${escapeHtml(p.from)} <b>→</b> ${fe(p.to)} ${escapeHtml(p.to)}</div>
+    </div>`;
+  }).join('');
+  $('changePop').dataset.ids = others.map((e) => e.id).join(',');
+  $('changePop').classList.remove('hidden');
+}
+
+function closeChangePopup() {
+  ($('changePop').dataset.ids || '').split(',').filter(Boolean).forEach(markChangeSeen);
+  $('changePop').classList.add('hidden');
+  maybeAutoPopup();
+}
+$('changePopClose').onclick = closeChangePopup;
+$('changePop').onclick = (e) => { if (e.target.id === 'changePop') closeChangePopup(); };
 
 // ---------- 협상 타이머 ----------
 // 각 폰이 협상 단계를 처음 본 시각부터 따로 카운트 (안내용, 자동 진행 없음)
@@ -907,6 +959,7 @@ function renderGame() {
   renderAbility();
   renderResults();
   renderIncome();
+  maybeChangePopup();
   maybeAutoPopup();
   renderMarket();
   manageStatusPoll();
@@ -1264,6 +1317,7 @@ $('roundPop').onclick = (e) => { if (e.target.id === 'roundPop') closeRoundPopup
 // 새 라운드 결과가 나오면 한 번 자동으로 띄움
 function maybeAutoPopup() {
   if (!state.results.length || !$('roundPop').classList.contains('hidden')) return;
+  if (!$('changePop').classList.contains('hidden')) return;
   const latest = Math.max(...state.results.map((r) => r.round));
   let seen = false;
   try { seen = !!localStorage.getItem(seenKey(latest)); } catch { /* 저장소 사용 불가 */ }
@@ -1449,6 +1503,7 @@ function resetGameState() {
     bidStatus: [], viewRound: null, lastRound: null,
   });
   if ($('roundPop')) $('roundPop').classList.add('hidden');
+  if ($('changePop')) $('changePop').classList.add('hidden');
   if (state.statusTimer) { clearInterval(state.statusTimer); state.statusTimer = null; }
 }
 
