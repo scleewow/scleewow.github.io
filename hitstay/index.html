@@ -230,6 +230,44 @@
         .banner-content h2 { font-size: 1.6rem; margin-top: 0.7rem; text-shadow: 0 0 12px rgba(212,169,55,0.9); }
         .banner-content p { font-size: 1rem; margin-top: 0.2rem; }
 
+        /* 라운드 승자 연출 */
+        #win-banner { pointer-events: auto; cursor: pointer; background: rgba(0,0,0,0.7); }
+        .win-card {
+            position: relative; z-index: 2; text-align: center; color: #fff; padding: 1.4rem 1.6rem; width: min(90vw, 380px);
+            background: radial-gradient(circle at 50% 0%, #1d5a42, var(--felt-d) 70%); border: 3px solid var(--gold); border-radius: 18px;
+            box-shadow: 0 0 40px rgba(212,169,55,0.55); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .win-card.tie { box-shadow: 0 0 40px rgba(125,211,252,0.5); border-color: #7dd3fc; }
+        .win-card.bust { box-shadow: 0 0 40px rgba(239,68,68,0.55); border-color: #ef4444; }
+        .win-card.mine { box-shadow: 0 0 60px rgba(253,224,71,0.9); }
+        .win-icon { font-size: 3.6rem; line-height: 1; animation: bounce 0.9s ease-in-out infinite; }
+        @keyframes bounce { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-8px) scale(1.08); } }
+        .win-sub { font-size: 0.85rem; color: #e8d9a8; margin-top: 0.4rem; font-weight: bold; letter-spacing: 0.05em; }
+        .win-card h2 { font-size: 1.9rem; margin: 0.25rem 0 0.4rem; color: var(--gold); text-shadow: 0 0 14px rgba(212,169,55,0.8); overflow-wrap: anywhere; }
+        .win-card.tie h2 { color: #bae6fd; } .win-card.bust h2 { color: #fca5a5; }
+        .win-cards { justify-content: center; margin: 0.3rem 0 0.5rem; }
+        .win-cards .pc { width: 2.4rem; height: 3.2rem; font-size: 1.35rem; }
+        .win-card p { font-size: 1.05rem; font-weight: bold; }
+        .win-card .win-extra { font-size: 0.85rem; font-weight: normal; color: #d7e7dc; margin-top: 0.3rem; }
+        .confetti { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
+        .confetti span { position: absolute; top: -10%; font-size: 1.4rem; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(115vh) rotate(540deg); } }
+
+        .seat.winner { border-color: var(--gold); background: linear-gradient(135deg, #fffbeb, #fef3c7); box-shadow: 0 0 0 3px rgba(212,169,55,0.6), 0 0 18px rgba(212,169,55,0.6); }
+        .seat.winner .nm::before { content: '👑 '; }
+        .seat.loser { opacity: 0.72; }
+        .net-badge { font-size: 0.8rem; font-weight: 900; border-radius: 999px; padding: 0.05rem 0.45rem; }
+        .net-badge.plus { background: var(--accent); color: #fff; }
+        .net-badge.minus { background: #fee2e2; color: #b91c1c; }
+        .res-head { font-size: 1.35rem; font-weight: 900; color: var(--gold-d); margin: 0.2rem 0 0.4rem; }
+        .res-row.win { box-shadow: 0 0 0 2px rgba(212,169,55,0.5); }
+        .res-row.win .nm { font-size: 1.05rem; }
+        .tag.bot { background: #7c3aed; }
+        .bot-add { margin-top: 0.7rem; padding-top: 0.6rem; border-top: 1px dashed var(--line); }
+        .bot-row { display: flex; gap: 0.4rem; }
+        .bot-row select { flex: 1; margin-top: 0; }
+        .bot-row button { flex: 1; margin-top: 0; }
+
         #screen-main, #screen-lobby { max-width: 480px; margin: 0 auto; }
         @media (max-width: 560px) {
             body { padding: 0.35rem; }
@@ -304,8 +342,19 @@
             </div>
 
             <div class="card">
-                <h4>현재 접속자 (<span id="player-count">0</span>명) <span class="small">· 2~7명</span></h4>
+                <h4>현재 접속자 (<span id="player-count">0</span>명) <span class="small">· 2~7명 (봇 포함)</span></h4>
                 <div id="lobby-player-list" class="player-list"></div>
+                <div id="bot-add-box" class="bot-add hidden">
+                    <div class="small" style="text-align:left; margin-bottom:0.2rem;">🤖 AI 봇 추가 (인원이 모자랄 때)</div>
+                    <div class="bot-row">
+                        <select id="bot-level">
+                            <option value="easy">쉬움</option>
+                            <option value="normal" selected>보통</option>
+                            <option value="hard">어려움</option>
+                        </select>
+                        <button class="gold" onclick="addBot()">+ 봇 추가</button>
+                    </div>
+                </div>
             </div>
 
             <div id="host-lobby-controls" class="hidden">
@@ -334,10 +383,8 @@
             <div id="my-area"></div>
             <div id="result-area"></div>
 
-            <div class="card">
-                <h4 style="text-align:left;">📝 진행 기록 <span class="small">(이번 라운드)</span></h4>
-                <div class="log-box" id="log-box"></div>
-                <button class="secondary" style="margin-top:0.6rem;" onclick="openRecordModal()">📜 지난 라운드 기록 · 현재 순위</button>
+            <div class="card hidden" id="log-card">
+                <button class="secondary" onclick="openRecordModal()">📜 최종 순위 · 라운드별 진행 기록 보기</button>
             </div>
 
             <div id="host-controls" class="hidden">
@@ -353,6 +400,19 @@
             <div class="dice" id="dice-face">?</div>
             <h2 id="dice-title">한계 숫자</h2>
             <p id="dice-text"></p>
+        </div>
+    </div>
+
+    <!-- 라운드 승자 연출 -->
+    <div id="win-banner" class="banner-overlay hidden" onclick="hideWinBanner()">
+        <div class="confetti" id="confetti"></div>
+        <div class="win-card" id="win-card">
+            <div class="win-icon" id="win-icon">🏆</div>
+            <div class="win-sub" id="win-sub"></div>
+            <h2 id="win-title"></h2>
+            <div class="win-cards cards" id="win-cards"></div>
+            <p id="win-text"></p>
+            <p class="win-extra" id="win-extra"></p>
         </div>
     </div>
 
@@ -427,6 +487,12 @@
                 <h4>🏠 대기실</h4>
                 <p>• 방장이 시작 칩, 차례 제한 시간, 최대 라운드, 베팅 방식을 정하고 시작합니다. (2~7명)<br>
                 • 자리 순서는 랜덤으로 정해집니다.</p>
+                <h4>🤖 AI 봇</h4>
+                <p>• 인원이 모자라면 방장이 대기실에서 봇을 추가할 수 있습니다. (쉬움 · 보통 · 어려움)<br>
+                • 봇도 자기 카드와 공개된 카드만 보고 판단합니다.<br>
+                • 쉬움은 감으로, 보통은 확률을 따져서, 어려움은 남은 카드와 상대의 공개 카드까지 계산하고 가끔 블러핑도 합니다.</p>
+                <h4>📝 진행 기록</h4>
+                <p>• 게임 중에는 진행 기록을 보여주지 않고, 게임이 끝나면 최종 순위와 함께 라운드별 기록을 볼 수 있습니다.</p>
                 <h4>🏁 게임 종료</h4>
                 <p>• 누군가의 칩이 0개가 되면 그 라운드가 끝난 뒤 게임이 끝나고, 남은 칩이 많은 순서로 순위를 정합니다.<br>
                 • 최대 라운드를 정했다면 그 라운드가 끝났을 때도 게임이 끝납니다.</p>
@@ -616,7 +682,7 @@
         let pub = null, me = null;
         let selOpen = null, raiseAmt = 1, busy = false;
         let lastRound = null, lastTickAt = 0, lastPhaseKey = '';
-        let resultDismissed = false, recordMode = false;
+        let resultDismissed = false, recordMode = false, lastBannerRound = null;
         let seenCards = {};   // 새로 받은 카드 애니메이션용
 
         const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -632,6 +698,9 @@
             return `<span class="pc ${n < 0 ? 'neg' : (n >= 6 ? 'hi' : '')} ${cls || ''}">${n}</span>`;
         };
         const backHtml = () => `<span class="pc back"></span>`;
+        const LEVEL_NAME = { easy: '쉬움', normal: '보통', hard: '어려움' };
+        const isBot = pid => !!(pub && pub.players && pub.players[pid] && pub.players[pid].bot);
+        const botTag = pid => isBot(pid) ? `<span class="tag bot">🤖 ${LEVEL_NAME[pub.players[pid].level] || '봇'}</span>` : '';
 
         // ===== 시작 =====
         window.onload = function () {
@@ -742,7 +811,7 @@
 
                 if (p.state === 'LOBBY') {
                     document.getElementById('result-modal').classList.add('hidden');
-                    resultDismissed = false; lastRound = null; seenCards = {};
+                    resultDismissed = false; lastRound = null; seenCards = {}; lastBannerRound = null;
                     document.getElementById('screen-game').classList.add('hidden');
                     document.getElementById('screen-lobby').classList.remove('hidden');
                     renderLobby();
@@ -787,9 +856,11 @@
             const listEl = document.getElementById('lobby-player-list');
             listEl.innerHTML = keys.map(pid => {
                 const p = players[pid];
-                const kick = (isHost && pid !== myPlayerId) ? `<button class="kick-btn" onclick="kickPlayer('${esc(pid)}')">강퇴</button>` : '';
-                return `<div class="player-item ${pid === myPlayerId ? 'me' : ''}"><span>${esc(p.name)} ${p.isHost ? '👑' : ''}</span><div>${kick}</div></div>`;
+                const kick = (isHost && pid !== myPlayerId)
+                    ? `<button class="kick-btn" onclick="kickPlayer('${esc(pid)}', ${p.bot ? 'true' : 'false'})">${p.bot ? '제거' : '강퇴'}</button>` : '';
+                return `<div class="player-item ${pid === myPlayerId ? 'me' : ''}"><span>${p.bot ? '🤖 ' : ''}${esc(p.name)} ${p.isHost ? '👑' : ''}${botTag(pid)}</span><div>${kick}</div></div>`;
             }).join('');
+            document.getElementById('bot-add-box').classList.toggle('hidden', !isHost || keys.length >= 7);
 
             document.getElementById('host-lobby-controls').classList.toggle('hidden', !isHost);
             const startBtn = document.getElementById('host-start-btn');
@@ -799,7 +870,10 @@
         }
 
         function setOption(opt, val) { gameRpc('hs_set_option', { p_opt: opt, p_val: Number(val) }).then(refreshRoom); }
-        function kickPlayer(pid) { if (confirm('해당 플레이어를 강퇴하시겠습니까?')) gameRpc('hs_kick', { p_target: pid }).then(refreshRoom); }
+        function kickPlayer(pid, bot) {
+            if (bot || confirm('해당 플레이어를 강퇴하시겠습니까?')) gameRpc('hs_kick', { p_target: pid }).then(refreshRoom);
+        }
+        function addBot() { gameRpc('hs_add_bot', { p_level: document.getElementById('bot-level').value }).then(refreshRoom); }
         function startGame() { gameRpc('hs_start').then(refreshRoom); }
         function deleteRoomByHost() {
             if (!confirm('현재 방을 정말 삭제하시겠습니까? (접속 중인 모든 플레이어가 처음 화면으로 이동합니다)')) return;
@@ -840,7 +914,11 @@
             renderSeats(ended ? 'SHOW' : ph);
             renderMyArea(ph);
             renderResult(ph);
-            renderLog();
+            document.getElementById('log-card').classList.toggle('hidden', !ended);
+            if (ph === 'SHOW' && pub.result && lastBannerRound !== pub.round) {
+                lastBannerRound = pub.round;
+                showWinBanner();
+            }
             document.getElementById('host-controls').classList.toggle('hidden', !isHost || ended);
             document.getElementById('force-btn').innerText = ph === 'SHOW' ? '⏭️ 다음 라운드 바로 시작' : '⏩ 강제 진행 (멈춘 사람 자동 처리)';
         }
@@ -861,9 +939,11 @@
         function renderSeats(ph) {
             const dealerPid = seats()[pub.dealerIdx];
             const res = pub.result || {};
+            const oc = ph === 'SHOW' && pub.result ? roundOutcome() : null;
             const html = seats().map(pid => {
                 const r = rp(pid);
                 const tags = [];
+                if (isBot(pid)) tags.push(botTag(pid));
                 if (pid === dealerPid) tags.push('<span class="tag dealer">🚩 선</span>');
                 if (r.folded) tags.push('<span class="tag fold">포기</span>');
                 else if (r.allin) tags.push('<span class="tag allin">올인</span>');
@@ -886,14 +966,21 @@
                     if (open.length) cards += `<span class="small" style="margin-left:0.25rem;">공개 합 ${sum(open)}</span>`;
                 }
                 const contrib = ph === 'SHOW' ? Number((res.contrib || {})[pid] || 0) : Number(r.contrib || 0);
+                let rcls = '', netHtml = '';
+                if (oc) {
+                    const n = oc.net(pid);
+                    rcls = oc.winners.has(pid) ? 'winner' : (n < 0 ? 'loser' : '');
+                    netHtml = n !== 0 ? `<span class="net-badge ${n > 0 ? 'plus' : 'minus'}">${n > 0 ? '+' : ''}${n}</span>` : '';
+                }
                 return `
-                <div class="seat ${pid === myPlayerId ? 'me' : ''} ${pub.turn === pid && pub.state === 'PLAY' ? 'turn' : ''} ${r.folded ? 'folded' : ''}">
+                <div class="seat ${pid === myPlayerId ? 'me' : ''} ${pub.turn === pid && pub.state === 'PLAY' ? 'turn' : ''} ${r.folded ? 'folded' : ''} ${rcls}">
                     <div class="nm">${esc(pname(pid))}${pid === myPlayerId ? ' (나)' : ''}${tags.join('')}</div>
                     <div class="chips">보유 <b>${chipsOf(pid)}</b></div>
                     <div class="row2">
                         <div class="cards">${cards}</div>
                         <div style="text-align:right;">
                             <div class="bet">베팅 ${contrib}개</div>
+                            ${netHtml}
                             ${r.act && ph !== 'SHOW' ? `<span class="act">${esc(r.act)}</span>` : ''}
                         </div>
                     </div>
@@ -991,8 +1078,12 @@
             const res = pub.result;
             if (ph !== 'SHOW' || !res) { el.innerHTML = ''; return; }
             const gains = res.gains || {}, contrib = res.contrib || {};
-            const winners = new Set();
-            (res.pots || []).forEach(pt => { if (pt.kind === 'win' || pt.kind === 'fold') pt.winners.forEach(w => winners.add(w)); });
+            const oc = roundOutcome();
+            const winners = oc.winners;
+            const m = oc.main;
+            const head = !m ? '' : m.kind === 'win' ? `🏆 ${esc(pname(m.winners[0]))} 승리!`
+                : m.kind === 'fold' ? `🏆 ${esc(pname(m.winners[0]))} 획득! (모두 포기)`
+                : m.kind === 'tie' ? '🤝 무승부!' : '💥 모두 초과! 무승부';
 
             const rows = seats().map(pid => {
                 const net = Number(gains[pid] || 0) - Number(contrib[pid] || 0);
@@ -1016,7 +1107,8 @@
             const remain = Math.max(0, Math.ceil((Number(pub.deadline || 0) - serverNow()) / 1000));
             el.innerHTML = `
                 <div class="card">
-                    <h3>🏁 라운드 ${pub.round} 결과 <span class="small">(한계 숫자 ${pub.limit})</span></h3>
+                    <div class="small">라운드 ${pub.round} 결과 · 한계 숫자 ${pub.limit}</div>
+                    <div class="res-head">${head}</div>
                     ${rows.map(x => `
                         <div class="res-row ${winners.has(x.pid) ? 'win' : ''} ${x.h && x.h.bust ? 'bust' : ''}">
                             <span class="nm">${winners.has(x.pid) ? '🏆 ' : ''}${esc(pname(x.pid))}${x.pid === myPlayerId ? ' (나)' : ''} <span class="small">${esc(x.status)}</span></span>
@@ -1028,11 +1120,74 @@
                 </div>`;
         }
 
-        function renderLog() {
-            const box = document.getElementById('log-box');
-            const lines = pub.log || [];
-            box.innerHTML = lines.map(l => /^―/.test(l) ? `<div class="sep">${esc(l)}</div>` : `<div>${esc(l)}</div>`).join('') || '<div class="small">기록 없음</div>';
-            box.scrollTop = box.scrollHeight;
+        // ===== 라운드 승자 정리 / 연출 =====
+        function roundOutcome() {
+            const res = pub.result || {};
+            const pots = res.pots || [];
+            const gains = res.gains || {}, contrib = res.contrib || {};
+            const net = pid => Number(gains[pid] || 0) - Number(contrib[pid] || 0);
+            const main = pots.find(pt => pt.kind !== 'return') || pots[0];
+            const winners = new Set();
+            pots.forEach(pt => { if (pt.kind === 'win' || pt.kind === 'fold') pt.winners.forEach(w => winners.add(w)); });
+            const tiers = new Set();
+            pots.forEach(pt => { if (pt.kind === 'tie' || pt.kind === 'allbust') pt.winners.forEach(w => tiers.add(w)); });
+            return { res, pots, main, winners, tiers, net };
+        }
+
+        function showWinBanner() {
+            const { res, pots, main, net } = roundOutcome();
+            if (!main) return;
+            const card = document.getElementById('win-card');
+            const names = ws => ws.map(pname).join(', ');
+            const hands = res.hands || {};
+            let icon = '🏆', sub = `라운드 ${pub.round} · 한계 숫자 ${pub.limit}`, title = '', text = '', cardsHtml = '', cls = '';
+            const w0 = main.winners[0];
+            if (main.kind === 'win') {
+                title = `${pname(w0)} 승리!`;
+                const h = hands[w0];
+                if (h) {
+                    cardsHtml = h.cards.map(v => cardHtml(v)).join('');
+                    text = `합 ${h.sum} / ${pub.limit}${h.sum === Number(pub.limit) ? ' 🎯 딱 맞음!' : ''} · 칩 ${net(w0) >= 0 ? '+' : ''}${net(w0)}개`;
+                } else text = `칩 ${net(w0) >= 0 ? '+' : ''}${net(w0)}개`;
+            } else if (main.kind === 'fold') {
+                title = `${pname(w0)} 획득!`;
+                text = `모두 포기 · 칩 ${net(w0) >= 0 ? '+' : ''}${net(w0)}개`;
+            } else if (main.kind === 'tie') {
+                icon = '🤝'; cls = 'tie'; title = '무승부!';
+                text = `${names(main.winners)} 똑같이 나눠 가짐`;
+            } else if (main.kind === 'allbust') {
+                icon = '💥'; cls = 'bust'; title = '모두 초과!';
+                text = `무승부 · ${names(main.winners)} 나눠 가짐`;
+            }
+            const others = pots.filter(pt => pt !== main && pt.kind !== 'return');
+            const extra = others.map(pt => `사이드팟 ${pt.amount}개 → ${pt.kind === 'win' ? names(pt.winners) + ' 승리' : names(pt.winners) + ' 나눠 가짐'}`).join(' · ');
+            const mine = main.winners.includes(myPlayerId) && (main.kind === 'win' || main.kind === 'fold');
+            if (mine) { icon = '🎉'; sub = '축하해요! 내가 이겼어요'; }
+
+            card.className = `win-card ${cls} ${mine ? 'mine' : ''}`;
+            document.getElementById('win-icon').innerText = icon;
+            document.getElementById('win-sub').innerText = sub;
+            document.getElementById('win-title').innerText = title;
+            document.getElementById('win-cards').innerHTML = cardsHtml;
+            document.getElementById('win-text').innerText = text;
+            document.getElementById('win-extra').innerText = extra;
+
+            const conf = document.getElementById('confetti');
+            conf.innerHTML = '';
+            if (main.kind === 'win' || main.kind === 'fold') {
+                const em = ['🪙', '✨', '🎉', '💰', '⭐'];
+                conf.innerHTML = Array.from({ length: mine ? 36 : 20 }, () =>
+                    `<span style="left:${Math.random() * 100}%; animation-duration:${1.8 + Math.random() * 1.8}s; animation-delay:${Math.random() * 0.8}s;">${em[Math.floor(Math.random() * em.length)]}</span>`).join('');
+            }
+            const b = document.getElementById('win-banner');
+            b.classList.remove('hidden');
+            if (winBannerTimer) clearTimeout(winBannerTimer);
+            winBannerTimer = setTimeout(hideWinBanner, 3800);
+        }
+        let winBannerTimer = null;
+        function hideWinBanner() {
+            document.getElementById('win-banner').classList.add('hidden');
+            if (winBannerTimer) { clearTimeout(winBannerTimer); winBannerTimer = null; }
         }
 
         // ===== 행동 =====
