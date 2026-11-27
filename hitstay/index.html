@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>힛, 스테이</title>
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+        :root {
+            --bg: #0b2a20;
+            --felt: #0f3d2e;
+            --felt-d: #0a2e22;
+            --panel: #fffdf6;
+            --soft: #f4efe1;
+            --line: #d9cfb4;
+            --ink: #1f2420;
+            --muted: #6b6f66;
+            --gold: #d4a937;
+            --gold-d: #a37d1c;
+            --accent: #166534;
+            --accent-d: #14532d;
+            --red: #b91c1c;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+            background: var(--bg);
+            background-image: radial-gradient(circle at 30% 0%, rgba(212,169,55,0.12), transparent 45%),
+                              radial-gradient(circle at 80% 100%, rgba(22,101,52,0.35), transparent 50%);
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex; justify-content: center; align-items: flex-start;
+            padding: 1rem;
+        }
+
+        .container {
+            width: 100%; max-width: 760px; background: var(--panel); border-radius: 16px; padding: 1.25rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35); border: 2px solid var(--gold); position: relative;
+        }
+
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1rem; padding-bottom: 0.7rem; border-bottom: 2px solid var(--line);
+        }
+        h1 { font-size: 1.35rem; color: var(--felt); letter-spacing: -0.02em; display: flex; align-items: center; gap: 0.45rem; }
+        .title-icon { width: 2.3rem; height: 2.3rem; border-radius: 9px; box-shadow: 0 2px 6px rgba(0,0,0,0.25); }
+
+        .guide-btn {
+            color: var(--felt); background: var(--soft); border: 1px solid var(--gold-d);
+            padding: 0.35rem 0.7rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer;
+            width: auto; margin: 0; font-weight: bold;
+        }
+
+        .card { background: var(--soft); border: 1px solid var(--line); border-radius: 10px; padding: 0.9rem; margin-bottom: 0.9rem; text-align: center; }
+        .card h3, .card h4 { margin-bottom: 0.2rem; }
+
+        input, button, select {
+            width: 100%; padding: 0.75rem; margin-top: 0.5rem; border-radius: 8px;
+            border: 1px solid #b9ad8c; background: #fff; color: var(--ink); font-size: 1rem;
+        }
+        button { background: var(--accent); color: #fff; font-weight: bold; border: none; cursor: pointer; transition: background 0.15s, transform 0.1s; }
+        button:hover { background: var(--accent-d); }
+        button:active { transform: scale(0.98); }
+        button:disabled { background: #a8a89c !important; cursor: not-allowed; opacity: 0.65; transform: none; }
+        button.secondary { background: #6b7068; }
+        button.secondary:hover { background: #4b5049; }
+        button.danger { background: var(--red); }
+        button.danger:hover { background: #991b1b; }
+        button.gold { background: var(--gold-d); }
+        button.gold:hover { background: #876713; }
+        button.kick-btn { width: auto; padding: 0.25rem 0.5rem; font-size: 0.75rem; background: #ef4444; margin: 0; }
+
+        .hidden { display: none !important; }
+        .small { font-size: 0.78rem; color: var(--muted); }
+
+        #qrcode { display: flex; justify-content: center; margin: 0.6rem 0; padding: 0.5rem; background: #fff; border-radius: 8px; }
+
+        .player-list { display: grid; gap: 0.4rem; margin-top: 0.5rem; text-align: left; }
+        .player-item {
+            display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
+            background: #fff; padding: 0.55rem 0.7rem; border-radius: 8px; border: 1px solid var(--line);
+        }
+        .player-item.me { border: 2px solid var(--accent); }
+
+        .setting-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 0.6rem; text-align: left; }
+        .setting-grid label { display: block; margin-top: 0.5rem; }
+        .setting-grid select { margin-top: 0.2rem; padding: 0.55rem; font-size: 0.92rem; }
+
+        /* 상단 */
+        .top-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.45rem; margin-bottom: 0.8rem; }
+        .badge {
+            text-align: center; font-weight: 900; border-radius: 12px; padding: 0.4rem 0.3rem;
+            border: 2px solid var(--line); background: #fff; display: flex; flex-direction: column; justify-content: center;
+        }
+        .badge small { display: block; font-size: 0.66rem; color: var(--muted); font-weight: bold; }
+        .badge.limit { background: var(--felt); color: #fff; border-color: var(--gold); }
+        .badge.limit small { color: #e8d9a8; }
+        .badge.limit .num { font-size: 1.6rem; line-height: 1.05; color: var(--gold); }
+        .badge .val { font-size: 1.05rem; }
+        .timer-warning { color: #dc2626 !important; border-color: #dc2626 !important; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+        /* 테이블 */
+        .table {
+            background: var(--felt); border: 3px solid var(--gold-d); border-radius: 18px; padding: 0.7rem;
+            margin-bottom: 0.9rem; box-shadow: inset 0 0 30px rgba(0,0,0,0.35);
+        }
+        .pot-line { text-align: center; color: #fff; margin-bottom: 0.55rem; }
+        .pot-line .phase { display: inline-block; background: rgba(0,0,0,0.3); border: 1px solid var(--gold); color: var(--gold); font-weight: 900; border-radius: 999px; padding: 0.15rem 0.7rem; font-size: 0.85rem; }
+        .pot-line .pot { font-size: 1.25rem; font-weight: 900; margin-top: 0.3rem; }
+        .pot-line .pot b { color: var(--gold); font-size: 1.5rem; }
+        .pot-line .desc { font-size: 0.8rem; color: #d7e7dc; margin-top: 0.15rem; }
+        .seats { display: grid; gap: 0.4rem; }
+        @media (min-width: 640px) { .seats { grid-template-columns: 1fr 1fr; } }
+        .seat {
+            background: rgba(255,255,255,0.96); border-radius: 10px; padding: 0.45rem 0.55rem; border: 2px solid transparent;
+            display: grid; grid-template-columns: 1fr auto; gap: 0.2rem 0.4rem; align-items: center; position: relative;
+        }
+        .seat.me { border-color: #86efac; }
+        .seat.turn { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.5); animation: glow 1.4s infinite; }
+        @keyframes glow { 0%,100% { box-shadow: 0 0 0 3px rgba(245,158,11,0.5); } 50% { box-shadow: 0 0 0 5px rgba(245,158,11,0.25); } }
+        .seat.folded { opacity: 0.5; }
+        .seat .nm { font-weight: 900; font-size: 0.95rem; overflow-wrap: anywhere; }
+        .seat .chips { text-align: right; font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+        .seat .chips b { font-size: 1rem; color: var(--ink); }
+        .seat .row2 { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+        .seat .bet { font-size: 0.78rem; font-weight: bold; color: var(--gold-d); white-space: nowrap; }
+        .seat .act { font-size: 0.72rem; color: #374151; background: #eef2ee; border-radius: 6px; padding: 0.05rem 0.35rem; }
+        .tag { font-size: 0.66rem; padding: 0.08rem 0.35rem; border-radius: 4px; margin-left: 0.2rem; color: #fff; white-space: nowrap; vertical-align: middle; }
+        .tag.dealer { background: var(--gold-d); }
+        .tag.fold { background: #9ca3af; }
+        .tag.allin { background: #dc2626; }
+        .tag.stay { background: #0369a1; }
+        .tag.ok { background: #16a34a; }
+        .tag.wait { background: #a8a29e; }
+
+        /* 숫자 카드 */
+        .cards { display: flex; gap: 0.22rem; flex-wrap: wrap; align-items: center; }
+        .pc {
+            display: inline-flex; align-items: center; justify-content: center; width: 1.75rem; height: 2.4rem;
+            border-radius: 5px; background: #fff; border: 2px solid #1f2937; font-weight: 900; font-size: 1rem; color: #1f2937;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .pc.neg { color: #2563eb; border-color: #2563eb; }
+        .pc.hi { color: var(--red); border-color: var(--red); }
+        .pc.back { background: repeating-linear-gradient(45deg, #7f1d1d, #7f1d1d 4px, #991b1b 4px, #991b1b 8px); border-color: var(--gold); }
+        .pc.new { animation: dealIn 0.45s cubic-bezier(0.34, 1.4, 0.64, 1); }
+        @keyframes dealIn { 0% { transform: translateY(-30px) rotate(-10deg); opacity: 0; } 100% { transform: none; opacity: 1; } }
+        .pc.big { width: 3rem; height: 4.1rem; font-size: 1.6rem; border-radius: 8px; border-width: 3px; position: relative; }
+        .pc.big.open::after { content: '공개'; position: absolute; bottom: -1.15rem; left: 50%; transform: translateX(-50%); font-size: 0.62rem; color: var(--gold-d); font-weight: bold; white-space: nowrap; }
+        .pc.big.sel { outline: 4px solid #f59e0b; transform: translateY(-4px); }
+        .pc-btn { cursor: pointer; }
+
+        /* 내 영역 */
+        .my-box { border: 2px solid var(--accent); background: #f0fdf4; }
+        .my-box.turn { border-color: #f59e0b; background: #fffbeb; }
+        .my-cards { display: flex; gap: 0.45rem; justify-content: center; flex-wrap: wrap; margin: 0.5rem 0 1.3rem; }
+        .sum-line { font-size: 1rem; font-weight: bold; }
+        .sum-line b { font-size: 1.3rem; }
+        .sum-line.bust b { color: #dc2626; }
+        .sum-line.ok b { color: var(--accent); }
+        .btn-row { display: flex; gap: 0.4rem; }
+        .btn-row button { flex: 1; }
+        .raise-box { margin-top: 0.6rem; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 0.5rem; }
+        .stepper { display: flex; gap: 0.3rem; align-items: center; justify-content: center; margin-top: 0.3rem; }
+        .stepper button { width: 2.6rem; margin: 0; padding: 0.45rem 0; font-size: 1.1rem; }
+        .stepper .amt { min-width: 3.2rem; text-align: center; font-size: 1.4rem; font-weight: 900; }
+        .quick { display: flex; gap: 0.3rem; margin-top: 0.35rem; }
+        .quick button { margin: 0; padding: 0.35rem 0; font-size: 0.8rem; background: #e7e5dc; color: var(--ink); }
+        .quick button:hover { background: #d6d3c8; }
+        .wait-msg { margin-top: 0.5rem; font-size: 0.9rem; color: #0369a1; font-weight: bold; }
+
+        /* 결과 */
+        .res-row {
+            display: grid; grid-template-columns: 1fr auto; gap: 0.25rem 0.5rem; align-items: center; text-align: left;
+            background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 0.45rem 0.6rem; margin-top: 0.35rem;
+        }
+        .res-row.win { border: 2px solid var(--gold); background: #fffbeb; }
+        .res-row.bust { background: #fef2f2; }
+        .res-row .nm { font-weight: 900; }
+        .res-row .gain { font-weight: 900; white-space: nowrap; }
+        .gain.plus { color: var(--accent); } .gain.minus { color: #dc2626; }
+        .res-row .cards { grid-column: 1 / -1; }
+        .pot-sum { font-size: 0.8rem; text-align: left; margin-top: 0.5rem; background: #fff; border: 1px dashed var(--line); border-radius: 8px; padding: 0.4rem 0.55rem; line-height: 1.6; }
+
+        .log-box { text-align: left; max-height: 9.5rem; overflow-y: auto; font-size: 0.78rem; line-height: 1.55; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 0.4rem 0.55rem; margin-top: 0.4rem; color: #374151; }
+        .log-box .sep { color: var(--gold-d); font-weight: bold; }
+
+        /* 모달 */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(5, 20, 14, 0.75); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: var(--panel); color: var(--ink); width: 92%; max-width: 460px; border-radius: 12px; padding: 1.1rem; border: 2px solid var(--gold); max-height: 86vh; display: flex; flex-direction: column; }
+        .tab-buttons { display: flex; gap: 0.4rem; margin-bottom: 0.8rem; }
+        .tab-btn { flex: 1; padding: 0.5rem; font-size: 0.85rem; background: #ece6d4; color: #44403c; border: 1px solid var(--line); margin: 0; }
+        .tab-btn:hover { background: #e1d9c2; }
+        .tab-btn.active { background: var(--accent) !important; color: #fff !important; border-color: var(--accent) !important; }
+        .tab-body { overflow-y: auto; font-size: 0.85rem; line-height: 1.55; text-align: left; padding-right: 0.3rem; }
+        .tab-body h4 { color: var(--felt); margin: 0.8rem 0 0.3rem; }
+        .tab-body h4:first-child { margin-top: 0; }
+        .tab-body p { margin-bottom: 0.3rem; }
+        .rank-row { display: flex; justify-content: space-between; align-items: center; padding: 0.55rem 0.7rem; background: #fff; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 0.35rem; }
+        .rank-row.last { border-color: #dc2626; background: #fef2f2; }
+        .rank-row .rk { font-weight: 900; width: 3.2rem; }
+        .rank-row .nm { flex: 1; font-weight: bold; overflow-wrap: anywhere; }
+        .chip-badge { white-space: nowrap; font-weight: 900; font-size: 0.85rem; padding: 0.2rem 0.55rem; border-radius: 999px; background: #fef3c7; color: #92400e; border: 1px solid #f59e0b; }
+        .hist-round { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 0.5rem 0.6rem; margin-bottom: 0.5rem; }
+        .hist-round .lg { font-size: 0.74rem; color: #44403c; margin-top: 0.25rem; }
+        .hist-round .hd { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.3rem; }
+        .hist-round .hd span { font-size: 0.75rem; background: var(--soft); border-radius: 6px; padding: 0.1rem 0.35rem; }
+        .hist-round .ln { font-size: 0.8rem; font-weight: bold; margin-top: 0.3rem; }
+        .tbl { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin: 0.3rem 0; }
+        .tbl td, .tbl th { border: 1px solid var(--line); padding: 0.2rem 0.3rem; text-align: center; }
+
+        /* 주사위 연출 */
+        .banner-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.62); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; animation: fadeIn 0.25s ease-out; pointer-events: none; }
+        .banner-content { text-align: center; color: #fff; padding: 1rem; }
+        .dice {
+            width: 7rem; height: 7rem; margin: 0 auto; display: flex; align-items: center; justify-content: center;
+            font-size: 3.4rem; font-weight: 900; color: var(--felt); background: #fff; border: 4px solid var(--gold);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+        .dice.rolling { animation: spin 0.25s linear infinite; }
+        .dice.done { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes spin { 0% { transform: rotate(0); } 100% { transform: rotate(90deg); } }
+        .banner-content h2 { font-size: 1.6rem; margin-top: 0.7rem; text-shadow: 0 0 12px rgba(212,169,55,0.9); }
+        .banner-content p { font-size: 1rem; margin-top: 0.2rem; }
+
+        #screen-main, #screen-lobby { max-width: 480px; margin: 0 auto; }
+        @media (max-width: 560px) {
+            body { padding: 0.35rem; }
+            .container { padding: 0.75rem 0.6rem; border-radius: 12px; border-width: 1px; }
+            header { margin-bottom: 0.7rem; padding-bottom: 0.5rem; }
+            .card { padding: 0.7rem 0.6rem; }
+            .table { padding: 0.5rem; }
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><img src="icon.svg" alt="" class="title-icon">힛, 스테이</h1>
+            <button class="guide-btn" onclick="openGuideModal()">📖 게임 설명</button>
+        </header>
+
+        <!-- 1. 메인 화면 -->
+        <div id="screen-main">
+            <div class="card" id="card-create-room">
+                <h3>방 만들기 (방장)</h3>
+                <input type="password" id="create-key-input" placeholder="방 생성 인증키 입력">
+                <button onclick="createRoom()">새 방 만들기</button>
+                <p class="small" style="margin-top:0.4rem;">아래 닉네임 칸에 닉네임을 먼저 입력해 주세요.</p>
+            </div>
+            <div class="card" id="card-join-room">
+                <h3 id="join-card-title">게임 참가하기</h3>
+                <input type="text" id="nickname-input" maxlength="20" placeholder="사용할 닉네임을 입력하세요">
+                <input type="text" id="room-code-input" placeholder="방 코드 입력 (예: AB12)">
+                <button class="secondary" onclick="joinRoom()">입장하기</button>
+            </div>
+        </div>
+
+        <!-- 2. 대기실 -->
+        <div id="screen-lobby" class="hidden">
+            <div class="card">
+                <h3>방 코드: <span id="room-code-display" style="color:var(--red);"></span></h3>
+                <div id="qrcode"></div>
+                <p class="small">QR 코드를 스캔하여 접속 가능합니다.</p>
+            </div>
+
+            <div id="host-setting-card" class="card hidden">
+                <h4>⚙️ 게임 설정</h4>
+                <div class="setting-grid">
+                    <div>
+                        <label class="small" for="opt-startChips">시작 칩</label>
+                        <select id="opt-startChips" onchange="setOption('startChips', this.value)"></select>
+                    </div>
+                    <div>
+                        <label class="small" for="opt-turnSec">차례 제한 시간</label>
+                        <select id="opt-turnSec" onchange="setOption('turnSec', this.value)"></select>
+                    </div>
+                    <div>
+                        <label class="small" for="opt-maxRounds">최대 라운드</label>
+                        <select id="opt-maxRounds" onchange="setOption('maxRounds', this.value)"></select>
+                    </div>
+                    <div>
+                        <label class="small" for="opt-sidePot">베팅 방식</label>
+                        <select id="opt-sidePot" onchange="setOption('sidePot', this.value)">
+                            <option value="0">원작 룰 (최저 보유자 한도)</option>
+                            <option value="1">포커 룰 (올인 · 사이드팟)</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="small" id="side-desc" style="margin-top:0.5rem; text-align:left;"></p>
+                <p class="small" style="margin-top:0.3rem; text-align:left;">※ 시간이 지나면 공개 카드는 랜덤, 베팅은 콜(체크), 힛/스테이는 스테이로 자동 처리됩니다.</p>
+            </div>
+            <div id="guest-setting-card" class="card hidden">
+                <p class="small" id="guest-setting-text" style="line-height:1.7;"></p>
+            </div>
+
+            <div class="card">
+                <h4>현재 접속자 (<span id="player-count">0</span>명) <span class="small">· 2~7명</span></h4>
+                <div id="lobby-player-list" class="player-list"></div>
+            </div>
+
+            <div id="host-lobby-controls" class="hidden">
+                <button id="host-start-btn" onclick="startGame()">🎲 자리 배정 및 게임 시작</button>
+                <button class="danger" style="margin-top:0.5rem;" onclick="deleteRoomByHost()">🗑️ 현재 방 삭제 (방장)</button>
+            </div>
+        </div>
+
+        <!-- 3. 게임 화면 -->
+        <div id="screen-game" class="hidden">
+            <div class="top-row">
+                <div class="badge" id="round-badge"></div>
+                <div class="badge limit" id="limit-badge"></div>
+                <div class="badge" id="timer-display"><small>제한 시간</small><span class="val">--:--</span></div>
+            </div>
+
+            <div class="table">
+                <div class="pot-line">
+                    <div class="phase" id="phase-name"></div>
+                    <div class="pot" id="pot-total"></div>
+                    <div class="desc" id="phase-desc"></div>
+                </div>
+                <div class="seats" id="seats"></div>
+            </div>
+
+            <div id="my-area"></div>
+            <div id="result-area"></div>
+
+            <div class="card">
+                <h4 style="text-align:left;">📝 진행 기록 <span class="small">(이번 라운드)</span></h4>
+                <div class="log-box" id="log-box"></div>
+                <button class="secondary" style="margin-top:0.6rem;" onclick="openRecordModal()">📜 지난 라운드 기록 · 현재 순위</button>
+            </div>
+
+            <div id="host-controls" class="hidden">
+                <button id="force-btn" class="gold" onclick="forceProceed()">⏩ 강제 진행 (멈춘 사람 자동 처리)</button>
+                <button class="danger" style="margin-top:0.5rem;" onclick="forceRestart()">🔄 게임 강제 재시작 (대기실 이동)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 주사위 연출 -->
+    <div id="dice-banner" class="banner-overlay hidden">
+        <div class="banner-content">
+            <div class="dice" id="dice-face">?</div>
+            <h2 id="dice-title">한계 숫자</h2>
+            <p id="dice-text"></p>
+        </div>
+    </div>
+
+    <!-- 결과 / 기록 모달 -->
+    <div id="result-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2 id="result-title" style="text-align:center; margin-bottom:0.6rem; font-size:1.4rem;">🏁 최종 순위</h2>
+            <div class="tab-buttons">
+                <button class="tab-btn" id="result-tab-btn-rank" onclick="switchResultTab('rank')">🏆 순위</button>
+                <button class="tab-btn" id="result-tab-btn-hist" onclick="switchResultTab('hist')">📜 라운드 기록</button>
+            </div>
+            <div id="result-tab-rank" class="tab-body" style="max-height:52vh;"></div>
+            <div id="result-tab-hist" class="tab-body hidden" style="max-height:52vh;"></div>
+            <button id="result-confirm-btn" style="margin-top:1rem;" onclick="confirmResult()">닫기</button>
+        </div>
+    </div>
+
+    <!-- 게임 설명 모달 -->
+    <div id="guide-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="tab-buttons">
+                <button class="tab-btn" id="tab-btn-rules" onclick="switchTab('rules')">🃏 게임 규칙</button>
+                <button class="tab-btn" id="tab-btn-bet" onclick="switchTab('bet')">💰 베팅</button>
+                <button class="tab-btn" id="tab-btn-play" onclick="switchTab('play')">🎮 진행 방법</button>
+            </div>
+            <div id="tab-rules" class="tab-body">
+                <h4>🎯 목표</h4>
+                <p>숫자 카드의 합을 <b>한계 숫자에 최대한 가깝게, 넘지 않게</b> 만들어 베팅된 칩을 가져가세요. 가장 먼저 칩이 0개가 된 사람이 탈락하고 게임이 끝납니다.</p>
+                <h4>🃏 숫자 카드 (35장, 매 라운드 새로 섞음)</h4>
+                <table class="tbl">
+                    <tr><th>숫자</th><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>-1</td></tr>
+                    <tr><th>장수</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>7</td></tr>
+                </table>
+                <h4>🔁 라운드 진행</h4>
+                <p>1) 모두 <b>기본 베팅</b>으로 칩을 냅니다. (1개, 10라운드마다 1개씩 증가)<br>
+                2) 5~12 주사위로 이번 라운드 <b>한계 숫자</b>를 정합니다.<br>
+                3) 카드 3장을 비공개로 받고, 그중 <b>1장을 골라 공개</b>합니다. (모두 고르면 한꺼번에 공개)<br>
+                4) 🚩 선 플레이어부터 <b>1차 베팅</b><br>
+                5) 선 플레이어부터 돌아가며 <b>힛</b>(카드 1장 더, 공개) 또는 <b>스테이</b>(그만 받기). 한 번 스테이하면 그 라운드에는 다시 힛할 수 없습니다. 모두 스테이하거나 카드가 떨어지면 끝.<br>
+                6) 선 플레이어부터 <b>2차 베팅</b><br>
+                7) 포기하지 않은 사람끼리 모든 카드를 공개하고 승부!</p>
+                <h4>🏆 승부</h4>
+                <p>• 합이 한계 숫자를 넘은 사람은 최하위입니다.<br>
+                • 넘지 않은 사람 중 <b>한계 숫자에 가장 가까운</b> 사람이 승리합니다. (-1 카드로 합을 줄일 수 있어요)<br>
+                • 같으면 <b>카드가 더 많은</b> 사람이 승리. 카드 수도 같으면 무승부.<br>
+                • 모두 한계 숫자를 넘으면 무승부.<br>
+                • 무승부면 베팅된 칩을 무승부인 사람끼리 똑같이 나누고, 남는 칩은 🚩 선 플레이어에 가까운 사람부터 1개씩 받습니다.<br>
+                • 한 명만 남기고 모두 포기하면 남은 사람이 바로 칩을 가져갑니다. (카드 공개 없음)</p>
+                <h4>🔄 선 플레이어</h4>
+                <p>첫 라운드는 추첨으로 정하고, 이후 매 라운드 이전 선 플레이어의 왼쪽(다음 자리) 사람이 선이 됩니다.</p>
+            </div>
+            <div id="tab-bet" class="tab-body hidden">
+                <h4>💰 베팅 행동</h4>
+                <p>• <b>콜</b>: 지금까지 가장 많이 낸 사람만큼 맞춰 냅니다. (더 낼 게 없으면 <b>체크</b>)<br>
+                • <b>레이즈</b>: 콜에 더해 칩을 더 올립니다. 다른 사람들은 다시 콜/레이즈/포기를 해야 합니다.<br>
+                • <b>포기</b>: 이번 라운드를 포기합니다. 이미 낸 칩은 돌려받지 못합니다.<br>
+                • 모두 같은 금액을 내면 베팅이 끝납니다.</p>
+                <h4>📏 원작 룰 (최저 보유자 한도)</h4>
+                <p>• 포기하지 않은 사람 중 <b>칩이 가장 적은 사람이 낼 수 있는 만큼까지만</b> 베팅할 수 있습니다.<br>
+                • 그래서 누구나 끝까지 콜할 수 있고, 사이드팟이 생기지 않습니다.<br>
+                • 칩이 가장 적은 사람이 포기하면 한도가 다음으로 적은 사람 기준으로 올라갑니다.</p>
+                <h4>🃏 포커 룰 (올인 · 사이드팟)</h4>
+                <p>• 내 칩 전부까지 베팅할 수 있습니다.<br>
+                • 콜할 칩이 모자라면 가진 칩을 모두 내는 <b>올인</b>이 됩니다. 올인한 사람은 더 베팅하지 않지만 힛/스테이와 승부는 계속합니다.<br>
+                • 올인한 사람은 <b>자기가 낸 만큼씩만</b> 다른 사람에게서 가져올 수 있습니다. (메인팟)<br>
+                • 그보다 더 걸린 칩은 <b>사이드팟</b>이 되어, 더 낸 사람들끼리만 승부합니다. 아무도 따라오지 않은 칩은 낸 사람에게 돌아갑니다.<br>
+                • 예) A 5개 올인, B·C 15개씩 → 메인팟 15개(A·B·C), 사이드팟 20개(B·C)</p>
+                <h4>⚠️ 기본 베팅이 모자라면</h4>
+                <p>가진 칩을 모두 내고 올인 상태로 참가합니다.</p>
+            </div>
+            <div id="tab-play" class="tab-body hidden">
+                <h4>🏠 대기실</h4>
+                <p>• 방장이 시작 칩, 차례 제한 시간, 최대 라운드, 베팅 방식을 정하고 시작합니다. (2~7명)<br>
+                • 자리 순서는 랜덤으로 정해집니다.</p>
+                <h4>🏁 게임 종료</h4>
+                <p>• 누군가의 칩이 0개가 되면 그 라운드가 끝난 뒤 게임이 끝나고, 남은 칩이 많은 순서로 순위를 정합니다.<br>
+                • 최대 라운드를 정했다면 그 라운드가 끝났을 때도 게임이 끝납니다.</p>
+                <h4>⏱️ 시간 초과</h4>
+                <p>• 공개 카드를 고르지 않으면 랜덤으로 공개, 베팅 차례는 <b>자동 콜(체크)</b>, 힛/스테이 차례는 <b>자동 스테이</b>입니다.<br>
+                • 방장은 언제든 '강제 진행'으로 멈춘 사람을 자동 처리할 수 있습니다.<br>
+                • 라운드 결과 화면은 잠시 뒤 자동으로 다음 라운드로 넘어갑니다. (방장은 바로 넘길 수 있음)</p>
+                <h4>🔄 새로고침 / 재접속</h4>
+                <p>• 같은 기기·같은 브라우저라면 새로고침해도 자리가 그대로 유지됩니다.<br>
+                • 게임 중에 들어온 사람은 구경만 하고, 다음 게임부터 참여합니다.</p>
+            </div>
+            <button class="secondary" style="margin-top:1rem;" onclick="closeGuideModal()">닫기</button>
+        </div>
+    </div>
+
+    <script>
+        // ===== Supabase 설정 (/minus/config.js 공용) =====
+        const CONFIG_PATH = '/minus/config.js';
+        const FALLBACK_URL = 'https://efjndencakarbucwxfie.supabase.co';
+        const FALLBACK_KEY = 'sb_publishable_Lt3gzMPGZTIi4n4GuQZn2g_T3gzTT8c';
+        const GAME_BUILD = 'hitstay-v1.0';
+        const SQL_FILE = 'supabase_schema_hitstay.sql';
+        let SB_URL = '', SB_KEY = '', SB_CONFIG_SOURCE = '';
+        let sb = null;
+
+        async function loadSupabaseConfig() {
+            const found = { url: '', key: '' };
+            const isUrl = v => typeof v === 'string' && /^https?:\/\/[^\s"']+\.supabase\.(co|in)\/?$/i.test(v.trim());
+            const isKey = v => typeof v === 'string' && (/^sb_publishable_[\w-]{10,}$/.test(v.trim()) || /^eyJ[\w-]+\.[\w-]+\.[\w-]+$/.test(v.trim()));
+            const walk = (v, d) => {
+                if (v == null || d > 3 || (found.url && found.key)) return;
+                if (typeof v === 'string') {
+                    if (!found.url && isUrl(v)) found.url = v.trim().replace(/\/+$/, '');
+                    else if (!found.key && isKey(v)) found.key = v.trim();
+                    return;
+                }
+                if (typeof v === 'object' && v !== window && !(v instanceof Node)) {
+                    try { Object.keys(v).forEach(k => walk(v[k], d + 1)); } catch (e) {}
+                }
+            };
+            try { walk(await import(CONFIG_PATH), 0); } catch (e) { console.warn('[config] config.js 를 불러오지 못했습니다.', e); }
+            if (found.url && found.key) { SB_CONFIG_SOURCE = 'config.js'; return found; }
+            SB_CONFIG_SOURCE = 'fallback';
+            return { url: found.url || FALLBACK_URL, key: found.key || FALLBACK_KEY };
+        }
+
+        const sbReady = (async () => {
+            if (!window.supabase) {
+                alert(`Supabase 라이브러리를 불러오지 못했습니다.\n네트워크 연결과 광고/콘텐츠 차단 설정을 확인해 주세요.\n\n(빌드: ${GAME_BUILD})`);
+                return false;
+            }
+            const cfg = await loadSupabaseConfig();
+            SB_URL = cfg.url; SB_KEY = cfg.key;
+            sb = window.supabase.createClient(SB_URL, SB_KEY, {
+                auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+                realtime: { params: { eventsPerSecond: 20 } }
+            });
+            console.info(`[Supabase] 접속 정보: ${SB_CONFIG_SOURCE} (${GAME_BUILD})`);
+            return true;
+        })();
+
+        async function sbSelfCheck() {
+            const tail = `\n\n(빌드: ${GAME_BUILD})`;
+            try {
+                const { error } = await sb.from('hitstay_rooms').select('code').limit(1);
+                if (!error) {
+                    const probe = await sbCall('hs_view', { p_code: 'ZZZZ', p_pid: null, p_key: null });
+                    if (probe.error && (probe.error.code === 'PGRST202' || /could not find the function/i.test(probe.error.message || ''))) {
+                        alert(`DB 에 힛스테이 SQL 이 아직 적용되지 않았습니다.\n${SQL_FILE} 을 SQL Editor 에서 실행해 주세요.${tail}`);
+                    }
+                    return;
+                }
+                const msg = `${error.code || ''} ${error.message || ''}`.trim();
+                let hint;
+                if (/PGRST205|42P01|does not exist|could not find the table/i.test(msg)) hint = `DB 테이블이 없습니다. ${SQL_FILE} 을 SQL Editor 에서 실행해 주세요.`;
+                else if (/invalid api key|jwt|unauthorized|apikey|401/i.test(msg)) hint = 'SUPABASE_ANON_KEY 가 올바르지 않습니다.';
+                else hint = '서버에 연결하지 못했습니다. 네트워크와 SUPABASE_URL 을 확인해 주세요.';
+                alert(`Supabase 연결에 실패했습니다.\n${hint}\n\n오류: ${msg}${tail}`);
+            } catch (e) {
+                alert(`Supabase 에 연결하지 못했습니다.\n오류: ${e && e.message}${tail}`);
+            }
+        }
+
+        let sbLastNetAlert = 0;
+        function sbNotifyError(err) {
+            console.error('[Supabase]', err);
+            const now = Date.now();
+            if (now - sbLastNetAlert < 8000) return;
+            sbLastNetAlert = now;
+            alert('서버와 통신하지 못했습니다. 네트워크를 확인한 뒤 다시 시도해 주세요.');
+        }
+
+        function loadPlayerKey() {
+            let k = null;
+            try { k = localStorage.getItem('hs_playerKey'); } catch (e) {}
+            if (!k || k.length < 16) {
+                const bytes = new Uint8Array(16);
+                crypto.getRandomValues(bytes);
+                k = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+                try { localStorage.setItem('hs_playerKey', k); } catch (e) {}
+            }
+            return k;
+        }
+        const myPlayerKey = loadPlayerKey();
+
+        async function sbCall(name, args) {
+            await sbReady;
+            if (!sb) return { data: null, error: { message: 'not configured', code: 'NETWORK' } };
+            try { return await sb.rpc(name, args); }
+            catch (e) { return { data: null, error: { message: (e && e.message) || String(e), code: 'NETWORK' } }; }
+        }
+
+        const GAME_FAIL = Symbol('game-fail');
+        async function gameRpc(name, extra) {
+            const res = await sbCall(name, Object.assign({ p_code: roomCode, p_pid: myPlayerId, p_key: myPlayerKey }, extra || {}));
+            if (!res.error) return res.data;
+            const code = res.error.code;
+            if (code === 'UD001') alert(res.error.message);
+            else if (code === 'UD003') alert('방장만 할 수 있는 동작입니다.');
+            else if (code === 'UD002') alert('인증에 실패했습니다. 퇴장되었거나 다른 브라우저에서 접속한 플레이어일 수 있습니다.');
+            else if (code === 'P0002') console.warn('[Supabase] 없는(삭제된) 방에 대한 요청을 무시했습니다:', name);
+            else if (code === 'PGRST202') alert(`서버에 힛스테이 SQL(${SQL_FILE})이 아직 적용되지 않은 것 같습니다.`);
+            else sbNotifyError(res.error);
+            return GAME_FAIL;
+        }
+
+        let clockOffset = 0;
+        const serverNow = () => Date.now() + clockOffset;
+
+        function startRoomSync(code, callback) {
+            let lastVersion = -1, lastSig = null, inflight = false, again = false, emittedOnce = false;
+            const apply = (view) => {
+                if (view === null) {
+                    if (emittedOnce && lastSig === 'null') return;
+                    lastSig = 'null'; emittedOnce = true;
+                    try { callback(null); } catch (e) { console.error(e); }
+                    return;
+                }
+                const version = Number(view.version);
+                if (version < lastVersion) return;
+                if (typeof view.now === 'number') clockOffset = view.now - Date.now();
+                const sig = JSON.stringify(Object.assign({}, view, { now: 0 }));
+                if (emittedOnce && sig === lastSig) return;
+                lastVersion = version; lastSig = sig; emittedOnce = true;
+                try { callback(view); } catch (e) { console.error(e); }
+            };
+            const fetchView = async () => {
+                if (inflight) { again = true; return; }
+                inflight = true;
+                try {
+                    const res = await sbCall('hs_view', { p_code: code, p_pid: myPlayerId, p_key: myPlayerKey });
+                    if (res.error) sbNotifyError(res.error);
+                    else apply(res.data);
+                } finally {
+                    inflight = false;
+                    if (again) { again = false; fetchView(); }
+                }
+            };
+            sb.channel(`hs-room-${code}-${Math.random().toString(36).slice(2, 8)}`)
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'hitstay_rooms', filter: `code=eq.${code}` }, () => fetchView())
+                .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'hitstay_rooms' }, (payload) => {
+                    if (payload && payload.old && payload.old.code === code) fetchView();
+                })
+                .subscribe(status => { if (status === 'SUBSCRIBED') fetchView(); });
+            fetchView();
+            document.addEventListener('visibilitychange', () => { if (!document.hidden) fetchView(); });
+            setInterval(() => { if (!document.hidden) fetchView(); }, 8000);
+            return { refresh: fetchView };
+        }
+        let roomSync = null;
+        const refreshRoom = () => { if (roomSync) roomSync.refresh(); };
+
+        sbReady.then(ok => { if (ok) sbSelfCheck(); });
+
+        async function hashPassword(message) {
+            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(message));
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // ===== 상수 / 상태 =====
+        const CHIP_OPTIONS = [10, 20, 30, 40, 50, 70, 100, 130];
+        const TIME_OPTIONS = [0, 10, 15, 20, 30, 45, 60, 90, 120];
+        const ROUND_OPTIONS = [0, 10, 15, 20, 30, 40, 50];
+        const PHASE_NAME = { OPEN: '카드 공개', BET1: '1차 베팅', HIT: '힛 / 스테이', BET2: '2차 베팅', SHOW: '라운드 결과' };
+
+        let roomCode = '', myPlayerId = '', myNickname = '', isHost = false;
+        let pub = null, me = null;
+        let selOpen = null, raiseAmt = 1, busy = false;
+        let lastRound = null, lastTickAt = 0, lastPhaseKey = '';
+        let resultDismissed = false, recordMode = false;
+        let seenCards = {};   // 새로 받은 카드 애니메이션용
+
+        const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const fmtSec = s => s <= 0 ? '무제한' : (s < 120 ? `${s}초` : `${s / 60}분`);
+        const pname = pid => (pub && pub.players && pub.players[pid] && pub.players[pid].name) || '(나간 플레이어)';
+        const seats = () => (pub && Array.isArray(pub.seats)) ? pub.seats : [];
+        const rp = pid => (pub && pub.rp && pub.rp[pid]) || {};
+        const chipsOf = pid => Number(((pub && pub.chips) || {})[pid] || 0);
+        const sum = arr => (arr || []).reduce((a, x) => a + Number(x), 0);
+        const inGame = () => seats().includes(myPlayerId);
+        const cardHtml = (v, cls) => {
+            const n = Number(v);
+            return `<span class="pc ${n < 0 ? 'neg' : (n >= 6 ? 'hi' : '')} ${cls || ''}">${n}</span>`;
+        };
+        const backHtml = () => `<span class="pc back"></span>`;
+
+        // ===== 시작 =====
+        window.onload = function () {
+            myPlayerId = localStorage.getItem('hs_playerId') || 'p_' + Math.random().toString(36).substring(2, 10);
+            localStorage.setItem('hs_playerId', myPlayerId);
+
+            const saved = localStorage.getItem('hs_roomCode');
+            const qr = new URLSearchParams(window.location.search).get('room');
+            if (qr) {
+                document.getElementById('card-create-room').classList.add('hidden');
+                document.getElementById('room-code-input').classList.add('hidden');
+                document.getElementById('join-card-title').innerText = `방 코드 [${qr.toUpperCase()}] 참가`;
+                document.getElementById('room-code-input').value = qr.toUpperCase();
+                roomCode = qr.toUpperCase();
+            } else if (saved) {
+                document.getElementById('room-code-input').value = saved.toUpperCase();
+                roomCode = saved.toUpperCase();
+            }
+            const savedName = localStorage.getItem('hs_nickname');
+            if (savedName) document.getElementById('nickname-input').value = savedName;
+
+            if (roomCode) {
+                sbCall('hs_view', { p_code: roomCode, p_pid: myPlayerId, p_key: myPlayerKey }).then(res => {
+                    const v = res && res.data;
+                    if (v && v.me && v.pub && v.pub.players && v.pub.players[myPlayerId]) {
+                        myNickname = v.pub.players[myPlayerId].name;
+                        joinRoomData();
+                    }
+                });
+            }
+
+            document.getElementById('opt-startChips').innerHTML = CHIP_OPTIONS.map(s => `<option value="${s}">${s}개</option>`).join('');
+            document.getElementById('opt-turnSec').innerHTML = TIME_OPTIONS.map(s => `<option value="${s}">${fmtSec(s)}</option>`).join('');
+            document.getElementById('opt-maxRounds').innerHTML = ROUND_OPTIONS.map(s => `<option value="${s}">${s ? s + '라운드' : '무제한'}</option>`).join('');
+
+            setInterval(uiLoop, 250);
+        };
+
+        function goHome() {
+            localStorage.removeItem('hs_roomCode');
+            location.href = window.location.pathname;
+        }
+
+        async function createRoom() {
+            myNickname = document.getElementById('nickname-input').value.trim();
+            const inputKey = document.getElementById('create-key-input').value.trim();
+            if (!myNickname) return alert('아래 참가하기 칸에 사용할 닉네임을 먼저 입력해 주세요.');
+            if (!inputKey) return alert('방 생성 인증키를 입력하세요.');
+            const inputHash = await hashPassword(inputKey);
+            for (let attempt = 0; attempt < 5; attempt++) {
+                const candidate = Math.random().toString(36).substring(2, 6).toUpperCase();
+                const res = await sbCall('hs_create', { p_code: candidate, p_create_hash: inputHash, p_pid: myPlayerId, p_key: myPlayerKey, p_name: myNickname });
+                if (res.error) {
+                    const c = res.error.code;
+                    if (c === 'UD004') return alert('Supabase에 방 생성 인증키 설정이 존재하지 않습니다. (undead_admin 테이블의 createKey)');
+                    if (c === 'UD005') return alert('올바르지 않은 방 생성 키입니다.');
+                    if (c === 'UD001') return alert(res.error.message);
+                    if (c === 'PGRST202') return alert(`서버에 힛스테이 SQL(${SQL_FILE})이 아직 적용되지 않은 것 같습니다.`);
+                    return sbNotifyError(res.error);
+                }
+                if (res.data === false) continue;
+                roomCode = candidate;
+                isHost = true;
+                localStorage.setItem('hs_roomCode', roomCode);
+                localStorage.setItem('hs_nickname', myNickname);
+                joinRoomData();
+                return;
+            }
+            alert('방 코드를 만들지 못했습니다. 잠시 후 다시 시도해 주세요.');
+        }
+
+        async function joinRoom() {
+            myNickname = document.getElementById('nickname-input').value.trim();
+            roomCode = document.getElementById('room-code-input').value.trim().toUpperCase();
+            if (!myNickname) return alert('사용할 닉네임을 입력해 주세요.');
+            if (!roomCode) return alert('방 코드를 입력해 주세요.');
+            const res = await sbCall('hs_view', { p_code: roomCode, p_pid: myPlayerId, p_key: myPlayerKey });
+            if (res.error) return sbNotifyError(res.error);
+            if (!res.data) return alert('존재하지 않는 방입니다.');
+            localStorage.setItem('hs_roomCode', roomCode);
+            localStorage.setItem('hs_nickname', myNickname);
+            joinRoomData();
+        }
+
+        function joinRoomData() {
+            const registered = gameRpc('hs_join', { p_name: myNickname });
+            document.getElementById('screen-main').classList.add('hidden');
+            document.getElementById('screen-lobby').classList.remove('hidden');
+            document.getElementById('room-code-display').innerText = roomCode;
+            const joinUrl = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
+            document.getElementById('qrcode').innerHTML = '';
+            new QRCode(document.getElementById('qrcode'), { text: joinUrl, width: 120, height: 120 });
+            registered.then(result => {
+                if (result === GAME_FAIL) { goHome(); return; }
+                listenRoom();
+            });
+        }
+
+        function listenRoom() {
+            roomSync = startRoomSync(roomCode, view => {
+                if (!view) { alert('방이 삭제되었습니다.'); goHome(); return; }
+                const p = view.pub || {};
+                if (!view.me || !p.players || !p.players[myPlayerId]) {
+                    alert('퇴장 되었거나 접속이 끊겼습니다.'); goHome(); return;
+                }
+                pub = p; me = view.me;
+                isHost = (p.hostId === myPlayerId);
+
+                if (p.state === 'LOBBY') {
+                    document.getElementById('result-modal').classList.add('hidden');
+                    resultDismissed = false; lastRound = null; seenCards = {};
+                    document.getElementById('screen-game').classList.add('hidden');
+                    document.getElementById('screen-lobby').classList.remove('hidden');
+                    renderLobby();
+                } else {
+                    document.getElementById('screen-lobby').classList.add('hidden');
+                    document.getElementById('screen-game').classList.remove('hidden');
+                    // 새 라운드: 주사위 연출
+                    if (p.state === 'PLAY' && p.round !== lastRound) {
+                        const fresh = lastRound !== null || (serverNow() - Number(p.roundStartAt || 0) < 4000);
+                        lastRound = p.round; selOpen = null; raiseAmt = 1; seenCards = {};
+                        if (fresh) showDice(p.limit, p.round, p.baseBet);
+                    }
+                    const pk = `${p.round}-${p.phase}-${p.turn}`;
+                    if (pk !== lastPhaseKey) { lastPhaseKey = pk; raiseAmt = 1; busy = false; }
+                    renderGame();
+                    if (p.state === 'ENDED' && !resultDismissed) showResultModal(false);
+                    else if (!document.getElementById('result-modal').classList.contains('hidden')) showResultModal(recordMode);
+                }
+            });
+        }
+
+        // ===== 대기실 =====
+        function renderLobby() {
+            const players = pub.players || {};
+            const keys = Object.keys(players);
+            document.getElementById('player-count').innerText = keys.length;
+
+            const st = Object.assign({ startChips: 30, turnSec: 30, maxRounds: 20, sidePot: 0 }, pub.settings || {});
+            document.getElementById('host-setting-card').classList.toggle('hidden', !isHost);
+            document.getElementById('guest-setting-card').classList.toggle('hidden', isHost);
+            ['startChips', 'turnSec', 'maxRounds', 'sidePot'].forEach(k => {
+                const el = document.getElementById('opt-' + k);
+                if (el && document.activeElement !== el) el.value = String(st[k]);
+            });
+            const sideText = Number(st.sidePot) === 1
+                ? '포커 룰: 자기 칩까지 베팅 가능, 모자라면 올인하고 사이드팟으로 정산합니다.'
+                : '원작 룰: 포기하지 않은 사람 중 칩이 가장 적은 사람이 낼 수 있는 만큼까지만 베팅할 수 있습니다.';
+            document.getElementById('side-desc').innerText = sideText;
+            document.getElementById('guest-setting-text').innerHTML =
+                `⚙️ 시작 칩 <b>${st.startChips}개</b> · 차례 제한 <b>${fmtSec(st.turnSec)}</b> · 최대 <b>${st.maxRounds ? st.maxRounds + '라운드' : '무제한'}</b><br>💰 ${esc(sideText)}`;
+
+            const listEl = document.getElementById('lobby-player-list');
+            listEl.innerHTML = keys.map(pid => {
+                const p = players[pid];
+                const kick = (isHost && pid !== myPlayerId) ? `<button class="kick-btn" onclick="kickPlayer('${esc(pid)}')">강퇴</button>` : '';
+                return `<div class="player-item ${pid === myPlayerId ? 'me' : ''}"><span>${esc(p.name)} ${p.isHost ? '👑' : ''}</span><div>${kick}</div></div>`;
+            }).join('');
+
+            document.getElementById('host-lobby-controls').classList.toggle('hidden', !isHost);
+            const startBtn = document.getElementById('host-start-btn');
+            startBtn.disabled = keys.length < 2 || keys.length > 7;
+            startBtn.innerText = keys.length < 2 ? `🎲 2명 이상 모이면 시작할 수 있어요 (${keys.length}명)`
+                : keys.length > 7 ? `🎲 최대 7명까지 가능합니다 (${keys.length}명)` : '🎲 자리 배정 및 게임 시작';
+        }
+
+        function setOption(opt, val) { gameRpc('hs_set_option', { p_opt: opt, p_val: Number(val) }).then(refreshRoom); }
+        function kickPlayer(pid) { if (confirm('해당 플레이어를 강퇴하시겠습니까?')) gameRpc('hs_kick', { p_target: pid }).then(refreshRoom); }
+        function startGame() { gameRpc('hs_start').then(refreshRoom); }
+        function deleteRoomByHost() {
+            if (!confirm('현재 방을 정말 삭제하시겠습니까? (접속 중인 모든 플레이어가 처음 화면으로 이동합니다)')) return;
+            gameRpc('hs_delete').then(r => { if (r !== GAME_FAIL) goHome(); });
+        }
+
+        // ===== 베팅 계산 (서버와 같은 규칙) =====
+        function curMax() { return Math.max(0, ...seats().map(pid => Number(rp(pid).contrib || 0))); }
+        function maxLevel(pid) {
+            const side = Number((pub.settings || {}).sidePot) === 1;
+            const mine = Number(rp(pid).contrib || 0) + chipsOf(pid);
+            const live = seats().filter(x => !rp(x).folded);
+            if (side) {
+                const others = live.filter(x => x !== pid).map(x => Number(rp(x).contrib || 0) + chipsOf(x));
+                return Math.min(mine, others.length ? Math.max(...others) : 0);
+            }
+            return Math.min(mine, ...live.map(x => Number(rp(x).contrib || 0) + chipsOf(x)));
+        }
+        function canRaiseOthers(pid) { return seats().some(x => x !== pid && !rp(x).folded && !rp(x).allin); }
+        const potTotal = () => seats().reduce((a, pid) => a + Number(rp(pid).contrib || 0), 0);
+
+        // ===== 게임 화면 =====
+        function renderGame() {
+            if (!pub) return;
+            const ended = pub.state === 'ENDED';
+            const st = pub.settings || {};
+            document.getElementById('round-badge').innerHTML =
+                `<small>라운드${st.maxRounds ? ' / ' + st.maxRounds : ''}</small><span class="val">${pub.round || '-'}</span><small>기본 베팅 ${pub.baseBet || 1}개 · 남은 카드 ${pub.deckLeft ?? '-'}장</small>`;
+            document.getElementById('limit-badge').innerHTML =
+                `<small>🎲 한계 숫자</small><span class="num">${pub.limit ?? '-'}</span><small>${Number(st.sidePot) === 1 ? '포커 룰' : '원작 룰'}</small>`;
+
+            const ph = ended ? 'END' : pub.phase;
+            document.getElementById('phase-name').innerText = ended ? '게임 종료' : (PHASE_NAME[ph] || '');
+            const pot = (ph === 'SHOW' && pub.result) ? Object.values(pub.result.contrib || {}).reduce((a, b) => a + Number(b), 0) : potTotal();
+            document.getElementById('pot-total').innerHTML = ended ? '🏁' : `총 베팅 <b>${pot}</b>개`;
+            document.getElementById('phase-desc').innerText = phaseDesc(ph);
+
+            renderSeats(ended ? 'SHOW' : ph);
+            renderMyArea(ph);
+            renderResult(ph);
+            renderLog();
+            document.getElementById('host-controls').classList.toggle('hidden', !isHost || ended);
+            document.getElementById('force-btn').innerText = ph === 'SHOW' ? '⏭️ 다음 라운드 바로 시작' : '⏩ 강제 진행 (멈춘 사람 자동 처리)';
+        }
+
+        function phaseDesc(ph) {
+            const t = pub.turn ? pname(pub.turn) : '';
+            if (ph === 'OPEN') {
+                const left = seats().filter(pid => !rp(pid).opened).length;
+                return `카드 3장 중 공개할 1장을 고르세요. (남은 사람 ${left}명, 모두 고르면 한꺼번에 공개)`;
+            }
+            if (ph === 'BET1' || ph === 'BET2') return t ? `${t}님의 베팅 차례 · 콜하려면 ${Math.max(0, curMax() - Number(rp(pub.turn).contrib || 0))}개` : '';
+            if (ph === 'HIT') return t ? `${t}님의 차례 · 힛 또는 스테이` : '';
+            if (ph === 'SHOW') return pub.result && pub.result.byFold ? '모두 포기해서 남은 한 명이 가져갑니다.' : '모든 카드를 공개하고 승부!';
+            if (ph === 'END') return pub.endReason === 'bust' ? '칩이 0개가 된 플레이어가 나와 게임이 끝났습니다.' : '최대 라운드가 끝났습니다.';
+            return '';
+        }
+
+        function renderSeats(ph) {
+            const dealerPid = seats()[pub.dealerIdx];
+            const res = pub.result || {};
+            const html = seats().map(pid => {
+                const r = rp(pid);
+                const tags = [];
+                if (pid === dealerPid) tags.push('<span class="tag dealer">🚩 선</span>');
+                if (r.folded) tags.push('<span class="tag fold">포기</span>');
+                else if (r.allin) tags.push('<span class="tag allin">올인</span>');
+                if (!r.folded && r.stayed) tags.push('<span class="tag stay">스테이</span>');
+                if (ph === 'OPEN') tags.push(r.opened ? '<span class="tag ok">선택 완료</span>' : '<span class="tag wait">고르는 중</span>');
+
+                let cards;
+                const shown = ph === 'SHOW' && res.hands && res.hands[pid];
+                if (shown) {
+                    cards = res.hands[pid].cards.map(v => cardHtml(v)).join('') +
+                        `<span class="small" style="margin-left:0.25rem;">= <b style="color:${res.hands[pid].bust ? '#dc2626' : 'var(--ink)'}">${res.hands[pid].sum}</b>${res.hands[pid].bust ? ' 초과' : ''}</span>`;
+                } else {
+                    const open = r.open || [];
+                    const hidden = Math.max(0, Number(r.cnt || 0) - open.length);
+                    const key = pid + ':' + pub.round;
+                    const before = seenCards[key] || 0;
+                    cards = Array.from({ length: hidden }, backHtml).join('') +
+                        open.map((v, i) => cardHtml(v, i >= before && before > 0 ? 'new' : '')).join('');
+                    seenCards[key] = open.length;
+                    if (open.length) cards += `<span class="small" style="margin-left:0.25rem;">공개 합 ${sum(open)}</span>`;
+                }
+                const contrib = ph === 'SHOW' ? Number((res.contrib || {})[pid] || 0) : Number(r.contrib || 0);
+                return `
+                <div class="seat ${pid === myPlayerId ? 'me' : ''} ${pub.turn === pid && pub.state === 'PLAY' ? 'turn' : ''} ${r.folded ? 'folded' : ''}">
+                    <div class="nm">${esc(pname(pid))}${pid === myPlayerId ? ' (나)' : ''}${tags.join('')}</div>
+                    <div class="chips">보유 <b>${chipsOf(pid)}</b></div>
+                    <div class="row2">
+                        <div class="cards">${cards}</div>
+                        <div style="text-align:right;">
+                            <div class="bet">베팅 ${contrib}개</div>
+                            ${r.act && ph !== 'SHOW' ? `<span class="act">${esc(r.act)}</span>` : ''}
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+            document.getElementById('seats').innerHTML = html;
+        }
+
+        function renderMyArea(ph) {
+            const el = document.getElementById('my-area');
+            if (pub.state !== 'PLAY') { el.innerHTML = ''; return; }
+            if (!inGame()) {
+                el.innerHTML = `<div class="card"><p class="wait-msg">👀 이번 게임은 구경 중입니다. 다음 게임부터 참여할 수 있어요.</p></div>`;
+                return;
+            }
+            const r = rp(myPlayerId);
+            const hand = (me && me.hand) || [];
+            const openIdx = (r.openIdx != null) ? Number(r.openIdx) : (me && me.openPick != null ? Number(me.openPick) : null);
+            const lim = Number(pub.limit);
+            const total = sum(hand);
+            const myTurn = pub.turn === myPlayerId;
+
+            const cardsHtml = hand.map((v, i) => {
+                const isOpen = i >= 3 || (openIdx === i);
+                const sel = ph === 'OPEN' && !r.opened && selOpen === i;
+                const clickable = ph === 'OPEN' && !r.opened;
+                return `<span class="pc big ${Number(v) < 0 ? 'neg' : (Number(v) >= 6 ? 'hi' : '')} ${isOpen ? 'open' : ''} ${sel ? 'sel' : ''} ${clickable ? 'pc-btn' : ''}"
+                    ${clickable ? `onclick="pickOpen(${i})"` : ''}>${Number(v)}</span>`;
+            }).join('');
+
+            let controls = '';
+            if (r.folded) {
+                controls = `<p class="wait-msg" style="color:var(--muted);">이번 라운드는 포기했습니다.</p>`;
+            } else if (ph === 'OPEN') {
+                controls = r.opened
+                    ? `<p class="wait-msg">✅ 공개할 카드를 골랐습니다. 다른 사람을 기다리는 중…</p>`
+                    : `<p class="small">공개할 카드 1장을 누른 뒤 공개하기를 눌러 주세요.</p>
+                       <button ${selOpen === null || busy ? 'disabled' : ''} onclick="doOpen()">👁️ 이 카드 공개하기</button>`;
+            } else if ((ph === 'BET1' || ph === 'BET2') && myTurn && !r.allin) {
+                const cur = curMax();
+                const myC = Number(r.contrib || 0), mySt = chipsOf(myPlayerId);
+                const need = Math.max(0, cur - myC);
+                const callLabel = need === 0 ? '✋ 체크' : (mySt <= need ? `🔥 올인 콜 (${mySt}개)` : `📞 콜 (${need}개)`);
+                const maxRaise = canRaiseOthers(myPlayerId) ? Math.max(0, maxLevel(myPlayerId) - cur) : 0;
+                if (raiseAmt > maxRaise) raiseAmt = Math.max(1, maxRaise);
+                const raisePay = cur + raiseAmt - myC;
+                controls = `
+                    <div class="btn-row">
+                        <button ${busy ? 'disabled' : ''} onclick="doBet('call')">${callLabel}</button>
+                        <button class="danger" ${busy ? 'disabled' : ''} onclick="doBet('fold')">🏳️ 포기</button>
+                    </div>
+                    ${maxRaise >= 1 ? `
+                    <div class="raise-box">
+                        <div class="small">레이즈 (최대 +${maxRaise}개)</div>
+                        <div class="stepper">
+                            <button class="secondary" onclick="stepRaise(-1)">−</button>
+                            <span class="amt">+${raiseAmt}</span>
+                            <button class="secondary" onclick="stepRaise(1)">+</button>
+                        </div>
+                        <div class="quick">
+                            <button onclick="setRaise(1)">+1</button><button onclick="setRaise(3)">+3</button>
+                            <button onclick="setRaise(5)">+5</button><button onclick="setRaise(${maxRaise})">최대</button>
+                        </div>
+                        <button class="gold" ${busy ? 'disabled' : ''} onclick="doBet('raise')">⬆️ 레이즈 +${raiseAmt} (칩 ${raisePay}개 내기${raisePay >= mySt ? ' · 올인' : ''})</button>
+                    </div>` : `<p class="small" style="margin-top:0.4rem;">${canRaiseOthers(myPlayerId) ? '베팅 한도에 도달해 레이즈할 수 없습니다.' : '레이즈를 받을 상대가 없어 콜 또는 포기만 할 수 있습니다.'}</p>`}`;
+            } else if (ph === 'HIT' && myTurn) {
+                controls = `
+                    <div class="btn-row">
+                        <button ${busy ? 'disabled' : ''} onclick="doHit('hit')">🃏 힛 (1장 더)</button>
+                        <button class="secondary" ${busy ? 'disabled' : ''} onclick="doHit('stay')">✋ 스테이</button>
+                    </div>
+                    <p class="small" style="margin-top:0.35rem;">남은 카드 ${pub.deckLeft}장 · 스테이하면 이번 라운드에는 다시 힛할 수 없어요.</p>`;
+            } else if (ph === 'SHOW') {
+                controls = '';
+            } else if (r.allin && (ph === 'BET1' || ph === 'BET2')) {
+                controls = `<p class="wait-msg">🔥 올인 상태입니다. 베팅은 하지 않고 승부까지 갑니다.</p>`;
+            } else if (ph === 'HIT' && r.stayed) {
+                controls = `<p class="wait-msg">✋ 스테이했습니다. ${pub.turn ? esc(pname(pub.turn)) + '님 차례' : ''}</p>`;
+            } else {
+                controls = `<p class="wait-msg">⏳ ${pub.turn ? esc(pname(pub.turn)) + '님 차례입니다.' : '잠시 기다려 주세요.'}</p>`;
+            }
+
+            el.innerHTML = `
+                <div class="card my-box ${myTurn ? 'turn' : ''}">
+                    <h3>${myTurn ? '🔔 내 차례!' : '🃏 내 카드'}</h3>
+                    <div class="my-cards">${cardsHtml}</div>
+                    <div class="sum-line ${total > lim ? 'bust' : 'ok'}">합계 <b>${total}</b> / 한계 ${lim} ${total > lim ? '· ⚠️ 초과!' : (lim - total === 0 ? '· 🎯 딱 맞음!' : `· 여유 ${lim - total}`)}</div>
+                    <div class="small" style="margin-bottom:0.3rem;">보유 칩 ${chipsOf(myPlayerId)}개 · 이번 라운드 베팅 ${Number(r.contrib || 0)}개</div>
+                    ${controls}
+                </div>`;
+        }
+
+        function renderResult(ph) {
+            const el = document.getElementById('result-area');
+            const res = pub.result;
+            if (ph !== 'SHOW' || !res) { el.innerHTML = ''; return; }
+            const gains = res.gains || {}, contrib = res.contrib || {};
+            const winners = new Set();
+            (res.pots || []).forEach(pt => { if (pt.kind === 'win' || pt.kind === 'fold') pt.winners.forEach(w => winners.add(w)); });
+
+            const rows = seats().map(pid => {
+                const net = Number(gains[pid] || 0) - Number(contrib[pid] || 0);
+                const h = (res.hands || {})[pid];
+                const folded = rp(pid).folded;
+                const status = folded ? '포기' : (h ? (h.bust ? `${h.sum} (초과)` : `합 ${h.sum} · ${h.cnt}장`) : '');
+                return { pid, net, h, folded, status };
+            }).sort((a, b) => b.net - a.net);
+
+            const potLines = (res.pots || []).map((pt, i) => {
+                const label = (res.pots.length > 1) ? (i === 0 ? '메인팟' : `사이드팟${res.pots.length > 2 ? ' ' + i : ''}`) : '팟';
+                const w = pt.winners.map(pname).map(esc).join(', ');
+                const what = pt.kind === 'win' ? `🏆 ${w} 승리`
+                    : pt.kind === 'fold' ? `🏆 ${w} (모두 포기)`
+                    : pt.kind === 'tie' ? `🤝 무승부 → ${w} 나눠 가짐`
+                    : pt.kind === 'allbust' ? `💥 모두 초과 무승부 → ${w} 나눠 가짐`
+                    : `↩️ ${w} 혼자 더 건 칩 (본인이 가져감)`;
+                return `• ${label} ${pt.amount}개: ${what}`;
+            }).join('<br>');
+
+            const remain = Math.max(0, Math.ceil((Number(pub.deadline || 0) - serverNow()) / 1000));
+            el.innerHTML = `
+                <div class="card">
+                    <h3>🏁 라운드 ${pub.round} 결과 <span class="small">(한계 숫자 ${pub.limit})</span></h3>
+                    ${rows.map(x => `
+                        <div class="res-row ${winners.has(x.pid) ? 'win' : ''} ${x.h && x.h.bust ? 'bust' : ''}">
+                            <span class="nm">${winners.has(x.pid) ? '🏆 ' : ''}${esc(pname(x.pid))}${x.pid === myPlayerId ? ' (나)' : ''} <span class="small">${esc(x.status)}</span></span>
+                            <span class="gain ${x.net > 0 ? 'plus' : (x.net < 0 ? 'minus' : '')}">${x.net > 0 ? '+' : ''}${x.net}</span>
+                            ${x.h ? `<div class="cards">${x.h.cards.map(v => cardHtml(v)).join('')}</div>` : ''}
+                        </div>`).join('')}
+                    <div class="pot-sum">${potLines}</div>
+                    <p class="small" style="margin-top:0.5rem;" id="next-round-text">${remain}초 뒤 다음 단계로 넘어갑니다.</p>
+                </div>`;
+        }
+
+        function renderLog() {
+            const box = document.getElementById('log-box');
+            const lines = pub.log || [];
+            box.innerHTML = lines.map(l => /^―/.test(l) ? `<div class="sep">${esc(l)}</div>` : `<div>${esc(l)}</div>`).join('') || '<div class="small">기록 없음</div>';
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // ===== 행동 =====
+        function pickOpen(i) { selOpen = i; renderMyArea(pub.phase); }
+        function stepRaise(d) { raiseAmt = Math.max(1, raiseAmt + d); renderMyArea(pub.phase); }
+        function setRaise(n) { raiseAmt = Math.max(1, n); renderMyArea(pub.phase); }
+
+        function act(kind, val) {
+            if (busy) return;
+            busy = true; renderMyArea(pub.phase);
+            gameRpc('hs_act', { p_act: kind, p_val: val == null ? null : Number(val) })
+                .then(() => { busy = false; refreshRoom(); });
+        }
+        function doOpen() { if (selOpen !== null) act('open', selOpen); }
+        function doBet(kind) {
+            if (kind === 'fold') {
+                const need = Math.max(0, curMax() - Number(rp(myPlayerId).contrib || 0));
+                if (!confirm(need === 0 ? '체크할 수 있는데 포기하시겠습니까?' : '이번 라운드를 포기하시겠습니까? (낸 칩은 돌려받지 못합니다)')) return;
+            }
+            act(kind, kind === 'raise' ? raiseAmt : null);
+        }
+        function doHit(kind) { act(kind, null); }
+
+        function forceProceed() {
+            let who;
+            if (pub.phase === 'SHOW') who = '결과 화면을 넘기고 다음 라운드를 시작합니다.';
+            else if (pub.phase === 'OPEN') who = '아직 고르지 않은 사람의 공개 카드를 랜덤으로 정합니다.';
+            else if (pub.phase === 'HIT') who = `${pname(pub.turn)}님을 자동 스테이 처리합니다.`;
+            else who = `${pname(pub.turn)}님을 자동 콜(체크) 처리합니다.`;
+            if (!confirm(`강제 진행할까요?\n${who}`)) return;
+            gameRpc('hs_tick', { p_force: true }).then(refreshRoom);
+        }
+
+        function forceRestart() {
+            if (!confirm('게임 진행 상태를 모두 초기화하고 대기실로 이동하시겠습니까?')) return;
+            gameRpc('hs_restart').then(refreshRoom);
+        }
+
+        // ===== 타이머 / 진행 루프 =====
+        function updateTimer() {
+            const el = document.getElementById('timer-display');
+            const setT = (label, val, warn) => {
+                el.innerHTML = `<small>${label}</small><span class="val">${val}</span>`;
+                el.classList.toggle('timer-warning', !!warn);
+            };
+            if (!pub || pub.state !== 'PLAY') { setT('제한 시간', '--:--'); return; }
+            if (pub.deadline == null) { setT('제한 시간', '무제한'); return; }
+            const remain = Math.max(0, Math.ceil((Number(pub.deadline) - serverNow()) / 1000));
+            if (pub.phase === 'SHOW') {
+                setT('다음 라운드까지', `${remain}초`);
+                const t = document.getElementById('next-round-text');
+                if (t) t.innerText = `${remain}초 뒤 다음 단계로 넘어갑니다.`;
+                return;
+            }
+            const m = String(Math.floor(remain / 60)).padStart(2, '0');
+            const s = String(remain % 60).padStart(2, '0');
+            setT('제한 시간', remain === 0 ? '시간 초과' : `${m}:${s}`, remain <= 10);
+        }
+
+        function uiLoop() {
+            if (!pub || pub.state !== 'PLAY') return;
+            updateTimer();
+            // 시간 초과 감지: 서버에 알리면 서버가 실제 시간을 확인한 뒤 자동 처리한다.
+            if (pub.deadline != null && serverNow() > Number(pub.deadline) + 400 && Date.now() - lastTickAt > 2500) {
+                lastTickAt = Date.now();
+                sbCall('hs_tick', { p_code: roomCode, p_pid: myPlayerId, p_key: myPlayerKey, p_force: false }).then(refreshRoom);
+            }
+        }
+
+        // ===== 주사위 연출 =====
+        let diceTimer = null;
+        function showDice(limit, round, base) {
+            const b = document.getElementById('dice-banner');
+            const face = document.getElementById('dice-face');
+            document.getElementById('dice-title').innerText = `라운드 ${round}`;
+            document.getElementById('dice-text').innerText = '한계 숫자를 정하는 중…';
+            face.className = 'dice rolling';
+            b.classList.remove('hidden');
+            if (diceTimer) clearInterval(diceTimer);
+            let n = 0;
+            diceTimer = setInterval(() => {
+                n++;
+                face.innerText = 5 + Math.floor(Math.random() * 8);
+                if (n >= 12) {
+                    clearInterval(diceTimer); diceTimer = null;
+                    face.innerText = limit;
+                    face.className = 'dice done';
+                    document.getElementById('dice-text').innerText = `한계 숫자 ${limit} · 기본 베팅 ${base}개`;
+                    setTimeout(() => b.classList.add('hidden'), 1500);
+                }
+            }, 90);
+        }
+
+        // ===== 결과 / 기록 =====
+        function computeRanking() {
+            if (pub.state === 'ENDED' && Array.isArray(pub.ranking)) return pub.ranking;
+            const arr = seats().map(pid => ({ pid, name: pname(pid), chips: chipsOf(pid) + (pub.phase === 'SHOW' ? 0 : Number(rp(pid).contrib || 0)) }));
+            arr.sort((a, b) => b.chips - a.chips);
+            arr.forEach((x, i) => { const prev = arr[i - 1]; x.rank = (prev && prev.chips === x.chips) ? prev.rank : i + 1; });
+            return arr;
+        }
+
+        function showResultModal(isRecord) {
+            recordMode = !!isRecord;
+            const modal = document.getElementById('result-modal');
+            const wasHidden = modal.classList.contains('hidden');
+            document.getElementById('result-title').innerText = isRecord ? '📜 현재 기록' : '🏁 최종 순위';
+            document.getElementById('result-tab-btn-rank').innerText = isRecord ? '🏆 현재 칩 순위' : '🏆 순위';
+
+            const rank = computeRanking();
+            const maxRank = Math.max(...rank.map(r => r.rank), 0);
+            const medal = r => r === 1 ? '🥇' : r === 2 ? '🥈' : r === 3 ? '🥉' : '';
+            document.getElementById('result-tab-rank').innerHTML = rank.map(r => `
+                <div class="rank-row ${!isRecord && r.rank === maxRank && rank.length > 1 && maxRank > 1 ? 'last' : ''}">
+                    <span class="rk">${medal(r.rank)} ${r.rank}위</span>
+                    <span class="nm">${esc(r.name)}${r.pid === myPlayerId ? ' (나)' : ''}</span>
+                    <span class="chip-badge">칩 ${r.chips}</span>
+                </div>`).join('') +
+                (isRecord ? `<p class="small" style="margin-top:0.4rem;">진행 중인 라운드에 낸 칩도 포함한 개수입니다.</p>`
+                    : `<p class="small" style="margin-top:0.4rem;">${pub.endReason === 'bust' ? '칩이 0개가 된 플레이어가 나와 게임이 끝났습니다.' : '최대 라운드가 끝나 게임이 끝났습니다.'} 칩이 같으면 공동 순위입니다.</p>`);
+
+            const hist = (pub.history || []).slice().reverse();
+            document.getElementById('result-tab-hist').innerHTML = hist.length ? hist.map(h => `
+                <div class="hist-round">
+                    <b>라운드 ${h.round}</b> <span class="small">한계 숫자 ${h.limit}${h.byFold ? ' · 모두 포기' : ''}</span>
+                    ${h.hands && Object.keys(h.hands).length ? `<div class="hd">${Object.keys(h.hands).map(pid =>
+                        `<span>${esc(pname(pid))} [${h.hands[pid].cards.join(', ')}] = ${h.hands[pid].sum}${h.hands[pid].bust ? ' 초과' : ''}</span>`).join('')}</div>` : ''}
+                    <div class="ln">${(h.lines || []).map(esc).join(' · ') || '변동 없음'}</div>
+                    <details><summary class="small">진행 기록 보기</summary>
+                        <div class="lg">${(h.log || []).map(esc).join('<br>')}</div>
+                    </details>
+                </div>`).join('') : '<p class="small">아직 끝난 라운드가 없습니다.</p>';
+
+            const btn = document.getElementById('result-confirm-btn');
+            btn.innerText = (!isRecord && isHost) ? '🔄 대기실로 이동 (다시 하기)' : '닫기';
+            modal.classList.remove('hidden');
+            if (wasHidden) switchResultTab('rank');
+        }
+
+        function openRecordModal() { showResultModal(pub && pub.state !== 'ENDED'); }
+
+        function confirmResult() {
+            document.getElementById('result-modal').classList.add('hidden');
+            if (recordMode) { recordMode = false; return; }
+            resultDismissed = true;
+            if (isHost && pub && pub.state === 'ENDED') gameRpc('hs_restart').then(refreshRoom);
+        }
+
+        function switchResultTab(t) {
+            ['rank', 'hist'].forEach(x => {
+                document.getElementById('result-tab-btn-' + x).classList.toggle('active', x === t);
+                document.getElementById('result-tab-' + x).classList.toggle('hidden', x !== t);
+            });
+        }
+
+        function openGuideModal() { switchTab('rules'); document.getElementById('guide-modal').classList.remove('hidden'); }
+        function closeGuideModal() { document.getElementById('guide-modal').classList.add('hidden'); }
+        function switchTab(t) {
+            ['rules', 'bet', 'play'].forEach(x => {
+                document.getElementById('tab-btn-' + x).classList.toggle('active', x === t);
+                document.getElementById('tab-' + x).classList.toggle('hidden', x !== t);
+            });
+        }
+    </script>
+</body>
+</html>
